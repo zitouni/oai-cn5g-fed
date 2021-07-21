@@ -3,6 +3,12 @@ services:
     oai-nrf:
         container_name: "oai-nrf"
         image: oai-nrf:develop
+        command: >
+            bash -c "nohup tshark -i eth0 -w /tmp/nrf.pcap 2>&1 > /dev/null &
+            /openair-nrf/bin/oai_nrf -c /openair-nrf/etc/nrf.conf -o | tee /tmp/nrf.log 2>&1
+            "
+        cap_add:
+            - NET_ADMIN
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -43,6 +49,12 @@ services:
     oai-amf:
         container_name: "oai-amf"
         image: oai-amf:develop
+        command: >
+            bash -c "nohup tshark -i eth0 -w /tmp/amf.pcap 2>&1 > /dev/null &
+            /openair-amf/bin/oai_amf -c /openair-amf/etc/amf.conf -o | tee /tmp/amf.log 2>&1
+            "
+        cap_add:
+            - NET_ADMIN
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -108,6 +120,12 @@ services:
     oai-smf:
         container_name: "oai-smf"
         image: oai-smf:develop
+        command: >
+            bash -c "nohup tshark -i eth0 -w /tmp/smf.pcap 2>&1 > /dev/null &
+            /openair-smf/bin/oai_smf -c /openair-smf/etc/smf.conf -o | tee /tmp/smf.log 2>&1
+            "
+        cap_add:
+            - NET_ADMIN
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -151,6 +169,10 @@ services:
     oai-spgwu:
         container_name: "oai-spgwu"
         image: oai-spgwu-tiny:develop
+        command: >
+            bash -c "nohup tshark -i eth0 -w /tmp/spgwu.pcap 2>&1 > /dev/null &
+            /openair-spgwu-tiny/bin/oai_spgwu -c /openair-spgwu-tiny/etc/spgw_u.conf -o | tee /tmp/spgwu.log 2>&1
+            "
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -214,12 +236,11 @@ networks:
     public_net:
         external:
             name: demo-oai-public-net
-# Incase the user wants docker-compose to create a bridge rather than creating the bridge manually then uncomment the below lines
-#     public_net:
-#         driver: bridge
-#         name: demo-oai-public-net
-#         ipam:
-#             config:
-#                 - subnet: 192.168.70.128/26
-#         driver_opts:
-#             com.docker.network.bridge.name: "demo-oai"
+    public_net:
+        driver: bridge
+        name: demo-oai-public-net
+        ipam:
+            config:
+                - subnet: 192.168.70.128/26
+        driver_opts:
+            com.docker.network.bridge.name: "demo-oai"
