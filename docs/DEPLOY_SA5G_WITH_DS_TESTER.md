@@ -62,42 +62,11 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 ## 3. Configuring Host Machines ##
 
-- The `docker-compose-host` machine needs to be configured with `demo-oai-public-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf. 
+- The `docker-compose-host` machine will be configured with `demo-oai-public-net` bridge automatically using [docker-compose.yaml](../docker-compose/docker-compose.yaml) at the time of deploying core network components. And also for each component it will start capturing `pcap` messages and stores it on the `/tmp/` location of that container. Use the below command as shown as an example.
 
     ```bash
-    (docker-compose-host)$ docker network create \
-      --driver=bridge \
-      --subnet=192.168.70.128/26 \
-      -o "com.docker.network.bridge.name"="demo-oai" \
-      demo-oai-public-net
-    455631b3749ccd6f10a366cd1c49d5a66cf976d176884252d5d88a1e54049bc5
-    (docker-compose-host)$ ifconfig demo-oai
-    demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-            inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
-            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
-            RX packets 0  bytes 0 (0.0 B)
-            RX errors 0  dropped 0  overruns 0  frame 0
-            TX packets 0  bytes 0 (0.0 B)
-            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-    (docker-compose-host)$ docker network ls
-    NETWORK ID          NAME                  DRIVER              SCOPE
-    d2d34e05bb2d        bridge                bridge              local
-    455631b3749c        demo-oai-public-net   bridge              local
+    (docker-compose-host)$ docker cp container_name:/tmp/amf.pcap amf.pcap
     ```
-- Optional, Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets. Uncomment the last lines of the [docker-compose.yaml](../docker-compose/docker-compose.yaml) or docker-compose-no-nrf.yaml. Else replace with below section
-
-    ```
-    networks:
-          public_net:
-              driver: bridge
-              name: demo-oai-public-net
-              ipam:
-                  config:
-                      - subnet: 192.168.70.128/26
-              driver_opts:
-                  com.docker.network.bridge.name: "demo-oai"
-    ```
-
 
 - Optional, if the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
 
