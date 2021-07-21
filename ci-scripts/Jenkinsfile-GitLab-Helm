@@ -148,6 +148,10 @@ pipeline {
                 smfTag = params.SMF_TAG
                 echo "Upstream Job passed SMF_TAG to use: ${smfTag}"
               }
+              if (params.SPGWU_TAG != null) {
+                spgwuTag = params.SPGWU_TAG
+                echo "Upstream Job passed SPGWU_TAG to use: ${spgwuTag}"
+              }
               sh "git clean -x -d -f > /dev/null 2>&1"
               sh "git fetch --prune > /dev/null 2>&1"
               sh 'git checkout -f ' + upstreamTagToUse
