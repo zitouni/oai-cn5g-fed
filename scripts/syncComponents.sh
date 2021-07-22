@@ -27,7 +27,7 @@ function usage {
     echo "   Requirement: git shall be installed"
     echo ""
     echo "   By default (no options) all components will be synchronized to"
-    echo "     the 'develop' branch."
+    echo "     the 'master' branch."
     echo "   Each component can be synchronized a dedicated branch."
     echo ""
     echo "Usage:"
@@ -53,9 +53,9 @@ function usage {
     echo ""
 }
 
-NRF_BRANCH='develop'
-AMF_BRANCH='develop'
-SMF_BRANCH='develop'
+NRF_BRANCH='master'
+AMF_BRANCH='master'
+SMF_BRANCH='master'
 SPGWU_BRANCH='master'
 
 doDefault=1
@@ -121,26 +121,42 @@ git submodule update  > /dev/null 2>&1
 
 if [ $doDefault -eq 1 ]
 then
-    git submodule foreach 'git fetch --prune && git checkout develop && git pull origin develop'  > /dev/null 2>&1
+    git submodule foreach 'git fetch --prune && git branch -D master&& git checkout -b master origin/master' > /dev/null 2>&1
 else
     pushd component/oai-nrf
     git fetch --prune > /dev/null 2>&1
-    git checkout $NRF_BRANCH > /dev/null 2>&1
-    git pull origin $NRF_BRANCH > /dev/null 2>&1
+    git branch -D $NRF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $NRF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $NRF_BRANCH origin/$NRF_BRANCH > /dev/null 2>&1
+    fi
     popd
     pushd component/oai-amf
     git fetch --prune > /dev/null 2>&1
-    git checkout $AMF_BRANCH > /dev/null 2>&1
-    git pull origin $AMF_BRANCH > /dev/null 2>&1
+    git branch -D $AMF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $AMF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $AMF_BRANCH origin/$AMF_BRANCH > /dev/null 2>&1
+    fi
     popd
     pushd component/oai-smf
     git fetch --prune > /dev/null 2>&1
-    git checkout $SMF_BRANCH > /dev/null 2>&1
-    git pull origin $SMF_BRANCH > /dev/null 2>&1
+    git branch -D $SMF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $SMF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $SMF_BRANCH origin/$SMF_BRANCH > /dev/null 2>&1
+    fi
     popd
     pushd component/oai-upf-equivalent
     git fetch --prune > /dev/null 2>&1
-    git checkout $SPGWU_BRANCH > /dev/null 2>&1
-    git pull origin $SPGWU_BRANCH > /dev/null 2>&1
+    git branch -D $SPGWU_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout  $SPGWU_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $SPGWU_BRANCH origin/$SPGWU_BRANCH > /dev/null 2>&1
+    fi
     popd
 fi
