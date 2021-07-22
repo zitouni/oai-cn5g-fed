@@ -2,7 +2,7 @@ version: '3.8'
 services:
     oai-nrf:
         container_name: "oai-nrf"
-        image: oai-nrf:develop
+        image: oai-nrf:latest
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/nrf.pcap 2>&1 > /dev/null &
             /openair-nrf/bin/oai_nrf -c /openair-nrf/etc/nrf.conf -o | tee /tmp/nrf.log 2>&1
@@ -48,7 +48,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:develop
+        image: oai-amf:latest
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/amf.pcap 2>&1 > /dev/null &
             /openair-amf/bin/oai_amf -c /openair-amf/etc/amf.conf -o | tee /tmp/amf.log 2>&1
@@ -119,7 +119,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:develop
+        image: oai-smf:latest
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/smf.pcap 2>&1 > /dev/null &
             /openair-smf/bin/oai_smf -c /openair-smf/etc/smf.conf -o | tee /tmp/smf.log 2>&1
@@ -168,7 +168,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oai-spgwu-tiny:develop
+        image: oai-spgwu-tiny:latest
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/spgwu.pcap 2>&1 > /dev/null &
             /openair-spgwu-tiny/bin/oai_spgwu -c /openair-spgwu-tiny/etc/spgw_u.conf -o | tee /tmp/spgwu.log 2>&1
