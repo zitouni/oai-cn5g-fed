@@ -88,6 +88,7 @@ pipeline {
         script {
           echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with NRF\u001B[0m'  
           dir('docker-compose') {
+            sh 'sed -i -e "s@latest@develop@g" docker-compose.yaml'
             sh 'docker-compose -f docker-compose.yaml up -d  > ../archives/cn5g/compose_5gcn_up.log 2>&1'
             sh 'sleep 100'
             // Do a check on number of healthy containers
@@ -137,6 +138,7 @@ pipeline {
         script {
           echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with no NRF\u001B[0m'  
           dir('docker-compose') {
+            sh 'sed -i -e "s@latest@develop@g" docker-compose-no-nrf.yaml'
             sh 'docker-compose -f docker-compose-no-nrf.yaml up -d  > ../archives/cn5gwithnoNRF/compose_5gcn_up.log 2>&1'
             sh 'sleep 100'
             // Do a check on number of healthy containers
