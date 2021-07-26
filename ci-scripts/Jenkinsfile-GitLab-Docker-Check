@@ -37,11 +37,6 @@ def cn_ci_host = params.Host_CN_CI_Server
 // for lock
 def cn_ci_resource = params.DockerContainers
 
-// Location of the 2nd CN executor
-def new_host_flag = false
-def new_host = ""
-def new_host_user = ""
-
 //-------------------------------------------------------------------------------
 // Pipeline start
 pipeline {
@@ -63,21 +58,16 @@ pipeline {
           JOB_TIMESTAMP = sh returnStdout: true, script: 'date --utc --rfc-3339=seconds | sed -e "s#+00:00##"'
           JOB_TIMESTAMP = JOB_TIMESTAMP.trim()
 
-          if (params.Host_CN_CI_2nd_Server_Flag != null) {
-            new_host_flag = params.Host_CN_CI_2nd_Server_Flag
-            if (new_host_flag) {
-              new_host = params.Host_CN_CI_2nd_Server
-              new_host_user = params.Host_CN_CI_2nd_Server_Login
-              echo "1st Node   is ${NODE_NAME}"
-              echo "2nd Node   is ${new_host}"
-            } else {
-              echo "Node       is ${NODE_NAME}"
+          sh "git clean -x -d -f > /dev/null 2>&1"
+          if (params.CheckAnotherBranch != null) {
+            if (params.CheckAnotherBranch) {
+              if (params.BranchToCheck != null) {
+                sh 'git checkout params.BranchToCheck'
+                sh 'git log -n1'
+              }
             }
-          } else {
-            echo "Node       is ${NODE_NAME}"
           }
 
-          sh "git clean -x -d -f > /dev/null 2>&1"
           sh "mkdir -p archives/cn5g"
           sh "mkdir -p archives/cn5gwithnoNRF"
         }
