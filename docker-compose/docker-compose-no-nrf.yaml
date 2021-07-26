@@ -22,13 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:latest
-        command: >
-            bash -c "nohup tshark -i eth0 -w /tmp/amf.pcap 2>&1 > /dev/null &
-            /openair-amf/bin/oai_amf -c /openair-amf/etc/amf.conf -o | tee /tmp/amf.log 2>&1
-            "
-        cap_add:
-            - NET_ADMIN
+        image: oai-amf:v1.1.0
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -93,13 +87,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:latest
-        command: >
-            bash -c "nohup tshark -i eth0 -w /tmp/smf.pcap 2>&1 > /dev/null &
-            /openair-smf/bin/oai_smf -c /openair-smf/etc/smf.conf -o | tee /tmp/smf.log 2>&1
-            "
-        cap_add:
-            - NET_ADMIN
+        image: oai-smf:v1.1.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -110,7 +98,7 @@ services:
             - SMF_INTERFACE_HTTP2_PORT_FOR_SBI=9090
             - SMF_API_VERSION=v1
             - DEFAULT_DNS_IPV4_ADDRESS=192.168.18.129
-            - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
+            - DEFAULT_DNS_SEC_IPV4_ADDRESS=192.168.18.129
             - AMF_IPV4_ADDRESS=192.168.70.132
             - AMF_PORT=80
             - AMF_API_VERSION=v1
@@ -142,11 +130,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oai-spgwu-tiny:latest
-        command: >
-            bash -c "nohup tshark -i eth0 -w /tmp/spgwu.pcap 2>&1 > /dev/null &
-            /openair-spgwu-tiny/bin/oai_spgwu -c /openair-spgwu-tiny/etc/spgw_u.conf -o | tee /tmp/spgwu.log 2>&1
-            "
+        image: oai-spgwu-tiny:v1.1.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -200,7 +184,6 @@ services:
               "apt update; apt install -y iptables iproute2 iputils-ping;"\
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; sleep infinity"
-        command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
         depends_on:
             - oai-spgwu
         networks:
@@ -209,12 +192,12 @@ services:
 networks:
     public_net:
         external:
-            name: demo-oai-public-net
-    public_net:
-        driver: bridge
-        name: demo-oai-public-net
-        ipam:
-            config:
-                - subnet: 192.168.70.128/26
-        driver_opts:
-           com.docker.network.bridge.name: "demo-oai"
+            name: demo-oai
+    # public_net:
+    #     driver: bridge
+    #     name: demo-oai
+    #     ipam:
+    #         config:
+    #             - subnet: 192.168.70.128/26
+    #     driver_opts:
+    #        com.docker.network.bridge.name: "demo-oai"
