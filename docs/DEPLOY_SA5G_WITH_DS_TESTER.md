@@ -15,6 +15,15 @@
 
 ![SA dsTest Demo](./images/docker-compose/5gCN.jpg)
 
+
+
+This tutorial will help in understanding how to deploy OAI core network using docker-compose. In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/) a commercial paid gNB emulator. Though instead of this readers can also use gNBsim (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md). Please follow the tutorial step by step to create a stable testbed. 
+
+Reading time: 20mins
+Tutorial replication time: 1hr
+
+Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+
 **TABLE OF CONTENTS**
 
 1.  [Pre-requisites](#1-pre-requisites)
@@ -41,7 +50,7 @@ The requried softwares and their respected versions are listed below. To replica
 | docker-compose             | 1.27.4, build 40524192          |
 | Host operating system      | Ubuntu 18.04.4 LTS              |
 | Container operating system | Ubuntu 18.04                    |
-| dsTest (Licensed)          | 5.5                             |
+| dsTest (Licensed)          | 5.6                             |
 | tshark                     | 3.4.4 (Git commit c33f6306cbb2) |
 | wireshark                  | 3.4.4 (Git commit c33f6306cbb2) |
 
@@ -51,24 +60,61 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 ## 2. Building Container Images ##
 
-- In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+- In this demo the image tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
-| CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
-| ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
-| AMF         | `develop`               | `82ca64fe8d79dbadbb1a495124ee26352f81bd7a` | X            | Releasing soon |
-| SMF         | `develop`               | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | Releasing soon |
-| NRF         | `develop`               | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | Releasing soon |
-| SPGW-U-TINY | `gtp_extension_header`  | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | Releasing soon |
+| CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
+| ----------- | ----------- | -------- | ------------ | ----------------|
+| AMF         | `master`    | `v1.1.0` | X            | X               |
+| SMF         | `master`    | `v1.1.0` | X            | X               |
+| NRF         | `master`    | `v1.1.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
 
 ## 3. Configuring Host Machines ##
 
-- The `docker-compose-host` machine will be configured with `demo-oai-public-net` bridge automatically using [docker-compose.yaml](../docker-compose/docker-compose.yaml) at the time of deploying core network components. And also for each component it will start capturing `pcap` messages and stores it on the `/tmp/` location of that container. Use the below command as shown as an example.
+All the network functions are connected using `demo-oai-net` bridge. There are two ways to create this bridge either manually or automatically using docker-compose. The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf. The second option of automatic deployment is good when initial packet capture is not important. 
+
+### 3.1 Creating bridge manually 
+
+- The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf. 
 
     ```bash
-    (docker-compose-host)$ docker cp container_name:/tmp/amf.pcap amf.pcap
+    (docker-compose-host)$ docker network create \
+      --driver=bridge \
+      --subnet=192.168.70.128/26 \
+      -o "com.docker.network.bridge.name"="demo-oai" \
+      demo-oai-public-net
+    455631b3749ccd6f10a366cd1c49d5a66cf976d176884252d5d88a1e54049bc5
+    (docker-compose-host)$ ifconfig demo-oai
+    demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
+            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
+            RX packets 0  bytes 0 (0.0 B)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 0  bytes 0 (0.0 B)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    (docker-compose-host)$ docker network ls
+    NETWORK ID          NAME                  DRIVER              SCOPE
+    d2d34e05bb2d        bridge                bridge              local
+    455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-- Optional, if the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
+### 3.1 Create bridge automatically  
+
+- Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets. Uncomment the last lines of the [docker-compose.yaml](../docker-compose/docker-compose.yaml) or docker-compose-no-nrf.yaml. Else replace with below section
+
+    ```
+    networks:
+          public_net:
+              driver: bridge
+              name: demo-oai-net
+              ipam:
+                  config:
+                      - subnet: 192.168.70.128/26
+              driver_opts:
+                  com.docker.network.bridge.name: "demo-oai"
+    ```
+
+- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
@@ -82,7 +128,8 @@ To know how to configure the machine with the above requirements vist [pre-requi
     192.168.70.128/26 via IP_ADDR_NIC1\
     dev NIC1_NAME
     ```
-- To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai-public-net bridge,
+
+- To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the dsTest-host machine. 
 
     ```bash
     (dsTest-host)$ ping 192.168.70.129
@@ -110,7 +157,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
     | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/gtp_extension_header/etc/spgw_u.conf) |
 
 
-- **User Subscprition Profile**: The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db.sql file located in docker-compose/oai-db.sql.  
+- **User Subscprition Profile**: The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db.sql file located in [docker-compose/oai-db.sql](../docker-compose/oai_db.sql).  
 
     ```
     IMSI - 208950000000031
@@ -260,7 +307,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
     Removing oai-nrf    ... done
     Network demo-oai-public-net is external, skipping
     Core network stopped
-    ``` 
+    ```
 
 ## 8. Analysing the Scenario Results ##
 
@@ -276,8 +323,6 @@ This section is subdivided in two parts the first part for analysing the message
 | oai-ext-dn    | 192.168.70.135 |
 | Host Machine  | 192.168.70.129 |
 | dsTest gNB/UE | 192.168.18.184 |
-
-
 
 
 | Pcap/log files                                                                                           |
@@ -339,6 +384,7 @@ Using wireshark open scenario-execution.pcap use the filter ngap || http || pfcp
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose.yaml](../docker-compose/docker-compose.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
 - Its not necessary to use [core-network.sh](../docker-compose/core-network.sh) bash script, it is possible to directly deploy using `docker-compose` command
+- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
     ```
     #To start the containers 

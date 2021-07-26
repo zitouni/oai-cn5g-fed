@@ -99,6 +99,43 @@
 
 # 3. Networking #
 
-- The [docker-compose.yaml](../docker-compose/docker-compose.yaml) will create the network automatically.
+- The [docker-compose.yaml](../docker-compose/docker-compose.yaml) can create the network automatically, currently in the file automatic network creation is disabled. It can be enabled by uncommenting the lines. 
+
+    ```bash
+    networks:
+          public_net:
+              driver: bridge
+              name: demo-oai
+              ipam:
+                  config:
+                      - subnet: 192.168.70.128/26
+              driver_opts:
+                  com.docker.network.bridge.name: "demo-oai"
+    ```
+
+- In user wants to create manual network then below is the command
+
+components. To capture initial message exchange between smf<-->nrf<-->upf. 
+
+    ```bash
+    (docker-compose-host)$ docker network create \
+      --driver=bridge \
+      --subnet=192.168.70.128/26 \
+      -o "com.docker.network.bridge.name"="demo-oai" \
+      demo-oai-public-net
+    455631b3749ccd6f10a366cd1c49d5a66cf976d176884252d5d88a1e54049bc5
+    (docker-compose-host)$ ifconfig demo-oai
+    demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
+            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
+            RX packets 0  bytes 0 (0.0 B)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 0  bytes 0 (0.0 B)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    (docker-compose-host)$ docker network ls
+    NETWORK ID          NAME                  DRIVER              SCOPE
+    d2d34e05bb2d        bridge                bridge              local
+    455631b3749c        demo-oai-public-net   bridge              local
+    ```
 
 You are ready to check out the tutorial that [how 5g core works](./DEPLOY_SA5G_WITH_DS_TESTER.md).
