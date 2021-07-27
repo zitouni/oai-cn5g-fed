@@ -111,6 +111,7 @@ OR
 
 ```bash
 docker pull rohankharade/gnbsim
+docker image tag rohankharade/gnbsim:latest gnbsim:latest
 ```
 
 ## 7. Executing the `gnbsim` Scenario ##
