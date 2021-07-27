@@ -251,16 +251,4 @@ $ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
 
 The above command is with podman, in case of docker it can be changed with its docker equivalent.
 
-# 7. Use pre-built docker images (Optional)
-
-You can use pre-built docker images to avoid building from sratch.
-
-```bash
-# Pull all our official OAI CN5G images
-docker pull rdefosseoai/oai-amf:latest
-docker pull rdefosseoai/oai-smf:latest
-docker pull rdefosseoai/oai-nrf:latest
-docker pull rdefosseoai/oai-spgwu-tiny:latest
-```
-
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts] (./DEPLOY_SA5G_HC.md)
