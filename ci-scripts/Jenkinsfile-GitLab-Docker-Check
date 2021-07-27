@@ -71,13 +71,14 @@ pipeline {
 
           sh "mkdir -p archives/cn5g"
           sh "mkdir -p archives/cn5gwithnoNRF"
+          sh "mkdir -p archives/gnbsim"
         }
       }
     }
     stage ('Deploy Whole 5G Core Network with NRF') {
       steps {
         script {
-          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with NRF\u001B[0m'  
+          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with NRF\u001B[0m'
           dir('docker-compose') {
             sh 'sed -i -e "s@latest@develop@g" docker-compose.yaml'
             sh 'docker-compose -f docker-compose.yaml up -d  > ../archives/cn5g/compose_5gcn_up.log 2>&1'
@@ -88,17 +89,17 @@ pipeline {
             ret = ret.trim()
             if (ret != '5') {
               error "Deployment went wrong!"
-            }          
+            }
           }
         }
       }
       post {
         always {
           script {
-            sh 'docker logs oai-nrf > archives/cn5g/oai_nrf.log'
-            sh 'docker logs oai-amf > archives/cn5g/oai_amf.log'
-            sh 'docker logs oai-smf > archives/cn5g/oai_smf.log'
-            sh 'docker logs oai-spgwu > archives/cn5g/oai_spgwu.log'
+            sh 'docker logs oai-nrf > archives/cn5g/oai_nrf.log 2>&1 || true'
+            sh 'docker logs oai-amf > archives/cn5g/oai_amf.log 2>&1 || true'
+            sh 'docker logs oai-smf > archives/cn5g/oai_smf.log 2>&1 || true'
+            sh 'docker logs oai-spgwu > archives/cn5g/oai_spgwu.log 2>&1 || true'
           }
         }
         success {
@@ -124,61 +125,126 @@ pipeline {
       }
     }
 
-    stage ('Deploy Whole 5G Core Network with no NRF') {
+    stage ('Deploy Whole 5G Core Network without NRF') {
       steps {
         script {
-          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with no NRF\u001B[0m'  
+          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose without NRF\u001B[0m'
           dir('docker-compose') {
             sh 'sed -i -e "s@latest@develop@g" docker-compose-no-nrf.yaml'
             sh 'docker-compose -f docker-compose-no-nrf.yaml up -d  > ../archives/cn5gwithnoNRF/compose_5gcn_up.log 2>&1'
             sh 'sleep 100'
             // Do a check on number of healthy containers
             // 4 == mysql + amf + smf + upf(spgwu-tiny)
-            ret = sh returnStdout: true, script: 'docker-compose ps -a | grep -v unhealthy | grep -c healthy || true'
+            ret = sh returnStdout: true, script: 'docker-compose -f docker-compose-no-nrf.yaml ps -a | grep -v unhealthy | grep -c healthy || true'
             ret = ret.trim()
             if (ret != '4') {
-              error "Deployment went wrong with no NRF!"
-            }          
+              error "Deployment went wrong without NRF!"
+            }
           }
         }
       }
       post {
         always {
           script {
-            sh 'docker logs oai-amf > archives/cn5gwithnoNRF/oai_amf.log'
-            sh 'docker logs oai-smf > archives/cn5gwithnoNRF/oai_smf.log'
-            sh 'docker logs oai-spgwu > archives/cn5gwithnoNRF/oai_spgwu.log'
+            sh 'docker logs oai-amf > archives/cn5gwithnoNRF/oai_amf.log 2>&1 || true'
+            sh 'docker logs oai-smf > archives/cn5gwithnoNRF/oai_smf.log 2>&1 || true'
+            sh 'docker logs oai-spgwu > archives/cn5gwithnoNRF/oai_spgwu.log 2>&1 || true'
           }
         }
         success {
           script {
-            sh 'echo "DEPLOYMENT: OK with no NRF"'
+            sh 'echo "DEPLOYMENT: OK without NRF"'
           }
         }
         unsuccessful {
           script {
-            sh 'echo "DEPLOYMENT: KO with no NRF"'
+            sh 'docker-compose -f docker-compose-no-nrf.yaml down || true'
+            sh 'echo "DEPLOYMENT: KO without NRF"'
           }
         }
       }
     }
-    stage ('Undeploy 5G-CN with no NRF') {
+    stage ('Undeploy 5G-CN without NRF') {
       steps {
         script {
-          echo '\u2705 \u001B[32mUn-Deploy CN5G with no NRF\u001B[0m'
+          echo '\u2705 \u001B[32mUn-Deploy CN5G without NRF\u001B[0m'
           dir('docker-compose') {
-            sh 'docker-compose down > ../archives/cn5gwithnoNRF/compose_normal_down.log 2>&1'
+            sh 'docker-compose -f docker-compose-no-nrf.yaml down > ../archives/cn5gwithnoNRF/compose_normal_down.log 2>&1'
+          }
+        }
+      }
+    }
+
+    stage ('gnbsim tutorial') {
+      steps {
+        script {
+          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose with NRF\u001B[0m'
+          dir('docker-compose') {
+            sh 'docker-compose -f docker-compose.yaml up -d  > ../archives/gnbsim/compose_5gcn_up.log 2>&1'
+            sh 'sleep 100'
+            // Do a check on number of healthy containers
+            // 5 == mysql + nrf + amf + smf + upf(spgwu-tiny)
+            ret = sh returnStdout: true, script: 'docker-compose ps -a | grep -v unhealthy | grep -c healthy || true'
+            ret = ret.trim()
+            if (ret != '5') {
+              error "Deployment went wrong!"
+            }
+            sh 'docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim > ../archives/gnbsim/gnbsim_up.log 2>&1'
+            sh 'sleep 20'
+            // Do a check if gnbsim is healthy
+            ret = sh returnStdout: true, script: 'docker-compose -f docker-compose-gnbsim.yaml ps -a | grep -v unhealthy | grep -c healthy || true'
+            ret = ret.trim()
+            if (ret != '1') {
+              error "gnbsim deployment went wrong"
+            }
+          }
+        }
+      }
+      post {
+        always {
+          script {
+            sh 'docker logs oai-nrf > archives/gnbsim/oai_nrf.log 2>&1 || true'
+            sh 'docker logs oai-amf > archives/gnbsim/oai_amf.log 2>&1 || true'
+            sh 'docker logs oai-smf > archives/gnbsim/oai_smf.log 2>&1 || true'
+            sh 'docker logs oai-spgwu > archives/gnbsim/oai_spgwu.log 2>&1 || true'
+            sh 'docker logs gnbsim > archives/gnbsim/gnbsim.log 2>&1 || true'
+          }
+        }
+        success {
+          script {
+            sh 'echo "DEPLOYMENT: OK"'
+          }
+        }
+        unsuccessful {
+          script {
+            dir('docker-compose') {
+              sh 'docker-compose -f docker-compose-gnbsim.yaml down || true'
+              sh 'docker-compose down || true'
+            }
+            sh 'echo "DEPLOYMENT: KO"'
+          }
+        }
+      }
+    }
+    stage ('Un-deploy gnbsim tutorial') {
+      steps {
+        script {
+          dir('docker-compose') {
+            sh 'docker-compose -f docker-compose-gnbsim.yaml down > ../archives/gnbsim/gnbsim_down.log 2>&1'
+            sh 'docker-compose down >> ../archives/gnbsim/cn5g_down.log 2>&1'
           }
         }
       }
     }
   }
+
   post {
     always {
       script {
         // Remove any leftover containers/networks
         dir('docker-compose') {
-          sh 'docker-compose down'
+          sh 'docker-compose -f docker-compose-gnbsim.yaml down || true'
+          sh 'docker-compose down || true'
         }
         // Zipping all archived log files
         sh "zip -r -qq cn5g_deploy_docker_logs.zip archives"

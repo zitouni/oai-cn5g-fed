@@ -91,6 +91,7 @@ There are two ways to create this bridge either manually or automatically using 
 * The second option of automatic deployment is good when initial packet capture is not important.
 
 **NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
+
 ### 3.1 Creating bridge manually
 
 - The bottom section of [docker-compose file](../docker-compose/docker-compose.yaml) SHALL look like this:
@@ -154,6 +155,8 @@ The bottom section SHALL look like this:
               driver_opts:
                   com.docker.network.bridge.name: "demo-oai"
     ```
+
+### 3.3 In case you forgot. True for manual or automatic network creation.
 
 - If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (**important step**), 
 

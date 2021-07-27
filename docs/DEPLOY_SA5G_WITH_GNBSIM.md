@@ -27,32 +27,37 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
 5.  Deploying OAI 5G Core Network
-6.  [Configuring gnbsim Scenario](#6-configuring-gnbsim-scenario)
-7.  [Executing gnbsim Scenario](#7-executing-the-gnbsim-scenario)
+6.  [Getting a `gnbsim` docker image](#6-getting-a-gnbsim-docker-image)
+7.  [Executing `gnbsim` Scenario](#7-executing-the-gnbsim-scenario)
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
-* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
 | CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
 | ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
-| AMF         | `develop`               | `82ca64fe8d79dbadbb1a495124ee26352f81bd7a` | X            | X              |
-| SMF         | `develop`               | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | X              |
-| NRF         | `develop`               | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | X              |
-| SPGW-U-TINY | `gtp_extension_header`  | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | X              |
+| AMF         | `master`                | `82ca64fe8d79dbadbb1a495124ee26352f81bd7a` | X            | X              |
+| SMF         | `master`                | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | X              |
+| NRF         | `master`                | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | X              |
+| SPGW-U-TINY | `master`                | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | X              |
 
 <br/>
 
-This tutorial is a extension of previous tutorial  of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md). In previous tutorial we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios. Moreover, there are various other opensource gnb/ue simulator tools are available for SA5G test. In this tutorial we use opensource simulator tool called gnbsim. With the help of gnbsim tool, we can perform very basic SA5G test by simulating one gnb and one ue. 
+This tutorial is a extension of previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md). In previous tutorial we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
+
+Moreover, there are various other opensource gnb/ue simulator tools are available for SA5G test. In this tutorial we use opensource simulator tool called gnbsim. With the help of gnbsim tool, we can perform very basic SA5G test by simulating one gnb and one ue.
 
 ##### About gnbsim -
+
 [Gnbsim](https://github.com/hhorai/gnbsim) is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It 3rd party opensource tool written in golang and more information can be found [here.](https://github.com/hhorai/gnbsim) Gnbsim simulates NGAP, NAS and GTPU protocols. Current version of gnbsim simulates one gnb and one ue.
 
 Let's begin !!
+
 * Steps 1 to 5 are similar as previous tutorial. Please follow these steps to deploy OAI 5G core network components.
-* We depoloy gnbsim docker service on same host as of core network, so there is no need to create additional route as 
+* We depoloy gnbsim docker service on same host as of core network, so there is no need to create additional route as
 we did for dsTest-host.
-* Before we procced further for end to end SA5G test, make sure you have healthy docker services for OAI cn5g -
+* Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
+
 ```bash
 oai-cn5g-fed/docker-compose$ ./core-network.sh start nrf spgwu
 Starting 5gcn components in the order nrf, mysql, amf, smf, spgwu...
@@ -75,27 +80,42 @@ SMF and UPF are registered to NRF...
 Core network is configured and healthy, total time taken 43187 milli seconds
 oai-cn5g-fed/docker-compose$
 ```
-```bah
+
+```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 seconds ago   Up 22 seconds                                            oai-ext-dn
-31b6391a3a41   oai-amf:develop                 "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-753ae61f715f   oai-spgwu-tiny:gtp-ext-header   "/openair-spgwu-tiny…"   23 seconds ago   Up 22 seconds (healthy)   2152/udp, 8805/udp             oai-spgwu
-84c164ab8136   oai-smf:develop                 "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-6f0ce91e4efb   oai-nrf:develop                 "/bin/bash /openair-…"   24 seconds ago   Up 23 seconds (healthy)   80/tcp, 9090/tcp               oai-nrf
+31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   23 seconds ago   Up 22 seconds (healthy)   2152/udp, 8805/udp             oai-spgwu
+84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
+6f0ce91e4efb   oai-nrf:latest                  "/bin/bash /openair-…"   24 seconds ago   Up 23 seconds (healthy)   80/tcp, 9090/tcp               oai-nrf
 565617169b42   mysql:5.7                       "docker-entrypoint.s…"   24 seconds ago   Up 23 seconds (healthy)   3306/tcp, 33060/tcp            mysql
-rohan@rohan:~/gitrepo/oai-cn5g-fed/docker-compose$ 
+oai-cn5g-fed/docker-compose$ 
 ```
 
-## 6. Configuring gnbsim Scenario ##
-* Build gnbsim docker image
+## 6. Getting a `gnbsim` docker image ##
+
+You have the choice:
+
+* Build `gnbsim` docker image
+
 ```bash
 $ git clone https://gitlab.eurecom.fr/kharade/gnbsim.git
 $ cd gnbsim
-$ docker build --tag gnbsim:develop --target gnbsim --file docker/Dockerfile.ubuntu.18.04 .
+$ docker build --tag gnbsim:latest --target gnbsim --file docker/Dockerfile.ubuntu.18.04 .
 ```
 
-## 7. Executing the gnbsim Scenario ##
+OR
+
+* You can pull a prebuilt docker image for `gnbsim`
+
+```bash
+docker pull rohankharade/gnbsim
+docker image tag rohankharade/gnbsim:latest gnbsim:latest
+```
+
+## 7. Executing the `gnbsim` Scenario ##
+
 * The configuration parameters, are preconfigured in [docker-compose.yaml](../docker-compose/docker-compose.yaml) and [docker-compose-gnbsim.yaml](../docker-compose/docker-compose-gnbsim.yaml) and one can modify it for test.
 * Launch gnbsim docker service
 ```bash
@@ -107,12 +127,12 @@ Creating gnbsim ... done
 ```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
-2ad428f94fb0   gnbsim:develop                  "/gnbsim/bin/entrypo…"   33 seconds ago   Up 32 seconds (healthy)                                  gnbsim
+2ad428f94fb0   gnbsim:latest                   "/gnbsim/bin/entrypo…"   33 seconds ago   Up 32 seconds (healthy)                                  gnbsim
 c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minutes ago    Up 4 minutes                                             oai-ext-dn
-31b6391a3a41   oai-amf:develop                 "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 38412/sctp   oai-amf
-753ae61f715f   oai-spgwu-tiny:gtp-ext-header   "/openair-spgwu-tiny…"   4 minutes ago    Up 4 minutes (healthy)    2152/udp, 8805/udp             oai-spgwu
-84c164ab8136   oai-smf:develop                 "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 8805/udp     oai-smf
-6f0ce91e4efb   oai-nrf:develop                 "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp               oai-nrf
+31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 38412/sctp   oai-amf
+753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   4 minutes ago    Up 4 minutes (healthy)    2152/udp, 8805/udp             oai-spgwu
+84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 8805/udp     oai-smf
+6f0ce91e4efb   oai-nrf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp               oai-nrf
 565617169b42   mysql:5.7                       "docker-entrypoint.s…"   4 minutes ago    Up 4 minutes (healthy)    3306/tcp, 33060/tcp            mysql
 ```
 Now we are ready to perform some traffic test.
@@ -220,17 +240,17 @@ Please make sure status of instance is healthy before creating one more instance
 ```bash
 $ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
-a25174c51297   gnbsim:develop                  "/gnbsim/bin/entrypo…"   3 minutes ago    Up 3 minutes  (healthy)                                   gnbsim5
-00c6207b0064   gnbsim:develop                  "/gnbsim/bin/entrypo…"   4 minutes ago    Up 4 minutes  (healthy)                                   gnbsim4
-ed440f95fb19   gnbsim:develop                  "/gnbsim/bin/entrypo…"   4 minutes ago    Up 4 minutes  (healthy)                                   gnbsim3
-8c4e4098955d   gnbsim:develop                  "/gnbsim/bin/entrypo…"   14 minutes ago   Up 14 minutes (healthy)                                  gnbsim2
-895b1838c62a   gnbsim:develop                  "/gnbsim/bin/entrypo…"   15 minutes ago   Up 15 minutes (healthy)                                  gnbsim
+a25174c51297   gnbsim:latest                   "/gnbsim/bin/entrypo…"   3 minutes ago    Up 3 minutes  (healthy)                                  gnbsim5
+00c6207b0064   gnbsim:latest                   "/gnbsim/bin/entrypo…"   4 minutes ago    Up 4 minutes  (healthy)                                  gnbsim4
+ed440f95fb19   gnbsim:latest                   "/gnbsim/bin/entrypo…"   4 minutes ago    Up 4 minutes  (healthy)                                  gnbsim3
+8c4e4098955d   gnbsim:latest                   "/gnbsim/bin/entrypo…"   14 minutes ago   Up 14 minutes (healthy)                                  gnbsim2
+895b1838c62a   gnbsim:latest                   "/gnbsim/bin/entrypo…"   15 minutes ago   Up 15 minutes (healthy)                                  gnbsim
 d48135fd045c   ubuntu:bionic                   "/bin/bash -c ' apt …"   16 minutes ago   Up 16 minutes                                            oai-ext-dn
-5e98a708d12b   oai-amf:develop                 "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-c64ae3c7f7c6   oai-spgwu-tiny:gtp-ext-header   "/openair-spgwu-tiny…"   16 minutes ago   Up 16 minutes (healthy)   2152/udp, 8805/udp             oai-spgwu
-1cd8319bddb0   oai-smf:develop                 "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
+5e98a708d12b   oai-amf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+c64ae3c7f7c6   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   16 minutes ago   Up 16 minutes (healthy)   2152/udp, 8805/udp             oai-spgwu
+1cd8319bddb0   oai-smf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
 9cda92a46be4   mysql:5.7                       "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes (healthy)   3306/tcp, 33060/tcp            mysql
-cc407925adf2   oai-nrf:develop                 "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp               oai-nrf
+cc407925adf2   oai-nrf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp               oai-nrf
 
 ```
 * Let's verify all gnb and ue are registered at our 5G core -
