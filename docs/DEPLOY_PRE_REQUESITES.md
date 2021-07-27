@@ -48,15 +48,15 @@ $ docker info
 
 # 2. Create an account on Docker Hub #
 
-Go to [https://hub.docker.com/](https://hub.docker.com/) website and create an account.
+Go to [docker-hub](https://hub.docker.com/) and create an account.
 
 # 3. Pull base images #
 
-* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql-server:5.7`
+* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql:5.7`
 
 Currently we are working to support `CentOS8` and `RHEL8` distributions.
 
-First log with your Docker Hub credentials.
+First log with your Docker Hub credentials. This is required if your organization has reached pulling limit as `anonymous`.
 
 ```bash
 $ docker login
@@ -65,13 +65,11 @@ Username:
 Password:
 ```
 
-Then pull base images.
-
 On a Ubuntu18.04 host:
 
 ```bash
 $ docker pull ubuntu:bionic
-$ docker pull mysql/mysql-server:5.7
+$ docker pull mysql:5.7
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -138,4 +136,7 @@ $ docker network inspect bridge
 ....
 ```
 
-You are ready to [build the images](./BUILD_IMAGES.md).
+Here you have 2 choices:
+
+*  You can pull official images from Docker Hub like [this](./RETRIEVE_OFFICIAL_IMAGES.md).
+*  Or you are ready to [build your-self the network function images](./BUILD_IMAGES.md).

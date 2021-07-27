@@ -78,7 +78,7 @@ git submodule update
 
 ## 1.2. You are interested on the latest features. ##
 
-All the latest features are somehow pushed to the `develop` branches of each cNF repository.
+All the latest features are somehow pushed to the `develop` branches of each NF repository.
 
 It means that we/you are able to build and the Continuous Integration test suite makes sure it
 does NOT break any existing tested feature.

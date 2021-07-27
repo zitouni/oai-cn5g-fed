@@ -12,11 +12,16 @@
   </tr>
 </table>
 
+Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot of tutorials and help manuals. We regularly update these documents depending on the new feature set. 
+
+**2021/07/27 Update: you have now the choice to either pull images or build your-self.**
 
 **Table of Contents**
 
 1.  [Pre-requisites](./DEPLOY_PRE_REQUESITES.md)
-2.  [Building the Container Images](./BUILD_IMAGES.md)
+2.  Getting the images
+    1.  [Retrieving the Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
+    2.  [Building the Container Images](./BUILD_IMAGES.md)
 3.  [Configuring the Containers](./CONFIGURE_CONTAINERS.md)
 4.  [Tutorial: 5G Core Network Deployment and Testing with dsTest](./DEPLOY_SA5G_WITH_DS_TESTER.md)
 5.  [Tutorial: 5G Core Network Deployment using Helm Charts](./DEPLOY_SA5G_HC.md)

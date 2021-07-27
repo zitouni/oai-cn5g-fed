@@ -20,6 +20,7 @@
 3.  [Networking](#3-networking)
 
 # 1. Configure the containers #
+
 - **Core Network Configuration**: The [docker-compose](../docker-compose/docker-compose.yaml) file has configuration parameters of all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_WITH_DS_TESTER.md). The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
 
     | File Name   | Repository                                   | Location        |
@@ -99,6 +100,82 @@
 
 # 3. Networking #
 
-- The [docker-compose.yaml](../docker-compose/docker-compose.yaml) will create the network automatically.
+## 3.1. Automatic docker network deployment. ##
+
+The [docker-compose.yaml](../docker-compose/docker-compose.yaml) will create the network automatically. The bottom section of the file SHALL look like this:
+
+```bash
+networks:
+    # public_net:
+    #     external:
+    #         name: demo-oai-public-net
+    public_net:
+        driver: bridge
+        name: demo-oai-public-net
+        ipam:
+            config:
+                - subnet: 192.168.70.128/26
+        driver_opts:
+            com.docker.network.bridge.name: "demo-oai"
+```
+
+## 3.2. Manual docker network deployment. ##
+
+At the deployment, if you want to capture initial transactions between the CN5G components, you will have to manually create the network.
+
+First edit [docker-compose.yaml](../docker-compose/docker-compose.yaml) to look like this:
+
+```bash
+networks:
+    public_net:
+        external:
+            name: demo-oai-public-net
+    # public_net:
+    #     driver: bridge
+    #     name: demo-oai-public-net
+    #     ipam:
+    #         config:
+    #             - subnet: 192.168.70.128/26
+    #     driver_opts:
+    #         com.docker.network.bridge.name: "demo-oai"
+```
+
+Then create the docker network:
+
+    ```bash
+    (docker-compose-host)$ docker network create \
+      --driver=bridge \
+      --subnet=192.168.70.128/26 \
+      -o "com.docker.network.bridge.name"="demo-oai" \
+      demo-oai-public-net
+    455631b3749ccd6f10a366cd1c49d5a66cf976d176884252d5d88a1e54049bc5
+    (docker-compose-host)$ ifconfig demo-oai
+    demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
+            inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
+            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
+            RX packets 0  bytes 0 (0.0 B)
+            RX errors 0  dropped 0  overruns 0  frame 0
+            TX packets 0  bytes 0 (0.0 B)
+            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+    (docker-compose-host)$ docker network ls
+    NETWORK ID          NAME                  DRIVER              SCOPE
+    d2d34e05bb2d        bridge                bridge              local
+    455631b3749c        demo-oai-public-net   bridge              local
+    ```
+
+Finally you can start capturing.
+
+```bash
+tshark -i demo-oai -w 5gcn-deployment.pcap
+```
+
+## 3.3. In case you forgot! ##
+
+If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
+
+    ```bash
+    (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
+    (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
+    ```
 
 You are ready to check out the tutorial that [how 5g core works](./DEPLOY_SA5G_WITH_DS_TESTER.md).
