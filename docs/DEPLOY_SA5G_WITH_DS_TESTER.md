@@ -83,22 +83,30 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 ## 3. Configuring Host Machines ##
 
-All the network functions are connected using `demo-oai-net` bridge. There are two ways to create this bridge either manually or automatically using docker-compose. The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf. The second option of automatic deployment is good when initial packet capture is not important.
+All the network functions are connected using `demo-oai-net` bridge.
+
+There are two ways to create this bridge either manually or automatically using docker-compose.
+
+* The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf.
+* The second option of automatic deployment is good when initial packet capture is not important.
 
 ### 3.1 Creating bridge manually 
 
-- Make sure that the below line is commented in [docker-compose file](../docker-compose/docker-compose.yaml) and uncomment the line above this,
+- The bottom section of [docker-compose file](../docker-compose/docker-compose.yaml) SHALL look like this:
 
 ```
     networks:
           public_net:
-              driver: bridge
-              name: demo-oai-net
-              ipam:
-                  config:
-                      - subnet: 192.168.70.128/26
-              driver_opts:
-                  com.docker.network.bridge.name: "demo-oai"
+              external:
+                  name: demo-oai-public-net
+        # public_net:
+        #     driver: bridge
+        #     name: demo-oai-public-net
+        #     ipam:
+        #         config:
+        #             - subnet: 192.168.70.128/26
+        #     driver_opts:
+        #         com.docker.network.bridge.name: "demo-oai"
 ```
 
 - The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf.
@@ -123,15 +131,22 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-### 3.1 Create bridge automatically  
+### 3.2 Create bridge automatically  
 
-- Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets. Uncomment the last lines of the [docker-compose.yaml](../docker-compose/docker-compose.yaml) or docker-compose-no-nrf.yaml. Else replace with below section
+- Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
+
+This is the `default` version in the [docker-compose.yaml](../docker-compose/docker-compose.yaml) or docker-compose-no-nrf.yaml.
+
+The bottom section SHALL look like this:
 
     ```
     networks:
+        # public_net:
+        #     external:
+        #         name: demo-oai-public-net
           public_net:
               driver: bridge
-              name: demo-oai-net
+              name: demo-oai-public-net
               ipam:
                   config:
                       - subnet: 192.168.70.128/26
