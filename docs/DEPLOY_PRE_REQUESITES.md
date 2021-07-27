@@ -52,11 +52,11 @@ Go to [docker-hub](https://hub.docker.com/) and create an account.
 
 # 3. Pull base images #
 
-* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql-server:5.7`
+* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql:5.7`
 
 Currently we are working to support `CentOS8` and `RHEL8` distributions.
 
-First log with your Docker Hub credentials.
+First log with your Docker Hub credentials. This is required if your organization has reached pulling limit as `anonymous`.
 
 ```bash
 $ docker login
@@ -65,23 +65,12 @@ Username:
 Password:
 ```
 
-All the network functions are using the same base image Ubuntu 18.04. If you want to build image of each network function then pull the base image, else you can pull the network function images from [rdefosseoai docker-hub](https://hub.docker.com/r/rdefosseoai)
-
 On a Ubuntu18.04 host:
 
 ```bash
 $ docker pull ubuntu:bionic
-$ docker pull mysql/mysql-server:5.7
+$ docker pull mysql:5.7
 ```
-
-```bash
-$ docker pull rdefosseoai/oai-amf
-$ docker pull rdefosseoai/oai-nrf
-$ docker pull rdefosseoai/oai-spgwu-tiny
-$ docker pull rdefosseoai/oai-smf
-```
-
-
 
 Finally you may logoff --> your token is stored in plain text..
 
@@ -147,4 +136,7 @@ $ docker network inspect bridge
 ....
 ```
 
-You are ready to [build the network function images](./BUILD_IMAGES.md) in case you didn't pull them in previous steps. 
+Here you have 2 choices:
+
+*  You can pull official images from Docker Hub like [this](./RETRIEVE_OFFICIAL_IMAGES.md).
+*  Or you are ready to [build your-self the network function images](./BUILD_IMAGES.md).

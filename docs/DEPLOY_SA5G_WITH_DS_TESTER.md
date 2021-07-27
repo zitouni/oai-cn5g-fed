@@ -55,30 +55,22 @@ The requried softwares and their respected versions are listed below. To replica
 | tshark                     | 3.4.4 (Git commit c33f6306cbb2) |
 | wireshark                  | 3.4.4 (Git commit c33f6306cbb2) |
 
-The new version of `wireshark` may not be available in the ubuntu repository so it is better to build it from source. 
+The new version of `wireshark` may not be available in the ubuntu repository so it is better to build it from source.
 
-Most of the times the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (if you have already done it in any other section then don't repeat). This is the most important step towards end to end connectivity. 
+Most of the times the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (if you have already done it in any other section then don't repeat).
 
-    ```bash
-    (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
-    sudo iptables -P FORWARD ACCEPT
-    ```
+**This is the most important step towards end-to-end connectivity.**
+
+```bash
+(docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
+(docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
+```
 
 To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUESITES.md) page.
 
 ## 2. Network Function Container Images ##
 
-- This step can be skip and the images can be pulled from docker-hub, in case there is a problem in pulling the images due to docker limit then readers can build images. 
-- **NOTE**: Currently the [docker-compose-file](../docker-compose/docker-compose.yaml) is configured for pulling images from docker-hub. In you case you build images please change the image-tag accordingly
-
-    ```bash
-    (docker-compose-host)$ docker pull rdefosseoai/oai-amf
-    (docker-compose-host)$ docker pull rdefosseoai/oai-nrf
-    (docker-compose-host)$ docker pull rdefosseoai/oai-spgwu-tiny
-    (docker-compose-host)$ docker pull rdefosseoai/oai-smf
-    ```
-
-- In this demo the network function branch and tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+- In this demo the network function branch and tags which were used are listed below, follow the [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md) or the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
@@ -87,15 +79,15 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | NRF         | `master`    | `v1.1.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
 
-- In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**. 
+- In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
 
 ## 3. Configuring Host Machines ##
 
-All the network functions are connected using `demo-oai-net` bridge. There are two ways to create this bridge either manually or automatically using docker-compose. The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf. The second option of automatic deployment is good when initial packet capture is not important. 
+All the network functions are connected using `demo-oai-net` bridge. There are two ways to create this bridge either manually or automatically using docker-compose. The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf. The second option of automatic deployment is good when initial packet capture is not important.
 
 ### 3.1 Creating bridge manually 
 
-- Make sure that the below line is commented in [docker-compose file](../docker-compose/docker-compose.yaml) and uncomment the line above this, 
+- Make sure that the below line is commented in [docker-compose file](../docker-compose/docker-compose.yaml) and uncomment the line above this,
 
 ```
     networks:
@@ -109,7 +101,7 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
                   com.docker.network.bridge.name: "demo-oai"
 ```
 
-- The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf. 
+- The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf.
 
     ```bash
     (docker-compose-host)$ docker network create \
@@ -121,7 +113,6 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
     (docker-compose-host)$ ifconfig demo-oai
     demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
             inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
-            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
             RX packets 0  bytes 0 (0.0 B)
             RX errors 0  dropped 0  overruns 0  frame 0
             TX packets 0  bytes 0 (0.0 B)
@@ -148,22 +139,22 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
                   com.docker.network.bridge.name: "demo-oai"
     ```
 
-- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (important step), 
+- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (**important step**), 
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
-    sudo iptables -P FORWARD ACCEPT
+    (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
     ```
 
 - The `dsTest-host` needs to configured with a route to reach `docker-compose-host`. Assuming `dsTest-host` physical interface which is connected with `docker-compose-host` is NIC1 and the ip-address of this interface is IP_ADDR_NIC1 then,
 
     ```bash
-    (dsTest-host)$ sudo ip route add route \
-    192.168.70.128/26 via IP_ADDR_NIC1\
-    dev NIC1_NAME
+    (dsTest-host)$ sudo ip route add route 192.168.70.128/26 \
+                           via IP_ADDR_NIC1\
+                           dev NIC1_NAME
     ```
 
-- To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the dsTest-host machine. 
+- To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the dsTest-host machine.
 
     ```bash
     (dsTest-host)$ ping 192.168.70.129
@@ -247,7 +238,7 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
     ```bash
     (docker-compose-host)$ pwd
     /home/<docker-compose-host>/oai/oai-cn-fed/docker-compose
-    (docker-compose-host)$ ./core-network
+    (docker-compose-host)$ ./core-network.sh
 
     Only use the following options
 
@@ -275,7 +266,7 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
 - Starting the core network components, 
 
     ```bash
-    (docker-compose-host)$ ./core-network start nrf spgwu
+    (docker-compose-host)$ ./core-network.sh start nrf spgwu
     Starting 5gcn components in the order nrf, mysql, amf, smf, spgwu...
     Creating mysql   ... done
     Creating oai-nrf ... done

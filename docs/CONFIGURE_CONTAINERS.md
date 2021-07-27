@@ -142,7 +142,7 @@ components. To capture initial message exchange between smf<-->nrf<-->upf.
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
-    sudo iptables -P FORWARD ACCEPT
+    (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
     ```
 
 You are ready to check out the tutorial that [how 5g core works](./DEPLOY_SA5G_WITH_DS_TESTER.md).

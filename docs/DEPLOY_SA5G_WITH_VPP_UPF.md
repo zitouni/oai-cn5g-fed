@@ -12,6 +12,8 @@
   </tr>
 </table>
 
+**CAUTION: the vpp-upf repository is stil not public.**
+
 ![SA dsTest Demo](./images/5gcn_vpp_upf.jpg)
 
 **Reading time: ~ 30mins**
