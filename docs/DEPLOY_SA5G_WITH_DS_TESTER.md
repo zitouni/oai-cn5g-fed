@@ -83,14 +83,15 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 ## 3. Configuring Host Machines ##
 
-All the network functions are connected using `demo-oai-net` bridge.
+All the network functions are connected using `demo-oai` bridge.
 
 There are two ways to create this bridge either manually or automatically using docker-compose.
 
-* The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf.
+* The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to NRF. 
 * The second option of automatic deployment is good when initial packet capture is not important.
 
-### 3.1 Creating bridge manually 
+**NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
+### 3.1 Creating bridge manually
 
 - The bottom section of [docker-compose file](../docker-compose/docker-compose.yaml) SHALL look like this:
 
@@ -109,7 +110,7 @@ There are two ways to create this bridge either manually or automatically using 
         #         com.docker.network.bridge.name: "demo-oai"
 ```
 
-- The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf.
+- The `docker-compose-host` machine needs to be configured with `demo-oai` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf.
 
     ```bash
     (docker-compose-host)$ docker network create \
