@@ -48,7 +48,7 @@ $ docker info
 
 # 2. Create an account on Docker Hub #
 
-Go to [https://hub.docker.com/](https://hub.docker.com/) website and create an account.
+Go to [docker-hub](https://hub.docker.com/) and create an account.
 
 # 3. Pull base images #
 
@@ -65,7 +65,7 @@ Username:
 Password:
 ```
 
-Then pull base images.
+All the network functions are using the same base image Ubuntu 18.04. If you want to build image of each network function then pull the base image, else you can pull the network function images from [rdefosseoai docker-hub](https://hub.docker.com/r/rdefosseoai)
 
 On a Ubuntu18.04 host:
 
@@ -73,6 +73,15 @@ On a Ubuntu18.04 host:
 $ docker pull ubuntu:bionic
 $ docker pull mysql/mysql-server:5.7
 ```
+
+```bash
+$ docker pull rdefosseoai/oai-amf
+$ docker pull rdefosseoai/oai-nrf
+$ docker pull rdefosseoai/oai-spgwu-tiny
+$ docker pull rdefosseoai/oai-smf
+```
+
+
 
 Finally you may logoff --> your token is stored in plain text..
 
@@ -138,4 +147,4 @@ $ docker network inspect bridge
 ....
 ```
 
-You are ready to [build the images](./BUILD_IMAGES.md).
+You are ready to [build the network function images](./BUILD_IMAGES.md) in case you didn't pull them in previous steps. 

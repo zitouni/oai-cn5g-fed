@@ -14,8 +14,8 @@
 
 ![SA dsTest Demo](./images/5gcn_vpp_upf.jpg)
 
-Reading time: 20mins
-Tutorial replication time: 1hr
+**Reading time: ~ 30mins**
+**Tutorial replication time: ~ 1h30mins**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 

@@ -12,6 +12,7 @@
   </tr>
 </table>
 
+Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot of tutorials and help manuals. We regularly update these documents depending on the new feature set. 
 
 **Table of Contents**
 

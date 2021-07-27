@@ -17,17 +17,17 @@
 
 
 
-This tutorial will help in understanding how to deploy OAI core network using docker-compose. In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/) a commercial paid gNB emulator. Though instead of this readers can also use gNBsim (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md). Please follow the tutorial step by step to create a stable testbed. 
+This tutorial will help in understanding how to deploy OAI core network using docker-compose. In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/) a commercial paid gNB emulator. Though instead of this readers can also use gNBsim (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md). Please follow the tutorial step by step to create a stable working testbed. 
 
-Reading time: 20mins
-Tutorial replication time: 1hr
+**Reading time: ~20mins**
+**Tutorial replication time: ~1hr**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
 **TABLE OF CONTENTS**
 
 1.  [Pre-requisites](#1-pre-requisites)
-2.  [Building Container Images](#2-building-container-images)
+2.  [Network Function Container Images](#2-network-function-container-images)
 3.  [Configuring Host Machines](#3-configuring-host-machines)
 4.  [Configuring OAI 5G Core Network Functions](#4-configuring-the-oai-5g-core-network-functions)
 5.  [Configuring dsTest Scenario](#5-configuring-dstester-scenario)
@@ -50,17 +50,34 @@ The requried softwares and their respected versions are listed below. To replica
 | docker-compose             | 1.27.4, build 40524192          |
 | Host operating system      | Ubuntu 18.04.4 LTS              |
 | Container operating system | Ubuntu 18.04                    |
-| dsTest (Licensed)          | 5.6                             |
+| dsTest (Licensed)          | 5.5                             |
 | tshark                     | 3.4.4 (Git commit c33f6306cbb2) |
 | wireshark                  | 3.4.4 (Git commit c33f6306cbb2) |
 
 The new version of `wireshark` may not be available in the ubuntu repository so it is better to build it from source. 
 
-To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUESITES.md) page. 
+Most of the times the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (if you have already done it in any other section then don't repeat). This is the most important step towards end to end connectivity. 
 
-## 2. Building Container Images ##
+    ```bash
+    (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
+    sudo iptables -P FORWARD ACCEPT
+    ```
 
-- In this demo the image tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUESITES.md) page.
+
+## 2. Network Function Container Images ##
+
+- This step can be skip and the images can be pulled from docker-hub, in case there is a problem in pulling the images due to docker limit then readers can build images. 
+- **NOTE**: Currently the [docker-compose-file](./docker-compose/docker-compose.yml) is configured for pulling images from docker-hub. In you case you build images please change the image-tag accordingly
+
+    ```bash
+    (docker-compose-host)$ docker pull rdefosseoai/oai-amf
+    (docker-compose-host)$ docker pull rdefosseoai/oai-nrf
+    (docker-compose-host)$ docker pull rdefosseoai/oai-spgwu-tiny
+    (docker-compose-host)$ docker pull rdefosseoai/oai-smf
+    ```
+
+- In this demo the network function branch and tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
@@ -69,11 +86,27 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | NRF         | `master`    | `v1.1.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
 
+- In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**. 
+
 ## 3. Configuring Host Machines ##
 
 All the network functions are connected using `demo-oai-net` bridge. There are two ways to create this bridge either manually or automatically using docker-compose. The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to nrf. The second option of automatic deployment is good when initial packet capture is not important. 
 
 ### 3.1 Creating bridge manually 
+
+- Make sure that the below line is commented in [docker-compose file](./docker-compose/docker-compose.yml) and uncomment the line above this, 
+
+```
+    networks:
+          public_net:
+              driver: bridge
+              name: demo-oai-net
+              ipam:
+                  config:
+                      - subnet: 192.168.70.128/26
+              driver_opts:
+                  com.docker.network.bridge.name: "demo-oai"
+```
 
 - The `docker-compose-host` machine needs to be configured with `demo-oai-net` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf. 
 
@@ -114,7 +147,7 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
                   com.docker.network.bridge.name: "demo-oai"
     ```
 
-- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
+- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (important step), 
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1

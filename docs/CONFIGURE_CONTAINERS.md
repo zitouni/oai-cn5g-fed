@@ -138,4 +138,11 @@ components. To capture initial message exchange between smf<-->nrf<-->upf.
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
+- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
+
+    ```bash
+    (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
+    sudo iptables -P FORWARD ACCEPT
+    ```
+
 You are ready to check out the tutorial that [how 5g core works](./DEPLOY_SA5G_WITH_DS_TESTER.md).
