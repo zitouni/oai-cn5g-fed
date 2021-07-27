@@ -27,12 +27,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
 5.  Deploying OAI 5G Core Network
-6.  [Configuring gnbsim Scenario](#6-configuring-gnbsim-scenario)
-7.  [Executing gnbsim Scenario](#7-executing-the-gnbsim-scenario)
+6.  [Getting a `gnbsim` docker image](#6-getting-a-gnbsim-docker-image)
+7.  [Executing `gnbsim` Scenario](#7-executing-the-gnbsim-scenario)
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
-* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
 | CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
 | ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
@@ -43,16 +43,21 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 <br/>
 
-This tutorial is a extension of previous tutorial  of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md). In previous tutorial we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios. Moreover, there are various other opensource gnb/ue simulator tools are available for SA5G test. In this tutorial we use opensource simulator tool called gnbsim. With the help of gnbsim tool, we can perform very basic SA5G test by simulating one gnb and one ue. 
+This tutorial is a extension of previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md). In previous tutorial we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
+
+Moreover, there are various other opensource gnb/ue simulator tools are available for SA5G test. In this tutorial we use opensource simulator tool called gnbsim. With the help of gnbsim tool, we can perform very basic SA5G test by simulating one gnb and one ue.
 
 ##### About gnbsim -
+
 [Gnbsim](https://github.com/hhorai/gnbsim) is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It 3rd party opensource tool written in golang and more information can be found [here.](https://github.com/hhorai/gnbsim) Gnbsim simulates NGAP, NAS and GTPU protocols. Current version of gnbsim simulates one gnb and one ue.
 
 Let's begin !!
+
 * Steps 1 to 5 are similar as previous tutorial. Please follow these steps to deploy OAI 5G core network components.
-* We depoloy gnbsim docker service on same host as of core network, so there is no need to create additional route as 
+* We depoloy gnbsim docker service on same host as of core network, so there is no need to create additional route as
 we did for dsTest-host.
-* Before we procced further for end to end SA5G test, make sure you have healthy docker services for OAI cn5g -
+* Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
+
 ```bash
 oai-cn5g-fed/docker-compose$ ./core-network.sh start nrf spgwu
 Starting 5gcn components in the order nrf, mysql, amf, smf, spgwu...
@@ -75,7 +80,8 @@ SMF and UPF are registered to NRF...
 Core network is configured and healthy, total time taken 43187 milli seconds
 oai-cn5g-fed/docker-compose$
 ```
-```bah
+
+```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 seconds ago   Up 22 seconds                                            oai-ext-dn
@@ -87,8 +93,12 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 sec
 oai-cn5g-fed/docker-compose$ 
 ```
 
-## 6. Configuring gnbsim Scenario ##
-* Build gnbsim docker image
+## 6. Getting a `gnbsim` docker image ##
+
+You have the choice:
+
+* Build `gnbsim` docker image
+
 ```bash
 $ git clone https://gitlab.eurecom.fr/kharade/gnbsim.git
 $ cd gnbsim
@@ -96,12 +106,15 @@ $ docker build --tag gnbsim:latest --target gnbsim --file docker/Dockerfile.ubun
 ```
 
 OR
-* You can you prebuilt docker image for gnbsim 
+
+* You can pull a prebuilt docker image for `gnbsim`
+
 ```bash
 docker pull rohankharade/gnbsim
 ```
 
-## 7. Executing the gnbsim Scenario ##
+## 7. Executing the `gnbsim` Scenario ##
+
 * The configuration parameters, are preconfigured in [docker-compose.yaml](../docker-compose/docker-compose.yaml) and [docker-compose-gnbsim.yaml](../docker-compose/docker-compose-gnbsim.yaml) and one can modify it for test.
 * Launch gnbsim docker service
 ```bash

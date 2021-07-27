@@ -251,4 +251,4 @@ $ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
 
 The above command is with podman, in case of docker it can be changed with its docker equivalent.
 
-You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts] (./DEPLOY_SA5G_HC.md)
+You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)
