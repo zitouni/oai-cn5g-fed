@@ -192,10 +192,10 @@ services:
 networks:
     # public_net:
     #     external:
-    #         name: demo-oai
+    #         name: demo-oai-public-net
     public_net:
         driver: bridge
-        name: demo-oai
+        name: demo-oai-public-net
         ipam:
             config:
                 - subnet: 192.168.70.128/26
