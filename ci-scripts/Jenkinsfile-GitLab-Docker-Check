@@ -59,10 +59,11 @@ pipeline {
           JOB_TIMESTAMP = JOB_TIMESTAMP.trim()
 
           sh "git clean -x -d -f > /dev/null 2>&1"
+          sh 'git log -n1'
           if (params.CheckAnotherBranch != null) {
             if (params.CheckAnotherBranch) {
               if (params.BranchToCheck != null) {
-                sh 'git checkout params.BranchToCheck'
+                sh 'git checkout '+ params.BranchToCheck
                 sh 'git log -n1'
               }
             }
