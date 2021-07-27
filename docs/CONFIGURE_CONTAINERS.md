@@ -20,6 +20,7 @@
 3.  [Networking](#3-networking)
 
 # 1. Configure the containers #
+
 - **Core Network Configuration**: The [docker-compose](../docker-compose/docker-compose.yaml) file has configuration parameters of all the core network components. The file is pre-configured with parameters related to an [example scenario](./DEPLOY_SA5G_WITH_DS_TESTER.md). The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
 
     | File Name   | Repository                                   | Location        |
@@ -99,23 +100,47 @@
 
 # 3. Networking #
 
-- The [docker-compose.yaml](../docker-compose/docker-compose.yaml) can create the network automatically, currently in the file automatic network creation is disabled. It can be enabled by uncommenting the lines. 
+## 3.1. Automatic docker network deployment. ##
 
-    ```bash
-    networks:
-          public_net:
-              driver: bridge
-              name: demo-oai
-              ipam:
-                  config:
-                      - subnet: 192.168.70.128/26
-              driver_opts:
-                  com.docker.network.bridge.name: "demo-oai"
-    ```
+The [docker-compose.yaml](../docker-compose/docker-compose.yaml) will create the network automatically. The bottom section of the file SHALL look like this:
 
-- In user wants to create manual network then below is the command
+```bash
+networks:
+    # public_net:
+    #     external:
+    #         name: demo-oai-public-net
+    public_net:
+        driver: bridge
+        name: demo-oai-public-net
+        ipam:
+            config:
+                - subnet: 192.168.70.128/26
+        driver_opts:
+            com.docker.network.bridge.name: "demo-oai"
+```
 
-components. To capture initial message exchange between smf<-->nrf<-->upf. 
+## 3.2. Manual docker network deployment. ##
+
+At the deployment, if you want to capture initial transactions between the CN5G components, you will have to manually create the network.
+
+First edit [docker-compose.yaml](../docker-compose/docker-compose.yaml) to look like this:
+
+```bash
+networks:
+    public_net:
+        external:
+            name: demo-oai-public-net
+    # public_net:
+    #     driver: bridge
+    #     name: demo-oai-public-net
+    #     ipam:
+    #         config:
+    #             - subnet: 192.168.70.128/26
+    #     driver_opts:
+    #         com.docker.network.bridge.name: "demo-oai"
+```
+
+Then create the docker network:
 
     ```bash
     (docker-compose-host)$ docker network create \
@@ -138,7 +163,15 @@ components. To capture initial message exchange between smf<-->nrf<-->upf.
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
+Finally you can start capturing.
+
+```bash
+tshark -i demo-oai -w 5gcn-deployment.pcap
+```
+
+## 3.3. In case you forgot! ##
+
+If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
