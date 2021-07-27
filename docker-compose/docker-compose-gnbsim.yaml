@@ -2,7 +2,7 @@ version: '3.8'
 services:
     gnbsim:
         container_name: gnbsim
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -36,7 +36,7 @@ services:
             retries: 5
     gnbsim2:
         container_name: gnbsim2
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -70,7 +70,7 @@ services:
             retries: 5
     gnbsim3:
         container_name: gnbsim3
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -104,7 +104,7 @@ services:
             retries: 5
     gnbsim4:
         container_name: gnbsim4
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -138,7 +138,7 @@ services:
             retries: 5
     gnbsim5:
         container_name: gnbsim5
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -172,7 +172,7 @@ services:
             retries: 5
     gnbsim-fqdn:
         container_name: gnbsim-fqdn
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
@@ -204,7 +204,7 @@ services:
             retries: 5
     gnbsim-vpp:
         container_name: gnbsim-vpp
-        image: gnbsim:develop
+        image: gnbsim:latest
         privileged: true
         environment:
             - MCC=208
