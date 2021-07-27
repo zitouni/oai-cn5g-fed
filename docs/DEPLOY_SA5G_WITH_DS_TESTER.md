@@ -331,7 +331,7 @@ The bottom section SHALL look like this:
     (docker-compose-host)$ docker logs oai-smf > smf.log
     (docker-compose-host)$ docker logs oai-nrf > nrf.log
     (docker-compose-host)$ docker logs oai-spgwu > spgwu.log  
-    (docker-compose-host)$ ./core-network.sh stop nrf
+    (docker-compose-host)$ ./core-network.sh stop nrf spgwu
     Stopping the core network...
     Stopping oai-ext-dn ... done
     Stopping oai-smf    ... done
