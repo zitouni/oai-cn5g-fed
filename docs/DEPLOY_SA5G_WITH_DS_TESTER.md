@@ -69,7 +69,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
 ## 2. Network Function Container Images ##
 
 - This step can be skip and the images can be pulled from docker-hub, in case there is a problem in pulling the images due to docker limit then readers can build images. 
-- **NOTE**: Currently the [docker-compose-file](./docker-compose/docker-compose.yml) is configured for pulling images from docker-hub. In you case you build images please change the image-tag accordingly
+- **NOTE**: Currently the [docker-compose-file](../docker-compose/docker-compose.yaml) is configured for pulling images from docker-hub. In you case you build images please change the image-tag accordingly
 
     ```bash
     (docker-compose-host)$ docker pull rdefosseoai/oai-amf
@@ -95,7 +95,7 @@ All the network functions are connected using `demo-oai-net` bridge. There are t
 
 ### 3.1 Creating bridge manually 
 
-- Make sure that the below line is commented in [docker-compose file](./docker-compose/docker-compose.yml) and uncomment the line above this, 
+- Make sure that the below line is commented in [docker-compose file](../docker-compose/docker-compose.yaml) and uncomment the line above this, 
 
 ```
     networks:
@@ -414,7 +414,7 @@ Using wireshark open scenario-execution.pcap use the filter ngap || http || pfcp
 ## 10. Notes ##
 
 - The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes. 
-- There is a possibility to perform the same test or setup the core network without nrf by using `docker-compose/docker-compose-no-nrf.yaml`. Check the configuration before using the compose file. 
+- There is a possibility to perform the same test or setup the core network without nrf by using `docker-compose/docker-compose-no-nrf.yaml` [file](../docker-compose/docker-compose-no-nrf.yaml) . Check the configuration before using the compose file.
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose.yaml](../docker-compose/docker-compose.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
 - Its not necessary to use [core-network.sh](../docker-compose/core-network.sh) bash script, it is possible to directly deploy using `docker-compose` command
