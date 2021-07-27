@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:v1.1.0
+        image: rdefosseoai/oai-amf:latest
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -87,7 +87,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:v1.1.0
+        image: rdefosseoai/oai-smf:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -130,7 +130,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oai-spgwu-tiny:v1.1.0
+        image: rdefosseoai/oai-spgwu-tiny:latest
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
