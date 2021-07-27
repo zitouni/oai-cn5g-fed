@@ -15,6 +15,7 @@
 ![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
 
 **Reading time: ~ 30mins**
+
 **Tutorial replication time: ~ 1h30mins**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
