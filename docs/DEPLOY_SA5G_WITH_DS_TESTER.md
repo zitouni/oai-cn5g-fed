@@ -20,6 +20,7 @@
 This tutorial will help in understanding how to deploy OAI core network using docker-compose. In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/) a commercial paid gNB emulator. Though instead of this readers can also use gNBsim (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md). Please follow the tutorial step by step to create a stable working testbed. 
 
 **Reading time: ~20mins**
+
 **Tutorial replication time: ~1hr**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
