@@ -46,9 +46,9 @@ And **re-tag** them for tutorials' docker-compose file to work.
 
 ```bash
 $ docker image tag rdefosseoai/oai-amf:latest oai-amf:latest
-$ docker tag rdefosseoai/oai-nrf:latest oai-nrf:latest
-$ docker tag rdefosseoai/oai-smf:latest oai-smf:latest
-$ docker tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
+$ docker image tag rdefosseoai/oai-nrf:latest oai-nrf:latest
+$ docker image tag rdefosseoai/oai-smf:latest oai-smf:latest
+$ docker image tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
