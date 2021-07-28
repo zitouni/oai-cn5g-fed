@@ -5,13 +5,13 @@ metadata:
   labels:
     {{- include "oai-smf.labels" . | nindent 4 }}
 spec:
-  type: ClusterIP
+  type: {{ .Values.service.type }}
   ports:
     - name: oai-smf
       # Port accessible outside cluster
-      port: {{ .Values.service.pfcpPort }}
+      port: {{ .Values.service.n4Port }}
       # Port to forward to inside the pod
-      targetPort: {{ .Values.service.pfcpPort }}
+      targetPort: {{ .Values.service.n4Port }}
       protocol: UDP
     - name: http1
       # Port accessible outside cluster
