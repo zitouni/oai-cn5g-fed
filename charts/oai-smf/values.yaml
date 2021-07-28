@@ -1,15 +1,14 @@
-# Default values for oai-smf.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oai"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-smf
-  version: "TAG"
+  repository: oai-smf
+  version: v1.1.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -18,8 +17,6 @@ imagePullSecrets: []
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
-  annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-smf-sa"
@@ -29,76 +26,71 @@ podSecurityContext:
   runAsGroup: 0
 
 securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  privileged: false
 
 service:
   type: ClusterIP
-  pfcpPort: 8805
+  n4Port: 8805
   http1Port: 80
   http2Port: 9090
 
 start:
   smf: true
-  tcpdump: true
+  tcpdump: false  #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
+# create multus only if there is a need to have seperate N4 and Nsmf interfaces
 multus:
   create: false
   n4IPadd: "192.168.18.178"
   n4Netmask: "24"
+  n4Gw: "192.168.18.129"
 
 config:
   instance: "0"
   pidDirectory: "/var/run"
-  smfInterfaceNameForN4: "eth0"
-  smfInterfaceNameForSBI: "eth0"
+  smfInterfaceNameForN4: "eth0"  # net1 if multus creation is true else eth0
+  smfInterfaceNameForSBI: "eth0" 
   smfInterfacePortForSBI: "80"
   smfInterfaceHttp2PortForSBI: "9090"
   smfApiVersion: "v1"
-  dnsIpv4Address: "192.168.18.129"
-  dnsSecIpv4Address: "192.168.18.129"
-  registerNrf: "yes"
-  discoverUpf: "yes"
-  useFqdnDns: "yes"
-  amfIpv4Address: "127.0.0.1"
-  amfPort: "80"
-  amfApiVersion: "v1"
-  amfFqdn: "oai-smf-svc"
-  udmIpv4Address: "127.0.0.1"
-  udmPort: "80"
-  udmApiVersion: "v1"
-  udmFqdn: "localhost"
-  nrfIpv4Address: "127.0.0.1"
-  nrfPort : "80"
+  dnsIpv4Address: "192.168.18.129" # configure the dns for UE don't use Kubernetes DNS
+  dnsSecIpv4Address: "192.168.18.129" # configure the dns for UE don't use Kubernetes DNS
+  registerNrf: "yes" # if wants to use NRF registry and discovery
+  discoverUpf: "yes" # discovery UPF 
+  useFqdnDns: "yes" # use only when the DNS can resolve FQDN of other network functions
+  amfIpv4Address: "127.0.0.1" # configure if NRF is not used 
+  amfPort: "80" # configure if NRF is not used
+  amfApiVersion: "v1" # configure if NRF is not used
+  amfFqdn: "localhost" # configure if NRF is not used
+  udmIpv4Address: "127.0.0.1" # configure if UDM is used
+  udmPort: "80" # configure if UDM is used
+  udmApiVersion: "v1" # configure if UDM is used
+  udmFqdn: "localhost" # configure if UDM is used
+  nrfIpv4Address: "127.0.0.1" # configure if NRF can only be reached using ip-address
+  nrfPort : "80" 
   nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"
-  upfIpv4Address: "127.0.0.1"
-  upfFqdn0: "oai-spgwu-tiny-svc"
-
-persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: false
-  
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #requests:
-  #  cpu: 100m
-  #  memory: 256Mi
+  nrfFqdn: "oai-nrf-svc" # configure if NRF can be reached using Kubernetes service
+  upfIpv4Address: "127.0.0.1" # configure if NRF is not used 
+  upfFqdn0: "localhost" # configure if NRF is not used and useFqdnDns is true
+    
+## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
+persistent:
+  sharedvolume: false  # should be true when if wants to store the tcpdump of all the network functions at same place
+  volumneName: managed-nfs-storage
+  size: 1Gi
 
 
+resources:
+  define: false
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 256Mi
 
-tolerations: []
+terminationGracePeriodSeconds: 30
 
-affinity: {}
+nodeSelector: {}
+
+#nodeName: 

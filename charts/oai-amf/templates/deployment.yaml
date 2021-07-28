@@ -15,42 +15,50 @@ spec:
     metadata:
       labels:
         {{- include "oai-amf.selectorLabels" . | nindent 8 }}
+    {{- if .Values.multus.create }}
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-{{ .Values.namespace }}-ngap-net1",
-                 "default-route": ["{{ .Values.multus.ngapGateway }}"]
+                 "name": "{{ .Chart.Name }}-{{ .Values.namespace }}-n1-net1",
+                 "default-route": ["{{ .Values.multus.n1Gateway }}"]
           }]
+    {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
-    {{- if .Values.imagePullSecrets }}
-      imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
-    {{- end }}
       containers:
       - name: tcpdump
-        image: image-registry.openshift-image-registry.svc:5000/oai/tcpdump-internal:latest
+        image: corfr/tcpdump:latest
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/oai-amf_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
           name: cn5g-pv
+        {{- end}}
       - name: amf
         image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
-        imagePullPolicy: {{ .Values.image.pullPolicy }}
+        {{- if .Values.resources.define}}
+        resources:
+          requests:
+            memory: {{ .Values.resources.requests.memory | quote }}
+            cpu: {{ .Values.resources.requests.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.limits.memory | quote }}
+            cpu: {{ .Values.resources.limits.cpu | quote }}
+        {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
-        - containerPort: {{ .Values.service.sctpPort }}
+        - containerPort: {{ .Values.service.n1Port }}
           name: oai-amf
           protocol: SCTP
         - containerPort: {{ .Values.service.http1Port }}
@@ -201,11 +209,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfFqdn0
-          - name: SELECTED_0
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: selected0
           - name: SMF_INSTANCE_ID_1
             valueFrom:
               configMapKeyRef:
@@ -226,11 +229,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfFqdn1
-          - name: SELECTED_1
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: selected1
           - name: NRF_IPV4_ADDRESS
             valueFrom:
               configMapKeyRef:
@@ -306,13 +304,19 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: operatorKey
+      {{- if .Values.persistent.sharedvolume}}
       volumes:
       - name: cn5g-pv
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
-      schedulerName: default-scheduler
       serviceAccountName: {{ .Values.serviceAccount.name }}
-      terminationGracePeriodSeconds: 15
-
+      terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
+      {{- if .Values.nodeSelector}}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
+      {{- end }}
+      {{- if .Values.nodeName}}
+      nodeName: {{ .Values.nodeName }}
+      {{- end }}
