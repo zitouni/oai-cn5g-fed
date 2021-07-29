@@ -19,8 +19,8 @@ spec:
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-{{ .Values.namespace }}-net1",
-                 "default-route": ["{{ .Values.config.pgwuSgiGw }}"]
+                 "name": "{{ .Chart.Name }}-{{ .Values.namespace }}-n3-net1",
+                 "default-route": ["{{ .Values.multus.sgiGw }}"]
           }]
     {{- end }}
     spec:
@@ -28,7 +28,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: tcpdump
-        image: corfr/tcpdump:latest
+        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -45,7 +45,7 @@ spec:
           name: cn5g-pv
         {{- end}}
       - name: spgwu
-        image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
@@ -230,6 +230,7 @@ spec:
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
+      serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
       nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}

@@ -19,6 +19,11 @@ The cloud native network functions in production will be deployed using a produc
 ![Helm Chart Deployment](./images/helm_diag.png)
 
 
+**Reading time: ~40mins**
+
+**Tutorial replication time: ~1h30mins**
+
+
 **TABLE OF CONTENTS**
 
 1.  [Description](#1-description)
@@ -227,15 +232,15 @@ $ helm install nrf oai-nrf/
 # wait for the pod to come up
 $ helm install smf oai-smf/
 # wait for the pod to come up
-$ helm install spgwu oai-spgwu-tiny/
+$ helm install upf oai-spgwu-tiny/
 # wait for the pod to come up
 $ helm list
 NAME  NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                 APP VERSION
-amf   oai-5g-develop  1         2021-05-12 12:07:36.345877418 +0200 CEST  deployed  oai-amf-0.1.0         0.1.0 
-mysql oai-5g-develop  1         2021-05-12 11:09:32.597525506 +0200 CEST  deployed  mysql-1.6.9           5.7.30     
-nrf   oai-5g-develop  1         2021-05-12 11:32:43.648706741 +0200 CEST  deployed  oai-nrf-0.1.0         0.1.0 
-smf   oai-5g-develop  1         2021-05-12 12:05:38.251220635 +0200 CEST  deployed  oai-smf-0.1.0         0.1.0 
-spgwu oai-5g-develop  1         2021-05-12 12:08:31.408369994 +0200 CEST  deployed  oai-spgwu-tiny-0.1.1  0.1.1 
+mysql oai-5g-develop  1         2021-07-29 14:20:34.010881045 +0200 CEST  deployed  mysql-1.6.9           5.7.30
+amf   oai-5g-develop  1         2021-07-29 14:25:34.010881045 +0200 CEST  deployed  oai-amf-1.1.0         1.1.0      
+nrf   oai-5g-develop  1         2021-07-29 14:16:11.530949242 +0200 CEST  deployed  oai-nrf-1.1.0         1.1.0      
+smf   oai-5g-develop  1         2021-07-29 15:34:15.62785988 +0200 CEST   deployed  oai-smf-1.1.0         1.1.0      
+upf   oai-5g-develop  1         2021-07-29 15:28:04.773480519 +0200 CEST  deployed  oai-spgwu-tiny-1.1.2  1.1.2  
 ```
 
 Now go ahead and use OAI-gNB/dsTest/gNBSIM or any other gNB or emulator to test the deployed core network.

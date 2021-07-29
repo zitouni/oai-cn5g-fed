@@ -28,7 +28,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: tcpdump
-        image: corfr/tcpdump:latest
+        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -39,13 +39,13 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistent.sharedvolume}}
+        {{- if .Values.persistence.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
           name: cn5g-pv
         {{- end}}
       - name: amf
-        image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -58,7 +58,7 @@ spec:
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
-        - containerPort: {{ .Values.service.n1Port }}
+        - containerPort: {{ .Values.service.sctpPort }}
           name: oai-amf
           protocol: SCTP
         - containerPort: {{ .Values.service.http1Port }}
@@ -304,10 +304,10 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: operatorKey
-      {{- if .Values.persistent.sharedvolume}}
+      {{- if .Values.persistence.sharedvolume}}
       volumes:
       - name: cn5g-pv
-        persistentVolumeClaim:
+        persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
       dnsPolicy: ClusterFirst

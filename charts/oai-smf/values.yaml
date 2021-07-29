@@ -5,12 +5,20 @@ replicaCount: 1
 
 namespace: "oai"
 
-image:
+nfimage:
   registry: local
-  repository: oai-smf
+  repository: rdefosseoai/oai-smf
   version: v1.1.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
 
 imagePullSecrets: []
 
@@ -61,7 +69,7 @@ config:
   amfIpv4Address: "127.0.0.1" # configure if NRF is not used 
   amfPort: "80" # configure if NRF is not used
   amfApiVersion: "v1" # configure if NRF is not used
-  amfFqdn: "localhost" # configure if NRF is not used
+  amfFqdn: "oai-amf-svc" # configure if NRF is not used
   udmIpv4Address: "127.0.0.1" # configure if UDM is used
   udmPort: "80" # configure if UDM is used
   udmApiVersion: "v1" # configure if UDM is used
@@ -71,10 +79,10 @@ config:
   nrfApiVersion: "v1"
   nrfFqdn: "oai-nrf-svc" # configure if NRF can be reached using Kubernetes service
   upfIpv4Address: "127.0.0.1" # configure if NRF is not used 
-  upfFqdn0: "localhost" # configure if NRF is not used and useFqdnDns is true
+  upfFqdn0: "oai-spgwu-svc" # configure if NRF is not used and useFqdnDns is true
     
 ## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
-persistent:
+persistence:
   sharedvolume: false  # should be true when if wants to store the tcpdump of all the network functions at same place
   volumneName: managed-nfs-storage
   size: 1Gi

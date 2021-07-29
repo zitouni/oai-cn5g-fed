@@ -6,13 +6,19 @@ replicaCount: 1
 
 namespace: "oai"
 
-image:
+nfimage:
   registry: local
-  repository: oai-spgwu
+  repository: rdefosseoai/oai-spgwu-tiny
   version: v1.1.2
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -30,8 +36,8 @@ securityContext:
 
 service:
   type: ClusterIP
-  n4Port: 8805 # default port no need to change unless necessary
-  n3Port: 2152 # default port no need to change unless necessary
+  pfcpPort: 8805 # default port no need to change unless necessary
+  gtpuPort: 2152 # default port no need to change unless necessary
 
 start:
   spgwu: true
@@ -42,7 +48,7 @@ multus:
   create: true
   n3Ip: "192.168.18.179"
   n3Netmask: "24"
-  SgiGw: "192.168.18.129"
+  sgiGw: "192.168.18.129"
 
 config:
   gwId: 1 # no need to configure
@@ -77,7 +83,7 @@ config:
   upfFqdn5g: "oai-spgwu-tiny-svc" # fqdn of upf 
 
 ## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
-persistent:
+persistence:
   sharedvolume: false  # should be true when if wants to store the tcpdump of all the network functions at same place
   volumneName: managed-nfs-storage
   size: 1Gi
