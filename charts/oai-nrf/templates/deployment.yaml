@@ -24,7 +24,7 @@ spec:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
       containers:
       - name: tcpdump
-        image: corfr/tcpdump:latest
+        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -41,7 +41,7 @@ spec:
           name: cn5g-pv
         {{- end}}
       - name: nrf
-        image: "{{ .Values.image.repository }}:{{ .Values.image.version }}"
+        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         {{- if .Values.resources.define}}
         resources:
           requests:

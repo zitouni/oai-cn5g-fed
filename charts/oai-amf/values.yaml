@@ -5,12 +5,20 @@ replicaCount: 1
 
 namespace: "oai"
 
-image:
+nfimage:
   registry: local
-  repository: oai-amf # image name either locally present or in a public/private repository
+  repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
   version: v1.1.0 # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -30,7 +38,7 @@ securityContext:
 
 service:
   type: ClusterIP
-  n1Port: 38412
+  sctpPort: 38412
   http1Port: 80
   http2Port: 9090
 
@@ -42,7 +50,7 @@ start:
 ## This interface will be for N1/N2/NGAP
 
 multus:
-  create: false
+  create: true
   n1IPadd: "192.168.18.177"
   n1Netmask: "24"
   n1Gateway: "192.168.18.129"

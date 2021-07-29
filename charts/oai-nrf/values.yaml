@@ -6,12 +6,21 @@ replicaCount: 1
 
 namespace: "oai"
 
-image:
+# NF image
+nfimage:
+  registry: local
+  repository: rdefosseoai/oai-nrf
+  version: v1.1.0
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
+tcpdumpimage:
   registry: local
   repository: oai-nrf
   version: v1.1.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
+
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -53,7 +62,7 @@ config:
 
 persistence:
   sharedvolume: false
-  volumneName: managed-nfs-storage
+  volumeName: managed-nfs-storage
   size: 1Gi
 
 resources:
