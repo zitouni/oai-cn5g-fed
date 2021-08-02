@@ -61,11 +61,11 @@ if [[ $1 == 'start' ]]; then
             echo -e "\n${GREEN}All components are healthy${NC}..."
             STATUS=0
             break
-        elif [[ $2 != 'nrf' && $3 == 'spgwu' ]]; then
+        elif [[ $2 != 'no-nrf' && $3 == 'spgwu' ]]; then
             echo -ne "mysql : $mysql_health, oai-amf : $amf_health, oai-smf : $smf_health, oai-spgwu : $spgwu_health\033[0K\r"
             STATUS=1
             sleep 2
-        elif [[ $2 != 'nrf' && $3 == 'vpp-upf' ]]; then
+        elif [[ $2 != 'no-nrf' && $3 == 'vpp-upf' ]]; then
             echo -ne "mysql : $mysql_health, oai-amf : $amf_health, oai-smf : $smf_health, vpp-upf : $vpp_upf_health\033[0K\r"
             STATUS=1
             sleep 2
@@ -90,7 +90,7 @@ if [[ $1 == 'start' ]]; then
         fi
     else
         echo -e "${BLUE}Checking if SMF is able to connect with UPF${NC}"
-        if [[ $3 == 'vpp-upf' ]];then
+        if [[ $2 == 'no-nrf' ]];then
             upf_logs=$(docker logs oai-smf | grep  'handle_receive(16 bytes)')
         else
             upf_logs=$(docker logs oai-spgwu | grep  'Received SX HEARTBEAT RESPONSE')
@@ -116,7 +116,7 @@ elif [[ $1 == 'stop' ]]; then
     echo -e "${RED}Stopping service $2 ${NC}..."
     if [[ $2 == 'nrf' && $3 == 'spgwu' ]]; then
         docker-compose -f docker-compose.yaml -p 5gcn down
-    elif [[ $2 != 'nrf' && $3 == 'vpp-upf' ]]; then
+    elif [[ $2 != 'no-nrf' && $3 == 'vpp-upf' ]]; then
         docker-compose -f docker-compose-vpp-upf.yaml -p 5gcn down
     elif [[ $2 = 'no-nrf' && $3 == 'spgwu' ]]; then
         docker-compose -f docker-compose-no-nrf.yaml -p 5gcn down
@@ -134,7 +134,9 @@ ${RED}vpp-upf${NC}: vpp-upf should be used (only works without nrf, no-nrf optio
 ${RED}spgwu${NC} : spgwu should be used as upf (works with or without nrf, nrf or no-nrf option1)\n\n\
 Example 1 : ./core-network.sh start nrf spgwu\n\
 Example 2: ./core-network.sh start no-nrf vpp-upf\n\
+Example 3: ./core-network.sh start no-nrf vpp-upf\n
 Example 1 : ./core-network.sh stop nrf spgwu\n\
-Example 2: ./core-network.sh stop no-nrf vpp-upf"
+Example 2: ./core-network.sh stop no-nrf vpp-upf
+Example 3: ./core-network.sh stop no-nrf spgwu"
 fi
 

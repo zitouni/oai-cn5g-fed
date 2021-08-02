@@ -98,9 +98,24 @@ $ oc new-project oai
 
 ### 3.1 Networking related information
 
-Network functions communicate based on *kubernetes service concept*, the network functions are using FQDN of other network functions to use their service. For example AMF registers with NRF using NRF ip-address. This way we can get rid of any static ip-address configuration. Except for the interfaces which are supposed to be reached from outside the cluster environment. GNB will not be included in the cluster. Thus N1/N2/NGAP and N3/GTP-U interface are provided using multus CNI to AMF and UPF pod. 
+Network functions communicate based on **kubernetes service concept**, the network functions are using FQDN of other network functions to use their service. 
 
-In our environment to reduce complexity and reduce static ip-address allocation we are providing only one interface to each pod (default Kubernetes CNI) except AMF and UPF where we provide two interfaces because gNB or gNB emulator is not running in the cluster environment. For example SMF can have different interfaces/ip-addresses for N4, Nsmf but in our case we are providing only one interface/ip-address to take benifit of *Kubernetes service concept*. But using multus there can be multiple interfaces of SMF too. 
+*For example: AMF registers with NRF using NRF FQDN (`oai-nrf-svc.oai.svc.cluster.local`). This way we can get rid of any static ip-address configuration. Though we are still keeping the fields where we are mentioning ip-addresses for example `nrfIpv4Addr` in amf values.yaml but that is not being used if `USE_FQDN_DNS` is set to `true`*
+
+In our environment to reduce complexity and reduce static ip-address allocation we are providing only one interface to each pod (default Kubernetes CNI) except AMF and UPF where we provide two interfaces because gNB or gNB emulator is not running in the cluster environment. N1/N2/NGAP and N3/GTP-U interface are provided using multus CNI to AMF and UPF pod.
+
+**Note**: Each network function can be configured with multiple interfaces using multus CNI if needed. In the `values.yaml` of each network function there are appropriate comments. There is a section `multus` in every value.yaml
+
+
+```
+## Example from ../charts/oai-amf/values.yaml
+multus:
+  create: false
+  n4IPadd: "192.168.18.178"
+  n4Netmask: "24"
+  n4Gw: "192.168.18.129"
+```
+
 
 ### 3.2 Configuring AMF
 
@@ -273,7 +288,7 @@ In above statement change `imsi`, `imei`, `key` and `opc` with appropriate value
 
 Helm charts have an order of deployment for the proper configuration of core network. 
 
-`mysql --> nrf --> amf --> upf(spgwu) --> smf`
+`mysql --> nrf --> amf --> smf --> upf(spgwu)`
 
 Once the configuration is finished the charts can be deployed with a user who has the rights to
 
