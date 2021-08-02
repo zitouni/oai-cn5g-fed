@@ -117,7 +117,7 @@ services:
             - USE_FQDN_DNS=no
             - DISCOVER_UPF=no
         depends_on:
-            - oai-amf
+            - oai-spgwu
         volumes:
             - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
@@ -159,7 +159,7 @@ services:
             - NSSAI_SD_0=123
             - DNN_0=default
         depends_on:
-            - oai-smf
+            - oai-amf
         cap_add:
             - NET_ADMIN
             - SYS_ADMIN

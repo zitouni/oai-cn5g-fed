@@ -106,11 +106,21 @@ In our environment to reduce complexity and reduce static ip-address allocation 
 
 Open the [values.yaml](../charts/oai-amf/values.yaml) to configure the required parameters. There are many parameters which can be configured. Below are some important parameters,  
 ```
-namespace: "oai" # namespace where AMF will be deployed 
+namespace: "oai"
 
-image:
-  repository: oai-amf # image name either locally present or in a public/private repository
+nfimage:
+  registry: local
+  repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
   version: v1.1.0 # image tag
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
 # configure these values based on gNB/emulator configuration
 config: 
@@ -157,9 +167,19 @@ Open [values.yaml](../charts/oai-smf/values.yaml) to configure SMF configuration
 ```
 namespace: "oai" # namespace where SMF will be deployed 
 
-image:
-  repository: oai-smf # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+nfimage:
+  registry: local
+  repository: rdefosseoai/oai-smf
+  version: v1.1.0
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
 config:
   dnsIpv4Address: ""
@@ -179,9 +199,19 @@ Open [values.yaml](../charts/oai-spgwu-tiny/values.yaml) to configure UPF/SPGWU 
 ```
 namespace: "oai" # namespace where SMF will be deployed 
 
-image:
-  repository: oai-spgwu-tiny # image name either locally present or in a public/private repository
-  version: v1.1.2 # image tag
+nfimage:
+  registry: local
+  repository: rdefosseoai/oai-spgwu-tiny
+  version: v1.1.2
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
 config:
   gwId: 1
@@ -198,6 +228,25 @@ There are more parametes which can be configured like extra interfaces and resou
 ### 3.5 Configuring NRF
 
 NRF configuration is straight forward, most of configurable parameters have comment infront of it for explaination. Refer the [values.yaml](../charts/oai-nrf/values.yaml)
+
+```
+namespace: "oai"
+
+# NF image
+nfimage:
+  registry: local
+  repository: rdefosseoai/oai-nrf
+  version: v1.1.0
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+```
 
 Configure `readinessProbe` and `livenessProbe` by default they are `true` to switch them off change the value with `false`
 
@@ -224,7 +273,7 @@ In above statement change `imsi`, `imei`, `key` and `opc` with appropriate value
 
 Helm charts have an order of deployment for the proper configuration of core network. 
 
-`mysql --> nrf --> amf --> smf --> upf(spgwu)`
+`mysql --> nrf --> amf --> upf(spgwu) --> smf`
 
 Once the configuration is finished the charts can be deployed with a user who has the rights to
 
@@ -243,13 +292,33 @@ $ helm install smf oai-smf/
 # wait for the pod to be ready 
 $ helm install upf oai-spgwu-tiny/
 # wait for the pod to be ready 
-$ helm list
+$ helm list 
 NAME  NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                 APP VERSION
-mysql oai-5g-develop  1         2021-07-29 14:20:34.010881045 +0200 CEST  deployed  mysql-1.6.9           5.7.30
-amf   oai-5g-develop  1         2021-07-29 14:25:34.010881045 +0200 CEST  deployed  oai-amf-1.1.0         1.1.0      
-nrf   oai-5g-develop  1         2021-07-29 14:16:11.530949242 +0200 CEST  deployed  oai-nrf-1.1.0         1.1.0      
-smf   oai-5g-develop  1         2021-07-29 15:34:15.62785988 +0200 CEST   deployed  oai-smf-1.1.0         1.1.0      
-upf   oai-5g-develop  1         2021-07-29 15:28:04.773480519 +0200 CEST  deployed  oai-spgwu-tiny-1.1.2  1.1.2  
+amf   oai-5g-develop  1         2021-08-02 14:45:20.055915967 +0200 CEST  deployed  oai-amf-1.1.0         1.1.0      
+mysql oai-5g-develop  1         2021-08-02 13:19:21.141268411 +0200 CEST  deployed  mysql-1.6.9           5.7.30     
+nrf   oai-5g-develop  1         2021-08-02 14:39:05.615418329 +0200 CEST  deployed  oai-nrf-1.1.0         1.1.0      
+smf   oai-5g-develop  1         2021-08-02 14:52:53.573249685 +0200 CEST  deployed  oai-smf-1.1.0         1.1.0      
+upf   oai-5g-develop  1         2021-08-02 14:49:48.741260605 +0200 CEST  deployed  oai-spgwu-tiny-1.1.2  1.1.2  
+$ kubectl get pods
+NAME                              READY   STATUS    RESTARTS   AGE
+mysql-5dd98b7d97-gh4bz            1/1     Running   0          20m
+oai-amf-7bb898fc58-56pr5          2/2     Running   0          10m
+oai-nrf-859b987c48-8v94s          2/2     Running   0          16m
+oai-smf-678bbc965f-whdr6          2/2     Running   0          2m46s
+oai-spgwu-tiny-6c4d68fd45-mpv5v   2/2     Running   0          5m51s
 ```
+
+## 4.1 How to check if the Core network is properly configured? 
+
+Check the logs `smf` and `upf` to see that the PFCP session is properly configured, 
+
+```
+$ kubectl oai-smf-678bbc965f-whdr6 smf | grep 'Received N4 ASSOCIATION SETUP RESPONSE from an UPF'
+[2021-08-02T14:52:57.695110] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE from an UPF
+$ kubectl logs oai-spgwu-tiny-6c4d68fd45-mpv5v spgwu | grep 'Received SX HEARTBEAT REQUEST' | wc -l
+60 (should be more than 1)
+```
+
+This will verify that `smf` and `upf` have successfully registered to `nrf` and there is a PFCP session. 
 
 Now go ahead and use OAI-gNB/dsTest/gNBSIM or any other gNB or emulator to test the deployed core network.
