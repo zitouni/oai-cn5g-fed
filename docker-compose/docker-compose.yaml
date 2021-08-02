@@ -32,8 +32,6 @@ services:
             - MYSQL_USER=test
             - MYSQL_PASSWORD=test
             - MYSQL_ROOT_PASSWORD=linux
-        depends_on:
-            - oai-nrf
         healthcheck:
             test: /bin/bash -c "/tmp/mysql-healthcheck.sh"
             interval: 10s
@@ -139,7 +137,7 @@ services:
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
         depends_on:
-            - oai-spgwu
+            - oai-nrf
         volumes:
             - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
@@ -181,7 +179,7 @@ services:
             - NSSAI_SD_0=123
             - DNN_0=default
         depends_on:
-            - oai-amf
+            - oai-nrf
         cap_add:
             - NET_ADMIN
             - SYS_ADMIN
@@ -207,7 +205,7 @@ services:
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; sleep infinity"
         depends_on:
-            - oai-smf
+            - oai-spgwu
         networks:
             public_net:
                 ipv4_address: 192.168.70.135

@@ -45,7 +45,8 @@ start:
   nrf: true
   tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
-# create multus interface in case the NRF wants to use a separate interface than kubernetes general CNI or it needs to be accessed from outside cluster network using ip-address. 
+# create multus interface in case the NRF wants to use a separate interface 
+# than kubernetes general CNI or it needs to be accessed from outside cluster network using ip-address. 
 
 multus:
   create: false
@@ -55,7 +56,7 @@ multus:
 config:
   instance: "0"
   pidDirectory: "/var/run"
-  nrfInterfaceNameForSBI: "eth0"
+  nrfInterfaceNameForSBI: "eth0" # net1 if multus.create is set true
   nrfInterfacePortForSBI: "80"
   nrfInterfaceHttp2PortForSBI: "9090"
   nrfApiVersion: "v1"
