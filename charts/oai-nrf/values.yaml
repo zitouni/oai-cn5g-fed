@@ -76,6 +76,10 @@ resources:
 
 terminationGracePeriodSeconds: 30
 
+readinessProbe: true
+
+livenessProbe: true
+
 nodeSelector: {}
 
 nodeName: 

@@ -117,6 +117,10 @@ resources:
    cpu: 100m
    memory: 256Mi
 
+readinessProbe: true
+
+livenessProbe: true
+
 terminationGracePeriodSeconds: 30
 
 nodeSelector: {}

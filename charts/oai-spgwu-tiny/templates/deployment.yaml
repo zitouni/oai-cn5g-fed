@@ -48,6 +48,27 @@ spec:
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+        {{- if .Values.readinessProbe}}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
+        {{- if .Values.livenessProbe}}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
         ports:
         - containerPort: {{ .Values.service.pfcpPort }}
           name: oai-spgwu
@@ -221,12 +242,15 @@ spec:
             memory: {{ .Values.resources.limits.memory | quote }}
             cpu: {{ .Values.resources.limits.cpu | quote }}
         {{- end}}
-      {{- if .Values.persistence.sharedvolume}}
       volumes:
+      {{- if .Values.persistence.sharedvolume}}
       - name: cn5g-pv
-        persistentVolumeClaim:
+        persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
+      - name: scripts
+        configMap:
+          name: health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

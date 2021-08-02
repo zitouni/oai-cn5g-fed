@@ -145,6 +145,9 @@ The mysql database is pre-configured with some subscriber information. If there 
   operatorKey: "63bfa50ee6523365ff14c1f45f88737d" (should be the same in mysql)
 ```
 
+
+Configure `readinessProbe` and `livenessProbe` by default they are `true` to switch them off change the value with `false`
+
 There are more parametes which can be configured like extra interfaces and resource usage by network function, please refer [values.yaml](../charts/oai-amf/values.yaml). Infront of every parameter there is a comment. 
 
 ### 3.3 Configuring SMF
@@ -164,6 +167,8 @@ config:
 ```
 
 Currenly DNN related information and UE network related information can only be changed at the time of building the SMF network function. Refer [Configure the Containers](./CONFIGURE_CONTAINERS.md) to understand how it can be done. 
+
+Configure `readinessProbe` and `livenessProbe` by default they are `true` to switch them off change the value with `false`
 
 There are more parametes which can be configured like extra interfaces and resource usage by network function, please refer [values.yaml](../charts/oai-smf/values.yaml). Infront of every parameter there is a comment. 
 
@@ -186,11 +191,15 @@ config:
   pidDirectory: "/var/run"
 ```
 
+Configure `readinessProbe` and `livenessProbe` by default they are `true` to switch them off change the value with `false`
+
 There are more parametes which can be configured like extra interfaces and resource usage by network function, please refer [values.yaml](../charts/oai-spgwu-tiny/values.yaml). Infront of every parameter there is a comment. 
 
 ### 3.5 Configuring NRF
 
 NRF configuration is straight forward, most of configurable parameters have comment infront of it for explaination. Refer the [values.yaml](../charts/oai-nrf/values.yaml)
+
+Configure `readinessProbe` and `livenessProbe` by default they are `true` to switch them off change the value with `false`
 
 ### 3.6 Configuring subscriber data in MYSQL
 
@@ -225,15 +234,15 @@ Once the configuration is finished the charts can be deployed with a user who ha
 
 ```
 $ helm install mysql mysql/
-# wait for the pod to come up
+# wait for the pod to be ready 
 $ helm install amf oai-amf/
-# wait for the pod to come up
+# wait for the pod to be ready 
 $ helm install nrf oai-nrf/
-# wait for the pod to come up
+# wait for the pod to be ready 
 $ helm install smf oai-smf/
-# wait for the pod to come up
+# wait for the pod to be ready 
 $ helm install upf oai-spgwu-tiny/
-# wait for the pod to come up
+# wait for the pod to be ready 
 $ helm list
 NAME  NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                 APP VERSION
 mysql oai-5g-develop  1         2021-07-29 14:20:34.010881045 +0200 CEST  deployed  mysql-1.6.9           5.7.30
