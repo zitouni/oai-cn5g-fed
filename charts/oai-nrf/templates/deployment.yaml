@@ -53,6 +53,27 @@ spec:
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+        {{- if .Values.readinessProbe}}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
+        {{- if .Values.livenessProbe}}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
         ports:
         - containerPort: {{ .Values.service.http1Port }}
           name: http1
@@ -91,12 +112,15 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: nrfApiVersion
-      {{- if .Values.persistence.sharedvolume}}
       volumes:
+      {{- if .Values.persistence.sharedvolume}}
       - name: cn5g-pv
-        persistentVolumeClaim:
+        persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
+      - name: scripts
+        configMap:
+          name: health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
