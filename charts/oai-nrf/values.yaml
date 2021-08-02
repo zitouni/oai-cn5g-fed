@@ -16,8 +16,8 @@ nfimage:
 
 tcpdumpimage:
   registry: local
-  repository: oai-nrf
-  version: v1.1.0
+  repository: corfr/tcpdump
+  version: latest
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 

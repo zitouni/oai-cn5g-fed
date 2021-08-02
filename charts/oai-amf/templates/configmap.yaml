@@ -10,6 +10,6 @@ data:
 apiVersion: v1
 kind: ConfigMap
 metadata:
-  name: health-cm
+  name: {{ .Chart.Name }}-health-cm
 data:
   {{ (.Files.Glob "scripts/live-ready.sh").AsConfig | indent 2 }}

@@ -333,7 +333,7 @@ spec:
       {{- end }}
       - name: scripts
         configMap:
-          name: health-cm
+          name: {{ .Chart.Name }}-health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       serviceAccountName: {{ .Values.serviceAccount.name }}
