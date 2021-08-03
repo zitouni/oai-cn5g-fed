@@ -37,7 +37,7 @@ if [[ $1 == 'start' ]]; then
     fi
     echo -e "${GREEN}Core network started, checking the health status of the containers${NC}..."
     # 25 is a interval it can be increased or decreased
-    for loop in $(seq 1 25); do
+    for loop in $(seq 1 30); do
         mysql_health=$(docker inspect --format='{{json .State.Health.Status}}' mysql)
         if [[ $2 == 'nrf' ]]; then
             nrf_health=$(docker inspect --format='{{json .State.Health.Status}}' oai-nrf)
@@ -89,9 +89,17 @@ if [[ $1 == 'start' ]]; then
             echo -e "${GREEN}SMF and UPF are registered to NRF${NC}..."
         fi
     else
-        echo -e "${BLUE}Checking if SMF is able to connect with UPF${NC}"
-        if [[ $2 == 'no-nrf' ]];then
-            upf_logs=$(docker logs oai-smf | grep  'handle_receive(16 bytes)')
+        echo -e "${BLUE}\nChecking if SMF is able to connect with UPF${NC}"
+        if [[ $2 == 'no-nrf' && $3 == 'vpp-upf' ]];then
+            for loop in $(seq 1 4); do
+                upf_logs=$(docker logs oai-smf | grep  'handle_receive(16 bytes)')
+                if [[ -z $upf_logs ]]; then
+                    echo -e "${BLUE}UPF not receiving heartbeats from SMF, re-trying...${NC}"
+                    sleep 1
+                else
+                    break
+                fi
+            done
         else
             upf_logs=$(docker logs oai-spgwu | grep  'Received SX HEARTBEAT RESPONSE')
         fi
@@ -113,7 +121,7 @@ if [[ $1 == 'start' ]]; then
     fi
 
 elif [[ $1 == 'stop' ]]; then
-    echo -e "${RED}Stopping service $2 ${NC}..."
+    echo -e "${RED}Stopping OAI 5G core ${NC}..."
     if [[ $2 == 'nrf' && $3 == 'spgwu' ]]; then
         docker-compose -f docker-compose.yaml -p 5gcn down
     elif [[ $2 != 'no-nrf' && $3 == 'vpp-upf' ]]; then
@@ -121,7 +129,7 @@ elif [[ $1 == 'stop' ]]; then
     elif [[ $2 = 'no-nrf' && $3 == 'spgwu' ]]; then
         docker-compose -f docker-compose-no-nrf.yaml -p 5gcn down
     fi
-    echo -e "${GREEN}Service $2 is stopped${NC}"
+    echo -e "${GREEN}OAI 5G core is stopped${NC}"
 else
     echo -e "\nOnly use the following options\n
 ${RED}start ${WHITE}[option1]${NC} ${WHITE}[option2]${NC}: start the 5gCN\n\
@@ -132,11 +140,12 @@ ${RED}no-nrf${NC}: nrf should not be used\n\
 \n--option2\n\
 ${RED}vpp-upf${NC}: vpp-upf should be used (only works without nrf, no-nrf option1)\n\
 ${RED}spgwu${NC} : spgwu should be used as upf (works with or without nrf, nrf or no-nrf option1)\n\n\
-Example 1 : ./core-network.sh start nrf spgwu\n\
-Example 2: ./core-network.sh start no-nrf vpp-upf\n\
-Example 3: ./core-network.sh start no-nrf vpp-upf\n
-Example 1 : ./core-network.sh stop nrf spgwu\n\
-Example 2: ./core-network.sh stop no-nrf vpp-upf
-Example 3: ./core-network.sh stop no-nrf spgwu"
+--- start ---
+Ex. 1 : ./core-network.sh start nrf spgwu\n\
+Ex. 2: ./core-network.sh start no-nrf vpp-upf\n\
+Ex. 3: ./core-network.sh start no-nrf vpp-upf\n
+--- stop ---
+Ex. 1 : ./core-network.sh stop nrf spgwu\n\
+Ex. 2: ./core-network.sh stop no-nrf vpp-upf
+Ex. 3: ./core-network.sh stop no-nrf spgwu"
 fi
-
