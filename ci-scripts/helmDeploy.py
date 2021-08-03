@@ -154,8 +154,8 @@ class ClusterDeploy:
 			imageName = eachImage[0]
 			imageTag = eachImage[1]
 			nameSufix = ''
-			subprocess.run(f'sed -i -e "s#PROJECT#{ocProjectName}#g" ./charts/{imageName}/values.yaml', shell=True)
-			subprocess.run(f'sed -i -e "s#TAG#{imageTag}#g" ./charts/{imageName}/values.yaml', shell=True)
+			subprocess.run(f'sed -i -e "s#PROJECT#{ocProjectName}#g" ./ci-scripts/charts/{imageName}/values.yaml', shell=True)
+			subprocess.run(f'sed -i -e "s#TAG#{imageTag}#g" ./ci-scripts/charts/{imageName}/values.yaml', shell=True)
 			if imageName == 'oai-nrf':
 				nameSufix = 'nrf'
 			elif imageName == 'oai-amf':
@@ -164,7 +164,7 @@ class ClusterDeploy:
 				nameSufix = 'smf'
 			elif imageName == 'oai-spgwu-tiny':
 				nameSufix = 'spgwu'
-			res = subprocess.check_output(f'helm install {imageName} ./charts/{imageName}/ | tee -a archives/5gcn_helm_summary.txt 2>&1', shell=True, universal_newlines=True)
+			res = subprocess.check_output(f'helm install {imageName} ./ci-scripts/charts/{imageName}/ | tee -a archives/5gcn_helm_summary.txt 2>&1', shell=True, universal_newlines=True)
 			res2 = re.search('STATUS: deployed', str(res.strip()))
 			if res2 is None:
 				subprocess.run(f'echo "{imageName}: HELM KO" >> archives/5gcn_helm_summary.txt 2>&1', shell=True)
@@ -181,7 +181,7 @@ class ClusterDeploy:
 			podName = res2.group(0)
 			isRunning = False
 			count = 0
-			while count < 6 and isRunning == False:
+			while count < 12 and isRunning == False:
 				time.sleep(5)
 				if imageName == 'mysql':
 					res = subprocess.check_output(f'oc exec {podName} -i -t -- mysqladmin -u root --password=linux ping || true', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)

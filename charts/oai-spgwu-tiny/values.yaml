@@ -4,25 +4,28 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oai"
 
-image:
+nfimage:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-spgwu-tiny
-  version: "TAG"
+  repository: rdefosseoai/oai-spgwu-tiny
+  version: v1.1.2
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
-imagePullSecrets: []
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
-  annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "oai-spgwu-tiny-sa"
+  name: "oai-spgwu"
 
 podSecurityContext:
   runAsUser: 0
@@ -30,79 +33,77 @@ podSecurityContext:
 
 securityContext:
   privileged: true
-  #capabilities:
-  #  add: ["NET_ADMIN", "SYS_ADMIN","NET_RAW"]
-  #capabilities:
-  #  drop: ["ALL"]
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
 
 service:
   type: ClusterIP
-  pfcpPort: 8805
-  gtpuPort: 2152
+  pfcpPort: 8805 # default port no need to change unless necessary
+  gtpuPort: 2152 # default port no need to change unless necessary
 
 start:
   spgwu: true
-  tcpdump: true
+  tcpdump: false
 
+# create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
 multus:
-  sgwS1uIp: "192.168.18.179"
-  sgwS1uNetmask: "24"
-  pgwuSgiGw: "192.168.18.129"
+  create: true
+  n3Ip: "192.168.18.179"
+  n3Netmask: "24"
+  sgiGw: "192.168.18.129"
 
 config:
-  gwId: 1
-  mnc03: "095"
-  mcc: 208
-  mnc: 95
-  tac: 40960
-  realm: "openairinterface.org" 
-  pidDirectory: "/var/run"
-  sgwS1uIf: "net1"
-  threadS1Upriority: 98
-  s1uThreads: 1
-  sgwSxIf: "eth0"
-  threadSXpriority: 98
-  sxThreads: 1
-  pgwSgiIf: "net1"
-  threadSGIpriority: 98
-  sgiThreads: 1
-  netUeNatOption: "yes"
-  gtpExtentionHeaderPresent: "yes"
-  netUeIp: "12.1.1.0/24"
-  spgwc0IpAdd: "192.168.101.130"
+  gwId: 1 # no need to configure
+  mnc: 208 # should match with AMF and SMF
+  mcc: 95 # should match with AMF and SMF
+  realm: "3gpp.org" # no need to configure
+  pidDirectory: "/var/run" # no need to configure
+  sgwS1uIf: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
+  s1uThreads: 1 # experimental to play with the performance of SPGWU
+  sxThreads: 1 # experimental to play with the performance of SPGWU
+  sgiThreads: 1 # experimental to play with the performance of SPGWU
+  threadS1Upriority: 98 # experimental to play with the performance of SPGWU
+  threadSXpriority: 98 # experimental to play with the performance of SPGWU
+  threadSGIpriority: 98 # experimental to play with the performance of SPGWU
+  sgwSxIf: "eth0" # use for SMF communication
+  pgwSgiIf: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
+  netUeNatOption: "yes" # yes to get the traffic out towards internet
+  gtpExtentionHeaderPresent: "yes" # needed for 5G (Always true)
+  netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
+  nssaiSst0: 222 # should match with SMF information
+  nssaiSd0: 123  # should match with SMF information
+  dnn0: "default" # should match with SMF information
+  spgwc0IpAdd: "127.0.0.1" # SMF ip-address incase NRF is not used to initiate a PFCP session
   bypassUlPfcpRules: "no"
-  enable5GFeatures: "yes"
-  registerNrf: "yes"
-  useFqdnNrf: "yes"
-  upfFqdn5g: "oai-spgwu-tiny-svc"
-  nrfIpv4Add: "192.168.18.230"
+  enable5GFeatures: "yes" # This will make SPGWU to function as 5G UPF, if set no then it will work for 4G
+  registerNRF: "yes" 
+  useFqdnNrf: "yes"  # use FQDN to resolve nrf ip-address 
+  nrfIpv4Add: "127.0.0.1" # set it if nrf FQDN can not be resolved
   nrfPort: "80"
-  nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"
-  nssaiSst0: 222
-  nssaiSd0: 123
-  dnn0: "default" 
+  nrfApiVersion: "v1" 
+  nrfFqdn: "oai-nrf-svc" # make sure this can be resolved by container dns
+  upfFqdn5g: "oai-spgwu-tiny-svc" # fqdn of upf 
 
+## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions
 persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: false
+  sharedvolume: false  # should be true when if wants to store the tcpdump of all the network functions at same place
+  volumneName: managed-nfs-storage
+  size: 1Gi
 
 
 resources:
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
+  define: false
+  limits:
+    cpu: 100m
+    memory: 128Mi
   requests:
-    cpu: 8
-    memory: 256Mi
+   cpu: 100m
+   memory: 256Mi
+
+readinessProbe: true
+
+livenessProbe: true
+
+terminationGracePeriodSeconds: 30
 
 nodeSelector: {}
 
-tolerations: []
-
-affinity: {}
+nodeName: 

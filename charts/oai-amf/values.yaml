@@ -1,19 +1,24 @@
-# Default values for oai-amf.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oai"
 
-image:
+nfimage:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-amf
-  version: "TAG"
+  repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
+  version: v1.1.0 # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
-imagePullSecrets: []
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  #pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
+
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -22,20 +27,14 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "oai-amf-svc"
+  name: "oai-amf-sa"
 
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
 securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  privileged: false
 
 service:
   type: ClusterIP
@@ -45,12 +44,16 @@ service:
 
 start:
   amf: true
-  tcpdump: true
+  tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
+
+### In case your gNB or emulator is outside of the cluster then you need an extra interface to communicate with gNB
+## This interface will be for N1/N2/NGAP
 
 multus:
-  ngapIPadd: "192.168.18.177"
-  ngapNetmask: "24"
-  ngapGateway: "192.168.18.129"
+  create: true
+  n1IPadd: "192.168.18.177"
+  n1Netmask: "24"
+  n1Gateway: "192.168.18.129"
 
 config:
   instance: "0"
@@ -72,55 +75,54 @@ config:
   plmnSupportTac: "0xa000"
   sst0: "222"
   sd0: "123"
-  sst1: "1"
-  sd1: "12"
-  amfInterfaceNameForNGAP: "net1"
-  amfInterfaceNameForN11: "eth0"
-  smfInstanceId0: "1"
-  smfIpv4Addr0: "0.0.0.0"
-  smfHttpVersion0: "v1"
-  smfFqdn0: "oai-amf-svc"
-  selected0: "true"
-  smfInstanceId1: "2"
-  smfIpv4Addr1: "127.0.0.1"
-  smfHttpVersion1: "v1"
-  smfFqdn1: "oai-amf-svc"
-  selected1: "false"
-  nrfIpv4Addr: "192.168.18.178"
+  sst1: "111"
+  sd1: "124"
+  amfInterfaceNameForNGAP: "net1" # If multus creation is true then net1 else eth0
+  amfInterfaceNameForN11: "eth0"  # Service based interface
+  smfInstanceId0: "1"  # Only configure if not using NRF
+  smfIpv4Addr0: "0.0.0.0" # Only configure if not using NRF       
+  smfHttpVersion0: "v1" # Only configure if not using NRF
+  smfFqdn0: "localhost" # Only configure if not using NRF
+  smfInstanceId1: "2"  # Currently disabled in the amf.conf no need to configure
+  smfIpv4Addr1: "0.0.0.0" # Currently disabled in the amf.conf no need to configure
+  smfHttpVersion1: "v1" # Currently disabled in the amf.conf no need to configure
+  smfFqdn1: "localhost" # Currently disabled in the amf.conf no need to configure
+  nrfIpv4Addr: "0.0.0.0" 
   nrfPort: 80
   nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"
-  ausfIpv4Addr: "127.0.0.1"
+  nrfFqdn: "oai-nrf-svc"  # amf communicates using FQDN
+  ausfIpv4Addr: "127.0.0.1" # configure only if there is an external AUSF else it will communicate with mysql directly
   ausfPort: 80
   ausfApiVersion: "v1"
-  nfRegistration: "yes"
-  smfSelection: "yes"
-  useFqdnDns: "yes"
-  mySqlServer: "mysql"
-  mySqlUser: "root"
-  mySqlPass: "linux"
-  mySqlDb: "oai_db"
-  operatorKey: "63bfa50ee6523365ff14c1f45f88737d"
+  nfRegistration: "yes" 
+  smfSelection: "yes" 
+  useFqdnDns: "yes"  # Important to avoid mentioning any static ip-address
+  mySqlServer: "mysql" # used only if not using AUSF
+  mySqlUser: "root" # used only if not using AUSF
+  mySqlPass: "linux" # used only if not using AUSF
+  mySqlDb: "oai_db" # used only if not using AUSF
+  operatorKey: "63bfa50ee6523365ff14c1f45f88737d"  # should be same as in susbcriber database 
 
 persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: false
+  sharedvolume: false
+  volumneName: managed-nfs-storage
+  size: 1Gi
 
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  requests:
+resources:
+  define: false
+  limits:
     cpu: 100m
-    memory: 256Mi
+    memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 256Mi
+
+readinessProbe: true
+
+livenessProbe: true
+
+terminationGracePeriodSeconds: 30
 
 nodeSelector: {}
 
-tolerations: []
-
-affinity: {}
+nodeName: 
