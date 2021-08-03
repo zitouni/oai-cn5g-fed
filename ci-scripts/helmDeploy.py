@@ -181,7 +181,7 @@ class ClusterDeploy:
 			podName = res2.group(0)
 			isRunning = False
 			count = 0
-			while count < 6 and isRunning == False:
+			while count < 12 and isRunning == False:
 				time.sleep(5)
 				if imageName == 'mysql':
 					res = subprocess.check_output(f'oc exec {podName} -i -t -- mysqladmin -u root --password=linux ping || true', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
