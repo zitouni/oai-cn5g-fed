@@ -4,25 +4,27 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oai"
 
-image:
+# NF image
+nfimage:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-nrf
-  version: "TAG"
+  repository: rdefosseoai/oai-nrf
+  version: v1.1.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
-imagePullSecrets: []
+tcpdumpimage:
+  registry: local
+  repository: corfr/tcpdump
+  version: latest
+  # pullPolicy: IfNotPresent or Never or Always
+  pullPolicy: Always
 
-nameOverride: ""
-fullnameOverride: ""
 
 serviceAccount:
   # Specifies whether a service account should be created
   create: true
-  # Annotations to add to the service account
-  annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
   name: "oai-nrf-sa"
@@ -32,13 +34,7 @@ podSecurityContext:
   runAsGroup: 0
 
 securityContext:
-  privileged: true
-  # capabilities:
-  #   drop:
-  #   - ALL
-  # readOnlyRootFilesystem: true
-  # runAsNonRoot: true
-  # runAsUser: 1000
+  privileged: false
 
 service:
   type: ClusterIP
@@ -47,35 +43,45 @@ service:
 
 start:
   nrf: true
-  tcpdump: true
+  tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
+
+# create multus interface in case the NRF wants to use a separate interface 
+# than kubernetes general CNI or it needs to be accessed from outside cluster network using ip-address. 
+
+multus:
+  create: false
+  nrfIpNg: "192.168.18.178"
+  nrfNetmaskNg: "24"
 
 config:
   instance: "0"
   pidDirectory: "/var/run"
-  nrfInterfaceNameForSBI: "eth0"
+  nrfInterfaceNameForSBI: "eth0" # net1 if multus.create is set true
   nrfInterfacePortForSBI: "80"
   nrfInterfaceHttp2PortForSBI: "9090"
   nrfApiVersion: "v1"
 
 persistence:
-  # make it true for the first time when you want to create persistance volume 
-  # and then false
-  enabled: true
+  sharedvolume: false
+  volumeName: managed-nfs-storage
+  size: 1Gi
 
-resources: 
-  # We usually recommend not to specify default resources and to leave this as a conscious
-  # choice for the user. This also increases chances charts run on environments with little
-  # resources, such as Minikube. If you do want to specify resources, uncomment the following
-  # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  # limits:
-  #   cpu: 100m
-  #   memory: 128Mi
-  #requests:
-  #  cpu: 100m
-  #  memory: 256Mi
+resources:
+  define: false
+  limits:
+    cpu: 100m
+    memory: 128Mi
+  requests:
+   cpu: 100m
+   memory: 256Mi
+
+terminationGracePeriodSeconds: 30
+
+readinessProbe: true
+
+livenessProbe: true
 
 nodeSelector: {}
 
-tolerations: []
+nodeName: 
 
-affinity: {}
