@@ -55,7 +55,8 @@ The base image used by network function is dependent on the operating system it 
 Clone the helm chart repository from gitlab repository
 
 ```
-$ git clone -b v1.1.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git checkout v1.1.0 #check the tag v1.1.0
 $ cd charts
 $ ls charts
 mysql  oai-amf  oai-nrf  oai-smf  oai-spgwu-tiny
