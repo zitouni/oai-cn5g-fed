@@ -158,7 +158,9 @@ pipeline {
         }
         unsuccessful {
           script {
-            sh 'docker-compose -f docker-compose-no-nrf.yaml down || true'
+            dir('docker-compose') {
+              sh 'docker-compose -f docker-compose-no-nrf.yaml down || true'
+            }
             sh 'echo "DEPLOYMENT: KO without NRF"'
           }
         }
