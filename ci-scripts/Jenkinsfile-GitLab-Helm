@@ -195,7 +195,7 @@ pipeline {
                 sh "git checkout -f " + dsTesterTag + " >> ../git_clone.log 2>&1"
                 dir ('jenkins') {
                   try {
-                    sh "python3 ./dogmatix-agent.py -f ./suits/hc/integration.yaml -d true | tee ../DS-TEST-RESULTS/dsTester_Summary.txt"
+                    sh "python3 ./dogmatix-agent.py -f ./suits/hc/integration.yaml -d true | tee ../../DS-TEST-RESULTS/dsTester_Summary.txt"
                   } catch (Exception e) {
                     currentBuild.result = 'FAILURE'
                     echo "dsTester Running FAILED"
