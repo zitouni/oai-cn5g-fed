@@ -247,8 +247,8 @@ class HtmlReport():
 		self.file.write('  <h2>DS Tester Summary</h2>\n')
 		cwd = os.getcwd()
 		finalStatusOK = False
-		if os.path.isfile(cwd + '/DS-TEST-RESULTS/5gcn.yaml'):
-			cmd = f'egrep -c "final-result: pass" DS-TEST-RESULTS/5gcn.yaml || true'
+		if os.path.isfile(cwd + '/DS-TEST-RESULTS/hcintegration.yaml'):
+			cmd = f'egrep -c "final-result: pass" DS-TEST-RESULTS/hcintegration.yaml || true'
 			ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
 			if ret.stdout is not None:
 				if ret.stdout.strip() == '1':
@@ -281,8 +281,8 @@ class HtmlReport():
 		self.file.write('      <th>Test Details</th>\n')
 		self.file.write('    </tr>\n')
 		cwd = os.getcwd()
-		if os.path.isfile(cwd + '/DS-TEST-RESULTS/5gcn.yaml'):
-			with open(cwd + '/DS-TEST-RESULTS/5gcn.yaml') as f:
+		if os.path.isfile(cwd + '/DS-TEST-RESULTS/hcintegration.yaml'):
+			with open(cwd + '/DS-TEST-RESULTS/hcintegration.yaml') as f:
 				data = yaml.load(f)
 				nScenarios = len(data['scenarios'])
 				for scenario in range(nScenarios):

@@ -35,6 +35,7 @@ try:
                 result = re.search('(?:\/.+?\/)(.+?)(?:\/.+)', str(line))
                 if result:
                     result1 = re.search('^(.*/)([^/]*)$', str(result.group(0)))
+                    filename = re.search('[^/]*$', str(result1.group(0))) 
                     subprocess.check_output(f'cp {result1.group(1)}* DS-TEST-RESULTS/', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
                 locexist = True
 except IOError:
@@ -42,9 +43,9 @@ except IOError:
 
 if locexist:
     try:
-        with open(cwd + '/DS-TEST-RESULTS/5gcn.yaml') as f:
+        with open(cwd + f'/DS-TEST-RESULTS/{filename.group(0)}') as f:
             data = yaml.load(f)
             if data["final-result"] == 'fail':
                 sys.exit('DsTester final result FAILED')
     except IOError:
-        sys.exit("File not accessible to check DSTester result: DS-TEST-RESULTS/5gcn.yaml")
+        sys.exit(f'File not accessible to check DSTester result: DS-TEST-RESULTS/{filename.group(0)}')
