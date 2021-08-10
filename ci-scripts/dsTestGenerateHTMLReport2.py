@@ -122,6 +122,9 @@ class HtmlReport():
 		self.addImageRow('oai_amf')
 		self.addImageRow('oai_smf')
 		self.addImageRow('oai_spgwu')
+		self.addImageRow('oai_ausf')
+		self.addImageRow('oai_udm')
+		self.addImageRow('oai_udr')
 		self.file.write('  </table>\n')
 		self.file.write('  </div>\n')
 
@@ -143,6 +146,18 @@ class HtmlReport():
 			containerName = 'oai-spgwu-tiny'
 			tagPattern = 'OAI_SPGWU_TAG'
 			statusPrefix = 'spgwu'
+		if imageInfoPrefix == 'oai_ausf':
+			containerName = 'oai-ausf'
+			tagPattern = 'OAI_AUSF_TAG'
+			statusPrefix = 'ausf'
+		if imageInfoPrefix == 'oai_udm':
+			containerName = 'oai-udm'
+			tagPattern = 'OAI_UDM_TAG'
+			statusPrefix = 'udm'
+		if imageInfoPrefix == 'oai_udr':
+			containerName = 'oai-udr'
+			tagPattern = 'OAI_UDR_TAG'
+			statusPrefix = 'udr'
 		if imageInfoPrefix == 'mysql':
 			containerName = imageInfoPrefix
 			tagPattern = 'N/A'
@@ -252,7 +267,7 @@ class HtmlReport():
 		cwd = os.getcwd()
 		if os.path.isfile(cwd + '/DS-TEST-RESULTS/mvc.yaml'):
 			with open(cwd + '/DS-TEST-RESULTS/mvc.yaml') as f:
-				data = yaml.load(f)
+				data = yaml.full_load(f)
 				nScenarios = len(data['scenarios'])
 				for scenario in range(nScenarios):
 					self.file.write('     <tr>\n')
