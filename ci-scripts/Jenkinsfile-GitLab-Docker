@@ -159,6 +159,30 @@ pipeline {
               spgwuBranch = params.SPGWU_BRANCH
               echo "Upstream Job passed SPGWU_BRANCH to use: ${spgwuBranch}"
             }
+            if (params.AUSF_TAG != null) {
+              ausfTag = params.AUSF_TAG
+              echo "Upstream Job passed AUSF_TAG to use: ${ausfTag}"
+            }
+            if (params.AUSF_BRANCH != null) {
+              ausfBranch = params.AUSF_BRANCH
+              echo "Upstream Job passed AUSF_TAG to use: ${ausfBranch}"
+            }
+            if (params.UDM_TAG != null) {
+              udmTag = params.UDM_TAG
+              echo "Upstream Job passed UDM_TAG to use: ${udmTag}"
+            }
+            if (params.UDM_BRANCH != null) {
+              udmBranch = params.UDM_BRANCH
+              echo "Upstream Job passed UDM_TAG to use: ${udmBranch}"
+            }
+            if (params.UDR_TAG != null) {
+              udrTag = params.UDR_TAG
+              echo "Upstream Job passed UDR_TAG to use: ${udrTag}"
+            }
+            if (params.UDR_BRANCH != null) {
+              udrBranch = params.UDR_BRANCH
+              echo "Upstream Job passed UDR_TAG to use: ${udrBranch}"
+            }
             sh "git clean -x -d -f > /dev/null 2>&1"
             sh "git fetch --prune > /dev/null 2>&1"
             sh 'git checkout -f ' + upstreamTagToUse
