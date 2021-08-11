@@ -44,7 +44,7 @@ except IOError:
 if locexist:
     try:
         with open(cwd + f'/DS-TEST-RESULTS/{filename.group(0)}') as f:
-            data = yaml.load(f)
+            data = yaml.full_load(f)
             if data["final-result"] == 'fail':
                 sys.exit('DsTester final result FAILED')
     except IOError:
