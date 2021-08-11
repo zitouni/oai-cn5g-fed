@@ -30,8 +30,7 @@ services:
             - 80
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/udr.pcap 2>&1 > /dev/null &
-            /openair-udr/bin/oai_udr -c /openair-udr/etc/udr.conf -o | tee /tmp/udr.log 2>&1
-            "
+            /openair-udr/bin/oai_udr -c /openair-udr/etc/udr.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -67,8 +66,7 @@ services:
             - 80
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/udm.pcap 2>&1 > /dev/null &
-            /openair-udm/bin/oai_udm -c /openair-udm/etc/udm.conf -o | tee /tmp/udm.log 2>&1
-            "
+            /openair-udm/bin/oai_udm -c /openair-udm/etc/udm.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -103,8 +101,7 @@ services:
             - 80
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/ausf.pcap 2>&1 > /dev/null &
-            /openair-ausf/bin/oai_ausf -c /openair-ausf/etc/ausf.conf -o | tee /tmp/ausf.log 2>&1
-            "
+            /openair-ausf/bin/oai_ausf -c /openair-ausf/etc/ausf.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -143,8 +140,7 @@ services:
             - 9090
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/nrf.pcap 2>&1 > /dev/null &
-            /openair-nrf/bin/oai_nrf -c /openair-nrf/etc/nrf.conf -o | tee /tmp/nrf.log 2>&1
-            "
+            /openair-nrf/bin/oai_nrf -c /openair-nrf/etc/nrf.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -174,8 +170,7 @@ services:
              - 80
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/amf.pcap 2>&1 > /dev/null &
-            /openair-amf/bin/oai_amf -c /openair-amf/etc/amf.conf -o | tee /tmp/amf.log 2>&1
-            "
+            /openair-amf/bin/oai_amf -c /openair-amf/etc/amf.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -253,8 +248,7 @@ services:
             - 9090
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/smf.pcap 2>&1 > /dev/null &
-            /openair-smf/bin/oai_smf -c /openair-smf/etc/smf.conf -o | tee /tmp/smf.log 2>&1
-            "
+            /openair-smf/bin/oai_smf -c /openair-smf/etc/smf.conf -o"
         cap_add:
             - NET_ADMIN
         environment:
@@ -307,8 +301,7 @@ services:
             - 8805
         command: >
             bash -c "nohup tshark -i eth0 -w /tmp/spgwu.pcap 2>&1 > /dev/null &
-            /openair-spgwu-tiny/bin/oai_spgwu -c /openair-spgwu-tiny/etc/spgw_u.conf -o | tee /tmp/spgwu.log 2>&1
-            "
+            /openair-spgwu-tiny/bin/oai_spgwu -c /openair-spgwu-tiny/etc/spgw_u.conf -o"
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -369,3 +362,5 @@ networks:
         ipam:
             config:
                 - subnet: 192.168.61.192/26
+        driver_opts:
+            com.docker.network.bridge.name: "cicd-public"

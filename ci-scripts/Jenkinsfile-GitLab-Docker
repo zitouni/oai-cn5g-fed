@@ -45,7 +45,6 @@ def upstreamTagToUse = params.upstreamTagToUse
 def dsT_host_flag = false
 def dsT_host = ""
 def dsT_host_user = ""
-def dsT_host_ip_addr = ""
 
 // dsTester tag to use
 def dsTesterTag = params.DSTESTER_TAG
@@ -108,11 +107,6 @@ pipeline {
                 allParametersPresent = false
               } else {
                 dsT_host_user = params.DS_Tester_Server_Login
-              }
-              if (params.DS_Tester_Server_IP_Addr == null) {
-                allParametersPresent = false
-              } else {
-                dsT_host_ip_addr = params.DS_Tester_Server_IP_Addr
               }
               if (allParametersPresent) {
                 echo "DS Tester  is on ${dsT_host}"
@@ -367,19 +361,19 @@ pipeline {
             // Copy the pcaps and logs from the containers
             sh "mkdir -p archives/pcaps archives/logs"
             sh 'docker cp cicd-oai-nrf:/tmp/nrf.pcap archives/pcaps/oai_nrf.pcap || true'
-            sh 'docker cp cicd-oai-nrf:/tmp/nrf.log archives/logs/oai_nrf.log || true'
+            sh 'docker logs cicd-oai-nrf > archives/logs/oai_nrf.log 2>&1 || true'
             sh 'docker cp cicd-oai-amf:/tmp/amf.pcap archives/pcaps/oai_amf.pcap || true'
-            sh 'docker cp cicd-oai-amf:/tmp/amf.log archives/logs/oai_amf.log || true'
+            sh 'docker logs cicd-oai-amf > archives/logs/oai_amf.log 2>&1 || true'
             sh 'docker cp cicd-oai-smf:/tmp/smf.pcap archives/pcaps/oai_smf.pcap || true'
-            sh 'docker cp cicd-oai-smf:/tmp/smf.log archives/logs/oai_smf.log || true'
+            sh 'docker logs cicd-oai-smf > archives/logs/oai_smf.log 2>&1 || true'
             sh 'docker cp cicd-oai-upf:/tmp/spgwu.pcap archives/pcaps/oai_spgwu.pcap || true'
-            sh 'docker cp cicd-oai-upf:/tmp/spgwu.log archives/logs/oai_spgwu.log || true'
+            sh 'docker logs cicd-oai-upf > archives/logs/oai_spgwu.log 2>&1 || true'
             sh 'docker cp cicd-oai-ausf:/tmp/ausf.pcap archives/pcaps/oai_ausf.pcap || true'
-            sh 'docker cp cicd-oai-ausf:/tmp/ausf.log archives/logs/oai_ausf.log || true'
+            sh 'docker logs cicd-oai-ausf > archives/logs/oai_ausf.log 2>&1 || true'
             sh 'docker cp cicd-oai-udm:/tmp/udm.pcap archives/pcaps/oai_udm.pcap || true'
-            sh 'docker cp cicd-oai-udm:/tmp/udm.log archives/logs/oai_udm.log || true'
+            sh 'docker logs cicd-oai-udm > archives/logs/oai_udm.log 2>&1 || true'
             sh 'docker cp cicd-oai-udr:/tmp/udr.pcap archives/pcaps/oai_udr.pcap || true'
-            sh 'docker cp cicd-oai-udr:/tmp/udr.log archives/logs/oai_udr.log || true'
+            sh 'docker logs cicd-oai-udr > archives/logs/oai_udr.log 2>&1 || true'
           }
         }
       }
@@ -402,13 +396,13 @@ pipeline {
         // Get logs if deployment fail
         if (deployed != true) {
           sh "mkdir -p archives/logs"
-          sh 'docker logs cicd-oai-nrf > archives/logs/oai_nrf.log || true'
-          sh 'docker logs cicd-oai-amf > archives/logs/oai_amf.log || true'
-          sh 'docker logs cicd-oai-smf > archives/logs/oai_smf.log || true'
-          sh 'docker logs cicd-oai-upf > archives/logs/oai_spgwu.log || true'
-          sh 'docker logs cicd-oai-ausf > archives/logs/oai_ausf.log || true'
-          sh 'docker logs cicd-oai-udm > archives/logs/oai_udm.log || true'
-          sh 'docker logs cicd-oai-udr > archives/logs/oai_udr.log || true'
+          sh 'docker logs cicd-oai-nrf > archives/logs/oai_nrf.log 2>&1 || true'
+          sh 'docker logs cicd-oai-amf > archives/logs/oai_amf.log 2>&1 || true'
+          sh 'docker logs cicd-oai-smf > archives/logs/oai_smf.log 2>&1 || true'
+          sh 'docker logs cicd-oai-upf > archives/logs/oai_spgwu.log 2>&1 || true'
+          sh 'docker logs cicd-oai-ausf > archives/logs/oai_ausf.log 2>&1 || true'
+          sh 'docker logs cicd-oai-udm > archives/logs/oai_udm.log 2>&1 || true'
+          sh 'docker logs cicd-oai-udr > archives/logs/oai_udr.log 2>&1 || true'
         } 
         // Remove any leftover containers/networks
         sh 'python3 ./ci-scripts/routeCheck.py --mode=Delete --userName=' + dsT_host_user + ' --hostName=' + dsT_host
@@ -429,53 +423,4 @@ pipeline {
       }
     }
   }
-}
-
-// Functions
-
-def copyTo2ndServer(filename, flag, user, host) {
-  if (flag) {
-    if ("oai-cn5g-fed.zip".equals(filename)) {
-      sh "ssh ${user}@${host} 'rm -rf /tmp/CI-CN5G-FED'"
-      sh "ssh ${user}@${host} 'mkdir -p /tmp/CI-CN5G-FED'"
-    }
-    sh "scp ${filename} ${user}@${host}:/tmp/CI-CN5G-FED"
-    if ("oai-cn5g-fed.zip".equals(filename)) {
-      sh "ssh ${user}@${host} 'cd /tmp/CI-CN5G-FED && unzip -qq oai-cn5g-fed.zip && rm oai-cn5g-fed.zip'"
-      sh "ssh ${user}@${host} 'cd /tmp/CI-CN5G-FED && git checkout -f ${GIT_COMMIT}'"
-      sh "ssh ${user}@${host} 'cd /tmp/CI-CN5G-FED && git log -n1'"
-    }
-  }
-}
-
-def copyFrom2ndServer(filename, target, flag, user, host) {
-  if (flag) {
-    sh "scp ${user}@${host}:/tmp/CI-CN5G-FED/${filename} ${target}"
-  }
-}
-
-def myShCmd(cmd, flag, user, host) {
-  if (flag) {
-    sh "ssh -t -t ${user}@${host} 'cd /tmp/CI-CN5G-FED && ${cmd}'"
-  } else {
-    sh "${cmd}"
-  }
-}
-
-def myShCmdWithLog(cmd, logFile, flag, user, host) {
-  if (flag) {
-    sh "ssh -t -t ${user}@${host} 'export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:.:/usr/local/devsol/bin && ${cmd}' > ${logFile} 2>&1"
-  } else {
-    sh "${cmd} > ${logFile} 2>&1"
-  }
-}
-
-def myShRetCmd(cmd, flag, user, host) {
-  if (flag) {
-    ret = sh returnStdout: true, script: "ssh -t -t ${user}@${host} 'cd /tmp/CI-CN5G-FED && ${cmd}'"
-  } else {
-    ret = sh returnStdout: true, script: "${cmd}"
-  }
-  ret = ret.trim()
-  return ret
 }
