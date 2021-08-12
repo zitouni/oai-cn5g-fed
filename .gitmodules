@@ -10,3 +10,12 @@
 [submodule "component/oai-nrf"]
 	path = component/oai-nrf
 	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf.git
+[submodule "component/oai-ausf"]
+	path = component/oai-ausf
+	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf.git
+[submodule "component/oai-udm"]
+	path = component/oai-udm
+	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm.git
+[submodule "component/oai-udr"]
+	path = component/oai-udr
+	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr.git
