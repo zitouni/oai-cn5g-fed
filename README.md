@@ -7,6 +7,9 @@
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AMF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-AMF%2F&label=build%20AMF"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NRF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-NRF%2F&label=build%20NRF"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-SMF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-SMF%2F&label=build%20SMF"></a>
+    <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AUSF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-AUSF%2F&label=build%20AUSF"></a>
+    <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDM/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDM%2F&label=build%20UDM"></a>
+    <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDR/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDR%2F&label=build%20UDR"></a>
 </p>
 
 <h2 align="center">
@@ -17,11 +20,11 @@
 At the moment, it contains the following network elements:
 
 * Access and Mobility Management Function (**[AMF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)**)
-* Authentication Server Management Function (**AUSF**)
+* Authentication Server Management Function (**[AUSF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf)**)
 * Network Repository Function (**[NRF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf)**)
 * Session Management Function (**[SMF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf)**)
-* Unified Data Management (**UDM**)
-* Unified Data Repository (**UDR**)
+* Unified Data Management (**[UDM](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm)**)
+* Unified Data Repository (**[UDR](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr)**)
 * User Plane Function (**UPF**) with 2 variants:
   * Simple Implementation based on our 4G CUPS component (**[SPGWU-TINY](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny)**)
   * VPP-Based Implementation (**UPF-VPP**)

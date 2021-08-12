@@ -100,12 +100,17 @@ $ git rebase origin/master
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
-                              --smf-branch develop --spgwu-tiny-branch develop
+                              --smf-branch develop --spgwu-tiny-branch develop \
+                              --ausf-branch develop --udm-branch develop \
+                              --udr-branch develop
 ---------------------------------------------------------
 OAI-NRF    component branch : develop
 OAI-AMF    component branch : develop
 OAI-SMF    component branch : develop
 OAI-SPGW-U component branch : develop
+OAI-AUSF   component branch : develop
+OAI-UDM    component branch : develop
+OAI-UDR    component branch : develop
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -196,7 +201,8 @@ The above command is with podman, in case of docker it can be changed with its d
 ```bash
 $ docker build --target oai-nrf --tag oai-nrf:latest \
                --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" component/oai-nrf
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-nrf
 $ docker image prune --force
 $ docker image ls
 oai-nrf                 latest             04334b29e103        1 minute ago          247MB
@@ -227,7 +233,8 @@ The above command is with podman, in case of docker it can be changed with its d
 ```bash
 $ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
                --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu18.04 \
-               --build-arg EURECOM_PROXY="http://proxy.eurecom.fr:8080" component/oai-upf-equivalent
+               --build-arg EURECOM_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
 oai-spgwu-tiny          latest             dec6311cef3b        1 minute ago          255MB
@@ -250,5 +257,102 @@ $ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
 ```
 
 The above command is with podman, in case of docker it can be changed with its docker equivalent.
+
+# 7. Build AUSF Image #
+
+## 7.1 On a Ubuntu 18.04 Host ##
+
+```bash
+$ docker build --target oai-ausf --tag oai-ausf:latest \
+               --file component/oai-ausf/docker/Dockerfile.ausf.ubuntu18 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-ausf
+$ docker image prune --force
+$ docker image ls
+oai-ausf          latest              77a96de94c23        1 minute ago        231MB
+...
+```
+
+## 7.2 On a RHEL8 Host ##
+
+RHEL base images generally needs a subscription to access the package repository.
+For that the base image needs ca and entitlement .pem files.
+
+Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+
+```bash
+$ sudo podman build --target oai-ausf --tag oai-ausf:latest \
+               --file component/oai-ausf/docker/Dockerfile.ausf.rhel8 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-ausf
+...
+```
+
+The above command is with podman, in case of docker it can be changed with its docker equivalent.
+
+# 8. Build UDM Image #
+
+## 8.1 On a Ubuntu 18.04 Host ##
+
+```bash
+$ docker build --target oai-udm --tag oai-udm:latest \
+               --file component/oai-udm/docker/Dockerfile.udm.ubuntu18 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-udm
+$ docker image prune --force
+$ docker image ls
+oai-udm                 latest             10a4334e31be        1 minute ago          229MB
+...
+```
+
+## 8.2 On a RHEL8 Host ##
+
+RHEL base images generally needs a subscription to access the package repository.
+For that the base image needs ca and entitlement .pem files.
+
+Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+
+```bash
+$ sudo podman build --target oai-udm --tag oai-udm:latest \
+               --file component/oai-udm/docker/Dockerfile.udm.rhel8 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-udm
+...
+```
+
+The above command is with podman, in case of docker it can be changed with its docker equivalent.
+
+# 9. Build UDR Image #
+
+## 9.1 On a Ubuntu 18.04 Host ##
+
+```bash
+$ docker build --target oai-udr --tag oai-udr:latest \
+               --file component/oai-udr/docker/Dockerfile.udr.ubuntu18 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-udr
+$ docker image prune --force
+$ docker image ls
+oai-udr                 latest             581e07d59ec3        1 minute ago          234MB
+...
+```
+
+## 9.2 On a RHEL8 Host ##
+
+RHEL base images generally needs a subscription to access the package repository.
+For that the base image needs ca and entitlement .pem files.
+
+Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+
+```bash
+$ sudo podman build --target oai-udr --tag oai-udr:latest \
+               --file component/oai-udr/docker/Dockerfile.udr.rhel8 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-udr
+...
+```
+
+The above command is with podman, in case of docker it can be changed with its docker equivalent.
+
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)
