@@ -48,6 +48,15 @@ function usage {
     echo "    --spgwu-tiny-branch ####"
     echo "    Specify the source branch for the OAI-SPGW-U-TINY component"
     echo ""
+    echo "    --ausf-branch ####"
+    echo "    Specify the source branch for the OAI-AUSF component"
+    echo ""
+    echo "    --udm-branch ####"
+    echo "    Specify the source branch for the OAI-UDM component"
+    echo ""
+    echo "    --udr-branch ####"
+    echo "    Specify the source branch for the OAI-UDR component"
+    echo ""
     echo "    --help OR -h"
     echo "    Print this help message."
     echo ""
@@ -57,6 +66,9 @@ NRF_BRANCH='master'
 AMF_BRANCH='master'
 SMF_BRANCH='master'
 SPGWU_BRANCH='master'
+AUSF_BRANCH='master'
+UDM_BRANCH='master'
+UDR_BRANCH='master'
 
 doDefault=1
 
@@ -94,6 +106,24 @@ case $key in
     shift
     shift
     ;;
+    --ausf-branch)
+    AUSF_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
+    --udm-branch)
+    UDM_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
+    --udr-branch)
+    UDR_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
     *)
     echo "Syntax Error: unknown option: $key"
     echo ""
@@ -108,6 +138,9 @@ echo "OAI-NRF    component branch : ${NRF_BRANCH}"
 echo "OAI-AMF    component branch : ${AMF_BRANCH}"
 echo "OAI-SMF    component branch : ${SMF_BRANCH}"
 echo "OAI-SPGW-U component branch : ${SPGWU_BRANCH}"
+echo "OAI-AUSF   component branch : ${AUSF_BRANCH}"
+echo "OAI-UDM    component branch : ${UDM_BRANCH}"
+echo "OAI-UDR    component branch : ${UDR_BRANCH}"
 echo "---------------------------------------------------------"
 
 # First do a clean-up
@@ -157,6 +190,33 @@ else
         git checkout  $SPGWU_BRANCH > /dev/null 2>&1
     else
         git checkout -b $SPGWU_BRANCH origin/$SPGWU_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-ausf
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $AUSF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $AUSF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $AUSF_BRANCH origin/$AUSF_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-udm
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $UDM_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $UDM_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $UDM_BRANCH origin/$UDM_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-udr
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $UDR_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $UDR_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $UDR_BRANCH origin/$UDR_BRANCH > /dev/null 2>&1
     fi
     popd
 fi
