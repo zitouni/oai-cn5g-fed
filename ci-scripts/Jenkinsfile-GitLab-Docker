@@ -188,7 +188,7 @@ pipeline {
             sh 'git checkout -f ' + upstreamTagToUse
             sh "zip -r -qq oai-cn5g-fed.zip .git"
             sh "mkdir -p archives DS-TEST-RESULTS"
-            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch
+            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
           }
           if (scmEvent) {
             sh "git clean -x -d -f > /dev/null 2>&1"
@@ -197,11 +197,11 @@ pipeline {
             }
             sh "zip -r -qq oai-cn5g-fed.zip .git"
             sh "mkdir -p archives DS-TEST-RESULTS"
-            sh './scripts/syncComponents.sh --nrf-branch develop --amf-branch develop --smf-branch develop --spgwu-tiny-branch develop'
+            sh './scripts/syncComponents.sh --nrf-branch develop --amf-branch develop --smf-branch develop --spgwu-tiny-branch develop --ausf-branch develop --udm-branch develop --udr-branch develop'
           }
           if ((!upstreamEvent) && (!scmEvent)) {
             sh "git clean -x -d -f > /dev/null 2>&1"
-            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch
+            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
             sh "mkdir -p archives DS-TEST-RESULTS"
           }
           // Verify that the images are available
