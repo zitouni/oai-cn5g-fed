@@ -220,7 +220,7 @@ iperf Done.
 
 | Pcap/log files                                                                             |
 |:------------------------------------------------------------------------------------------ |
-| [5gcn-deployment-gnbsim.pcap](./results/gnbSIM/5gcn-deployment-gnbsim.pcap)                  |
+| [5gcn-deployment-gnbsim.pcap](./results/gnbSIM/pcap/5gcn-deployment-gnbsim.pcap)                  |
 | [amf.log](./results/dsTest/logs/amf.log), [initialmessage.log](./results/dsTest/logs/initialmessage.log) |
 | [smf.log](./results/dsTest/logs/smf.log)                                                          |
 | [nrf.log](./results/dsTest/logs/nrf.log)                                                          |
