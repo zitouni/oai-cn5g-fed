@@ -101,7 +101,8 @@ resources:
     cpu: 8
     memory: 256Mi
 
-nodeSelector: {}
+nodeSelector:
+  env: dev
 
 tolerations: []
 
