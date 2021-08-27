@@ -1,4 +1,4 @@
-# Default values for oai-spgwu-tiny.
+# Default values for oai-udr.
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
@@ -8,9 +8,9 @@ namespace: "oaicicd-5gcn-tmp"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-spgwu-tiny
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-udr
   version: "TAG"
-  # pullPolicy: IfNotPresent or Never or Always
+  #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
 imagePullSecrets: []
@@ -22,7 +22,7 @@ serviceAccount:
   annotations: {}
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "oai-spgwu-tiny-sa"
+  name: "oai-udr-sa"
 
 podSecurityContext:
   runAsUser: 0
@@ -30,76 +30,57 @@ podSecurityContext:
 
 securityContext:
   privileged: true
-  #capabilities:
-  #  add: ["NET_ADMIN", "SYS_ADMIN","NET_RAW"]
-  #capabilities:
-  #  drop: ["ALL"]
+  # capabilities:
+  #   drop:
+  #   - ALL
   # readOnlyRootFilesystem: true
   # runAsNonRoot: true
   # runAsUser: 1000
 
 service:
   type: ClusterIP
-  pfcpPort: 8805
-  gtpuPort: 2152
+  http1Port: 80
+  http2Port: 8080
 
 start:
-  spgwu: true
+  udr: true
   tcpdump: true
 
 multus:
-  sgwS1uIp: "192.168.18.179"
-  sgwS1uNetmask: "24"
-  pgwuSgiGw: "192.168.18.129"
+  create: false
+  n4IPadd: "192.168.101.129"
+  n4Netmask: "26"
+  n4Gw: "192.168.101.128"
 
 config:
-  gwId: 1
-  mnc03: "095"
-  mcc: 208
-  mnc: 95
-  tac: 40960
-  realm: "openairinterface.org" 
+  tz: "Europe/Paris"
+  instance: "0"
   pidDirectory: "/var/run"
-  sgwS1uIf: "net1"
-  threadS1Upriority: 98
-  s1uThreads: 1
-  sgwSxIf: "eth0"
-  threadSXpriority: 98
-  sxThreads: 1
-  pgwSgiIf: "net1"
-  threadSGIpriority: 98
-  sgiThreads: 1
-  netUeNatOption: "yes"
-  gtpExtentionHeaderPresent: "yes"
-  netUeIp: "12.1.1.0/24"
-  spgwc0IpAdd: "192.168.101.130"
-  bypassUlPfcpRules: "no"
-  enable5GFeatures: "yes"
-  registerNrf: "yes"
-  useFqdnNrf: "yes"
-  upfFqdn5g: "oai-spgwu-tiny-svc"
-  nrfIpv4Add: "192.168.18.230"
-  nrfPort: "80"
-  nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"
-  nssaiSst0: 222
-  nssaiSd0: 123
-  dnn0: "default" 
+  udrInterfaceNameForNudr: "eth0"
+  udrInterfaceHttp1PortForNudr: "80"
+  udrInterfaceHttp2PortForNudr: "8080"
+  udrApiVersion: "v1"
+  mySqlServer: "mysql"
+  mySqlUser: "root"
+  mySqlPass: "linux"
+  mySqlDb: "oai_db"
 
 persistence:
   # make it true for the first time when you want to create persistance volume 
   # and then false
   enabled: false
-
-
-resources:
+  
+resources: 
   # We usually recommend not to specify default resources and to leave this as a conscious
   # choice for the user. This also increases chances charts run on environments with little
   # resources, such as Minikube. If you do want to specify resources, uncomment the following
   # lines, adjust them as necessary, and remove the curly braces after 'resources:'.
-  requests:
-    cpu: 8
-    memory: 256Mi
+  # limits:
+  #   cpu: 100m
+  #   memory: 128Mi
+  #requests:
+  #  cpu: 100m
+  #  memory: 256Mi
 
 nodeSelector:
   env: dev

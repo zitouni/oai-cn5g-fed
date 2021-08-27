@@ -4,11 +4,11 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oaicicd-5gcn-tmp"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-smf
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-smf
   version: "TAG"
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
