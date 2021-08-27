@@ -77,9 +77,11 @@ services:
             - SBI_IF_NAME=eth0
             - SBI_PORT=80
             - UDM_VERSION_NB=v1
+            - USE_FQDN_DNS=yes
             - UDR_IP_ADDRESS=192.168.61.200
             - UDR_PORT=80
             - UDR_VERSION_NB=v1
+            - UDR_FQDN=cicd_oai_udr
         depends_on:
             - cicd_mysql
             - cicd_oai_udr
@@ -111,12 +113,11 @@ services:
             - AUSF_NAME=OAI_AUSF
             - SBI_IF_NAME=eth0
             - SBI_PORT=80
+            - USE_FQDN_DNS=yes
             - UDM_IP_ADDRESS=192.168.61.201
             - UDM_PORT=80
             - UDM_VERSION_NB=v1
-            - AMF_IP_ADDRESS=192.168.61.196
-            - AMF_PORT=80
-            - AMF_VERSION_NB=v1
+            - UDM_FQDN=cicd_oai_udm
         depends_on:
             - cicd_mysql
             - cicd_oai_udr
@@ -216,13 +217,14 @@ services:
             - NRF_PORT=80
             - NF_REGISTRATION=yes
             - SMF_SELECTION=yes
-            - USE_FQDN_DNS=no
+            - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
             - NRF_API_VERSION=v1
             - NRF_FQDN=cicd_oai_nrf
             - AUSF_IPV4_ADDRESS=192.168.61.199
             - AUSF_PORT=80
             - AUSF_API_VERSION=v1
+            - AUSF_FQDN=cicd_oai_ausf
         depends_on:
             - cicd_mysql
             - cicd_oai_nrf
