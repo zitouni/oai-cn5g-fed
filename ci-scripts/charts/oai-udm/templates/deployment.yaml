@@ -92,6 +92,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: udmVersionNb
+          - name: USE_FQDN_DNS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useFqdnDns
           - name: UDR_IP_ADDRESS
             valueFrom:
               configMapKeyRef:
@@ -107,6 +112,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: udrVersionNb
+          - name: UDR_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: udrFqdn
         {{- if .Values.start.udm}}
         {{- else}}
         command:
@@ -117,6 +127,10 @@ spec:
       - name: cn5g-pv
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

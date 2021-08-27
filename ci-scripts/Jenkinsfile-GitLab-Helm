@@ -59,6 +59,9 @@ def nrfTag = params.nrfTag
 def amfTag = params.amfTag
 def smfTag = params.smfTag
 def spgwuTag = params.spgwuTag
+def udrTag = params.udrTag
+def udmTag = params.udmTag
+def ausfTag = params.ausfTag
 
 //-------------------------------------------------------------------------------
 // Pipeline start
@@ -155,12 +158,24 @@ pipeline {
                 spgwuTag = params.SPGWU_TAG
                 echo "Upstream Job passed SPGWU_TAG to use: ${spgwuTag}"
               }
+              if (params.UDR_TAG != null) {
+                udrTag = params.UDR_TAG
+                echo "Upstream Job passed UDR_TAG to use: ${udrTag}"
+              }
+              if (params.UDM_TAG != null) {
+                udmTag = params.UDM_TAG
+                echo "Upstream Job passed UDM_TAG to use: ${udmTag}"
+              }
+              if (params.AUSF_TAG != null) {
+                ausfTag = params.AUSF_TAG
+                echo "Upstream Job passed AUSF_TAG to use: ${ausfTag}"
+              }
               sh "git clean -x -d -f > /dev/null 2>&1"
               sh "git fetch --prune > /dev/null 2>&1"
               sh 'git checkout -f ' + upstreamTagToUse
               sh 'mkdir -p archives DS-TEST-RESULTS'
             }
-            imageTags = "mysql:5.7.30,oai-nrf:${nrfTag},oai-amf:${amfTag},oai-smf:${smfTag},oai-spgwu-tiny:${spgwuTag}"
+            imageTags = "mysql:5.7.30,oai-nrf:${nrfTag},oai-udr:${udrTag},oai-udm:${udmTag},oai-ausf:${ausfTag},oai-amf:${amfTag},oai-smf:${smfTag},oai-spgwu-tiny:${spgwuTag}"
           }
         }
       }

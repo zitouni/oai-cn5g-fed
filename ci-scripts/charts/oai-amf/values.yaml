@@ -4,11 +4,11 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oaicicd-5gcn-tmp"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-amf
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-amf
   version: "TAG"
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
@@ -93,9 +93,11 @@ config:
   ausfIpv4Addr: "127.0.0.1"
   ausfPort: 80
   ausfApiVersion: "v1"
+  ausfFqdn: "oai-ausf-svc"
   nfRegistration: "yes"
   smfSelection: "yes"
   useFqdnDns: "yes"
+  externalAusf: "yes"
   mySqlServer: "mysql"
   mySqlUser: "root"
   mySqlPass: "linux"

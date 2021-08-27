@@ -158,6 +158,12 @@ class ClusterDeploy:
 			subprocess.run(f'sed -i -e "s#TAG#{imageTag}#g" ./ci-scripts/charts/{imageName}/values.yaml', shell=True)
 			if imageName == 'oai-nrf':
 				nameSufix = 'nrf'
+			if imageName == 'oai-udr':
+				nameSufix = 'udr'
+			if imageName == 'oai-udm':
+				nameSufix = 'udm'
+			if imageName == 'oai-ausf':
+				nameSufix = 'ausf'
 			elif imageName == 'oai-amf':
 				nameSufix = 'amf'
 			elif imageName == 'oai-smf':
@@ -200,7 +206,7 @@ class ClusterDeploy:
 				subprocess.run(f'echo "{imageName}: POD KO" >> archives/5gcn_pods_summary.txt 2>&1', shell=True)
 				sys.exit(-1)
 
-		if passPods == 5:
+		if passPods == 8:
 			logging.debug(f'\u001B[1m   5GCN Deployment: OK \u001B[0m')
 			subprocess.run(f'echo "DEPLOYMENT: OK" > archives/deployment_status.log', shell=True)
 		else:
@@ -275,6 +281,12 @@ class ClusterDeploy:
 				continue
 			if imageName == 'oai-nrf':
 				nameSufix = 'nrf'
+			if imageName == 'oai-udr':
+				nameSufix = 'udr'
+			if imageName == 'oai-udm':
+				nameSufix = 'udm'
+			if imageName == 'oai-ausf':
+				nameSufix = 'ausf'
 			elif imageName == 'oai-amf':
 				nameSufix = 'amf'
 			elif imageName == 'oai-smf':

@@ -266,6 +266,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: ausfApiVersion
+          - name: AUSF_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: ausfFqdn
           - name: NF_REGISTRATION
             valueFrom:
               configMapKeyRef:
@@ -281,6 +286,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: useFqdnDns
+          - name: EXTERNAL_AUSF
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: externalAusf
           - name: MYSQL_SERVER
             valueFrom:
               configMapKeyRef:

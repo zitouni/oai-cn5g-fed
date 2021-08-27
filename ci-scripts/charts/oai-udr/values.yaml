@@ -4,11 +4,11 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oaicicd-5gcn-tmp"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-udr
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-udr
   version: "TAG"
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
@@ -47,7 +47,7 @@ start:
   tcpdump: true
 
 multus:
-  create: true
+  create: false
   n4IPadd: "192.168.101.129"
   n4Netmask: "26"
   n4Gw: "192.168.101.128"
@@ -56,7 +56,7 @@ config:
   tz: "Europe/Paris"
   instance: "0"
   pidDirectory: "/var/run"
-  udrInterfaceNameForNudr: "net1"
+  udrInterfaceNameForNudr: "eth0"
   udrInterfaceHttp1PortForNudr: "80"
   udrInterfaceHttp2PortForNudr: "8080"
   udrApiVersion: "v1"
@@ -82,7 +82,8 @@ resources:
   #  cpu: 100m
   #  memory: 256Mi
 
-
+nodeSelector:
+  env: dev
 
 tolerations: []
 
