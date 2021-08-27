@@ -62,12 +62,12 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: tz     
-          - name: INSTANCE
+          - name: INSTANCE_ID
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: instance
-          - name: PID_DIRECTORY
+                key: instanceId
+          - name: PID_DIR
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
@@ -87,6 +87,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: sbiPort
+          - name: USE_FQDN_DNS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useFqdnDns
           - name: UDM_IP_ADDRESS
             valueFrom:
               configMapKeyRef:
@@ -102,21 +107,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: udmVersionNb
-          - name: AMF_IP_ADDRESS
+          - name: UDM_FQDN
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: amfIpAddress
-          - name: AMF_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: amfPort
-          - name: AMF_VERSION_NB
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: amfVersionNb
+                key: udmFqdn
         {{- if .Values.start.ausf}}
         {{- else}}
         command:
@@ -127,6 +122,10 @@ spec:
       - name: cn5g-pv
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- if .Values.nodeSelector }}
+      nodeSelector:
+{{ toYaml .Values.nodeSelector | indent 8 }}
+      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

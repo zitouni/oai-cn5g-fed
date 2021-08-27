@@ -4,11 +4,11 @@
 
 replicaCount: 1
 
-namespace: "PROJECT"
+namespace: "oaicicd-5gcn-tmp"
 
 image:
   registry: local
-  repository: image-registry.openshift-image-registry.svc:5000/PROJECT/oai-ausf
+  repository: image-registry.openshift-image-registry.svc:5000/oaicicd-5gcn-tmp/oai-ausf
   version: "TAG"
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
@@ -46,24 +46,23 @@ start:
   tcpdump: true
 
 multus:
-  create: true
+  create: false
   n4IPadd: "192.168.101.131"
   n4Netmask: "26"
   n4Gw: "192.168.101.128"
 
 config:
   tz: "Europe/Paris"
-  instance: "0"
+  instanceId: "0"
   pidDirectory: "/var/run"
   ausfName: "OAI_AUSF"
-  sbiIfName: "net1"
+  sbiIfName: "eth0"
   sbiPort: "80"
+  useFqdnDns: "yes"
   udmIpAddress: "192.168.101.130"
   udmPort: "80"
   udmVersionNb: "v1"
-  amfIpAddress: "192.168.18.177"
-  amfPort: "80"
-  amfVersionNb: "v1"
+  udmFqdn: "oai-udm-svc"
 
 persistence:
   # make it true for the first time when you want to create persistance volume 
@@ -82,7 +81,8 @@ resources:
   #  cpu: 100m
   #  memory: 256Mi
 
-
+nodeSelector:
+  env: dev
 
 tolerations: []
 
