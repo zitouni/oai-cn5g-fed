@@ -52,8 +52,10 @@ multus:
 
 config:
   gwId: 1 # no need to configure
+  mnc03: "095"
   mnc: 208 # should match with AMF and SMF
   mcc: 95 # should match with AMF and SMF
+  tac: 40960
   realm: "3gpp.org" # no need to configure
   pidDirectory: "/var/run" # no need to configure
   sgwS1uIf: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0

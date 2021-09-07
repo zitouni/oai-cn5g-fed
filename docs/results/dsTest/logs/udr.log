@@ -1,0 +1,53 @@
+/openair-udr/bin /openair-udr
+/openair-udr
+[2021-09-07T17:38:40.627589] [udr] [udr_server] [start] Options parsed
+[2021-09-07T17:38:40.628246] [udr] [configurations] [info ] ==== OAI-CN5G UDR vBranch: HEAD Abrev. Hash: 5d8d4ad Date: Mon Sep 6 17:33:52 2021 +0200 ====
+[2021-09-07T17:38:40.628259] [udr] [configurations] [info ] ======================    UDR   =====================
+[2021-09-07T17:38:40.628264] [udr] [configurations] [info ] Configuration UDR:
+[2021-09-07T17:38:40.628267] [udr] [configurations] [info ] - Instance ...........................................: 0
+[2021-09-07T17:38:40.628271] [udr] [configurations] [info ] - PID dir ............................................: /var/run
+[2021-09-07T17:38:40.628275] [udr] [configurations] [info ] - Nudr Networking:
+[2021-09-07T17:38:40.628278] [udr] [configurations] [info ]     Interface name ......: eth0
+[2021-09-07T17:38:40.628283] [udr] [configurations] [info ]     IPv4 Addr ...........: 192.168.70.136
+[2021-09-07T17:38:40.628286] [udr] [configurations] [info ]     Port ................: 80
+[2021-09-07T17:38:40.628290] [udr] [configurations] [info ]     HTTP2 port ..........: 8080
+[2021-09-07T17:38:40.628293] [udr] [configurations] [info ]     API version..........: v1
+[2021-09-07T17:38:40.628297] [udr] [configurations] [info ] - MYSQL Server Addr...................................: 192.168.70.131
+[2021-09-07T17:38:40.628301] [udr] [configurations] [info ] - MYSQL user .........................................: test
+[2021-09-07T17:38:40.628304] [udr] [configurations] [info ] - MYSQL pass .........................................: test
+[2021-09-07T17:38:40.628308] [udr] [configurations] [info ] - MYSQL db ...........................................: oai_db
+[2021-09-07T17:38:40.628356] [udr] [udr_app] [start] Starting...
+[2021-09-07T17:38:40.643154] [udr] [udr_app] [start] Started
+[2021-09-07T17:38:40.645147] [udr] [udr_server] [info ] HTTP1 server started
+[2021-09-07T17:41:51.480056] [udr] [udr_server] [info ] Handle Read Authentication Subscription
+[2021-09-07T17:41:51.480122] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.481222] [udr] [udr_server] [info ] AuthenticationSubscription GET - json:
+"{"algorithmId":"milenage","authenticationManagementField":"8000","authenticationMethod":"5G_AKA","encOpcKey":"63bfa50ee6523365ff14c1f45f88737d","encPermanentKey":"0C0A34601D4F07677303652C0462535B","protectionParameterId":"0C0A34601D4F07677303652C0462535B","sequenceNumber":{"lastIndexes":{"ausf":0},"sqn":"000000000020","sqnScheme":"NON_TIME_BASED"},"supi":"208950000000031"}"
+[2021-09-07T17:41:51.484565] [udr] [udr_server] [info ] Handle Update Authentication Subscription
+[2021-09-07T17:41:51.484600] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.485105] [udr] [udr_server] [info ] MySQL Update cmd (update AuthenticationSubscription set sequenceNumber='{"lastIndexes":{"ausf":0},"sqn":"000000000040","sqnScheme":"NON_TIME_BASED"}' where ueid='208950000000031')
+[2021-09-07T17:41:51.506425] [udr] [udr_server] [info ] AuthenticationSubscription PATCH - json:
+"[{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000040\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]"
+[2021-09-07T17:41:51.514383] [udr] [udr_server] [info ] Handle Read Authentication Subscription
+[2021-09-07T17:41:51.514403] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.514825] [udr] [udr_server] [info ] AuthenticationSubscription GET - json:
+"{"algorithmId":"milenage","authenticationManagementField":"8000","authenticationMethod":"5G_AKA","encOpcKey":"63bfa50ee6523365ff14c1f45f88737d","encPermanentKey":"0C0A34601D4F07677303652C0462535B","protectionParameterId":"0C0A34601D4F07677303652C0462535B","sequenceNumber":{"lastIndexes":{"ausf":0},"sqn":"000000000040","sqnScheme":"NON_TIME_BASED"},"supi":"208950000000031"}"
+[2021-09-07T17:41:51.516237] [udr] [udr_server] [info ] Handle Update Authentication Subscription
+[2021-09-07T17:41:51.516266] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.516782] [udr] [udr_server] [info ] MySQL Update cmd (update AuthenticationSubscription set sequenceNumber='{"lastIndexes":{"ausf":0},"sqn":"ff9bb4000f8d","sqnScheme":"NON_TIME_BASED"}' where ueid='208950000000031')
+[2021-09-07T17:41:51.539966] [udr] [udr_server] [info ] AuthenticationSubscription PATCH - json:
+"[{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"ff9bb4000f8d\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]"
+[2021-09-07T17:41:51.542117] [udr] [udr_server] [info ] Handle Update Authentication Subscription
+[2021-09-07T17:41:51.542135] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.542615] [udr] [udr_server] [info ] MySQL Update cmd (update AuthenticationSubscription set sequenceNumber='{"lastIndexes":{"ausf":0},"sqn":"ff9bb4000fad","sqnScheme":"NON_TIME_BASED"}' where ueid='208950000000031')
+[2021-09-07T17:41:51.573481] [udr] [udr_server] [info ] AuthenticationSubscription PATCH - json:
+"[{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"ff9bb4000fad\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]"
+[2021-09-07T17:41:51.579923] [udr] [udr_server] [info ] Handle Read Authentication Subscription
+[2021-09-07T17:41:51.579941] [udr] [udr_server] [info ] MySQL Query (select * from AuthenticationSubscription WHERE ueid='208950000000031')
+[2021-09-07T17:41:51.580350] [udr] [udr_server] [info ] AuthenticationSubscription GET - json:
+"{"algorithmId":"milenage","authenticationManagementField":"8000","authenticationMethod":"5G_AKA","encOpcKey":"63bfa50ee6523365ff14c1f45f88737d","encPermanentKey":"0C0A34601D4F07677303652C0462535B","protectionParameterId":"0C0A34601D4F07677303652C0462535B","sequenceNumber":{"lastIndexes":{"ausf":0},"sqn":"ff9bb4000fad","sqnScheme":"NON_TIME_BASED"},"supi":"208950000000031"}"
+[2021-09-07T17:41:51.581435] [udr] [udr_server] [info ] Handle Create Authentication Status
+[2021-09-07T17:41:51.581458] [udr] [udr_server] [info ] MySQL query: select * from AuthenticationStatus WHERE ueid='208950000000031'
+[2021-09-07T17:41:51.582142] [udr] [udr_server] [info ] MySQL query: insert into AuthenticationStatus set ueid='208950000000031',nfInstanceId='400346f4-087e-40b1-a4cd-00566953999d',success=1,timeStamp='2021-09-07T15:41:51Z',authType='5G_AKA',servingNetworkName='5G:mnc095.mcc208.3gppnetwork.org',authRemovalInd=0
+[2021-09-07T17:41:51.615382] [udr] [udr_server] [info ] AuthenticationStatus PUT - json:
+"{"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2021-09-07T15:41:51Z"}"

@@ -4,8 +4,8 @@ services:
         container_name: "mysql"
         image: mysql:5.7
         volumes:
-            - ./oai_db.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./mysql-healthcheck.sh:/tmp/mysql-healthcheck.sh
+            - ./oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -20,6 +20,89 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.131
+    oai-udr:
+        container_name: oai-udr
+        image: oai-udr:latest
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE=0
+            - PID_DIRECTORY=/var/run
+            - UDR_INTERFACE_NAME_FOR_NUDR=eth0
+            - UDR_INTERFACE_PORT_FOR_NUDR=80
+            - UDR_INTERFACE_HTTP2_PORT_FOR_NUDR=8080
+            - UDR_API_VERSION=v1
+            - MYSQL_IPV4_ADDRESS=192.168.70.131
+            - MYSQL_USER=test
+            - MYSQL_PASS=test
+            - MYSQL_DB=oai_db
+            - WAIT_MYSQL=120
+        depends_on:
+            - mysql
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.136
+        volumes:
+            - ./udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-udr/bin/udr-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    oai-udm:
+        container_name: oai-udm
+        image: oai-udm:latest
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE=0
+            - PID_DIRECTORY=/var/run
+            - UDM_NAME=OAI_UDM
+            - SBI_IF_NAME=eth0
+            - SBI_PORT=80
+            - UDM_VERSION_NB=v1
+            - USE_FQDN_DNS=yes
+            - UDR_IP_ADDRESS=192.168.70.136
+            - UDR_PORT=80
+            - UDR_VERSION_NB=v1
+            - UDR_FQDN=oai-udr
+        depends_on:
+            - oai-udr
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.137
+        volumes:
+            - ./udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    oai-ausf:
+        container_name: oai-ausf
+        image: oai-ausf:latest
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE_ID=0
+            - PID_DIR=/var/run
+            - AUSF_NAME=OAI_AUSF
+            - SBI_IF_NAME=eth0
+            - SBI_PORT=80
+            - USE_FQDN_DNS=yes
+            - UDM_IP_ADDRESS=192.168.70.137
+            - UDM_PORT=80
+            - UDM_VERSION_NB=v1
+            - UDM_FQDN=oai-udm
+        depends_on:
+            - oai-udm
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.138
+        volumes:
+            - ./ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
     oai-amf:
         container_name: "oai-amf"
         image: oai-amf:latest
@@ -67,14 +150,17 @@ services:
             - NRF_PORT=80
             - NF_REGISTRATION=no
             - SMF_SELECTION=no
-            - USE_FQDN_DNS=no
+            - USE_FQDN_DNS=yes
+            - EXTERNAL_AUSF=yes
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
-            - AUSF_IPV4_ADDRESS=127.0.0.1
+            - AUSF_IPV4_ADDRESS=192.168.70.138
             - AUSF_PORT=80
             - AUSF_API_VERSION=v1
+            - AUSF_FQDN=oai-ausf
         depends_on:
             - mysql
+            - oai-ausf
         volumes:
             - ./amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
         healthcheck:
@@ -103,19 +189,19 @@ services:
             - AMF_PORT=80
             - AMF_API_VERSION=v1
             - AMF_FQDN=oai-amf
-            - UDM_IPV4_ADDRESS=127.0.0.1
+            - UDM_IPV4_ADDRESS=192.168.70.137
             - UDM_PORT=80
-            - UDM_API_VERSION=v2
-            - UDM_FQDN=localhost
+            - UDM_API_VERSION=v1
+            - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.134
-            - UPF_FQDN_0=oai-upf
+            - UPF_FQDN_0=oai-spgwu
             - NRF_IPV4_ADDRESS=0.0.0.0
             - NRF_PORT=80
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
             - REGISTER_NRF=no
-            - USE_FQDN_DNS=no
             - DISCOVER_UPF=no
+            - USE_FQDN_DNS=yes
         depends_on:
             - oai-amf
         volumes:
@@ -149,7 +235,7 @@ services:
             - REALM=openairinterface.org
             - ENABLE_5G_FEATURES=yes
             - REGISTER_NRF=no
-            - USE_FQDN_NRF=no
+            - USE_FQDN_NRF=yes
             - UPF_FQDN_5G=oai-spgwu
             - NRF_IPV4_ADDRESS=0.0.0.0
             - NRF_PORT=80
@@ -181,7 +267,7 @@ services:
         privileged: true
         container_name: oai-ext-dn
         entrypoint: /bin/bash -c \
-              "apt update; apt install -y iptables iproute2 iputils-ping;"\
+              "apt update; apt install -y iptables iproute2 iperf3 iputils-ping;"\
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; sleep infinity"
         depends_on:
@@ -200,4 +286,4 @@ networks:
             config:
                 - subnet: 192.168.70.128/26
         driver_opts:
-           com.docker.network.bridge.name: "demo-oai"
+            com.docker.network.bridge.name: "demo-oai"
