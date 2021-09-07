@@ -40,6 +40,9 @@ $ docker pull rdefosseoai/oai-amf
 $ docker pull rdefosseoai/oai-nrf
 $ docker pull rdefosseoai/oai-spgwu-tiny
 $ docker pull rdefosseoai/oai-smf
+$ docker pull rdefosseoai/oai-udr
+$ docker pull rdefosseoai/oai-udm
+$ docker pull rdefosseoai/oai-ausf
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
@@ -49,6 +52,9 @@ $ docker image tag rdefosseoai/oai-amf:latest oai-amf:latest
 $ docker image tag rdefosseoai/oai-nrf:latest oai-nrf:latest
 $ docker image tag rdefosseoai/oai-smf:latest oai-smf:latest
 $ docker image tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
+$ docker image tag rdefosseoai/oai-smf:latest oai-udr:latest
+$ docker image tag rdefosseoai/oai-smf:latest oai-udm:latest
+$ docker image tag rdefosseoai/oai-smf:latest oai-ausf:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -74,6 +80,9 @@ This repository only has tutorials and Continuous Integration scripts.
 | SMF         | `master`    | `v1.1.0` | X            | X               |
 | NRF         | `master`    | `v1.1.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| UDR         | `master`    | `v1.1.0` | X            | X               |
+| UDM         | `master`    | `v1.1.0` | X            | X               |
+| AUSF        | `master`    | `v1.1.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
@@ -89,6 +98,9 @@ OAI-NRF    component branch : master
 OAI-AMF    component branch : master
 OAI-SMF    component branch : master
 OAI-SPGW-U component branch : master
+OAI-UDR    component branch : master
+OAI-UDM    component branch : master
+OAI-AUSF   component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init

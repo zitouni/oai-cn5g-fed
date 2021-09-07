@@ -7,13 +7,13 @@
       </a>
     </td>
     <td style="border-collapse: collapse; border: none; vertical-align: center;">
-      <b><font size = "5">OpenAirInterface 5G Core Network Deployment using Docker-Compose and Testing with dsTest</font></b>
+      <b><font size = "5">OpenAirInterface 5G Core Network Deployment with FQDN enabled using the Docker-Compose and Testing with dsTest</font></b>
     </td>
   </tr>
 </table>
 
 
-![SA dsTest Demo](./images/docker-compose/5gCN.jpg)
+![SA dsTest Demo](./images/docker-compose/5gCN.png)
 
 
 
@@ -27,18 +27,30 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 **TABLE OF CONTENTS**
 
-1.  [Pre-requisites](#1-pre-requisites)
-2.  [Network Function Container Images](#2-network-function-container-images)
-3.  [Configuring Host Machines](#3-configuring-host-machines)
-4.  [Configuring OAI 5G Core Network Functions](#4-configuring-the-oai-5g-core-network-functions)
-5.  [Configuring dsTest Scenario](#5-configuring-dstester-scenario)
-6.  [Deploying OAI 5G Core Network](#6-deploying-oai-5g-core-network)
-7.  [Executing dsTest Scenario](#7-executing-the-dstest-scenario)
-8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
-9.  [Demo Video](#9-demo-video)
-10. [Notes](#10-notes)
+1.  [Overview](#1-overview)
+2.  [Pre-requisites](#2-pre-requisites)
+3.  [Network Function Container Images](#3-network-function-container-images)
+4.  [Configuring Host Machines](#4-configuring-host-machines)
+5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
+6.  [Configuring dsTest Scenario](#6-configuring-dstester-scenario)
+7.  [Deploying OAI 5G Core Network](#7-deploying-oai-5g-core-network)
+8.  [Executing dsTest Scenario](#8-executing-the-dstest-scenario)
+9.  [Analysing Scenario Results](#9-analysing-the-scenario-results)
+10. [Demo Video](#10-demo-video)
+11. [Notes](#11-notes)
 
-## 1. Pre-requisites ##
+## 1. Overview ##
+
+Here you will find how one can deploy the 5G core network in multiple ways with minimum/basic functional architecture.
+
+- Minimal functional 5g core network
+    - Scenario I:  `AMF, SMF, UPF (SPGWU), NRF, MYSQL`
+    - Scenario II:  `AMF, SMF, UPF (SPGWU), MYSQL`
+- Basic functional 5g core network
+    - Scenario I:  `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL`
+    - Scenario II:  `AMF, SMF, UPF (SPGWU), UDM, UDR, AUSF, MYSQL`
+
+## 2. Pre-requisites ##
 
 The container images are built using `docker build` command on Ubuntu 18.04 host machine. The base image for all the containers is Ubuntu 18.04. 
 
@@ -68,7 +80,7 @@ Most of the times the `docker-compose-host` machine is not configured with packe
 
 To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUESITES.md) page.
 
-## 2. Network Function Container Images ##
+## 3. Network Function Container Images ##
 
 - In this demo the network function branch and tags which were used are listed below, follow the [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md) or the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
@@ -78,10 +90,13 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | SMF         | `master`    | `v1.1.0` | X            | X               |
 | NRF         | `master`    | `v1.1.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| UDR         | `master`    | `v1.1.0` | X            | X               |
+| UDM         | `master`    | `v1.1.0` | X            | X               |
+| AUSF        | `master`    | `v1.1.0` | X            | X               |
 
 - In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
 
-## 3. Configuring Host Machines ##
+## 4. Configuring Host Machines ##
 
 All the network functions are connected using `demo-oai` bridge.
 
@@ -92,9 +107,9 @@ There are two ways to create this bridge either manually or automatically using 
 
 **NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
 
-### 3.1 Creating bridge manually
+### 4.1 Creating bridge manually
 
-- The bottom section of [docker-compose file](../docker-compose/docker-compose.yaml) SHALL look like this:
+- The bottom section of [docker-compose file](../docker-compose/docker-compose-basic-nrf.yaml) SHALL look like this:
 
 ```
     networks:
@@ -133,11 +148,11 @@ There are two ways to create this bridge either manually or automatically using 
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-### 3.2 Create bridge automatically  
+### 4.2 Create bridge automatically  
 
 - Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
 
-This is the `default` version in the [docker-compose.yaml](../docker-compose/docker-compose.yaml) or docker-compose-no-nrf.yaml.
+This is the `default` version in the available docker-compose [files](../docker-compose/).
 
 The bottom section SHALL look like this:
 
@@ -156,7 +171,7 @@ The bottom section SHALL look like this:
                   com.docker.network.bridge.name: "demo-oai"
     ```
 
-### 3.3 In case you forgot. True for manual or automatic network creation.
+### 4.3 In case you forgot. True for manual or automatic network creation.
 
 - If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (**important step**), 
 
@@ -189,7 +204,7 @@ The bottom section SHALL look like this:
     rtt min/avg/max/mdev = 0.147/0.192/0.260/0.038 ms    
     ```
     
-## 4. Configuring the OAI-5G Core Network Functions ##
+## 5. Configuring the OAI-5G Core Network Functions ##
 
 - **Core Network Configuration**: The docker-compose file has configuration parameters of each core network component. The file is pre-configured with parameters related to this scenario. The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
 
@@ -197,11 +212,15 @@ The bottom section SHALL look like this:
     |:----------- |:-------------------------------------------- |:--------------- |
     | amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/develop/etc/amf.conf)    |
     | smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/develop/etc/smf.conf)    |
-    | nrf.conf    | (Gilab) cn5g/oai-cn5g-nrf                    | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
+    | nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
     | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/gtp_extension_header/etc/spgw_u.conf) |
+    | udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/develop/etc/udr.conf)   |
+    | udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/develop/etc/udm.conf)   |
+    | ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/develop/etc/ausf.conf)   |
 
 
-- **User Subscprition Profile**: The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db.sql file located in [docker-compose/oai-db.sql](../docker-compose/oai_db.sql).  
+- **User Subscprition Profile**: 
+    - Minimum functional: The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db.sql file located in [docker-compose/oai-db1.sql](../docker-compose/oai_db1.sql).  
 
     ```
     IMSI - 208950000000031
@@ -210,7 +229,7 @@ The bottom section SHALL look like this:
     OPc - 0x63bfa50ee6523365ff14c1f45f88737d
     ``` 
 
-- **Optional**: Incase, the user subscription entry is missing from oai_db.sql file then it can be added using below commands,
+    - Optional: Incase, the user subscription entry is missing from oai_db1.sql file then it can be added using below commands,
 
     ```bash
     #Login to mysql container once the container is running
@@ -219,10 +238,34 @@ The bottom section SHALL look like this:
     mysql> INSERT INTO users VALUES
     ('208950000000031','380561234567','55000000000001',NULL,'PURGED',50,40000000,100000000,47,0000000000,1,0x0C0A34601D4F07677303652C0462535B,0,0,0x40,'ebd07771ace8677a',0x63bfa50ee6523365ff14c1f45f88737d);
     ```
+    - Basic functional: The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db.sql file located in [docker-compose/oai-db2.sql](../docker-compose/oai_db2.sql).  
 
-## 5. Configuring DsTester Scenario ##
+    ```
+    IMSI - 208950000000031
+    IMEI - 55000000000001
+    Secret Key (K) - 0x0C0A34601D4F07677303652C0462535B
+    OPc - 0x63bfa50ee6523365ff14c1f45f88737d
+    ``` 
 
-- **User Subscription Profile**: The user profile used for dsTest scenario is below. Verify that this entry is present in the oai_db.sql file located in docker-compose/oai-db.sql.  
+    - Optional: Incase, the user subscription entry is missing from oai_db2.sql file then it can be added using below commands,
+
+    ```bash
+    #Login to mysql container once the container is running
+
+    ```
+
+## 6. Configuring DsTester Scenario ##
+
+- **User Subscription Profile**: 
+    - Minimum functional: The user profile used for dsTest scenario is below. Verify that this entry is present in the oai_db1.sql file located in docker-compose/oai-db1.sql.  
+
+    ```
+    IMSI - 208950000000031
+    IMEI - 55000000000001
+    Secret Key (K) - 0x0C0A34601D4F07677303652C0462535B
+    OPc - 0x63bfa50ee6523365ff14c1f45f88737d
+    ```
+    - Basic functional: The user profile used for dsTest scenario is below. Verify that this entry is present in the oai_db2.sql file located in docker-compose/oai-db2.sql.  
 
     ```
     IMSI - 208950000000031
@@ -247,35 +290,40 @@ The bottom section SHALL look like this:
 
 
 
-## 6. Deploying OAI 5g Core Network ##
+## 7. Deploying OAI 5g Core Network ##
 
-- The core network is deployed using a [bash script](../docker-compose/core-network.sh) which is a wrapper around `docker-compose` and `docker` command. 
+- The core network is deployed using a [python script](../docker-compose/core-network.py) which is a wrapper around `docker-compose` and `docker` command. 
 - The script informs the user when the core-network is correctly configured by checking health status of containers and connectivity between different core network components.
-- In case if there is a problem in using the script then use docker-compose manually read the [notes section](#10-notes)
-- If the script is executed without any arguments then the helper menu is visible 
+- To know how to use the script look for the helper menu as shown below.
+- There are three parameters, which can be provided 
+  - `--type` mandatory option to start/stop the 5g core components with minimum/basic functional architecture. 
+  - `--fqdn` and `--scenario` are optional and if not provided by default it is considered as use fqdn feature with nrf component.
+- In case if there is a problem in using the script then use docker-compose manually read the [notes section](#10-notes) 
 
     ```bash
     (docker-compose-host)$ pwd
     /home/<docker-compose-host>/oai/oai-cn-fed/docker-compose
-    (docker-compose-host)$ ./core-network.sh
+    (docker-compose-host)$ python3 core-network.py --help
 
-    Only use the following options
+    usage: core-network.py [-h] --type {start-mini,start-basic,stop-mini,stop-basic} [--fqdn {yes,no}] [--scenario {1,2}]
 
-    start [option1] [option2]: start the 5gCN
-    stop [option1] [option2]: stops the 5gCN
+    OAI 5G CORE NETWORK DEPLOY
 
-    --option1
-    nrf: nrf should be used
-    no-nrf: nrf should not be used
+    optional arguments:
+    -h, --help            show this help message and exit
+    --type {start-mini,start-basic,stop-mini,stop-basic}, -t {start-mini,start-basic,stop-mini,stop-basic}
+                            Functional type of 5g core network ("start-mini"|"start-basic"|"stop-mini"|"stop-basic")
+    --fqdn {yes,no}, -fq {yes,no}
+                            Deployment scenario with FQDN ("yes"|"no")
+    --scenario {1,2}, -s {1,2}
+                            Scenario with NRF ("1") and without NRF ("2")
 
-    --option2
-    vpp-upf: vpp-upf should be used (only works without nrf, no-nrf option1)
-    spgwu : spgwu should be used as upf (works with or without nrf, nrf or no-nrf option1)
-
-    Example 1 : ./core-network.sh start nrf spgwu
-    Example 2: ./core-network.sh start no-nrf vpp-upf
-    Example 1 : ./core-network.sh stop nrf spgwu
-    Example 2: ./core-network.sh stop no-nrf vpp-upf
+    example:
+            python3 core-network.py --type start-mini
+            python3 core-network.py --type start-basic
+            python3 core-network.py --type stop-mini
+            python3 core-network.py --type start-mini --fqdn no --scenario 2
+            python3 core-network.py --type start-basic --fqdn no --scenario 2
     ```
 - Before executing the script it is better to start capturing packets to see the message flow between smf <--> nrf <--> upf. The packets will be captured on **demo-oai** bridge which should be configured on the `docker-compose-host` machine. 
 
@@ -285,24 +333,42 @@ The bottom section SHALL look like this:
 - Starting the core network components, 
 
     ```bash
-    (docker-compose-host)$ ./core-network.sh start nrf spgwu
-    Starting 5gcn components in the order nrf, mysql, amf, smf, spgwu...
+    (docker-compose-host)$ python3 core-network.py --type start-basic
+    [2021-09-07 10:19:02,399] root:DEBUG:  Starting 5gcn components... Please wait....
+    Creating network "demo-oai-public-net" with driver "bridge"
     Creating mysql   ... done
     Creating oai-nrf ... done
-    Creating oai-amf   ... done
-    Creating oai-smf   ... done
+    Creating oai-udr ... done
+    Creating oai-udm ... done
+    Creating oai-ausf ... done
+    Creating oai-amf  ... done
+    Creating oai-smf  ... done
     Creating oai-spgwu ... done
     Creating oai-ext-dn ... done
-    Checking the health status of the containers...
-    oai-nrf : "healthy", mysql : "starting", oai-amf : "healthy", oai-smf : "healthy", oai-spgwu : "healthy"
-    All components are healthy...
-    Checking if SMF and UPF registered with nrf core network
-    For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type='SMF' {"_links":{"item":[{"href":"192.168.70.133"}],"self":""}}
-    SMF and UPF are registered to NRF...
-    Core network is configured and healthy, total time taken 49293 milli seconds
+
+    [2021-09-07 10:19:37,540] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
+    [2021-09-07 10:20:15,328] root:DEBUG:  All components are healthy, please see below for more details....
+    Name                 Command                  State                  Ports            
+    -----------------------------------------------------------------------------------------
+    mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp         
+    oai-amf      /bin/bash /openair-amf/bin ...   Up (healthy)   38412/sctp, 80/tcp, 9090/tcp
+    oai-ausf     /bin/bash /openair-ausf/bi ...   Up (healthy)   80/tcp                      
+    oai-ext-dn   /bin/bash -c  apt update;  ...   Up                                         
+    oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp            
+    oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp  
+    oai-spgwu    /openair-spgwu-tiny/bin/en ...   Up (healthy)   2152/udp, 8805/udp          
+    oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp                      
+    oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
+    [2021-09-07 10:20:15,328] root:DEBUG:  Checking if the containers are configured....
+    [2021-09-07 10:20:15,328] root:DEBUG:  Checking if SMF and UPF registered with nrf core network....
+    [2021-09-07 10:20:15,366] root:DEBUG:  For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {"_links":{"item":[{"href":"192.168.70.133"}],"self":""}}....
+    [2021-09-07 10:20:15,366] root:DEBUG:  SMF and UPF are registered to NRF....
+    [2021-09-07 10:20:15,366] root:DEBUG:  Checking if SMF is able to connect with UPF....
+    [2021-09-07 10:20:15,493] root:DEBUG:  UPF receiving heathbeats from SMF....
+    [2021-09-07 10:20:15,493] root:DEBUG:  OAI 5G Core network is configured and healthy....
     ```
 
-## 7. Executing the dsTest Scenario ##
+## 8. Executing the dsTest Scenario ##
 
 - **Optional**, in case there is a need to maintain two different pcap files one for capturing initial message exchange between core network components and second for scenario execution then stop the previous packet capturing process and run a new one,
 
@@ -335,25 +401,34 @@ The bottom section SHALL look like this:
     (docker-compose-host)$ docker logs oai-smf > smf.log
     (docker-compose-host)$ docker logs oai-nrf > nrf.log
     (docker-compose-host)$ docker logs oai-spgwu > spgwu.log  
-    (docker-compose-host)$ ./core-network.sh stop nrf spgwu
-    Stopping the core network...
+    (docker-compose-host)$ docker logs oai-udr > udr.log
+    (docker-compose-host)$ docker logs oai-udm > udm.log
+    (docker-compose-host)$ docker logs oai-ausf > ausf.log
+    (docker-compose-host)$ python3 core-network.py --type stop-basic
     Stopping oai-ext-dn ... done
-    Stopping oai-smf    ... done
     Stopping oai-spgwu  ... done
+    Stopping oai-smf    ... done
     Stopping oai-amf    ... done
+    Stopping oai-ausf   ... done
+    Stopping oai-udm    ... done
+    Stopping oai-udr    ... done
     Stopping mysql      ... done
     Stopping oai-nrf    ... done
     Removing oai-ext-dn ... done
-    Removing oai-smf    ... done
     Removing oai-spgwu  ... done
+    Removing oai-smf    ... done
     Removing oai-amf    ... done
+    Removing oai-ausf   ... done
+    Removing oai-udm    ... done
+    Removing oai-udr    ... done
     Removing mysql      ... done
     Removing oai-nrf    ... done
-    Network demo-oai-public-net is external, skipping
-    Core network stopped
+    Removing network demo-oai-public-net
+
+    [2021-09-07 11:06:48,922] root:DEBUG:  OAI 5G core components are UnDeployed....
     ```
 
-## 8. Analysing the Scenario Results ##
+## 9. Analysing the Scenario Results ##
 
 This section is subdivided in two parts the first part for analysing the message exchange between core network components at the time of deployment. Second, for analysing the dsTest scenario.
 
@@ -365,6 +440,9 @@ This section is subdivided in two parts the first part for analysing the message
 | oai-nrf       | 192.168.70.130 |
 | oai-spgwu     | 192.168.70.134 |
 | oai-ext-dn    | 192.168.70.135 |
+| oai-udr       | 192.168.70.136 |
+| oai-udm       | 192.168.70.137 |
+| oai-ausf      | 192.168.70.138 |
 | Host Machine  | 192.168.70.129 |
 | dsTest gNB/UE | 192.168.18.184 |
 
@@ -377,6 +455,9 @@ This section is subdivided in two parts the first part for analysing the message
 | [smf.log](./results/dsTest/logs/smf.log)                                                                 |
 | [nrf.log](./results/dsTest/logs/nrf.log)                                                                 |
 | [spgwu.log](./results/dsTest/logs/spgwu.log)                                                             |
+| [udr.log](./results/dsTest/logs/udr.log)                                                                 |
+| [udm.log](./results/dsTest/logs/udm.log)                                                                 |
+| [ausf.log](./results/dsTest/logs/ausf.log)                                                               |
 
 
 ### Analysing initial message exchange
@@ -417,24 +498,24 @@ Using wireshark open scenario-execution.pcap use the filter ngap || http || pfcp
 ![Scenario execution 2](./images/docker-compose/scenario-2.png)
 
 
-## 9. Demo Video ##
+## 10. Demo Video ##
 
 - Here is the link to the [youtube video](https://www.youtube.com/watch?v=ENQiwl2EYl8) 
 
-## 10. Notes ##
+## 11. Notes ##
 
-- The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes. 
-- There is a possibility to perform the same test or setup the core network without nrf by using `docker-compose/docker-compose-no-nrf.yaml` [file](../docker-compose/docker-compose-no-nrf.yaml) . Check the configuration before using the compose file.
+- The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes.
+- Using the python script from above you can perform minimum `AMF, SMF, UPF (SPGWU), NRF, MYSQL` and basic `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL` 5g core funtional testing with `FQDN/IP` based feature along with `NRF/noNRF`. Check the configuration before using the docker compose [files](../docker-compose/).
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
-- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose.yaml](../docker-compose/docker-compose.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
-- Its not necessary to use [core-network.sh](../docker-compose/core-network.sh) bash script, it is possible to directly deploy using `docker-compose` command
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
+- Its not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
     ```
     #To start the containers 
-    docker-compose -f <file-name> -p <project-name> up -d
+    docker-compose -f <file-name> up -d
     #To check their health status
-    docker-compose -f <file-name> -p <project-name> ps -a
+    docker-compose -f <file-name> ps -a
     #To stop the containers 
-    docker-compose -f <file-name> -p <project-name> down
+    docker-compose -f <file-name> down
     ```

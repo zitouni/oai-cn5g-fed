@@ -92,12 +92,22 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: mnc
+                key: mnc03
           - name: MCC
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: mcc
+          - name: MNC
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: mnc
+          - name: TAC
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: tac
           - name: REALM
             valueFrom:
               configMapKeyRef:
