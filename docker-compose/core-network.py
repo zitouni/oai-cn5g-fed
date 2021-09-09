@@ -22,7 +22,6 @@
 
 import yaml
 import re
-import sys
 import subprocess
 import time
 import logging
@@ -187,33 +186,33 @@ def run_cmd(cmd):
 if __name__ == '__main__':
 
     # Docker Compose files
-    file_names = ['docker-compose-mini-nrf.yaml', 
-            'docker-compose-mini-nonrf.yaml',
-            'docker-compose-basic-nrf.yaml',
-            'docker-compose-basic-nonrf.yaml']
+    file_name1 = 'docker-compose-mini-nrf.yaml' 
+    file_name2 = 'docker-compose-mini-nonrf.yaml'
+    file_name3 = 'docker-compose-basic-nrf.yaml'
+    file_name4 = 'docker-compose-basic-nonrf.yaml'
     # Parse the arguments to get the deployment instruction
     args = _parse_args()
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(file_names[0], 5)
+            deploy(file_name1, 5)
         # Mini function with noNRF
         elif args.scenario == '2':
-            deploy(file_names[1], 4)
+            deploy(file_name2, 4)
     elif args.type == 'start-basic':
         # Basic function with NRF
         if args.scenario == '1':
-            deploy(file_names[2], 8)
+            deploy(file_name3, 8)
         # Basic function with noNRF
         elif args.scenario == '2':
-            deploy(file_names[3], 7)
+            deploy(file_name4, 7)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
-            undeploy(file_names[0])
+            undeploy(file_name1)
         elif args.scenario == '2':
-            undeploy(file_names[1])
+            undeploy(file_name2)
     elif args.type == 'stop-basic':
         if args.scenario == '1':
-            undeploy(file_names[2])
+            undeploy(file_name3)
         elif args.scenario == '2':
-            undeploy(file_names[3])
+            undeploy(file_name4)
