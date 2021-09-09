@@ -56,7 +56,7 @@ Clone the helm chart repository from gitlab repository
 
 ```
 $ git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
-$ git checkout v1.1.0 #check the tag v1.1.0
+$ git checkout v1.2.0 #check the tag v1.2.0
 $ cd charts
 $ ls charts
 mysql  oai-amf  oai-ausf  oai-nrf  oai-smf  oai-spgwu-tiny  oai-udm  oai-udr
@@ -127,7 +127,7 @@ namespace: "oai"
 nfimage:
   registry: local
   repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+  version: v1.2.0 # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -186,7 +186,7 @@ namespace: "oai" # namespace where SMF will be deployed
 nfimage:
   registry: local
   repository: rdefosseoai/oai-smf
-  version: v1.1.0
+  version: v1.2.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -252,7 +252,7 @@ namespace: "oai"
 nfimage:
   registry: local
   repository: rdefosseoai/oai-nrf
-  version: v1.1.0
+  version: v1.2.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 

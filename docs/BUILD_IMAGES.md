@@ -34,18 +34,21 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.1.0` |              |                 |
-| AMF         | `master`    | `v1.1.0` | X            | X               |
-| SMF         | `master`    | `v1.1.0` | X            | X               |
-| NRF         | `master`    | `v1.1.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| FED REPO    | N/A         | `v1.2.0` |              |                 |
+| AMF         | `master`    | `v1.2.0` | X            | X               |
+| SMF         | `master`    | `v1.2.0` | X            | X               |
+| NRF         | `master`    | `v1.2.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.2.0` | X            | X               |
+| UDR         | `master`    | `v1.2.0` | X            | X               |
+| UDM         | `master`    | `v1.2.0` | X            | X               |
+| AUSF        | `master`    | `v1.2.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.1.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v1.2.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.1.0
+$ git checkout -f v1.2.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
@@ -54,6 +57,9 @@ OAI-NRF    component branch : master
 OAI-AMF    component branch : master
 OAI-SMF    component branch : master
 OAI-SPGW-U component branch : master
+OAI-UDR    component branch : master
+OAI-UDM    component branch : master
+OAI-AUSF   component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -63,13 +69,18 @@ git submodule update
 or a little bit more dangerous
 
 ```bash
-$ ./scripts/syncComponents.sh --nrf-branch v1.1.0 --amf-branch v1.1.0 \
-                              --smf-branch v1.1.0 --spgwu-tiny-branch v1.1.2
+$ ./scripts/syncComponents.sh --nrf-branch v1.2.0 --amf-branch v1.2.0 \
+                              --smf-branch v1.2.0 --spgwu-tiny-branch v1.2.0 \
+                              --udr-branch v1.2.0 --udm-branch v1.2.0 \
+                              --ausf-branch v1.2.0
 ---------------------------------------------------------
-OAI-NRF    component branch : v1.1.0
-OAI-AMF    component branch : v1.1.0
-OAI-SMF    component branch : v1.1.0
-OAI-SPGW-U component branch : v1.1.2
+OAI-NRF    component branch : v1.2.0
+OAI-AMF    component branch : v1.2.0
+OAI-SMF    component branch : v1.2.0
+OAI-SPGW-U component branch : v1.2.0
+OAI-UDR    component branch : v1.2.0
+OAI-UDM    component branch : v1.2.0
+OAI-AUSF   component branch : v1.2.0
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
