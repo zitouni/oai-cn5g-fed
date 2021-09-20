@@ -40,13 +40,13 @@ The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `rdefosse
 Now pull images.
 
 ```bash
-$ docker pull rdefosseoai/oai-amf
-$ docker pull rdefosseoai/oai-nrf
-$ docker pull rdefosseoai/oai-spgwu-tiny
-$ docker pull rdefosseoai/oai-smf
-$ docker pull rdefosseoai/oai-udr
-$ docker pull rdefosseoai/oai-udm
-$ docker pull rdefosseoai/oai-ausf
+$ docker pull rdefosseoai/oai-amf:latest
+$ docker pull rdefosseoai/oai-nrf:latest
+$ docker pull rdefosseoai/oai-spgwu-tiny:latest
+$ docker pull rdefosseoai/oai-smf:latest
+$ docker pull rdefosseoai/oai-udr:latest
+$ docker pull rdefosseoai/oai-udm:latest
+$ docker pull rdefosseoai/oai-ausf:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
@@ -83,7 +83,7 @@ This repository only has tutorials and Continuous Integration scripts.
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.2.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
 | UDR         | `master`    | `v1.2.0` | X            | X               |
 | UDM         | `master`    | `v1.2.0` | X            | X               |
 | AUSF        | `master`    | `v1.2.0` | X            | X               |

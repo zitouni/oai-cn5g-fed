@@ -30,7 +30,7 @@ We recommend to synchronize with the master branches on all git sub-modules.
 
 We also recommend that you synchronize this "tutorial" repository with a provided tag. By doing so, the `docker-compose` files will be aligned with feature sets of each cNF.
 
-**At the time of writing (2021/07/22), the release tag is `v1.1.0`.**
+**At the time of writing (2021/09/13), the release tag is `v1.2.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
@@ -38,7 +38,7 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.2.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
 | UDR         | `master`    | `v1.2.0` | X            | X               |
 | UDM         | `master`    | `v1.2.0` | X            | X               |
 | AUSF        | `master`    | `v1.2.0` | X            | X               |
@@ -70,14 +70,14 @@ or a little bit more dangerous
 
 ```bash
 $ ./scripts/syncComponents.sh --nrf-branch v1.2.0 --amf-branch v1.2.0 \
-                              --smf-branch v1.2.0 --spgwu-tiny-branch v1.2.0 \
+                              --smf-branch v1.2.0 --spgwu-tiny-branch v1.1.2 \
                               --udr-branch v1.2.0 --udm-branch v1.2.0 \
                               --ausf-branch v1.2.0
 ---------------------------------------------------------
 OAI-NRF    component branch : v1.2.0
 OAI-AMF    component branch : v1.2.0
 OAI-SMF    component branch : v1.2.0
-OAI-SPGW-U component branch : v1.2.0
+OAI-SPGW-U component branch : v1.1.2
 OAI-UDR    component branch : v1.2.0
 OAI-UDM    component branch : v1.2.0
 OAI-AUSF   component branch : v1.2.0
