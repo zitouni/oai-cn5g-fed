@@ -14,6 +14,8 @@
 
 Currently there is no special tool for debugging the problems of core network components. Though there are certain methods which we are using in our team to diagnose an issue. 
 
+This page content expects you to have read the [deployment pre-requisites](./DEPLOY_PRE_REQUESITES.md) and try to deploy a [mini](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) normal deployment.
+
 **TABLE OF CONTENTS**
 
 1.  [Building images in debug mode](#1-building-images-in-debug-mode)
@@ -37,7 +39,7 @@ $ vi/vim/nano/subl Dockerfile.amf.ubuntu18
 
 The same can be done for baremetal deployment of any core network function, just build with `Debug` tag in `./build_amf`. There will be no change in running the core network function. Everything will be the same, now when the network function is started there will be extra logs with `[debug]` tag apart from the normal `[info ]`
 
-## 1.1 Building the image with code inside (Only for development pupose)
+## 1.1 Building the image with code inside (Only for development purpose)
 
 If you are interested in doing development you can leave the code inside the container. This is good for developers, they can code in docker-environment. They can even mount the code as a volumne so that they can use their prefered editor (though vim/nano/vi are the best). To do this the dockerfile has to be edited and only the `BUILDER IMAGE` of the file is required the rest `TARGET IMAGE`part including CMD and ENTERYPOINT should be removed. 
 
