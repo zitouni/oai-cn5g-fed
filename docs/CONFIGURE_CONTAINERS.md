@@ -24,13 +24,13 @@
 
     | File Name   | Repository                                   | Location        |
     |:----------- |:-------------------------------------------- |:--------------- |
-    | amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/develop/etc/amf.conf)    |
-    | smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/develop/etc/smf.conf)    |
-    | nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
-    | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/develop/etc/spgw_u.conf) |
-    | udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/develop/etc/udr.conf)   |
-    | udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/develop/etc/udm.conf)   |
-    | ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/develop/etc/ausf.conf)   |
+    | amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/master/etc/amf.conf)    |
+    | smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/master/etc/smf.conf)    |
+    | nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/master/etc/nrf.conf)   |
+    | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/master/etc/spgw_u.conf) |
+    | udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/master/etc/udr.conf)   |
+    | udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/master/etc/udm.conf)   |
+    | ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/master/etc/ausf.conf)   |
 
 - The PLMN, TAC, Operator Key should be properly configured in amf.conf according to gNB and UE
 - In case of a **COTS UE** by default there are two PDN sessions so check the smf.conf to configure the right names for the IMS. Currently some parameters can not be configured via docker-compose.yaml. We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
@@ -117,6 +117,6 @@
 
 Please don't deploy yet!
 
-- If you want to deploy a `mini` OAI 5GCN, checkout this [mini-deployment tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md).
+- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md).
 - If you want to deploy a `basic` OAI 5GCN, checkout this [basic-deployment tutorial](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md).
 

@@ -45,19 +45,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 ## 1. Basic FQDN Deployment Flavours ##
 
-In this tutorial we use FQDN (Fully Qualified Domain Name) feature:
+In this tutorial we use FQDN (Fully Qualified Domain Name) feature.
 
-   - `NRF` is mandatory
-   - each Network Function registers itself to the `NRF` using:
-      - Its IP address
-      - But also the name of the service
-   - When a Network requires to communicate to another Network function
-      - Only the name of the 2nd service needs to be provided
-      - and no more the IP address
-
-The Basic functional 5g core network supports only one scenario:
+The Basic functional 5g core network supports the following scenarios:
 
     - Scenario I:  AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL
+    - Scenario II:  AMF, SMF, UPF (SPGWU), UDM, UDR, AUSF, MYSQL
 
 ## 2. Pre-requisites ##
 
@@ -69,21 +62,21 @@ This section is similar to the [Section 3 in the basic-deployment](./DEPLOY_SA5G
 
 ## 4. Configuring Host Machines ##
 
-This section is similar to the [Section 4 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#4-configuring-host-machines).
+This section is similar to the [Section 4 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#4-configuring-host-machines).
 
 ## 5. Configuring the OAI-5G Core Network Functions ##
 
 ### 5.1. Core Network Configuration ###
 
-This section is similar to the [Section 5.1 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#51-core-network-configuration).
+This section is similar to the [Section 5.1 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#51-core-network-configuration).
 
 ### 5.2. User Subscprition Profile ###
 
-This section is similar to the [Section 5.2 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#52-user-subscprition-profile).
+This section is similar to the [Section 5.2 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#52-user-subscprition-profile).
 
 ## 6. Configuring DsTester Scenario ##
 
-This section is similar to the [Section 6 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#6-configuring-dstester-scenario).
+This section is similar to the [Section 6 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#6-configuring-dstester-scenario).
 
 ## 7. Deploying OAI 5g Core Network ##
 
