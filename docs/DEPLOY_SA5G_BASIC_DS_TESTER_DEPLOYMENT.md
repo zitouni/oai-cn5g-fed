@@ -51,11 +51,6 @@ The Basic functional 5g core network can be deployed into 2 scenarios:
     - Scenario I:  AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL
     - Scenario II:  AMF, SMF, UPF (SPGWU), UDM, UDR, AUSF, MYSQL
 
-`Scenario II` is not using the `NRF` component:
-
-*  Services can no more be identified using `FQDN`
-*  They shall be identified using hard-coded IP addresses
-
 ## 2. Pre-requisites ##
 
 The container images are built using `docker build` command on Ubuntu 18.04 host machine. The base image for all the containers is Ubuntu 18.04. 
@@ -121,7 +116,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 ## 4. Configuring Host Machines ##
 
-This section is similar to the [Section 4 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#4-configuring-host-machines).
+This section is similar to the [Section 4 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#4-configuring-host-machines).
 
 ## 5. Configuring the OAI-5G Core Network Functions ##
 
@@ -131,22 +126,22 @@ The docker-compose file has configuration parameters of each core network compon
 
 | File Name   | Repository                                   | Location        |
 |:----------- |:-------------------------------------------- |:--------------- |
-| amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/develop/etc/amf.conf)    |
-| smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/develop/etc/smf.conf)    |
-| nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
-| spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/gtp_extension_header/etc/spgw_u.conf) |
-| udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/develop/etc/udr.conf)   |
-| udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/develop/etc/udm.conf)   |
-| ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/develop/etc/ausf.conf)   |
+| amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/master/etc/amf.conf)    |
+| smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/master/etc/smf.conf)    |
+| nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/master/etc/nrf.conf)   |
+| spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/master/etc/spgw_u.conf) |
+| udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/master/etc/udr.conf)   |
+| udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/master/etc/udm.conf)   |
+| ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/master/etc/ausf.conf)   |
 
 
 ### 5.2. User Subscprition Profile ###
 
-This section is similar to the [Section 5.2 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#52-user-subscprition-profile).
+This section is similar to the [Section 5.2 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#52-user-subscprition-profile).
 
 ## 6. Configuring DsTester Scenario ##
 
-This section is similar to the [Section 6 in the mini-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#6-configuring-dstester-scenario).
+This section is similar to the [Section 6 in the minimalist-deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#6-configuring-dstester-scenario).
 
 ## 7. Deploying OAI 5g Core Network ##
 

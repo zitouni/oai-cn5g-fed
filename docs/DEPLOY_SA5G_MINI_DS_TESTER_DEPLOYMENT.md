@@ -7,7 +7,7 @@
       </a>
     </td>
     <td style="border-collapse: collapse; border: none; vertical-align: center;">
-      <b><font size = "5">OpenAirInterface 5G Core Network Mini Deployment using Docker-Compose</font></b>
+      <b><font size = "5">OpenAirInterface 5G Core Network Minimalist Deployment using Docker-Compose</font></b>
     </td>
   </tr>
 </table>
@@ -18,7 +18,7 @@
 
 **OVERVIEW**
 
-This tutorial will help in understanding how to deploy a `mini` OAI core network using docker-compose.
+This tutorial will help in understanding how to deploy a `minimalist` OAI core network using docker-compose.
 
 * In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/), a commercial paid gNB emulator.
 * Though, instead of this, readers can also use `gNBsim` (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md).
@@ -32,7 +32,7 @@ Please follow the tutorial step by step to create a stable working testbed.
 
 **TABLE OF CONTENTS**
 
-1.  [Mini Deployment Flavours](#1-mini-deployment-flavours)
+1.  [Minimalist Deployment Flavours](#1-minimalist-deployment-flavours)
 2.  [Pre-requisites](#2-pre-requisites)
 3.  [Network Function Container Images](#2-network-function-container-images)
 4.  [Configuring Host Machines](#4-configuring-host-machines)
@@ -44,17 +44,12 @@ Please follow the tutorial step by step to create a stable working testbed.
 10. [Demo Video](#10-demo-video)
 11. [Notes](#11-notes)
 
-## 1. Mini Deployment Flavours ##
+## 1. Minimalist Deployment Flavours ##
 
-The Mini functional 5g core network can be deployed into 2 scenarios:
+The `Minimalist` functional 5g core network can be deployed into 2 scenarios:
 
     - Scenario I:  AMF, SMF, UPF (SPGWU), NRF, MYSQL
     - Scenario II:  AMF, SMF, UPF (SPGWU), MYSQL
-
-`Scenario II` is not using the `NRF` component:
-
-*  Services can no more be identified using `FQDN`
-*  They shall be identified using hard-coded IP addresses
 
 ## 2. Pre-requisites ##
 
@@ -234,10 +229,10 @@ The docker-compose file has configuration parameters of each core network compon
 
 | File Name   | Repository                                   | Location        |
 | ----------- | -------------------------------------------- | --------------- |
-| amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/develop/etc/amf.conf)    |
-| smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/develop/etc/smf.conf)    |
-| nrf.conf    | (Gilab) cn5g/oai-cn5g-nrf                    | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
-| spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/gtp_extension_header/etc/spgw_u.conf) |
+| amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/master/etc/amf.conf)    |
+| smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/master/etc/smf.conf)    |
+| nrf.conf    | (Gilab) cn5g/oai-cn5g-nrf                    | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/master/etc/nrf.conf)   |
+| spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/master/etc/spgw_u.conf) |
 
 ### 5.2. User Subscprition Profile ###
 
