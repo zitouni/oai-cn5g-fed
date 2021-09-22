@@ -15,16 +15,12 @@ spec:
     metadata:
       labels:
         {{- include "oai-ausf.selectorLabels" . | nindent 8 }}
-    {{- if .Values.multus.create }}
-      annotations:
-        k8s.v1.cni.cncf.io/networks: {{ .Chart.Name }}-{{ .Values.namespace }}-net1
-    {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
     {{- if .Values.imagePullSecrets }}
       imagePullSecrets:
-        {{- toYaml . | nindent 8 }}
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
       - name: tcpdump
@@ -58,6 +54,27 @@ spec:
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+        {{- if .Values.readinessProbe}}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
+        {{- if .Values.livenessProbe}}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 10
+          periodSeconds: 5
+        {{- end}}
         ports:
         - containerPort: {{ .Values.service.httpPort }}
           name: http
@@ -135,6 +152,9 @@ spec:
         persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ .Chart.Name }}-health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler
@@ -145,4 +165,4 @@ spec:
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}
-      {{- end }
+      {{- end }}

@@ -12,4 +12,4 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-health-cm
 data:
-  {{ (.Files.Glob "scripts/live-ready.sh").AsConfig | indent 2 }}
+  {{ (.Files.Glob "scripts/live-ready.sh").AsConfig | indent 2 | trim }}

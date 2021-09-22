@@ -15,13 +15,13 @@ spec:
     metadata:
       labels:
         {{- include "oai-udm.selectorLabels" . | nindent 8 }}
-    {{- if .Values.multus.create }}
-      annotations:
-        k8s.v1.cni.cncf.io/networks: {{ .Chart.Name }}-{{ .Values.namespace }}-net1
-    {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -50,6 +50,27 @@ spec:
           limits:
             memory: {{ .Values.resources.limits.memory | quote }}
             cpu: {{ .Values.resources.limits.cpu | quote }}
+        {{- end}}
+        volumeMounts:
+        - mountPath: /scripts
+          name: scripts
+        {{- if .Values.readinessProbe}}
+        readinessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 5
+          periodSeconds: 5
+        {{- end}}
+        {{- if .Values.livenessProbe}}
+        livenessProbe:
+          exec:
+            command:
+            - sh
+            - /scripts/live-ready.sh
+          initialDelaySeconds: 10
+          periodSeconds: 5
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
@@ -135,6 +156,9 @@ spec:
         persistenceVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
+      - name: scripts
+        configMap:
+          name: {{ .Chart.Name }}-health-cm
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

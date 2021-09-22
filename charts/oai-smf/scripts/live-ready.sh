@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 STATUS=0
 SMF_IP_SBI_INTERFACE=$(ifconfig $SMF_INTERFACE_NAME_FOR_SBI | grep inet | awk {'print $2'})

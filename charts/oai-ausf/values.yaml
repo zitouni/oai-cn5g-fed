@@ -8,8 +8,8 @@ namespace: "oai"
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-ausf # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+  repository: oai-ausf   ## rdefosseoai/oai-ausf # image name either locally present or in a public/private repository
+  version: develop       ## latest/v1.2.0 tag for stable and develop for experimental
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -20,7 +20,9 @@ tcpdumpimage:
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
-imagePullSecrets: []
+## good to use when pulling images from docker-hub mention 
+#imagePullSecrets: 
+#  - name: "personalkey"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -46,12 +48,6 @@ start:
   ausf: true
   tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
-multus:
-  create: false
-  n4IPadd: "192.168.101.131"
-  n4Netmask: "26"
-  n4Gw: "192.168.101.128"
-
 config:
   tz: "Europe/Paris"
   instanceId: "0"
@@ -60,13 +56,14 @@ config:
   sbiIfName: "eth0"
   sbiPort: "80"
   useFqdnDns: "yes"
-  udmIpAddress: "192.168.101.130"
+  udmIpAddress: "127.0.0.1"
   udmPort: "80"
   udmVersionNb: "v1"
   udmFqdn: "oai-udm-svc"
 
 persistence:
   sharedvolume: false
+  volumneName: managed-nfs-storage
   size: 1Gi
 
 resources:
@@ -78,8 +75,12 @@ resources:
    cpu: 100m
    memory: 256Mi
 
+readinessProbe: true
+
+livenessProbe: true
+
 terminationGracePeriodSeconds: 30
 
 nodeSelector: {}
 
-nodeName:
+nodeName: 

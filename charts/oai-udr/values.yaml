@@ -45,11 +45,6 @@ start:
   udr: true
   tcpdump: false #start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
 
-multus:
-  create: false
-  n4IPadd: "192.168.101.129"
-  n4Netmask: "26"
-  n4Gw: "192.168.101.128"
 
 config:
   tz: "Europe/Paris"
