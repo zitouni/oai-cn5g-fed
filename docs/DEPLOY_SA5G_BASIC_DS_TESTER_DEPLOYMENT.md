@@ -13,7 +13,7 @@
 </table>
 
 
-![SA dsTest Demo](./images/docker-compose/5gCN-basic.png)
+![SA dsTest Demo](./images/docker-compose/5gCN-basic.jpg)
 
 **OVERVIEW**
 
