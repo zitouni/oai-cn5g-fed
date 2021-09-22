@@ -17,11 +17,19 @@ spec:
         {{- include "oai-smf.selectorLabels" . | nindent 8 }}
     {{- if .Values.multus.create }}
       annotations:
-        k8s.v1.cni.cncf.io/networks: {{ .Chart.Name }}-{{ .Values.namespace }}-n4-net1
+        k8s.v1.cni.cncf.io/networks: >-
+          [{
+                 "name": "{{ .Chart.Name }}-{{ .Values.namespace }}-n4-net1",
+                 "default-route": ["{{ .Values.multus.n4Gw }}"]
+          }]
     {{- end }}
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -62,7 +70,7 @@ spec:
             command:
             - sh
             - /scripts/live-ready.sh
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
         ports:

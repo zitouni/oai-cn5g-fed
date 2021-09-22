@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 STATUS=0
 SGW_PORT_FOR_S1U_S12_S4_UP=2152

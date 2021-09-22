@@ -8,8 +8,8 @@ namespace: "oai"
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-udm # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+  repository: oai-udm          ## rdefosseoai/oai-udm # image name either locally present or in a public/private repository
+  version: develop             ## latest/v1.1.2 stable and develop for experimental
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -19,6 +19,10 @@ tcpdumpimage:
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
+
+## good to use when pulling images from docker-hub mention 
+#imagePullSecrets: 
+#  - name: "personalkey"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -44,12 +48,6 @@ start:
   udm: true
   tcpdump: false
 
-multus:
-  create: false
-  n4IPadd: "192.168.101.130"
-  n4Netmask: "26"
-  n4Gw: "192.168.101.128"
-
 config:
   tz: "Europe/Paris"
   instance: "0"
@@ -59,7 +57,7 @@ config:
   sbiPort: "80"
   udmVersionNb: "v1"
   useFqdnDns: "yes"
-  udrIpAddress: "192.168.101.129"
+  udrIpAddress: "127.0.0.1"
   udrPort: "80"
   udrVersionNb: "v1"
   udrFqdn: "oai-udr-svc"
@@ -78,8 +76,12 @@ resources:
    cpu: 100m
    memory: 256Mi
 
+readinessProbe: true
+
+livenessProbe: true
+
 terminationGracePeriodSeconds: 30
 
 nodeSelector: {}
 
-nodeName:
+nodeName: 

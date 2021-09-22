@@ -26,6 +26,10 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -75,7 +79,7 @@ spec:
             command:
             - sh
             - /scripts/live-ready.sh
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
         ports:
@@ -230,11 +234,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfFqdn0
-          - name: SELECTED_0
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: selected0
           - name: SMF_INSTANCE_ID_1
             valueFrom:
               configMapKeyRef:
@@ -255,11 +254,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfFqdn1
-          - name: SELECTED_1
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: selected1
           - name: NRF_IPV4_ADDRESS
             valueFrom:
               configMapKeyRef:
@@ -285,6 +279,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: ausfIpv4Addr
+          - name: AUSF_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: ausfFqdn
           - name: AUSF_PORT
             valueFrom:
               configMapKeyRef:
@@ -295,11 +294,6 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: ausfApiVersion
-          - name: AUSF_FQDN
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: ausfFqdn
           - name: NF_REGISTRATION
             valueFrom:
               configMapKeyRef:
@@ -310,16 +304,16 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfSelection
-          - name: USE_FQDN_DNS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useFqdnDns
           - name: EXTERNAL_AUSF
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: externalAusf
+          - name: USE_FQDN_DNS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useFqdnDns
           - name: MYSQL_SERVER
             valueFrom:
               configMapKeyRef:
