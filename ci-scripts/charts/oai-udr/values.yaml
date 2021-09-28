@@ -59,7 +59,7 @@ config:
   udrInterfaceNameForNudr: "eth0"
   udrInterfaceHttp1PortForNudr: "80"
   udrInterfaceHttp2PortForNudr: "8080"
-  udrApiVersion: "v1"
+  udrApiVersion: "v2"
   mySqlServer: "mysql"
   mySqlUser: "root"
   mySqlPass: "linux"

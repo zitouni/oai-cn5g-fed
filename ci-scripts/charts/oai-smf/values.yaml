@@ -71,7 +71,7 @@ config:
   amfFqdn: "oai-smf-svc"
   udmIpv4Address: "127.0.0.1"
   udmPort: "80"
-  udmApiVersion: "v1"
+  udmApiVersion: "v2"
   udmFqdn: "localhost"
   nrfIpv4Address: "127.0.0.1"
   nrfPort : "80"
