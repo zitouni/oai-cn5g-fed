@@ -72,7 +72,7 @@ config:
   amfFqdn: "oai-amf-svc" # configure if NRF is not used
   udmIpv4Address: "127.0.0.1" # configure if UDM is used
   udmPort: "80" # configure if UDM is used
-  udmApiVersion: "v1" # configure if UDM is used
+  udmApiVersion: "v2" # configure if UDM is used
   udmFqdn: "localhost" # configure if UDM is used
   nrfIpv4Address: "127.0.0.1" # configure if NRF can only be reached using ip-address
   nrfPort : "80" 
