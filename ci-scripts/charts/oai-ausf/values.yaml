@@ -61,7 +61,7 @@ config:
   useFqdnDns: "yes"
   udmIpAddress: "192.168.101.130"
   udmPort: "80"
-  udmVersionNb: "v1"
+  udmVersionNb: "v2"
   udmFqdn: "oai-udm-svc"
 
 persistence:
