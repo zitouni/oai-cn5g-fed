@@ -58,11 +58,11 @@ config:
   udmName: "OAI_UDM"
   sbiIfName: "eth0"
   sbiPort: "80"
-  udmVersionNb: "v1"
+  udmVersionNb: "v2"
   useFqdnDns: "yes"
   udrIpAddress: "192.168.101.129"
   udrPort: "80"
-  udrVersionNb: "v1"
+  udrVersionNb: "v2"
   udrFqdn: "oai-udr-svc"
 
 persistence:
