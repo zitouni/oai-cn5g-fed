@@ -8,8 +8,8 @@ namespace: "oai"
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-spgwu-tiny
-  version: v1.1.2
+  repository: oai-spgwu-tiny # dockerhub rdefosseoai/oai-spgwu-tiny
+  version: v1.1.2            # develop for experimental feature in that case check the configuration file 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -19,6 +19,10 @@ tcpdumpimage:
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
+
+## good to use when pulling images from docker-hub mention 
+#imagePullSecrets: 
+#  - name: "personalkey"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -49,11 +53,12 @@ multus:
   n3Ip: "192.168.18.179"
   n3Netmask: "24"
   sgiGw: "192.168.18.129"
+  hostInterface: "bond0"
 
 config:
   gwId: 1 # no need to configure
-  mnc: 208 # should match with AMF and SMF
-  mcc: 95 # should match with AMF and SMF
+  mcc: 208 # should match with AMF and SMF
+  mnc: 95 # should match with AMF and SMF
   realm: "3gpp.org" # no need to configure
   pidDirectory: "/var/run" # no need to configure
   sgwS1uIf: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
@@ -68,9 +73,9 @@ config:
   netUeNatOption: "yes" # yes to get the traffic out towards internet
   gtpExtentionHeaderPresent: "yes" # needed for 5G (Always true)
   netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
-  nssaiSst0: 222 # should match with SMF information
-  nssaiSd0: 123  # should match with SMF information
-  dnn0: "default" # should match with SMF information
+  nssaiSst0: 1 # should match with SMF information
+  nssaiSd0: 1  # should match with SMF information
+  dnn0: "oai" # should match with SMF information
   spgwc0IpAdd: "127.0.0.1" # SMF ip-address incase NRF is not used to initiate a PFCP session
   bypassUlPfcpRules: "no"
   enable5GFeatures: "yes" # This will make SPGWU to function as 5G UPF, if set no then it will work for 4G

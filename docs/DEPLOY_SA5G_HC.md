@@ -16,7 +16,7 @@
 
 The cloud native network functions in production will be deployed using a production grade container orchestrator like kubernetes or Openshift. OAI 5g Core network is being designed to keep up with the latest cloud native deployment scenarios. This release of helm charts is focused on deploying each Cloud-native Network Function(CNF) individually.
 
-![Helm Chart Deployment](./images/helm_diag.png)
+![Helm Chart Deployment](./images/helm_diagram.png)
 
 
 **Reading time: ~40mins**
@@ -56,10 +56,10 @@ Clone the helm chart repository from gitlab repository
 
 ```
 $ git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
-$ git checkout v1.1.0 #check the tag v1.1.0
+$ git checkout v1.2.0 #check the tag v1.2.0
 $ cd charts
 $ ls charts
-mysql  oai-amf  oai-nrf  oai-smf  oai-spgwu-tiny
+mysql  oai-amf  oai-ausf  oai-nrf  oai-smf  oai-spgwu-tiny  oai-udm  oai-udr
 ```
 
 Helm chart of every network function looks similar and has the below structure. Only the chart of mysql database is different and the NRF helm chart has an extra pvc.yaml to create a presistant volume for storing tcpdump.
@@ -127,7 +127,7 @@ namespace: "oai"
 nfimage:
   registry: local
   repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+  version: v1.2.0 # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -186,7 +186,7 @@ namespace: "oai" # namespace where SMF will be deployed
 nfimage:
   registry: local
   repository: rdefosseoai/oai-smf
-  version: v1.1.0
+  version: v1.2.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -252,7 +252,7 @@ namespace: "oai"
 nfimage:
   registry: local
   repository: rdefosseoai/oai-nrf
-  version: v1.1.0
+  version: v1.2.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -289,7 +289,7 @@ In above statement change `imsi`, `imei`, `key` and `opc` with appropriate value
 
 Helm charts have an order of deployment for the proper configuration of core network. 
 
-`mysql --> nrf --> amf --> smf --> upf(spgwu)`
+`mysql --> nrf --> udr --> udm --> ausf --> amf --> smf --> upf(spgwu)`
 
 Once the configuration is finished the charts can be deployed with a user who has the rights to
 
@@ -299,11 +299,17 @@ Once the configuration is finished the charts can be deployed with a user who ha
 
 ```
 $ helm install mysql mysql/
-# wait for the pod to be ready 
-$ helm install amf oai-amf/
-# wait for the pod to be ready 
+# wait for the pod to be ready  
 $ helm install nrf oai-nrf/
-# wait for the pod to be ready 
+# wait for the pod to be ready
+$ helm install udr oai-udr/
+# wait for the pod to be ready
+$ helm install udm oai-udm/
+# wait for the pod to be ready
+$ helm install ausf oai-ausf/
+# wait for the pod to be ready
+$ helm install amf oai-amf/
+# wait for the pod to be ready
 $ helm install smf oai-smf/
 # wait for the pod to be ready 
 $ helm install upf oai-spgwu-tiny/
@@ -312,7 +318,10 @@ $ helm list
 NAME  NAMESPACE       REVISION  UPDATED                                   STATUS    CHART                 APP VERSION
 amf   oai-5g-develop  1         2021-08-02 14:45:20.055915967 +0200 CEST  deployed  oai-amf-1.1.0         1.1.0      
 mysql oai-5g-develop  1         2021-08-02 13:19:21.141268411 +0200 CEST  deployed  mysql-1.6.9           5.7.30     
-nrf   oai-5g-develop  1         2021-08-02 14:39:05.615418329 +0200 CEST  deployed  oai-nrf-1.1.0         1.1.0      
+nrf   oai-5g-develop  1         2021-08-02 14:39:05.615418329 +0200 CEST  deployed  oai-nrf-1.1.0         1.1.0
+udr   oai-5g-develop  1         2021-08-02 14:41:06.626418423 +0200 CEST  deployed  oai-udr-1.1.0         1.1.0
+udm   oai-5g-develop  1         2021-08-02 14:42:07.715418321 +0200 CEST  deployed  oai-udm-1.1.0         1.1.0
+ausf  oai-5g-develop  1         2021-08-02 14:43:05.815319330 +0200 CEST  deployed  oai-ausf-1.1.0        1.1.0      
 smf   oai-5g-develop  1         2021-08-02 14:52:53.573249685 +0200 CEST  deployed  oai-smf-1.1.0         1.1.0      
 upf   oai-5g-develop  1         2021-08-02 14:49:48.741260605 +0200 CEST  deployed  oai-spgwu-tiny-1.1.2  1.1.2  
 $ kubectl get pods
@@ -320,6 +329,9 @@ NAME                              READY   STATUS    RESTARTS   AGE
 mysql-5dd98b7d97-gh4bz            1/1     Running   0          20m
 oai-amf-7bb898fc58-56pr5          2/2     Running   0          10m
 oai-nrf-859b987c48-8v94s          2/2     Running   0          16m
+oai-udr-951b984c58-4v34d          2/2     Running   0          15m
+oai-udm-652b687c43-1v261          2/2     Running   0          13m
+oai-ausf-589b183c78-8a92w         2/2     Running   0          11m
 oai-smf-678bbc965f-whdr6          2/2     Running   0          2m46s
 oai-spgwu-tiny-6c4d68fd45-mpv5v   2/2     Running   0          5m51s
 ```

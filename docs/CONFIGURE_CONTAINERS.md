@@ -17,7 +17,6 @@
 
 1.  [Configure](#1-configure-the-containers)
 2.  [Deploy](#2-deploy-the-containers)
-3.  [Networking](#3-networking)
 
 # 1. Configure the containers #
 
@@ -25,10 +24,13 @@
 
     | File Name   | Repository                                   | Location        |
     |:----------- |:-------------------------------------------- |:--------------- |
-    | amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/develop/etc/amf.conf)    |
-    | smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/develop/etc/smf.conf)    |
-    | nrf.conf    | (Gilab) cn5g/oai-cn5g-nrf                    | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/develop/etc/nrf.conf)   |
-    | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/gtp_extension_header/etc/spgw_u.conf) |
+    | amf.conf    | (Gitlab) cn5g/oai-cn5g-amf                   | [etc/amf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/blob/master/etc/amf.conf)    |
+    | smf.conf    | (Gitlab) cn5g/oai-cn5g-smf                   | [etc/smf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-smf/-/blob/master/etc/smf.conf)    |
+    | nrf.conf    | (Gitlab) cn5g/oai-cn5g-nrf                   | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/master/etc/nrf.conf)   |
+    | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/master/etc/spgw_u.conf) |
+    | udr.conf    | (Gitlab) cn5g/oai-cn5g-udr                   | [etc/udr.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr/-/blob/master/etc/udr.conf)   |
+    | udm.conf    | (Gitlab) cn5g/oai-cn5g-udm                   | [etc/udm.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm/-/blob/master/etc/udm.conf)   |
+    | ausf.conf   | (Gitlab) cn5g/oai-cn5g-ausf                  | [etc/ausf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-ausf/-/blob/master/etc/ausf.conf)   |
 
 - The PLMN, TAC, Operator Key should be properly configured in amf.conf according to gNB and UE
 - In case of a **COTS UE** by default there are two PDN sessions so check the smf.conf to configure the right names for the IMS. Currently some parameters can not be configured via docker-compose.yaml. We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
@@ -87,7 +89,9 @@
 
 # 2. Deploy the containers #
 
-- Container deployment has to follow a strict order if the `NRF` is used for `SMF` and `UPF` registration
+## 2.1. Mini Deployment ##
+
+- Container deployment has to follow a strict order if the `NRF` is used for `AMF`, `SMF` and `UPF` registration
 
     ```
     mysql --> oai-nrf --> oai-amf --> oai-smf --> oai-upf
@@ -98,84 +102,21 @@
     mysql --> oai-amf --> oai-smf --> oai-upf
     ```
 
-# 3. Networking #
+## 2.2. Basic Deployment ##
 
-## 3.1. Automatic docker network deployment. ##
+- Container deployment has to follow a strict order if the `NRF` is used for `AUSF`, `UDM`, `UDR`, `AMF`, `SMF` and `UPF` registration
 
-The [docker-compose.yaml](../docker-compose/docker-compose.yaml) will create the network automatically. The bottom section of the file SHALL look like this:
+    ```
+    mysql --> oai-nrf --> oai-udr --> oai-udm --> oai-ausf --> oai-amf --> oai-smf --> oai-upf
+    ```
+- If no nrf then
 
-```bash
-networks:
-    # public_net:
-    #     external:
-    #         name: demo-oai-public-net
-    public_net:
-        driver: bridge
-        name: demo-oai-public-net
-        ipam:
-            config:
-                - subnet: 192.168.70.128/26
-        driver_opts:
-            com.docker.network.bridge.name: "demo-oai"
-```
-
-## 3.2. Manual docker network deployment. ##
-
-At the deployment, if you want to capture initial transactions between the CN5G components, you will have to manually create the network.
-
-First edit [docker-compose.yaml](../docker-compose/docker-compose.yaml) to look like this:
-
-```bash
-networks:
-    public_net:
-        external:
-            name: demo-oai-public-net
-    # public_net:
-    #     driver: bridge
-    #     name: demo-oai-public-net
-    #     ipam:
-    #         config:
-    #             - subnet: 192.168.70.128/26
-    #     driver_opts:
-    #         com.docker.network.bridge.name: "demo-oai"
-```
-
-Then create the docker network:
-
-    ```bash
-    (docker-compose-host)$ docker network create \
-      --driver=bridge \
-      --subnet=192.168.70.128/26 \
-      -o "com.docker.network.bridge.name"="demo-oai" \
-      demo-oai-public-net
-    455631b3749ccd6f10a366cd1c49d5a66cf976d176884252d5d88a1e54049bc5
-    (docker-compose-host)$ ifconfig demo-oai
-    demo-oai: flags=4099<UP,BROADCAST,MULTICAST>  mtu 1500
-            inet 192.168.70.129  netmask 255.255.255.192  broadcast 192.168.70.191
-            ether 02:42:9c:0a:23:44  txqueuelen 0  (Ethernet)
-            RX packets 0  bytes 0 (0.0 B)
-            RX errors 0  dropped 0  overruns 0  frame 0
-            TX packets 0  bytes 0 (0.0 B)
-            TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
-    (docker-compose-host)$ docker network ls
-    NETWORK ID          NAME                  DRIVER              SCOPE
-    d2d34e05bb2d        bridge                bridge              local
-    455631b3749c        demo-oai-public-net   bridge              local
+    ```
+    mysql --> oai-udr --> oai-udm --> oai-ausf --> oai-amf --> oai-smf --> oai-upf
     ```
 
-Finally you can start capturing.
+Please don't deploy yet!
 
-```bash
-tshark -i demo-oai -w 5gcn-deployment.pcap
-```
+- If you want to deploy a `minimalist` OAI 5GCN, checkout this [minimalist-deployment tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md).
+- If you want to deploy a `basic` OAI 5GCN, checkout this [basic-deployment tutorial](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md).
 
-## 3.3. In case you forgot! ##
-
-If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command, 
-
-    ```bash
-    (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
-    (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
-    ```
-
-You are ready to check out the tutorial that [how 5g core works](./DEPLOY_SA5G_WITH_DS_TESTER.md).

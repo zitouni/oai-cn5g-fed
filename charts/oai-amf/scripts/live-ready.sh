@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 STATUS=0
 AMF_PORT_FOR_NGAP=38412
