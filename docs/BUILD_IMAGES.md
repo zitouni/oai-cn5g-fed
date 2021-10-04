@@ -38,7 +38,7 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
 | UDR         | `master`    | `v1.2.0` | X            | X               |
 | UDM         | `master`    | `v1.2.0` | X            | X               |
 | AUSF        | `master`    | `v1.2.0` | X            | X               |
@@ -70,14 +70,14 @@ or a little bit more dangerous
 
 ```bash
 $ ./scripts/syncComponents.sh --nrf-branch v1.2.0 --amf-branch v1.2.0 \
-                              --smf-branch v1.2.0 --spgwu-tiny-branch v1.1.2 \
+                              --smf-branch v1.2.0 --spgwu-tiny-branch v1.1.3 \
                               --udr-branch v1.2.0 --udm-branch v1.2.0 \
                               --ausf-branch v1.2.0
 ---------------------------------------------------------
 OAI-NRF    component branch : v1.2.0
 OAI-AMF    component branch : v1.2.0
 OAI-SMF    component branch : v1.2.0
-OAI-SPGW-U component branch : v1.1.2
+OAI-SPGW-U component branch : v1.1.3
 OAI-UDR    component branch : v1.2.0
 OAI-UDM    component branch : v1.2.0
 OAI-AUSF   component branch : v1.2.0

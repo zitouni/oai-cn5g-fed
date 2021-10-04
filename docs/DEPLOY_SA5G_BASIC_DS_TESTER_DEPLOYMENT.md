@@ -107,7 +107,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.2.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
 | UDR         | `master`    | `v1.2.0` | X            | X               |
 | UDM         | `master`    | `v1.2.0` | X            | X               |
 | AUSF        | `master`    | `v1.2.0` | X            | X               |
