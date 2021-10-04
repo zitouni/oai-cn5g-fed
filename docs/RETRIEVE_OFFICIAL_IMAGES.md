@@ -56,9 +56,9 @@ $ docker image tag rdefosseoai/oai-amf:latest oai-amf:latest
 $ docker image tag rdefosseoai/oai-nrf:latest oai-nrf:latest
 $ docker image tag rdefosseoai/oai-smf:latest oai-smf:latest
 $ docker image tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
-$ docker image tag rdefosseoai/oai-smf:latest oai-udr:latest
-$ docker image tag rdefosseoai/oai-smf:latest oai-udm:latest
-$ docker image tag rdefosseoai/oai-smf:latest oai-ausf:latest
+$ docker image tag rdefosseoai/oai-udr:latest oai-udr:latest
+$ docker image tag rdefosseoai/oai-udm:latest oai-udm:latest
+$ docker image tag rdefosseoai/oai-ausf:latest oai-ausf:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -83,7 +83,7 @@ This repository only has tutorials and Continuous Integration scripts.
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
 | UDR         | `master`    | `v1.2.0` | X            | X               |
 | UDM         | `master`    | `v1.2.0` | X            | X               |
 | AUSF        | `master`    | `v1.2.0` | X            | X               |

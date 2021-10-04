@@ -1,5 +1,14 @@
 # RELEASE NOTES: #
 
+## v1.2.0 -- September 2021 ##
+
+* Incorporation of new public network functions:
+  - AUSF
+  - UDM
+  - UDR
+* New tutorials with these new funtions
+* CI improvements
+
 ## v1.1.0 -- July 2021 ##
 
 * Improvements on Continuous Integration:

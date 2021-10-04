@@ -107,7 +107,7 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | AMF         | `master`    | `v1.2.0` | X            | X               |
 | SMF         | `master`    | `v1.2.0` | X            | X               |
 | NRF         | `master`    | `v1.2.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
 
 - In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
 
