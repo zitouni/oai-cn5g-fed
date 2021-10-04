@@ -2,7 +2,6 @@ archives/
 DS-TEST-RESULTS/
 ci-scripts/mysql-complete.cmd
 ci-scripts/temp/ci-*.sh
-spgw_u.conf
 deploy_results_oai_cn5g.html
 ds_tester_results_oai_cn5g.html
 cn5g_fed_docker_logs.zip

@@ -1,5 +1,5 @@
 #!/bin/bash
-set -eo pipefail
+#set -eo pipefail
 
 STATUS=0
 NRF_IP_SBI_INTERFACE=$(ifconfig $NRF_INTERFACE_NAME_FOR_SBI | grep inet | awk {'print $2'})

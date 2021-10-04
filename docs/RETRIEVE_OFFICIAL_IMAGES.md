@@ -33,13 +33,20 @@ Username:
 Password:
 ```
 
+The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `rdefosseoai` account. Two important things to be noted:
+  - We will keep pushing to the `latest` tag when a milestone is reached.
+  - We are making pushes on the `develop` tag whenever a contribution has been accepted. These images are **EXPERIMENTAL**.
+
 Now pull images.
 
 ```bash
-$ docker pull rdefosseoai/oai-amf
-$ docker pull rdefosseoai/oai-nrf
-$ docker pull rdefosseoai/oai-spgwu-tiny
-$ docker pull rdefosseoai/oai-smf
+$ docker pull rdefosseoai/oai-amf:latest
+$ docker pull rdefosseoai/oai-nrf:latest
+$ docker pull rdefosseoai/oai-spgwu-tiny:latest
+$ docker pull rdefosseoai/oai-smf:latest
+$ docker pull rdefosseoai/oai-udr:latest
+$ docker pull rdefosseoai/oai-udm:latest
+$ docker pull rdefosseoai/oai-ausf:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
@@ -49,6 +56,9 @@ $ docker image tag rdefosseoai/oai-amf:latest oai-amf:latest
 $ docker image tag rdefosseoai/oai-nrf:latest oai-nrf:latest
 $ docker image tag rdefosseoai/oai-smf:latest oai-smf:latest
 $ docker image tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
+$ docker image tag rdefosseoai/oai-udr:latest oai-udr:latest
+$ docker image tag rdefosseoai/oai-udm:latest oai-udm:latest
+$ docker image tag rdefosseoai/oai-ausf:latest oai-ausf:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -65,22 +75,25 @@ We will push new versions when new features are validated.
 
 This repository only has tutorials and Continuous Integration scripts.
 
-**At the time of writing (2021/07/22), the release tag is `v1.1.0`.**
+**At the time of writing (2021/09/09), the release tag is `v1.2.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.1.0` |              |                 |
-| AMF         | `master`    | `v1.1.0` | X            | X               |
-| SMF         | `master`    | `v1.1.0` | X            | X               |
-| NRF         | `master`    | `v1.1.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.2` | X            | X               |
+| FED REPO    | N/A         | `v1.2.0` |              |                 |
+| AMF         | `master`    | `v1.2.0` | X            | X               |
+| SMF         | `master`    | `v1.2.0` | X            | X               |
+| NRF         | `master`    | `v1.2.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
+| UDR         | `master`    | `v1.2.0` | X            | X               |
+| UDM         | `master`    | `v1.2.0` | X            | X               |
+| AUSF        | `master`    | `v1.2.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.1.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v1.2.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.1.0
+$ git checkout -f v1.2.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
@@ -89,6 +102,9 @@ OAI-NRF    component branch : master
 OAI-AMF    component branch : master
 OAI-SMF    component branch : master
 OAI-SPGW-U component branch : master
+OAI-UDR    component branch : master
+OAI-UDM    component branch : master
+OAI-AUSF   component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init

@@ -26,6 +26,10 @@ spec:
     spec:
       securityContext:
         {{- toYaml .Values.podSecurityContext | nindent 8 }}
+    {{- if .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{ toYaml .Values.imagePullSecrets | indent 8 }}
+    {{- end }}
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
@@ -75,7 +79,7 @@ spec:
             command:
             - sh
             - /scripts/live-ready.sh
-          initialDelaySeconds: 5
+          initialDelaySeconds: 10
           periodSeconds: 5
         {{- end}}
         ports:
@@ -275,6 +279,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: ausfIpv4Addr
+          - name: AUSF_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: ausfFqdn
           - name: AUSF_PORT
             valueFrom:
               configMapKeyRef:
@@ -295,6 +304,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: smfSelection
+          - name: EXTERNAL_AUSF
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: externalAusf
           - name: USE_FQDN_DNS
             valueFrom:
               configMapKeyRef:

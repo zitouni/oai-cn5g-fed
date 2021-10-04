@@ -43,9 +43,9 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 <br/>
 
-This tutorial is a extension of previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md). In previous tutorial we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
+This tutorial is an extension of a previous tutorial: [testing a `minimalist` deployment with dsTester](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md). In previous tutorial, we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
 
-Moreover, there are various other opensource gnb/ue simulator tools are available for SA5G test. In this tutorial we use opensource simulator tool called gnbsim. With the help of gnbsim tool, we can perform very basic SA5G test by simulating one gnb and one ue.
+Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G test. In this tutorial, we use an opensource simulator tool called `gnbsim`. With the help of `gnbsim` tool, we can perform very basic SA5G test by simulating one gnb and one ue.
 
 ##### About gnbsim -
 
@@ -59,27 +59,12 @@ we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
 ```bash
-oai-cn5g-fed/docker-compose$ ./core-network.sh start nrf spgwu
-Starting 5gcn components in the order nrf, mysql, amf, smf, spgwu...
-Creating mysql   ... done
-Creating oai-nrf ... done
-Creating oai-amf   ... done
-Creating oai-spgwu ... done
-Creating oai-smf   ... done
-Creating oai-ext-dn ... done
-Core network started, checking the health status of the containers...
-oai-nrf : "healthy", mysql : "starting", oai-amf : "healthy", oai-smf : "healthy", oai-spgwu : "healthy"
-All components are healthy...
-Checking the if the containers are configured...
-
-Checking if SMF and UPF registered with nrf core network
-
-For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type='SMF' {"_links":{"item":[{"href":"192.168.70.133"}],"self":""}}
-SMF and UPF are registered to NRF...
-
-Core network is configured and healthy, total time taken 43187 milli seconds
-oai-cn5g-fed/docker-compose$
+oai-cn5g-fed/docker-compose$ ./core-network.py --type start-mini --fqdn no --scenario 1
+...
+[2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
+
+More details in [section 7 of the `minimalist` tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#7-deploying-oai-5g-core-network).
 
 ```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
@@ -330,21 +315,8 @@ Service gnbsim is  stopped
 
 * Undeploy the core network
 ```bash
-/oai-cn5g-fed/docker-compose$ ./core-network.sh stop nrf spgwu
-Stopping service nrf ...
-Stopping oai-amf    ... done
-Stopping oai-ext-dn ... done
-Stopping oai-smf    ... done
-Stopping oai-spgwu  ... done
-Stopping oai-nrf    ... done
-Stopping mysql      ... done
-Removing oai-amf    ... done
-Removing oai-ext-dn ... done
-Removing oai-smf    ... done
-Removing oai-spgwu  ... done
-Removing oai-nrf    ... done
-Removing mysql      ... done
-Network demo-oai-public-net is external, skipping
-Service nrf is  stopped
+oai-cn5g-fed/docker-compose$ ./core-network.py --type stop-mini --fqdn no --scenario 1
+...
+[2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
