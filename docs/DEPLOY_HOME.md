@@ -22,5 +22,6 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
     - [Using Helm Chart](./DEPLOY_SA5G_HC.md)
     - [Using Virtual Machine, deploy and test with a Commercial UE](./DEPLOY_SA5G_VM_COTSUE.md)
     - [Using Docker-Compose, perform a `minimalist` deployment and test with `gnbsim`](./DEPLOY_SA5G_WITH_GNBSIM.md)
+    - [Using Docker-Compose, perform a `minimalist` deployment and test with OAI RF simulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator)
 - The Developer Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
