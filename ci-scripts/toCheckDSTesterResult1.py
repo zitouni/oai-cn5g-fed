@@ -36,7 +36,7 @@ try:
                 if result:
                     result1 = re.search('^(.*/)([^/]*)$', str(result.group(0)))
                     filename = re.search('[^/]*$', str(result1.group(0))) 
-                    subprocess.check_output(f'cp {result1.group(1)}* DS-TEST-RESULTS/', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                    subprocess.check_output(f'cp -r {result1.group(1)}* DS-TEST-RESULTS/', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
                 locexist = True
 except IOError:
     sys.exit("File not accessible to check DSTester Summary: DS-TEST-RESULTS/dsTester_Summary.txt")
