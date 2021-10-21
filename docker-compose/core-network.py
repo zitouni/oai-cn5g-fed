@@ -1,24 +1,25 @@
-#/*
-# * Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
-# * contributor license agreements.  See the NOTICE file distributed with
-# * this work for additional information regarding copyright ownership.
-# * The OpenAirInterface Software Alliance licenses this file to You under
-# * the OAI Public License, Version 1.1  (the "License"); you may not use this file
-# * except in compliance with the License.
-# * You may obtain a copy of the License at
-# *
-# *       http://www.openairinterface.org/?page_id=698
-# *
-# * Unless required by applicable law or agreed to in writing, software
-# * distributed under the License is distributed on an "AS IS" BASIS,
-# * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-# * See the License for the specific language governing permissions and
-# * limitations under the License.
-# *-------------------------------------------------------------------------------
-# * For more information about the OpenAirInterface (OAI) Software Alliance:
-# *       contact@openairinterface.org
-# */
-#---------------------------------------------------------------------
+"""
+Licensed to the OpenAirInterface (OAI) Software Alliance under one or more
+contributor license agreements.  See the NOTICE file distributed with
+this work for additional information regarding copyright ownership.
+The OpenAirInterface Software Alliance licenses this file to You under
+the OAI Public License, Version 1.1  (the "License"); you may not use this file
+except in compliance with the License.
+You may obtain a copy of the License at
+
+      http://www.openairinterface.org/?page_id=698
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+------------------------------------------------------------------------------
+For more information about the OpenAirInterface (OAI) Software Alliance:
+      contact@openairinterface.org
+
+------------------------------------------------------------------------------
+"""
 
 import yaml
 import re
@@ -32,6 +33,14 @@ logging.basicConfig(
     format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"
 )
 
+# Docker Compose files
+MINI_W_NRF = 'docker-compose-mini-nrf.yaml' 
+MINI_NO_NRF = 'docker-compose-mini-nonrf.yaml'
+BASIC_W_NRF = 'docker-compose-basic-nrf.yaml'
+BASIC_NO_NRF = 'docker-compose-basic-nonrf.yaml'
+BASIC_VPP_W_NRF = 'docker-compose-basic-vpp-nrf.yaml'
+BASIC_VPP_NO_NRF = 'docker-compose-basic-vpp-nonrf.yaml'
+
 def _parse_args() -> argparse.Namespace:
     """Parse the command line args
 
@@ -41,6 +50,7 @@ def _parse_args() -> argparse.Namespace:
     example_text = '''example:
         python3 core-network.py --type start-mini
         python3 core-network.py --type start-basic
+        python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
         python3 core-network.py --type start-mini --fqdn no --scenario 2
         python3 core-network.py --type start-basic --fqdn no --scenario 2'''
@@ -54,8 +64,8 @@ def _parse_args() -> argparse.Namespace:
         '--type', '-t',
         action='store',
         required=True,
-        choices=['start-mini', 'start-basic', 'stop-mini', 'stop-basic'],
-        help='Functional type of 5g core network ("start-mini"|"start-basic"|"stop-mini"|"stop-basic")',
+        choices=['start-mini', 'start-basic', 'start-basic-vpp', 'stop-mini', 'stop-basic', 'stop-basic-vpp'],
+        help='Functional type of 5g core network ("start-mini"|"start-basic"|"start-basic-vpp"|"stop-mini"|"stop-basic"|"stop-basic-vpp")',
     )
     # Deployment scenario with FQDN/IP based
     parser.add_argument(
@@ -182,37 +192,43 @@ def run_cmd(cmd):
         pass
     return result
 
-
 if __name__ == '__main__':
 
-    # Docker Compose files
-    file_name1 = 'docker-compose-mini-nrf.yaml' 
-    file_name2 = 'docker-compose-mini-nonrf.yaml'
-    file_name3 = 'docker-compose-basic-nrf.yaml'
-    file_name4 = 'docker-compose-basic-nonrf.yaml'
     # Parse the arguments to get the deployment instruction
     args = _parse_args()
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(file_name1, 5)
-        # Mini function with noNRF
+            deploy(MINI_W_NRF, 5)
+        # Mini function without NRF
         elif args.scenario == '2':
-            deploy(file_name2, 4)
+            deploy(MINI_NO_NRF, 4)
     elif args.type == 'start-basic':
         # Basic function with NRF
         if args.scenario == '1':
-            deploy(file_name3, 8)
-        # Basic function with noNRF
+            deploy(BASIC_W_NRF, 8)
+        # Basic function without NRF
         elif args.scenario == '2':
-            deploy(file_name4, 7)
+            deploy(BASIC_NO_NRF, 7)
+    elif args.type == 'start-basic-vpp':
+        # Basic function with NRF and VPP-UPF
+        if args.scenario == '1':
+            deploy(BASIC_VPP_W_NRF, 8)
+        # Basic function without NRF but with VPP-UPF
+        elif args.scenario == '2':
+            deploy(BASIC_VPP_NO_NRF, 7)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
-            undeploy(file_name1)
+            undeploy(MINI_W_NRF)
         elif args.scenario == '2':
-            undeploy(file_name2)
+            undeploy(MINI_NO_NRF)
     elif args.type == 'stop-basic':
         if args.scenario == '1':
-            undeploy(file_name3)
+            undeploy(BASIC_W_NRF)
         elif args.scenario == '2':
-            undeploy(file_name4)
+            undeploy(BASIC_NO_NRF)
+    elif args.type == 'stop-basic-vpp':
+        if args.scenario == '1':
+            undeploy(BASIC_VPP_W_NRF)
+        elif args.scenario == '2':
+            undeploy(BASIC_VPP_NO_NRF)
