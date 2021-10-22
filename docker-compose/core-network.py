@@ -121,7 +121,7 @@ def deploy(file_name, ct):
         logging.error('\033[0;31m Core network is un-healthy, please see below for more details\033[0m....')
         print(res)
         exit(-1)
-    check_config()
+    check_config(file_name)
 
 def undeploy(file_name):
     """UnDeploy the docker container
@@ -138,7 +138,7 @@ def undeploy(file_name):
     logging.debug('\033[0;32m OAI 5G core components are UnDeployed\033[0m....')
 
 
-def check_config():
+def check_config(file_name):
     """Checks the container configurations
 
     Returns:
@@ -148,28 +148,36 @@ def check_config():
     logging.debug('\033[0;34m Checking if the containers are configured\033[0m....')
     # With NRF configuration check
     if args.scenario == '1':
-        logging.debug('\033[0;34m Checking if SMF and UPF registered with nrf core network\033[0m....')
+        logging.debug('\033[0;34m Checking if AMF, SMF and UPF registered with nrf core network\033[0m....')
+        cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"'
+        amf_registration_nrf = run_cmd(cmd)
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"'
         smf_registration_nrf = run_cmd(cmd)
-        cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
+        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_NO_NRF:
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"'
+        else:
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd)
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF"'
         sample_registration = run_cmd(cmd)
         logging.debug(f'\033[0;34m For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {sample_registration}\033[0m....')
-        if smf_registration_nrf is None and upf_registration_nrf is None:
+        if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None:
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
         else:
-            logging.debug('\033[0;32m SMF and UPF are registered to NRF\033[0m....')
-        logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-        cmd1 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT RESPONSE"'
-        cmd2 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT REQUEST"'
-        upf_logs1 = run_cmd(cmd1)
-        upf_logs2 = run_cmd(cmd2)
-        if upf_logs1 is None and upf_logs2 is None:
-            logging.error('\033[0;31m UPF not receiving heartbeats from SMF\033[0m....')
-            exit(-1)
+            logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
+        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_NO_NRF:
+            logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
         else:
-            logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
+            logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
+            cmd1 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT RESPONSE"'
+            cmd2 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT REQUEST"'
+            upf_logs1 = run_cmd(cmd1)
+            upf_logs2 = run_cmd(cmd2)
+            if upf_logs1 is None or upf_logs2 is None:
+                logging.error('\033[0;31m UPF not receiving heartbeats from SMF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
     # With noNRF configuration checks
     elif args.scenario == '2':
         logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')

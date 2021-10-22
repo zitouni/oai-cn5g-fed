@@ -38,6 +38,7 @@ services:
             - WAIT_MYSQL=120
         depends_on:
             - mysql
+            - oai-nrf
         networks:
             public_net_cp:
                 ipv4_address: 192.168.70.136
@@ -59,7 +60,7 @@ services:
             - SBI_IF_NAME=eth0
             - SBI_PORT=80
             - UDM_VERSION_NB=v1
-            - USE_FQDN_DNS=yes
+            - USE_FQDN_DNS=no
             - UDR_IP_ADDRESS=192.168.70.136
             - UDR_PORT=80
             - UDR_VERSION_NB=v1
@@ -86,7 +87,7 @@ services:
             - AUSF_NAME=OAI_AUSF
             - SBI_IF_NAME=eth0
             - SBI_PORT=80
-            - USE_FQDN_DNS=yes
+            - USE_FQDN_DNS=no
             - UDM_IP_ADDRESS=192.168.70.137
             - UDM_PORT=80
             - UDM_VERSION_NB=v1
@@ -109,7 +110,7 @@ services:
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
-            - NRF_INTERFACE_HTTP2_PORT_FOR_SBI=8080
+            - NRF_INTERFACE_HTTP2_PORT_FOR_SBI=9090
             - NRF_API_VERSION=v1
             - INSTANCE=0
             - PID_DIRECTORY=/var/run
@@ -170,7 +171,7 @@ services:
             - NRF_PORT=80
             - NF_REGISTRATION=yes
             - SMF_SELECTION=yes
-            - USE_FQDN_DNS=yes
+            - USE_FQDN_DNS=no
             - EXTERNAL_AUSF=yes
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
@@ -206,25 +207,25 @@ services:
             - SMF_INTERFACE_HTTP2_PORT_FOR_SBI=9090
             - SMF_API_VERSION=v1
             - DEFAULT_DNS_IPV4_ADDRESS=192.168.18.129
-            - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
-            - AMF_FQDN=oai-amf
+            - DEFAULT_DNS_SEC_IPV4_ADDRESS=192.168.18.129
             - AMF_IPV4_ADDRESS=192.168.70.132
             - AMF_PORT=80
             - AMF_API_VERSION=v1
-            - UDM_IPV4_ADDRESS=127.0.0.1
-            - UDM_FQDN=localhost
+            - AMF_FQDN=oai-amf
+            - UDM_IPV4_ADDRESS=192.168.70.137
             - UDM_PORT=80
             - UDM_API_VERSION=v1
-            - UPF_FQDN_0=gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+            - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.202
-            - NRF_FQDN=oai-nrf
-            - NRF_IPV4_ADDRESS=0.0.0.0
+            - UPF_FQDN_0=gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+            - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
-            - REGISTER_NRF=no
-            - DISCOVER_UPF=no
-            - USE_NETWORK_INSTANCE=yes
+            - NRF_FQDN=oai-nrf
+            - REGISTER_NRF=yes
+            - DISCOVER_UPF=yes
             - USE_FQDN_DNS=no
+            - USE_NETWORK_INSTANCE=yes
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         depends_on:
@@ -266,8 +267,10 @@ services:
             - DNN=default
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
-            - NRF_PORT=8080
+            - NRF_PORT=9090
             - HTTP_VERSION=2
+        depends_on:
+            - oai-nrf
         healthcheck:
             test: /bin/bash -c "pgrep vpp"
             interval: 10s
