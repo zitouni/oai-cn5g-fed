@@ -262,9 +262,6 @@ pipeline {
       steps {
         lock (ds_tester_ci_resource) {
           script {
-            // Check the route b/w the container and DSTester n/w and add
-            sh 'python3 ./ci-scripts/routeCheck.py --mode=Add --userName=' + dsT_host_user + ' --hostName=' + dsT_host
-            
             echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose and Testing with DS Tester\u001B[0m'
             if (fileExists("dstester")) {
               sh "rm -Rf dstester > /dev/null 2>&1"
@@ -277,7 +274,9 @@ pipeline {
                 sh "git clone https://${git_username}:${git_token}@github.com/OPENAIRINTERFACE/chasseur.git . > ../git_clone.log 2>&1"
                 sh "git checkout -f " + dsTesterTag + " >> ../git_clone.log 2>&1"
                 // First put all correct tags to test
-                sh 'sed -i -e "s#NRF_TAG#' + nrfTag + '#" -i -e "s#AMF_TAG#' + amfTag + '#" -i -e "s#SMF_TAG#' + smfTag + '#" -i -e "s#SPGWU_TAG#' + spgwuTag + '#" -i -e "s#AUSF_TAG#' + ausfTag + '#" -i -e "s#UDM_TAG#' + udmTag + '#" -i -e "s#UDR_TAG#' + udrTag + '#" ./jenkins/suits/dc/integration/integration-basic.yaml'
+                sh 'sed -i -e "s#NRF_TAG#' + nrfTag + '#" -i -e "s#AMF_TAG#' + amfTag + '#" -i -e "s#SMF_TAG#' + smfTag + '#" -i -e "s#UPF_TAG#' + spgwuTag + '#" -i -e "s#AUSF_TAG#' + ausfTag + '#" -i -e "s#UDM_TAG#' + udmTag + '#" -i -e "s#UDR_TAG#' + udrTag + '#" ./jenkins/suits/dc/integration/integration-basic.yaml'
+                // Check the route b/w the container and DSTester n/w and add
+                sh 'python3 ../ci-scripts/routeCheck.py --mode Add --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-basic/integration.tplt'
                 dir ('jenkins') {
                   try {
                     sh "python3 ./chasseurdocker.py -f ./suits/dc/integration/integration-basic.yaml | tee ../../DS-TEST-RESULTS/dsTester_Summary.txt"
@@ -285,7 +284,8 @@ pipeline {
                     currentBuild.result = 'FAILURE'
                     echo "dsTester FrameWork FAILED"
                   }
-                } 
+                }
+              sh 'python3 ../ci-scripts/routeCheck.py --mode Delete --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-basic/integration.tplt'
               }
             }
             sh "python3 ./ci-scripts/toCheckDSTesterResult.py"
@@ -297,9 +297,8 @@ pipeline {
   post {
     always {
       script {
-        sh 'python3 ./ci-scripts/routeCheck.py --mode=Delete --userName=' + dsT_host_user + ' --hostName=' + dsT_host
         // Generating the HTML report
-        sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name=' + JOB_NAME + ' --job_id=' + BUILD_ID + ' --job_url=' + BUILD_URL
+        sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL
 
         // Zipping all archived log files
         sh "zip -r -qq cn5g_fed_docker_logs.zip archives DS-TEST-RESULTS"

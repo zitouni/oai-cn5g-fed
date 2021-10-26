@@ -49,3 +49,5 @@ if locexist:
                 sys.exit('DS Tester FrameWork final result FAILED')
     except IOError:
         sys.exit(f'File not accessible to check DSTester result: DS-TEST-RESULTS/{filename.group(0)}')
+else:
+    sys.exit('Result path is not Available on Console, Something wrong with DSTester')
