@@ -22,11 +22,30 @@
 
 import re
 import sys
+import subprocess
+import yaml
+import os
 
+locexist = False
+cwd = os.getcwd()
 try:
-    with open('DS-TEST-RESULTS/status.txt') as f:
+    with open(cwd + '/DS-TEST-RESULTS/dsTester_Summary.txt') as f:
         for line in f:
-            if re.search('FAILED', line):
-                sys.exit(-1)
+            if re.search('Result file is available here', str(line)):
+                result = re.search('(?:\/.+?\/)(.+?)(?:\/.+)', str(line))
+                if result:
+                    result1 = re.search('^(.*/)([^/]*)$', str(result.group(0)))
+                    filename = re.search('[^/]*$', str(result1.group(0))) 
+                    subprocess.check_output(f'cp -r {result1.group(1)}* DS-TEST-RESULTS/', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                locexist = True
 except IOError:
-    print("File not accessible to check DSTester Result: DS-TEST-RESULTS/status.txt")
+    sys.exit("File not accessible to check DSTester Summary: DS-TEST-RESULTS/dsTester_Summary.txt")
+
+if locexist:
+    try:
+        with open(cwd + f'/DS-TEST-RESULTS/{filename.group(0)}') as f:
+            data = yaml.full_load(f)
+            if data["final-result"] == 'fail':
+                sys.exit('DS Tester FrameWork final result FAILED')
+    except IOError:
+        sys.exit(f'File not accessible to check DSTester result: DS-TEST-RESULTS/{filename.group(0)}')
