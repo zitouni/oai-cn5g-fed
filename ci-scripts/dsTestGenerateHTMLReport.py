@@ -228,35 +228,7 @@ class HtmlReport():
 							size = str(sizeInt) + ' MB'
 			imageLog.close()
 			configState = 'KO'
-			with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
-				data = yaml.full_load(f)
-				try:
-					if statusPrefix in data['nf-deployment']['pass']:
-						configState = 'OK'
-					elif statusPrefix in data['nf-deployment']['recovered']:
-						configState = 'RS'
-				except Exception as e:
-					pass
-			self.file.write('     <tr>\n')
-			self.file.write('       <td>' + containerName + '</td>\n')
-			self.file.write('       <td>' + usedTag + '</td>\n')
-			self.file.write('       <td>' + createDate + '</td>\n')
-			self.file.write('       <td>' + size + '</td>\n')
-			if configState == 'OK':
-				self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">' + configState + '</font></b></td>\n')
-			elif configState == 'RS':
-				self.file.write('       <td bgcolor = "Orange"><b><font color="white">' + configState + '</font></b></td>\n')
-			else:
-				self.file.write('       <td bgcolor = "Red"><b><font color="white">' + configState + '</font></b></td>\n')
-			self.file.write('     </tr>\n')
-		else:
-			if imageInfoPrefix == 'mysql':
-				self.file.write('     <tr>\n')
-				self.file.write('       <td>' + containerName + '</td>\n')
-				self.file.write('       <td>mysql:5.7</td>\n')
-				self.file.write('       <td>N/A</td>\n')
-				self.file.write('       <td>449MB</td>\n')
-				configState = 'KO'
+			if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):
 				with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
 					data = yaml.full_load(f)
 					try:
@@ -266,13 +238,43 @@ class HtmlReport():
 							configState = 'RS'
 					except Exception as e:
 						pass
+				self.file.write('     <tr>\n')
+				self.file.write('       <td>' + containerName + '</td>\n')
+				self.file.write('       <td>' + usedTag + '</td>\n')
+				self.file.write('       <td>' + createDate + '</td>\n')
+				self.file.write('       <td>' + size + '</td>\n')
 				if configState == 'OK':
-					self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">OK</font></b></td>\n')
+					self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">' + configState + '</font></b></td>\n')
 				elif configState == 'RS':
 					self.file.write('       <td bgcolor = "Orange"><b><font color="white">' + configState + '</font></b></td>\n')
 				else:
-					self.file.write('       <td bgcolor = "Red"><b><font color="white">KO</font></b></td>\n')
+					self.file.write('       <td bgcolor = "Red"><b><font color="white">' + configState + '</font></b></td>\n')
 				self.file.write('     </tr>\n')
+		else:
+			if imageInfoPrefix == 'mysql':
+				if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):		
+					self.file.write('     <tr>\n')
+					self.file.write('       <td>' + containerName + '</td>\n')
+					self.file.write('       <td>mysql:5.7</td>\n')
+					self.file.write('       <td>N/A</td>\n')
+					self.file.write('       <td>449MB</td>\n')
+					configState = 'KO'
+					with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
+						data = yaml.full_load(f)
+						try:
+							if statusPrefix in data['nf-deployment']['pass']:
+								configState = 'OK'
+							elif statusPrefix in data['nf-deployment']['recovered']:
+								configState = 'RS'
+						except Exception as e:
+							pass
+					if configState == 'OK':
+						self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">OK</font></b></td>\n')
+					elif configState == 'RS':
+						self.file.write('       <td bgcolor = "Orange"><b><font color="white">' + configState + '</font></b></td>\n')
+					else:
+						self.file.write('       <td bgcolor = "Red"><b><font color="white">KO</font></b></td>\n')
+					self.file.write('     </tr>\n')
 			else:
 				self.file.write('     <tr>\n')
 				self.file.write('       <td>' + containerName + '</td>\n')

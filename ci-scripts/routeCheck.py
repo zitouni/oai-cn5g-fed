@@ -25,18 +25,59 @@ import re
 import sys
 import subprocess
 import yaml
+import argparse
 
 class IpRouteCheck():
 	def __init__(self):
 		self.mode = ''
 		self.userName = ''
 		self.hostName = ''
+		self.file = ''
 		self.subnet = ''
 		self.gatwayIp = ''
 		self.interfaceName = ''
 
+	def _parse_args(self) -> argparse.Namespace:
+		"""Parse the command line args
+
+		Returns:
+			argparse.Namespace: the created parser
+		"""
+		parser = argparse.ArgumentParser(description='Route Add/Delete on the required Server for CI Deployment')
+
+		# Mode
+		parser.add_argument(
+			'--mode',
+			action='store',
+			required=True,
+			choices=['Add', 'Delete'],
+			help='route Add/Delete',
+		)
+		# Server username
+		parser.add_argument(
+			'--userName',
+			action='store',
+			required=True,
+			help='server username',
+		)
+		# Server hostname
+		parser.add_argument(
+			'--hostName',
+			action='store',
+			required=True,
+			help='server hostname',
+		)
+		# Docker-compose file to use
+		parser.add_argument(
+			'--docker_compose',
+			action='store',
+			required=True,
+			help='Docker-compose file to use',
+		)
+		return parser.parse_args()
+
 	def getSubnet(self):
-		cmd = "egrep 'subnet' ci-scripts/dsTesterDockerCompose/docker-compose.yml"
+		cmd = f"egrep 'subnet' {self.file}"
 		ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, stderr=subprocess.STDOUT, encoding='utf-8')
 		if ret.returncode == 0:
 			if ret.stdout is not None:
@@ -96,52 +137,20 @@ class IpRouteCheck():
 		cmd = f"sudo ip route del {self.subnet} via {self.gatwayIp} dev {self.interfaceName}"
 		ret = subprocess.run(f'ssh {self.userName}@{self.hostName} {cmd} || true', shell=True, stdout=subprocess.PIPE, encoding='utf-8')
 		print("Deleted ip route")
-
-def Usage():
-	print('----------------------------------------------------------------------------------------------------------------------')
-	print('routecheck.py')
-	print('   Add and Delete the ip route on the Server.')
-	print('----------------------------------------------------------------------------------------------------------------------')
-	print('Usage: python3 routecheck.py [options]')
-	print('  --help  Show this help.')
-	print('---------------------------------------------------------------------------------------------- Mandatory Options -----')
-	print('  --mode=[Add/Delete]')
-	print('  --userName=[server userName where to add/delete]')
-	print('  --hostName=[server hostName where to add/delete]')
-	print('------------------------------------------------------------------------------------------------- Actions Syntax -----')
-	print('python3 helmDeploy.py --mode=Add [Mandatory Options]')
-	print('python3 helmDeploy.py --mode=Delete [Mandatory Options]')	
-
-
+	
 #--------------------------------------------------------------------------------------------------------
 #
 # Start of main
 #
 #--------------------------------------------------------------------------------------------------------
 
-argvs = sys.argv
-
 IPRC = IpRouteCheck()
+args = IPRC._parse_args()
 
-while len(argvs) > 1:
-	myArgv = argvs.pop(1)
-	if re.match('^\-\-help$', myArgv, re.IGNORECASE):
-		Usage()
-		sys.exit(0)
-	elif re.match('^\-\-mode=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-mode=(.+)$', myArgv, re.IGNORECASE)
-		IPRC.mode = matchReg.group(1)
-	elif re.match('^\-\-userName=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-userName=(.+)$', myArgv, re.IGNORECASE)
-		IPRC.userName = matchReg.group(1)
-	elif re.match('^\-\-hostName=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-hostName=(.+)$', myArgv, re.IGNORECASE)
-		IPRC.hostName = matchReg.group(1)
-	else:
-		sys.exit('Invalid Parameter: ' + myArgv)
-
-if IPRC.mode == '' or IPRC.userName == '' or IPRC.hostName == '':
-	sys.exit('Missing Parameter in job description')
+IPRC.mode = args.mode
+IPRC.userName = args.userName
+IPRC.hostName = args.hostName
+IPRC.file = args.docker_compose
 
 IPRC.getSubnet()
 IPRC.getGatwayIp()
