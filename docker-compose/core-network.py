@@ -167,6 +167,22 @@ def check_config(file_name):
             logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
         if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_NO_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
+            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
+            upf_logs1 = run_cmd(cmd1)
+            upf_logs2 = run_cmd(cmd2)
+            if upf_logs1 is None or upf_logs2 is None:
+                logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
+            cmd1 = 'docker logs oai-smf | grep "PFCP HEARTBEAT PROCEDURE"'
+            upf_logs1 = run_cmd(cmd1)
+            if upf_logs1 is None:
+                logging.error('\033[0;31m SMF not receiving heartbeats from UPF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m SMF receiving heathbeats from UPF\033[0m....')
         else:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT RESPONSE"'
@@ -219,6 +235,12 @@ if __name__ == '__main__':
         elif args.scenario == '2':
             deploy(BASIC_NO_NRF, 7)
     elif args.type == 'start-basic-vpp':
+        if args.fqdn == 'yes':
+            logging.error('Configuration not supported yet')
+            exit(-1)
+        if args.scenario == '2':
+            logging.error('Configuration not supported yet')
+            exit(-1)
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
             deploy(BASIC_VPP_W_NRF, 8)
