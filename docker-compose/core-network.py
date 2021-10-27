@@ -238,9 +238,6 @@ if __name__ == '__main__':
         if args.fqdn == 'yes':
             logging.error('Configuration not supported yet')
             exit(-1)
-        if args.scenario == '2':
-            logging.error('Configuration not supported yet')
-            exit(-1)
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
             deploy(BASIC_VPP_W_NRF, 8)
