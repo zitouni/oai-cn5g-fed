@@ -106,7 +106,7 @@ def deploy(file_name, ct):
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
     logging.debug('\033[0;32m OAI 5G Core network started, checking the health status of the containers... takes few secs\033[0m....')
-    for x in range(20):
+    for x in range(40):
         cmd = f'docker-compose -f {file_name} ps -a'
         res = run_cmd(cmd)
         if res is None:
@@ -153,7 +153,7 @@ def check_config(file_name):
         amf_registration_nrf = run_cmd(cmd)
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"'
         smf_registration_nrf = run_cmd(cmd)
-        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_NO_NRF:
+        if file_name == BASIC_VPP_W_NRF:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"'
         else:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
@@ -165,7 +165,7 @@ def check_config(file_name):
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
         else:
             logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
-        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_NO_NRF:
+        if file_name == BASIC_VPP_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
             cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
@@ -197,11 +197,26 @@ def check_config(file_name):
     # With noNRF configuration checks
     elif args.scenario == '2':
         logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
+        if file_name == BASIC_VPP_NO_NRF:
+            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
+            upf_logs1 = run_cmd(cmd1)
+            upf_logs2 = run_cmd(cmd2)
+            if upf_logs1 is None or upf_logs2 is None:
+                logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
+        status = 0
         for x in range(4):
             cmd = "docker logs oai-smf | grep  'handle_receive(16 bytes)'"
             res = run_cmd(cmd)
             if res is None:
-                logging.debug('\033[0;31m UPF not receiving heartbeats from SMF, re-trying\033[0m....')
+               logging.error('\033[0;31m UPF not receiving heartbeats from SMF, re-trying\033[0m....')
+            else:
+                status += 1
+        if status > 2:
+            logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
     logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
 
 def run_cmd(cmd):

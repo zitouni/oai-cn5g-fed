@@ -12,6 +12,8 @@
   </tr>
 </table>
 
+**CAUTION: 2021/10/29: This page may be obsolete and needs update.**
+
 ![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
 
 **Reading time: ~ 30mins**
