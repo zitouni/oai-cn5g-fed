@@ -19,3 +19,6 @@
 [submodule "component/oai-udr"]
 	path = component/oai-udr
 	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr.git
+[submodule "component/oai-upf-vpp"]
+	path = component/oai-upf-vpp
+	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp.git

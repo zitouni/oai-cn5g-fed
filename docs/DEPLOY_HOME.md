@@ -19,6 +19,7 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
     - [Using Docker-Compose, perform a `minimalist` deployment](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic` deployment](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic` deployment with FQDN feature](./DEPLOY_SA5G_BASIC_FQDN_DEPLOYMENT.md)
+    - [Using Docker-Compose, perform a `basic-vpp` deployment with VPP-implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)
     - [Using Helm Chart](./DEPLOY_SA5G_HC.md)
     - [Using Virtual Machine, deploy and test with a Commercial UE](./DEPLOY_SA5G_VM_COTSUE.md)
     - [Using Docker-Compose, perform a `minimalist` deployment and test with `gnbsim`](./DEPLOY_SA5G_WITH_GNBSIM.md)
