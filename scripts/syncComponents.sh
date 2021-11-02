@@ -57,6 +57,9 @@ function usage {
     echo "    --udr-branch ####"
     echo "    Specify the source branch for the OAI-UDR component"
     echo ""
+    echo "    --upf-vpp-branch ####"
+    echo "    Specify the source branch for the OAI-UPF-VPP component"
+    echo ""
     echo "    --help OR -h"
     echo "    Print this help message."
     echo ""
@@ -69,6 +72,7 @@ SPGWU_BRANCH='master'
 AUSF_BRANCH='master'
 UDM_BRANCH='master'
 UDR_BRANCH='master'
+UPF_VPP_BRANCH='master'
 
 doDefault=1
 
@@ -124,6 +128,12 @@ case $key in
     shift
     shift
     ;;
+    --upf-vpp-branch)
+    UPF_VPP_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
     *)
     echo "Syntax Error: unknown option: $key"
     echo ""
@@ -134,13 +144,14 @@ esac
 done
 
 echo "---------------------------------------------------------"
-echo "OAI-NRF    component branch : ${NRF_BRANCH}"
-echo "OAI-AMF    component branch : ${AMF_BRANCH}"
-echo "OAI-SMF    component branch : ${SMF_BRANCH}"
-echo "OAI-SPGW-U component branch : ${SPGWU_BRANCH}"
-echo "OAI-AUSF   component branch : ${AUSF_BRANCH}"
-echo "OAI-UDM    component branch : ${UDM_BRANCH}"
-echo "OAI-UDR    component branch : ${UDR_BRANCH}"
+echo "OAI-NRF     component branch : ${NRF_BRANCH}"
+echo "OAI-AMF     component branch : ${AMF_BRANCH}"
+echo "OAI-SMF     component branch : ${SMF_BRANCH}"
+echo "OAI-SPGW-U  component branch : ${SPGWU_BRANCH}"
+echo "OAI-AUSF    component branch : ${AUSF_BRANCH}"
+echo "OAI-UDM     component branch : ${UDM_BRANCH}"
+echo "OAI-UDR     component branch : ${UDR_BRANCH}"
+echo "OAI-UPF-VPP component branch : ${UPF_VPP_BRANCH}"
 echo "---------------------------------------------------------"
 
 # First do a clean-up
@@ -217,6 +228,15 @@ else
         git checkout $UDR_BRANCH > /dev/null 2>&1
     else
         git checkout -b $UDR_BRANCH origin/$UDR_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-upf-vpp
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $UPF_VPP_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $UPF_VPP_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $UPF_VPP_BRANCH origin/$UPF_VPP_BRANCH > /dev/null 2>&1
     fi
     popd
 fi
