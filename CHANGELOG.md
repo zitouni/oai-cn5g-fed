@@ -1,12 +1,18 @@
 # RELEASE NOTES: #
 
+## v1.2.1 -- October 2021 ##
+
+* Incorporation of new public network functions:
+  - UPF-VPP
+* New tutorial with this new function
+
 ## v1.2.0 -- September 2021 ##
 
 * Incorporation of new public network functions:
   - AUSF
   - UDM
   - UDR
-* New tutorials with these new funtions
+* New tutorials with these new functions
 * CI improvements
 
 ## v1.1.0 -- July 2021 ##
