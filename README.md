@@ -5,6 +5,9 @@
 <p align="center">
     <a href="https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-OAI--Public--V1.1-blue" alt="License"></a>
     <a href="https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/master/LICENSE"><img src="https://img.shields.io/badge/license-Apache--2.0-blue" alt="License"></a>
+    <a href="https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/releases"><img alt="GitLab Release (custom instance)" src="https://img.shields.io/gitlab/v/release/oai/cn5g/oai-cn5g-fed?gitlab_url=https%3A%2F%2Fgitlab.eurecom.fr&include_prereleases&sort=semver"></a>
+    <a href="https://releases.ubuntu.com/18.04/"><img src="https://img.shields.io/badge/OS-Ubuntu18-Green" alt="Supported OS"></a>
+    <a href="https://www.redhat.com/en/enterprise-linux-8"><img src="https://img.shields.io/badge/OS-RHEL8-Green" alt="Supported OS"></a>
 </p>
 
 <p align="center">
@@ -15,6 +18,17 @@
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDM/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDM%2F&label=build%20UDM"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDR/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDR%2F&label=build%20UDR"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UPF-VPP/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UPF-VPP%2F&label=build%20UPF-VPP"></a>
+</p>
+
+<p align="center">
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-amf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-amf?label=AMF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-ausf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-ausf?label=AUSF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-nrf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nrf?label=NRF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-smf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-smf?label=SMF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-udm"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udm?label=UDM%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udr?label=UDR%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-upf-vpp?label=UPF-VPP%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-spgwu-tiny?label=SPGWU-TINY%20docker%20pulls"></a>
 </p>
 
 <h2 align="center">
