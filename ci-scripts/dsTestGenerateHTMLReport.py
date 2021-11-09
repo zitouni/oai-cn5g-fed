@@ -34,6 +34,10 @@ class HtmlReport():
 		self.job_id = ''
 		self.job_url = ''
 		self.job_start_time = 'TEMPLATE_TIME'
+		self.type = ''
+		self.file_name = ''
+		self.path = ''
+		self.containers = 0
 
 	def _parse_args(self) -> argparse.Namespace:
 		"""Parse the command line args
@@ -64,11 +68,19 @@ class HtmlReport():
 			required=True,
 			help='Jenkins Job Build URL',
 		)
+		# Type
+		parser.add_argument(
+			'--type',
+			action='store',
+			required=True,
+			choices=['mini', 'basic'],
+			help='Type of function',
+		)
 		return parser.parse_args()
 
 	def generate(self):
 		cwd = os.getcwd()
-		self.file = open(cwd + '/test_results_oai_cn5g_basic.html', 'w')
+		self.file = open(cwd + f'{self.file_name}', 'w')
 		self.generateHeader()
 		self.deploymentSummaryHeader()
 		finalStatus = self.testSummaryHeader()
@@ -121,15 +133,15 @@ class HtmlReport():
 		failcount = 0
 		restarted = 0
 		cwd = os.getcwd()
-		if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):
-			with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
+		if os.path.isfile(cwd + f'{self.path}'):
+			with open(cwd + f'{self.path}') as f:
 				data = yaml.full_load(f)
 				try:
 					passcount = len(data['nf-deployment']['pass'])
 					failcount = len(data['nf-deployment']['fail'])
 				except Exception as e:
 					pass
-				if passcount == 8:
+				if passcount == self.containers:
 					self.file.write('  <div class="alert alert-success">\n')
 					self.file.write('    <strong>Successful Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
 					self.file.write('  </div>\n')
@@ -164,9 +176,10 @@ class HtmlReport():
 		self.addImageRow('oai_amf')
 		self.addImageRow('oai_smf')
 		self.addImageRow('oai_spgwu')
-		self.addImageRow('oai_ausf')
-		self.addImageRow('oai_udm')
-		self.addImageRow('oai_udr')
+		if self.type == 'basic':
+			self.addImageRow('oai_ausf')
+			self.addImageRow('oai_udm')
+			self.addImageRow('oai_udr')	
 		self.file.write('  </table>\n')
 		self.file.write('  </div>\n')
 
@@ -228,8 +241,8 @@ class HtmlReport():
 							size = str(sizeInt) + ' MB'
 			imageLog.close()
 			configState = 'KO'
-			if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):
-				with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
+			if os.path.isfile(cwd + f'{self.path}'):
+				with open(cwd + f'{self.path}') as f:
 					data = yaml.full_load(f)
 					try:
 						if statusPrefix in data['nf-deployment']['pass']:
@@ -252,14 +265,14 @@ class HtmlReport():
 				self.file.write('     </tr>\n')
 		else:
 			if imageInfoPrefix == 'mysql':
-				if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):		
+				if os.path.isfile(cwd + f'{self.path}'):		
 					self.file.write('     <tr>\n')
 					self.file.write('       <td>' + containerName + '</td>\n')
 					self.file.write('       <td>mysql:5.7</td>\n')
 					self.file.write('       <td>N/A</td>\n')
 					self.file.write('       <td>449MB</td>\n')
 					configState = 'KO'
-					with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
+					with open(cwd + f'{self.path}') as f:
 						data = yaml.full_load(f)
 						try:
 							if statusPrefix in data['nf-deployment']['pass']:
@@ -288,8 +301,8 @@ class HtmlReport():
 		self.file.write('  <h2>DS Tester Summary</h2>\n')
 		cwd = os.getcwd()
 		finalStatusOK = False
-		if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):
-			cmd = f'egrep -c "final-result: pass" DS-TEST-RESULTS/bvc.yaml || true'
+		if os.path.isfile(cwd + f'{self.path}'):
+			cmd = f'egrep -c "final-result: pass" {cwd}{self.path} || true'
 			ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
 			if ret.stdout is not None:
 				if ret.stdout.strip() == '1':
@@ -322,8 +335,8 @@ class HtmlReport():
 		self.file.write('      <th>Test Details</th>\n')
 		self.file.write('    </tr>\n')
 		cwd = os.getcwd()
-		if os.path.isfile(cwd + '/DS-TEST-RESULTS/bvc.yaml'):
-			with open(cwd + '/DS-TEST-RESULTS/bvc.yaml') as f:
+		if os.path.isfile(cwd + f'{self.path}'):
+			with open(cwd + f'{self.path}') as f:
 				data = yaml.full_load(f)
 				nScenarios = len(data['scenarios'])
 				for scenario in range(nScenarios):
@@ -368,5 +381,13 @@ args = HTML._parse_args()
 HTML.job_name = args.job_name
 HTML.job_id = args.job_id
 HTML.job_url = args.job_url
-
+HTML.type = args.type
+if HTML.type == 'mini':
+	HTML.path = '/RESULTS-MINI/mvc.yaml'
+	HTML.file_name = '/test_results_oai_cn5g_mini.html'
+	HTML.containers = 5
+elif HTML.type == 'basic':
+	HTML.path = '/RESULTS-BASIC/bvc.yaml'
+	HTML.file_name = '/test_results_oai_cn5g_basic.html'
+	HTML.containers = 8
 HTML.generate()
