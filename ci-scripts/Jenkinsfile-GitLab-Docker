@@ -53,6 +53,7 @@ def dsTesterTag = params.DSTESTER_TAG
 def scmEvent = false
 def upstreamEvent = false
 def deployed = true
+def mini = false
 
 // Default tags / branches  --> could be passed on by upstream job or by PR content
 def nrfTag = params.nrfTag
@@ -130,6 +131,7 @@ pipeline {
             if (params.NRF_TAG != null) {
               nrfTag = params.NRF_TAG
               echo "Upstream Job passed NRF_TAG to use: ${nrfTag}"
+              mini = true
             }
             if (params.NRF_BRANCH != null) {
               nrfBranch = params.NRF_BRANCH
@@ -138,6 +140,7 @@ pipeline {
             if (params.AMF_TAG != null) {
               amfTag = params.AMF_TAG
               echo "Upstream Job passed AMF_TAG to use: ${amfTag}"
+              mini = true
             }
             if (params.AMF_BRANCH != null) {
               amfBranch = params.AMF_BRANCH
@@ -146,6 +149,7 @@ pipeline {
             if (params.SMF_TAG != null) {
               smfTag = params.SMF_TAG
               echo "Upstream Job passed SMF_TAG to use: ${smfTag}"
+              mini = true
             }
             if (params.SMF_BRANCH != null) {
               smfBranch = params.SMF_BRANCH
@@ -154,6 +158,7 @@ pipeline {
             if (params.SPGWU_TAG != null) {
               spgwuTag = params.SPGWU_TAG
               echo "Upstream Job passed SPGWU_TAG to use: ${spgwuTag}"
+              mini = true
             }
             if (params.SPGWU_BRANCH != null) {
               spgwuBranch = params.SPGWU_BRANCH
@@ -187,22 +192,24 @@ pipeline {
             sh "git fetch --prune > /dev/null 2>&1"
             sh 'git checkout -f ' + upstreamTagToUse
             sh "zip -r -qq oai-cn5g-fed.zip .git"
-            sh "mkdir -p archives DS-TEST-RESULTS"
+            sh "mkdir -p archives"
             sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
           }
           if (scmEvent) {
+            mini = true
             sh "git clean -x -d -f > /dev/null 2>&1"
             if ("MERGE".equals(env.gitlabActionType)) {
               sh "./ci-scripts/doGitLabMerge.sh --src-branch ${env.gitlabSourceBranch} --src-commit ${env.gitlabMergeRequestLastCommit} --target-branch ${env.gitlabTargetBranch} --target-commit ${GIT_COMMIT}"
             }
             sh "zip -r -qq oai-cn5g-fed.zip .git"
-            sh "mkdir -p archives DS-TEST-RESULTS"
+            sh "mkdir -p archives"
             sh './scripts/syncComponents.sh --nrf-branch develop --amf-branch develop --smf-branch develop --spgwu-tiny-branch develop --ausf-branch develop --udm-branch develop --udr-branch develop'
           }
           if ((!upstreamEvent) && (!scmEvent)) {
+            mini = true
             sh "git clean -x -d -f > /dev/null 2>&1"
             sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
-            sh "mkdir -p archives DS-TEST-RESULTS"
+            sh "mkdir -p archives"
           }
           // Verify that the images are available
           try {
@@ -257,104 +264,18 @@ pipeline {
         }
       }
     }
-    stage ('Deploy Whole 5G Core Network') {
-      steps {
-        script {
-          echo '\u2705 \u001B[32mDeploy CN5G using Docker-Compose\u001B[0m'
-          // Prepare all needed files for docker-compose
-          // First put all correct tags to test
-          sh 'sed -e "s#NRF_IMAGE_TAG#' + nrfTag + '#" -e "s#AMF_IMAGE_TAG#' + amfTag + '#" -e "s#SMF_IMAGE_TAG#' + smfTag + '#" -e "s#SPGWU_IMAGE_TAG#' + spgwuTag + '#" -e "s#AUSF_IMAGE_TAG#' + ausfTag + '#" -e "s#UDM_IMAGE_TAG#' + udmTag + '#" -e "s#UDR_IMAGE_TAG#' + udrTag + '#" ci-scripts/dsTesterDockerCompose/docker-compose.tplt > ci-scripts/dsTesterDockerCompose/docker-compose.yml'
-          dir('ci-scripts/dsTesterDockerCompose') {
-            // Tricking because mySql container takes a long time to be healthy
-            sh 'docker-compose up -d  cicd_mysql > ../../archives/compose_5gcn_up.log 2>&1'
-            sh 'sleep 30'
-            sh 'docker-compose up -d  >> ../../archives/compose_5gcn_up.log 2>&1'
-            int count = 0
-            while (count < 10) {
-              sh 'sleep 10'
-              // Do a check on number of healthy containers
-              // 8 == mysql + nrf + amf + smf + upf(spgwu-tiny) + ausf + udm + udr
-              ret = sh returnStdout: true, script: 'docker-compose ps -a | grep -v unhealthy | grep -c healthy || true'
-              ret = ret.trim()
-              if (ret == '8') {
-                count = 20
-              }
-              count++
-            }
-            if (count < 20) {
-              error "Deployment went wrong!"
-            }
-          }
-        }
+    stage ('Deploy 5G Core Network (mini) and Test with DS Tester') {
+      when {
+        allOf {
+          expression {dsT_host_flag}
+          expression {mini == true}
+        } 
       }
-      post {
-        always {
-          script {
-            // Check status on mysql.
-            try {
-              sh 'docker exec cicd-mysql-svr /bin/bash -c "mysqladmin -u root --password=linux ping" > archives/mysql_status.log 2>&1'
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-mysql-svr >> archives/mysql_status.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: KO" >> archives/mysql_status.log'
-            }
-            // Do docker logs to recover the configuration results
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-nrf >> archives/nrf_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: KO" >> archives/nrf_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-amf >> archives/amf_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: KO" >> archives/amf_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-smf >> archives/smf_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: OK" >> archives/smf_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-upf >> archives/spgwu_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: KO" >> archives/spgwu_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-ausf >> archives/ausf_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: OK" >> archives/ausf_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-udm >> archives/udm_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: OK" >> archives/udm_config.log'
-            }
-            try {
-              sh 'docker inspect --format=\'STATUS: {{.State.Health.Status}}\' cicd-oai-udr >> archives/udr_config.log'
-            } catch (Exception e) {
-              sh 'echo "STATUS: OK" >> archives/udr_config.log'
-            }
-          }
-        }
-        success {
-          script {
-            sh 'echo "DEPLOYMENT: OK" > archives/deployment_status.log'
-            sh 'python3 ./ci-scripts/routeCheck.py --mode=Add --userName=' + dsT_host_user + ' --hostName=' + dsT_host
-          }
-        }
-        unsuccessful {
-          script {
-            sh 'echo "DEPLOYMENT: KO" > archives/deployment_status.log'
-            deployed = false
-          }
-        }
-      }
-    }
-    stage ('Check with DS Tester') {
-      when { expression {dsT_host_flag} }
       steps {
         lock (ds_tester_ci_resource) {
           script {
-            echo '\u2705 \u001B[32mTesting with DS Tester\u001B[0m'
+            echo '\u2705 \u001B[32mDeploy CN5G-Minimal using Docker-Compose and Testing with DS Tester\u001B[0m'
+            sh "mkdir -p RESULTS-MINI"
             if (fileExists("dstester")) {
               sh "rm -Rf dstester > /dev/null 2>&1"
             }
@@ -365,51 +286,70 @@ pipeline {
               ]) {
                 sh "git clone https://${git_username}:${git_token}@github.com/OPENAIRINTERFACE/chasseur.git . > ../git_clone.log 2>&1"
                 sh "git checkout -f " + dsTesterTag + " >> ../git_clone.log 2>&1"
+                // First put all correct tags to test
+                sh 'sed -i -e "s#NRF_TAG#' + nrfTag + '#" -i -e "s#AMF_TAG#' + amfTag + '#" -i -e "s#SMF_TAG#' + smfTag + '#" -i -e "s#SPGWU_TAG#' + spgwuTag + '#" ./jenkins/suits/dc/integration/integration-mini.yaml'
+                // Check the route b/w the container and DSTester n/w and add
+                sh 'python3 ../ci-scripts/routeCheck.py --mode Add --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-mini/integration.tplt'
                 dir ('jenkins') {
                   try {
-                    sh "python3 ./dogmatix-agent.py -f ./suits/dc/integration.yaml -d true | tee ../../DS-TEST-RESULTS/dsTester_Summary.txt"
+                    sh "python3 ./chasseurdocker.py -f ./suits/dc/integration/integration-mini.yaml | tee ../../RESULTS-MINI/dsTester_Summary_mini.txt"
                   } catch (Exception e) {
                     currentBuild.result = 'FAILURE'
-                    echo "dsTester Running FAILED"
+                    echo "dsTester FrameWork FAILED"
                   }
-                } 
+                }
+                sh 'python3 ../ci-scripts/routeCheck.py --mode Delete --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-mini/integration.tplt' 
               }
             }
-            sh "python3 ./ci-scripts/toCheckDSTesterResult1.py"
+            try {
+              sh "python3 ./ci-scripts/toCheckDSTesterResult.py --type mini"
+            } catch (Exception e) {
+                currentBuild.result = 'FAILURE'
+                echo "dsTester ResultCheck FAILED"
+            }
           }  
         }
       }
-      post {
-        always {
-          script {
-            // Copy the pcaps and logs from the containers
-            sh "mkdir -p archives/pcaps archives/logs"
-            sh 'docker cp cicd-oai-nrf:/tmp/nrf.pcap archives/pcaps/oai_nrf.pcap || true'
-            sh 'docker logs cicd-oai-nrf > archives/logs/oai_nrf.log 2>&1 || true'
-            sh 'docker cp cicd-oai-amf:/tmp/amf.pcap archives/pcaps/oai_amf.pcap || true'
-            sh 'docker logs cicd-oai-amf > archives/logs/oai_amf.log 2>&1 || true'
-            sh 'docker cp cicd-oai-smf:/tmp/smf.pcap archives/pcaps/oai_smf.pcap || true'
-            sh 'docker logs cicd-oai-smf > archives/logs/oai_smf.log 2>&1 || true'
-            sh 'docker cp cicd-oai-upf:/tmp/spgwu.pcap archives/pcaps/oai_spgwu.pcap || true'
-            sh 'docker logs cicd-oai-upf > archives/logs/oai_spgwu.log 2>&1 || true'
-            sh 'docker cp cicd-oai-ausf:/tmp/ausf.pcap archives/pcaps/oai_ausf.pcap || true'
-            sh 'docker logs cicd-oai-ausf > archives/logs/oai_ausf.log 2>&1 || true'
-            sh 'docker cp cicd-oai-udm:/tmp/udm.pcap archives/pcaps/oai_udm.pcap || true'
-            sh 'docker logs cicd-oai-udm > archives/logs/oai_udm.log 2>&1 || true'
-            sh 'docker cp cicd-oai-udr:/tmp/udr.pcap archives/pcaps/oai_udr.pcap || true'
-            sh 'docker logs cicd-oai-udr > archives/logs/oai_udr.log 2>&1 || true'
-          }
-        }
-      }
     }
-    stage ('Undeploy 5G-CN') {
+    stage ('Deploy Whole 5G Core Network (Basic) and Test with DS Tester') {
+      when { expression {dsT_host_flag} }
       steps {
-        script {
-          echo '\u2705 \u001B[32mUn-Deploy CN5G\u001B[0m'
-          sh 'python3 ./ci-scripts/routeCheck.py --mode=Delete --userName=' + dsT_host_user + ' --hostName=' + dsT_host
-          dir('ci-scripts/dsTesterDockerCompose') {
-            sh 'docker-compose down > ../../archives/compose_normal_down.log 2>&1'
-          }
+        lock (ds_tester_ci_resource) {
+          script {
+            echo '\u2705 \u001B[32mDeploy CN5G-Basic using Docker-Compose and Testing with DS Tester\u001B[0m'
+            sh "mkdir -p RESULTS-BASIC"
+            if (fileExists("dstester")) {
+              sh "rm -Rf dstester > /dev/null 2>&1"
+            }
+            sh "mkdir -p dstester"
+            dir ('dstester') {
+              withCredentials([
+                [$class: 'UsernamePasswordMultiBinding', credentialsId: "${params.dsTesterGitLabRepository_Credentials}", usernameVariable: 'git_username', passwordVariable: 'git_token']
+              ]) {
+                sh "git clone https://${git_username}:${git_token}@github.com/OPENAIRINTERFACE/chasseur.git . > ../git_clone.log 2>&1"
+                sh "git checkout -f " + dsTesterTag + " >> ../git_clone.log 2>&1"
+                // First put all correct tags to test
+                sh 'sed -i -e "s#NRF_TAG#' + nrfTag + '#" -i -e "s#AMF_TAG#' + amfTag + '#" -i -e "s#SMF_TAG#' + smfTag + '#" -i -e "s#UPF_TAG#' + spgwuTag + '#" -i -e "s#AUSF_TAG#' + ausfTag + '#" -i -e "s#UDM_TAG#' + udmTag + '#" -i -e "s#UDR_TAG#' + udrTag + '#" ./jenkins/suits/dc/integration/integration-basic.yaml'
+                // Check the route b/w the container and DSTester n/w and add
+                sh 'python3 ../ci-scripts/routeCheck.py --mode Add --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-basic/integration.tplt'
+                dir ('jenkins') {
+                  try {
+                    sh "python3 ./chasseurdocker.py -f ./suits/dc/integration/integration-basic.yaml | tee ../../RESULTS-BASIC/dsTester_Summary_basic.txt"
+                  } catch (Exception e) {
+                    currentBuild.result = 'FAILURE'
+                    echo "dsTester FrameWork FAILED"
+                  }
+                }
+              sh 'python3 ../ci-scripts/routeCheck.py --mode Delete --userName ' + dsT_host_user + ' --hostName ' + dsT_host + ' --docker_compose docker-compose/integration/integration-basic/integration.tplt'
+              }
+            }
+            try{
+            sh "python3 ./ci-scripts/toCheckDSTesterResult.py --type basic"
+            } catch (Exception e) {
+              currentBuild.result = 'FAILURE'
+              echo "dsTester ResultCheck FAILED"
+            }
+          }  
         }
       }
     }
@@ -417,32 +357,26 @@ pipeline {
   post {
     always {
       script {
-        // Get logs if deployment fail
-        if (deployed != true) {
-          sh "mkdir -p archives/logs"
-          sh 'docker logs cicd-oai-nrf > archives/logs/oai_nrf.log 2>&1 || true'
-          sh 'docker logs cicd-oai-amf > archives/logs/oai_amf.log 2>&1 || true'
-          sh 'docker logs cicd-oai-smf > archives/logs/oai_smf.log 2>&1 || true'
-          sh 'docker logs cicd-oai-upf > archives/logs/oai_spgwu.log 2>&1 || true'
-          sh 'docker logs cicd-oai-ausf > archives/logs/oai_ausf.log 2>&1 || true'
-          sh 'docker logs cicd-oai-udm > archives/logs/oai_udm.log 2>&1 || true'
-          sh 'docker logs cicd-oai-udr > archives/logs/oai_udr.log 2>&1 || true'
-        } 
-        // Remove any leftover containers/networks
-        sh 'python3 ./ci-scripts/routeCheck.py --mode=Delete --userName=' + dsT_host_user + ' --hostName=' + dsT_host
-        dir('ci-scripts/dsTesterDockerCompose') {
-          sh 'docker-compose down > ../../archives/compose_l_down.log 2>&1'
-        }
         // Generating the HTML report
-        sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport2.py --job_name=' + JOB_NAME + ' --job_id=' + BUILD_ID + ' --job_url=' + BUILD_URL
+        if (mini == true){
+          sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' --type mini'
+        }
+        sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' --type basic'
 
         // Zipping all archived log files
-        sh "zip -r -qq cn5g_fed_docker_logs.zip archives DS-TEST-RESULTS"
+        if (mini == true){
+          sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS-MINI RESULTS-BASIC"
+        } else {
+          sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS-BASIC"
+        }
         if (fileExists('cn5g_fed_docker_logs.zip')) {
           archiveArtifacts artifacts: 'cn5g_fed_docker_logs.zip'
         }
-        if (fileExists('test_results_oai_cn5g.html')) {
-          archiveArtifacts artifacts: 'test_results_oai_cn5g.html'
+        if (fileExists('test_results_oai_cn5g_mini.html')) {
+          archiveArtifacts artifacts: 'test_results_oai_cn5g_mini.html'
+        }
+        if (fileExists('test_results_oai_cn5g_basic.html')) {
+          archiveArtifacts artifacts: 'test_results_oai_cn5g_basic.html'
         }
       }
     }
