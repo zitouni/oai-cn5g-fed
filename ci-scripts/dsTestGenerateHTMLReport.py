@@ -73,7 +73,7 @@ class HtmlReport():
 			'--type',
 			action='store',
 			required=True,
-			choices=['mini', 'basic'],
+			choices=['mini', 'basic', 'slice'],
 			help='Type of function',
 		)
 		return parser.parse_args()
@@ -172,48 +172,94 @@ class HtmlReport():
 		self.file.write('       <th>Configuration Status</th>\n')
 		self.file.write('     </tr>\n')
 		self.addImageRow('mysql')
-		self.addImageRow('oai_nrf')
 		self.addImageRow('oai_amf')
-		self.addImageRow('oai_smf')
-		self.addImageRow('oai_spgwu')
-		if self.type == 'basic':
+		if self.type == 'basic' or self.type == 'mini':
+			self.addImageRow('oai_nrf')
+			self.addImageRow('oai_smf')
+			self.addImageRow('oai_spgwu')
+		if self.type == 'basic' or self.type == 'slice':
 			self.addImageRow('oai_ausf')
 			self.addImageRow('oai_udm')
 			self.addImageRow('oai_udr')	
+		if self.type == 'slice':
+			self.addImageRow('oai_nrf_1', )
+			self.addImageRow('oai_nrf_2')
+			self.addImageRow('oai_smf_1')
+			self.addImageRow('oai_smf_2')
+			self.addImageRow('oai_upf_1')
+			self.addImageRow('oai_upf_2')
 		self.file.write('  </table>\n')
 		self.file.write('  </div>\n')
 
-	def addImageRow(self, imageInfoPrefix):
+	def addImageRow(self, prefix):
 		cwd = os.getcwd()
-		if imageInfoPrefix == 'oai_amf':
+		if prefix == 'oai_nrf_1':
+			imageInfoPrefix = 'oai_nrf'
+			containerName = 'oai-nrf_1'
+			tagPattern = 'OAI_NRF_TAG'
+			statusPrefix = 'cicd-oai-nrf_1'
+		if prefix == 'oai_nrf_2':
+			imageInfoPrefix = 'oai_nrf'
+			containerName = 'oai-nrf_2'
+			tagPattern = 'OAI_NRF_TAG'
+			statusPrefix = 'cicd-oai-nrf_2'
+		if prefix == 'oai_smf_1':
+			imageInfoPrefix = 'oai_smf'
+			containerName = 'oai-smf_1'
+			tagPattern = 'OAI_SMF_TAG'
+			statusPrefix = 'cicd-oai-smf_1'
+		if prefix == 'oai_smf_2':
+			imageInfoPrefix = 'oai_smf'
+			containerName = 'oai-smf_2'
+			tagPattern = 'OAI_SMF_TAG'
+			statusPrefix = 'cicd-oai-smf_2'
+		if prefix == 'oai_upf_1':
+			imageInfoPrefix = 'oai_spgwu'
+			containerName = 'oai-spgwu-tiny_1'
+			tagPattern = 'OAI_SPGWU_TAG'
+			statusPrefix = 'cicd-oai-upf_1'
+		if prefix == 'oai_upf_2':
+			imageInfoPrefix = 'oai_spgwu'
+			containerName = 'oai-spgwu-tiny_2'
+			tagPattern = 'OAI_SPGWU_TAG'
+			statusPrefix = 'cicd-oai-upf_2'
+		if prefix == 'oai_amf':
+			imageInfoPrefix = 'oai_amf'
 			containerName = 'oai-amf'
 			tagPattern = 'OAI_AMF_TAG'
 			statusPrefix = 'cicd-oai-amf'
-		if imageInfoPrefix == 'oai_smf':
+		if prefix == 'oai_smf':
+			imageInfoPrefix = 'oai_smf'
 			containerName = 'oai-smf'
 			tagPattern = 'OAI_SMF_TAG'
 			statusPrefix = 'cicd-oai-smf'
-		if imageInfoPrefix == 'oai_nrf':
+		if prefix == 'oai_nrf':
+			imageInfoPrefix = 'oai_nrf'
 			containerName = 'oai-nrf'
 			tagPattern = 'OAI_NRF_TAG'
 			statusPrefix = 'cicd-oai-nrf'
-		if imageInfoPrefix == 'oai_spgwu':
+		if prefix == 'oai_spgwu':
+			imageInfoPrefix = 'oai_spgwu'
 			containerName = 'oai-spgwu-tiny'
 			tagPattern = 'OAI_SPGWU_TAG'
 			statusPrefix = 'cicd-oai-upf'
-		if imageInfoPrefix == 'oai_ausf':
+		if prefix == 'oai_ausf':
+			imageInfoPrefix = 'oai_ausf'
 			containerName = 'oai-ausf'
 			tagPattern = 'OAI_AUSF_TAG'
 			statusPrefix = 'cicd-oai-ausf'
-		if imageInfoPrefix == 'oai_udm':
+		if prefix == 'oai_udm':
+			imageInfoPrefix = 'oai_udm'
 			containerName = 'oai-udm'
 			tagPattern = 'OAI_UDM_TAG'
 			statusPrefix = 'cicd-oai-udm'
-		if imageInfoPrefix == 'oai_udr':
+		if prefix == 'oai_udr':
+			imageInfoPrefix = 'oai_udr'
 			containerName = 'oai-udr'
 			tagPattern = 'OAI_UDR_TAG'
 			statusPrefix = 'cicd-oai-udr'
-		if imageInfoPrefix == 'mysql':
+		if prefix == 'mysql':
+			imageInfoPrefix = 'mysql'
 			containerName = imageInfoPrefix
 			tagPattern = 'N/A'
 			statusPrefix = 'cicd-mysql-svr'
@@ -390,4 +436,8 @@ elif HTML.type == 'basic':
 	HTML.path = '/RESULTS-BASIC/bvc.yaml'
 	HTML.file_name = '/test_results_oai_cn5g_basic.html'
 	HTML.containers = 8
+elif HTML.type == 'slice':
+	HTML.path = '/RESULTS-SLICE/slice.yaml'
+	HTML.file_name = '/test_results_oai_cn5g_slice.html'
+	HTML.containers = 12
 HTML.generate()
