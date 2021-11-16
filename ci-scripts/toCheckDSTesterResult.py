@@ -37,6 +37,9 @@ def main() -> None:
     elif args.type == 'basic':
         path = '/RESULTS-BASIC/dsTester_Summary_basic.txt'
         folder = 'RESULTS-BASIC/'
+    elif args.type == 'slice':
+        path = '/RESULTS-SLICE/dsTester_Summary_slice.txt'
+        folder = 'RESULTS-SLICE/'
 
     locexist = False
     cwd = os.getcwd()
@@ -78,7 +81,7 @@ def _parse_args() -> argparse.Namespace:
         '--type',
         action='store',
         required=True,
-        choices=['mini', 'basic'],
+        choices=['mini', 'basic', 'slice'],
         help='Type of function',
     )
     return parser.parse_args()
