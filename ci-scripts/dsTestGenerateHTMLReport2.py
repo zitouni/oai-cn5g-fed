@@ -25,6 +25,8 @@ import re
 import sys
 import subprocess
 import yaml
+import argparse
+
 
 class HtmlReport():
 	def __init__(self):
@@ -33,9 +35,40 @@ class HtmlReport():
 		self.job_url = ''
 		self.job_start_time = 'TEMPLATE_TIME'
 
+	def _parse_args(self) -> argparse.Namespace:
+		"""Parse the command line args
+
+		Returns:
+			argparse.Namespace: the created parser
+		"""
+		parser = argparse.ArgumentParser(description='OAI HTML Report Generation for CI')
+
+		# Jenkins Job name
+		parser.add_argument(
+			'--job_name',
+			action='store',
+			required=True,
+			help='Jenkins Job name',
+		)
+		# Jenkins Job Build ID
+		parser.add_argument(
+			'--job_id',
+			action='store',
+			required=True,
+			help='Jenkins Job Build ID',
+		)
+		# Jenkins Job Build URL
+		parser.add_argument(
+			'--job_url',
+			action='store',
+			required=True,
+			help='Jenkins Job Build URL',
+		)
+		return parser.parse_args()
+
 	def generate(self):
 		cwd = os.getcwd()
-		self.file = open(cwd + '/test_results_oai_cn5g.html', 'w')
+		self.file = open(cwd + '/test_results_oai_cn5g_mini.html', 'w')
 		self.generateHeader()
 		self.deploymentSummaryHeader()
 		finalStatus = self.testSummaryHeader()
@@ -84,22 +117,31 @@ class HtmlReport():
 
 	def deploymentSummaryHeader(self):
 		self.file.write('  <h2>Deployment Summary</h2>\n')
+		passcount = 0
+		failcount = 0
+		restarted = 0
 		cwd = os.getcwd()
-		if os.path.isfile(cwd + '/archives/deployment_status.log'):
-			cmd = 'egrep -c "DEPLOYMENT: OK" archives/deployment_status.log || true'
-			status = False
-			ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
-			if ret.stdout is not None:
-				if ret.stdout.strip() == '1':
-					status = True
-			if status:
-				self.file.write('  <div class="alert alert-success">\n')
-				self.file.write('    <strong>Successful Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
-				self.file.write('  </div>\n')
-			else:
-				self.file.write('  <div class="alert alert-danger">\n')
-				self.file.write('    <strong>Failed Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
-				self.file.write('  </div>\n')
+		if os.path.isfile(cwd + '/DS-TEST-RESULTS/mvc.yaml'):
+			with open(cwd + '/DS-TEST-RESULTS/mvc.yaml') as f:
+				data = yaml.full_load(f)
+				try:
+					passcount = len(data['nf-deployment']['pass'])
+					failcount = len(data['nf-deployment']['fail'])
+				except Exception as e:
+					pass
+				if passcount == 5:
+					self.file.write('  <div class="alert alert-success">\n')
+					self.file.write('    <strong>Successful Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
+					self.file.write('  </div>\n')
+				
+				elif failcount > 0:
+					self.file.write('  <div class="alert alert-danger">\n')
+					self.file.write('    <strong>Failed Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
+					self.file.write('  </div>\n')
+				else:
+					self.file.write('  <div class="alert alert-warning">\n')
+					self.file.write('    <strong>Partial Deployment! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
+					self.file.write('  </div>\n')	
 		else:
 			self.file.write('  <div class="alert alert-warning">\n')
 			self.file.write('    <strong>LogFile not available! <span class="glyphicon glyphicon-warning-sign"></span></strong>\n')
@@ -122,9 +164,6 @@ class HtmlReport():
 		self.addImageRow('oai_amf')
 		self.addImageRow('oai_smf')
 		self.addImageRow('oai_spgwu')
-		self.addImageRow('oai_ausf')
-		self.addImageRow('oai_udm')
-		self.addImageRow('oai_udr')
 		self.file.write('  </table>\n')
 		self.file.write('  </div>\n')
 
@@ -133,34 +172,23 @@ class HtmlReport():
 		if imageInfoPrefix == 'oai_amf':
 			containerName = 'oai-amf'
 			tagPattern = 'OAI_AMF_TAG'
-			statusPrefix = 'amf'
+			statusPrefix = 'cicd-oai-amf'
 		if imageInfoPrefix == 'oai_smf':
 			containerName = 'oai-smf'
 			tagPattern = 'OAI_SMF_TAG'
-			statusPrefix = 'smf'
+			statusPrefix = 'cicd-oai-smf'
 		if imageInfoPrefix == 'oai_nrf':
 			containerName = 'oai-nrf'
 			tagPattern = 'OAI_NRF_TAG'
-			statusPrefix = 'nrf'
+			statusPrefix = 'cicd-oai-nrf'
 		if imageInfoPrefix == 'oai_spgwu':
 			containerName = 'oai-spgwu-tiny'
 			tagPattern = 'OAI_SPGWU_TAG'
-			statusPrefix = 'spgwu'
-		if imageInfoPrefix == 'oai_ausf':
-			containerName = 'oai-ausf'
-			tagPattern = 'OAI_AUSF_TAG'
-			statusPrefix = 'ausf'
-		if imageInfoPrefix == 'oai_udm':
-			containerName = 'oai-udm'
-			tagPattern = 'OAI_UDM_TAG'
-			statusPrefix = 'udm'
-		if imageInfoPrefix == 'oai_udr':
-			containerName = 'oai-udr'
-			tagPattern = 'OAI_UDR_TAG'
-			statusPrefix = 'udr'
+			statusPrefix = 'cicd-oai-upf'
 		if imageInfoPrefix == 'mysql':
 			containerName = imageInfoPrefix
 			tagPattern = 'N/A'
+			statusPrefix = 'cicd-mysql-svr'
 		if os.path.isfile(cwd + '/archives/' + imageInfoPrefix + '_image_info.log'):
 			usedTag = ''
 			createDate = ''
@@ -185,39 +213,53 @@ class HtmlReport():
 							size = str(sizeInt) + ' MB'
 			imageLog.close()
 			configState = 'KO'
-			cmd = 'egrep -c "STATUS: healthy" archives/' + statusPrefix + '_config.log || true'
-			ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
-			if ret.stdout is not None:
-				if ret.stdout.strip() == '1':
-					configState = 'OK'
-			self.file.write('     <tr>\n')
-			self.file.write('       <td>' + containerName + '</td>\n')
-			self.file.write('       <td>' + usedTag + '</td>\n')
-			self.file.write('       <td>' + createDate + '</td>\n')
-			self.file.write('       <td>' + size + '</td>\n')
-			if configState == 'OK':
-				self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">' + configState + '</font></b></td>\n')
-			else:
-				self.file.write('       <td bgcolor = "Red"><b><font color="white">' + configState + '</font></b></td>\n')
-			self.file.write('     </tr>\n')
-		else:
-			if imageInfoPrefix == 'mysql':
+			if os.path.isfile(cwd + '/DS-TEST-RESULTS/mvc.yaml'):
+				with open(cwd + '/DS-TEST-RESULTS/mvc.yaml') as f:
+					data = yaml.full_load(f)
+					try:
+						if statusPrefix in data['nf-deployment']['pass']:
+							configState = 'OK'
+						elif statusPrefix in data['nf-deployment']['recovered']:
+							configState = 'RS'
+					except Exception as e:
+						pass
 				self.file.write('     <tr>\n')
 				self.file.write('       <td>' + containerName + '</td>\n')
-				self.file.write('       <td>mysql:5.7</td>\n')
-				self.file.write('       <td>N/A</td>\n')
-				self.file.write('       <td>449MB</td>\n')
-				configState = 'KO'
-				cmd = 'egrep -c "STATUS: healthy" archives/mysql_status.log || true'
-				ret = subprocess.run(cmd, shell=True, stdout=subprocess.PIPE, encoding='utf-8')
-				if ret.stdout is not None:
-					if ret.stdout.strip() == '1':
-						configState = 'OK'
+				self.file.write('       <td>' + usedTag + '</td>\n')
+				self.file.write('       <td>' + createDate + '</td>\n')
+				self.file.write('       <td>' + size + '</td>\n')
 				if configState == 'OK':
-					self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">OK</font></b></td>\n')
+					self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">' + configState + '</font></b></td>\n')
+				elif configState == 'RS':
+					self.file.write('       <td bgcolor = "Orange"><b><font color="white">' + configState + '</font></b></td>\n')
 				else:
-					self.file.write('       <td bgcolor = "Red"><b><font color="white">KO</font></b></td>\n')
+					self.file.write('       <td bgcolor = "Red"><b><font color="white">' + configState + '</font></b></td>\n')
 				self.file.write('     </tr>\n')
+		else:
+			if imageInfoPrefix == 'mysql':
+				if os.path.isfile(cwd + '/DS-TEST-RESULTS/mvc.yaml'):		
+					self.file.write('     <tr>\n')
+					self.file.write('       <td>' + containerName + '</td>\n')
+					self.file.write('       <td>mysql:5.7</td>\n')
+					self.file.write('       <td>N/A</td>\n')
+					self.file.write('       <td>449MB</td>\n')
+					configState = 'KO'
+					with open(cwd + '/DS-TEST-RESULTS/mvc.yaml') as f:
+						data = yaml.full_load(f)
+						try:
+							if statusPrefix in data['nf-deployment']['pass']:
+								configState = 'OK'
+							elif statusPrefix in data['nf-deployment']['recovered']:
+								configState = 'RS'
+						except Exception as e:
+							pass
+					if configState == 'OK':
+						self.file.write('       <td bgcolor = "DarkGreen"><b><font color="white">OK</font></b></td>\n')
+					elif configState == 'RS':
+						self.file.write('       <td bgcolor = "Orange"><b><font color="white">' + configState + '</font></b></td>\n')
+					else:
+						self.file.write('       <td bgcolor = "Red"><b><font color="white">KO</font></b></td>\n')
+					self.file.write('     </tr>\n')
 			else:
 				self.file.write('     <tr>\n')
 				self.file.write('       <td>' + containerName + '</td>\n')
@@ -279,9 +321,19 @@ class HtmlReport():
 					else:
 						self.file.write('      <td bgcolor = "DarkOrange"><b><font color="white">UNKNOW</font></b></td>\n')
 					testDetails = ''
-					for x,y in data['scenarios'][scenario]['conditions'].items():
-						testDetails += str(x) + ': ' + str(y) + '\n'
-						#details += '\n'
+					try:
+						if data['scenarios'][scenario]['conditions']['om_conditions'] and data['scenarios'][scenario]['conditions']['pcap_test']:
+							testDetails += 'Conditions: \n'
+							for x,y in data['scenarios'][scenario]['conditions']['om_conditions'].items():
+								testDetails += '      ' + str(x) + ': ' + str(y) + '\n'
+							testDetails += '\npcap_test: \n'
+							for x,y in data['scenarios'][scenario]['conditions']['pcap_test'].items():
+								testDetails += '      ' + str(x) + ': \n'
+								testDetails += '          ' + str(y) + '\n'
+					except Exception as e:
+						for x,y in data['scenarios'][scenario]['conditions'].items():
+							testDetails += str(x) + ': ' + str(y) + '\n'
+							#details += '\n'
 					self.file.write('     <td><pre>' + testDetails + '</pre></td>\n')
 					self.file.write('    </tr>\n')
 		else:
@@ -289,47 +341,17 @@ class HtmlReport():
 		self.file.write('  </table>\n')
 		self.file.write('  </div>\n')
 
-def Usage():
-	print('----------------------------------------------------------------------------------------------------------------------')
-	print('dsTestGenerateHTMLReport.py')
-	print('   Generate an HTML report for the Jenkins pipeline on oai-cn5g-fed.')
-	print('----------------------------------------------------------------------------------------------------------------------')
-	print('Usage: python3 generateHtmlReport.py [options]')
-	print('  --help  Show this help.')
-	print('---------------------------------------------------------------------------------------------- Mandatory Options -----')
-	print('  --job_name=[Jenkins Job name]')
-	print('  --job_id=[Jenkins Job Build ID]')
-	print('  --job_url=[Jenkins Job Build URL]')
-
 #--------------------------------------------------------------------------------------------------------
 #
 # Start of main
 #
 #--------------------------------------------------------------------------------------------------------
 
-argvs = sys.argv
-argc = len(argvs)
-
 HTML = HtmlReport()
+args = HTML._parse_args()
 
-while len(argvs) > 1:
-	myArgv = argvs.pop(1)
-	if re.match('^\-\-help$', myArgv, re.IGNORECASE):
-		Usage()
-		sys.exit(0)
-	elif re.match('^\-\-job_name=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-job_name=(.+)$', myArgv, re.IGNORECASE)
-		HTML.job_name = matchReg.group(1)
-	elif re.match('^\-\-job_id=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-job_id=(.+)$', myArgv, re.IGNORECASE)
-		HTML.job_id = matchReg.group(1)
-	elif re.match('^\-\-job_url=(.+)$', myArgv, re.IGNORECASE):
-		matchReg = re.match('^\-\-job_url=(.+)$', myArgv, re.IGNORECASE)
-		HTML.job_url = matchReg.group(1)
-	else:
-		sys.exit('Invalid Parameter: ' + myArgv)
-
-if HTML.job_name == '' or HTML.job_id == '' or HTML.job_url == '':
-	sys.exit('Missing Parameter in job description')
+HTML.job_name = args.job_name
+HTML.job_id = args.job_id
+HTML.job_url = args.job_url
 
 HTML.generate()
