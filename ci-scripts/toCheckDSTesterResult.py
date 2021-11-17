@@ -22,11 +22,67 @@
 
 import re
 import sys
+import subprocess
+import yaml
+import os
+import argparse
 
-try:
-    with open('DS-TEST-RESULTS/status.txt') as f:
-        for line in f:
-            if re.search('FAILED', line):
-                sys.exit(-1)
-except IOError:
-    print("File not accessible to check DSTester Result: DS-TEST-RESULTS/status.txt")
+def main() -> None:
+    """Provides the status of the test and copies the results"""
+    args = _parse_args()
+
+    if args.type == 'mini':
+        path = '/RESULTS-MINI/dsTester_Summary_mini.txt'
+        folder = 'RESULTS-MINI/'
+    elif args.type == 'basic':
+        path = '/RESULTS-BASIC/dsTester_Summary_basic.txt'
+        folder = 'RESULTS-BASIC/'
+
+    locexist = False
+    cwd = os.getcwd()
+    try:
+        with open(cwd + path) as f:
+            for line in f:
+                if re.search('Result file is available here', str(line)):
+                    result = re.search('(?:\/.+?\/)(.+?)(?:\/.+)', str(line))
+                    if result:
+                        result1 = re.search('^(.*/)([^/]*)$', str(result.group(0)))
+                        filename = re.search('[^/]*$', str(result1.group(0))) 
+                        subprocess.check_output(f'cp -r {result1.group(1)}* {folder}', stderr=subprocess.STDOUT, shell=True, universal_newlines=True)
+                    locexist = True
+    except IOError:
+        sys.exit(f"File not accessible to check DSTester Summary: {path}")
+
+    if locexist:
+        try:
+            with open(cwd + f'/{folder}{filename.group(0)}') as f:
+                data = yaml.full_load(f)
+                if data["final-result"] == 'fail':
+                    sys.exit('DS Tester FrameWork final result FAILED')
+        except IOError:
+            sys.exit(f'File not accessible to check DSTester result: {folder}{filename.group(0)}')
+    else:
+        sys.exit('Result path is not Available on Console, Something wrong with DSTester')
+
+
+def _parse_args() -> argparse.Namespace:
+    """Parse the command line args
+
+    Returns:
+        argparse.Namespace: the created parser
+    """
+    parser = argparse.ArgumentParser(description='Check the status of 5GCN test with DSTester')
+
+    # Type
+    parser.add_argument(
+        '--type',
+        action='store',
+        required=True,
+        choices=['mini', 'basic'],
+        help='Type of function',
+    )
+    return parser.parse_args()
+
+
+if __name__ == '__main__':
+    main()
