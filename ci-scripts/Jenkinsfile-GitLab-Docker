@@ -452,24 +452,14 @@ pipeline {
         }
 
         // Zipping all archived log files
-        if (mini == true && basic == true && slice == true){
-          sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS-MINI RESULTS-BASIC RESULTS-SLICE"
-        } else if (mini == true && basic == true){
-          sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS-MINI RESULTS-BASIC"
-        } else if (slice == true && mini == false && basic == false){
-          sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS-SLICE"
-        }
+        sh "zip -r -qq cn5g_fed_docker_logs.zip archives RESULTS*"
         if (fileExists('cn5g_fed_docker_logs.zip')) {
           archiveArtifacts artifacts: 'cn5g_fed_docker_logs.zip'
         }
-        if (fileExists('test_results_oai_cn5g_mini.html')) {
-          archiveArtifacts artifacts: 'test_results_oai_cn5g_mini.html'
-        }
-        if (fileExists('test_results_oai_cn5g_basic.html')) {
-          archiveArtifacts artifacts: 'test_results_oai_cn5g_basic.html'
-        }
-        if (fileExists('test_results_oai_cn5g_slice.html')) {
-          archiveArtifacts artifacts: 'test_results_oai_cn5g_slice.html'
+        listOfFiles = sh returnStdout: true, script: 'ls test_results*.html'
+        String[] htmlFiles = listOfFiles.split("\\n")
+        for (htmlFile in htmlFiles) {
+          archiveArtifacts artifacts: htmlFile
         }
       }
     }
