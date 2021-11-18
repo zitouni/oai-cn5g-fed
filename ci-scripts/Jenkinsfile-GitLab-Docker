@@ -147,6 +147,7 @@ pipeline {
               echo "Upstream Job passed AMF_TAG to use: ${amfTag}"
               mini = true
               basic = true
+              slice = true
             }
             if (params.AMF_BRANCH != null) {
               amfBranch = params.AMF_BRANCH
@@ -448,7 +449,7 @@ pipeline {
           sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' --type slice'
         }
         if (basic == true){
-        sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' --type basic'
+          sh 'python3 ./ci-scripts/dsTestGenerateHTMLReport.py --job_name ' + JOB_NAME + ' --job_id ' + BUILD_ID + ' --job_url ' + BUILD_URL + ' --type basic'
         }
 
         // Zipping all archived log files
