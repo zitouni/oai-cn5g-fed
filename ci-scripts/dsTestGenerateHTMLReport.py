@@ -180,7 +180,8 @@ class HtmlReport():
 		if self.type == 'basic' or self.type == 'slice':
 			self.addImageRow('oai_ausf')
 			self.addImageRow('oai_udm')
-			self.addImageRow('oai_udr')	
+			self.addImageRow('oai_udr')
+			self.addImageRow('oai_nssf')
 		if self.type == 'slice':
 			self.addImageRow('oai_nrf_1', )
 			self.addImageRow('oai_nrf_2')
@@ -258,6 +259,11 @@ class HtmlReport():
 			containerName = 'oai-udr'
 			tagPattern = 'OAI_UDR_TAG'
 			statusPrefix = 'cicd-oai-udr'
+		if prefix == 'oai_nssf':
+			imageInfoPrefix = 'oai_nssf'
+			containerName = 'oai-nssf'
+			tagPattern = 'OAI_NSSF_TAG'
+			statusPrefix = 'cicd-oai-nssf'
 		if prefix == 'mysql':
 			imageInfoPrefix = 'mysql'
 			containerName = imageInfoPrefix
