@@ -181,9 +181,9 @@ class HtmlReport():
 			self.addImageRow('oai_ausf')
 			self.addImageRow('oai_udm')
 			self.addImageRow('oai_udr')
-			self.addImageRow('oai_nssf')
 		if self.type == 'slice':
-			self.addImageRow('oai_nrf_1', )
+			self.addImageRow('oai_nssf')
+			self.addImageRow('oai_nrf_1')
 			self.addImageRow('oai_nrf_2')
 			self.addImageRow('oai_smf_1')
 			self.addImageRow('oai_smf_2')
