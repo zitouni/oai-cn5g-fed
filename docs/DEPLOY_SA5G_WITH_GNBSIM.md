@@ -51,7 +51,7 @@ Moreover, there are various other opensource gnb/ue simulator tools that are ava
 
 ##### About gnbsim -
 
-[Gnbsim](https://github.com/hhorai/gnbsim) is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It 3rd party opensource tool written in golang and more information can be found [here.](https://github.com/hhorai/gnbsim) Gnbsim simulates NGAP, NAS and GTPU protocols. Current version of gnbsim simulates one gnb and one ue.
+Gnbsim is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It is a 3rd party opensource tool written in golang. The [original repository](https://github.com/hhorai/gnbsim) is not available anymore, but a number of forks can be found, e.g., [here](https://github.com/AlohaLuo/gnbsim-backup), [here](https://github.com/Prabhjot-Sethi/gnbsim), and in [this repo](https://gitlab.eurecom.fr/kharade/gnbsim) which we will use in the following. Gnbsim simulates NGAP, NAS and GTPU protocols. Current version of gnbsim simulates one gnb and one ue.
 
 Let's begin !!
 
