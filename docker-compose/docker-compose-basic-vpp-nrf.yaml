@@ -262,8 +262,8 @@ services:
             - INTERFACE_ACCESS=eth0
             - INTERFACE_CORE=eth1
             - INTERFACE_CP=eth2
-            - NSSAI_SD_0=222
-            - SST=123
+            - NSSAI_SD_0=123
+            - SST=222
             - DNN=default
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
