@@ -1,5 +1,11 @@
 # RELEASE NOTES: #
 
+## v1.3.0 -- December 2021 ##
+
+* Incorporation of new public network functions:
+  - NSSF
+* New tutorial with this new function
+
 ## v1.2.1 -- October 2021 ##
 
 * Incorporation of new public network functions:
