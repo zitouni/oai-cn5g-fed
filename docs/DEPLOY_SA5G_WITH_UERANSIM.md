@@ -13,7 +13,7 @@
 </table>
 
 
-![SA dsTest Demo](./images/5gCN_ueransim.jpg)
+![SA dsTest Demo](./images/5gcn_vpp_upf_ueransim.png)
 
 **Reading time: ~ 30mins**
 
