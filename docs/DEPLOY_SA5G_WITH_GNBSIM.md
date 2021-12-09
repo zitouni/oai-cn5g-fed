@@ -241,6 +241,12 @@ Here we try some scaling test with gnbsim. There are additional IMSIs are added 
 ```bash
 oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
 Creating gnbsim2 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
+Creating gnbsim3 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
+Creating gnbsim4 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
+Creating gnbsim5 ... done
 ```
 So here basically, minimum configuration parameters that need to change is gnbid, imsi and container ip address in docker-compose-gnbsim.yaml.
 Please make sure status of instance is healthy before creating one more instance. Now here we have deployed all 5 gnbsim intances - 
@@ -329,7 +335,15 @@ Last thing is to remove all services - <br/>
 ```bash
 /oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml down
 Stopping service gnbsim ...
+Stopping gnbsim5 ... done
+Stopping gnbsim4 ... done
+Stopping gnbsim3 ... done
+Stopping gnbsim2 ... done
 Stopping gnbsim ... done
+Removing gnbsim5 ... done
+Removing gnbsim4 ... done
+Removing gnbsim3 ... done
+Removing gnbsim2 ... done
 Removing gnbsim ... done
 Network demo-oai-public-net is external, skipping
 Service gnbsim is  stopped
@@ -337,7 +351,7 @@ Service gnbsim is  stopped
 
 * Undeploy the core network
 ```bash
-oai-cn5g-fed/docker-compose$ ./core-network.py --type stop-mini --fqdn no --scenario 1
+oai-cn5g-fed/docker-compose$ python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
