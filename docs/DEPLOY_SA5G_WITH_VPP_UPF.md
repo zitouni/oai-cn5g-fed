@@ -226,9 +226,35 @@ $ docker logs oai-smf
 
 ## 6. Stimuli with a RAN emulator ##
 
-**CAUTION: at time of writing (2021/10/29), this section is empty. Will be filled later.**
+### 6.1 Test with Gnbsim ###
+In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
+Launch gnbsim instance
+```bash
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim-vpp.yaml up -d gnbsim-vpp
+Creating gnbsim-vpp ... done
+```
 
+Make sure Gnbsim service is healthy
+``` bash
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim-vpp.yaml ps -a
+   Name                 Command                  State       Ports
+------------------------------------------------------------------
+gnbsim-vpp   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)        
+oai-cn5g-fed/docker-compose$ 
+```
 
+After successfull registration of UE, we can perform traffic test
+```bash
+/oai-cn5g-fed$ docker exec gnbsim-vpp ping -c 3 -I 12.1.1.2 google.com
+PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
+64 bytes from mrs08s02-in-f14.1e100.net (172.217.18.238): icmp_seq=1 ttl=114 time=9.89 ms
+64 bytes from mrs08s02-in-f14.1e100.net (172.217.18.238): icmp_seq=2 ttl=114 time=7.10 ms
+64 bytes from mrs08s02-in-f14.1e100.net (172.217.18.238): icmp_seq=3 ttl=114 time=6.72 ms
+
+--- google.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 5ms
+rtt min/avg/max/mdev = 6.716/7.900/9.890/1.418 ms
+```
 ## 7. Undeploy the Core Network ##
 
 ```bash
