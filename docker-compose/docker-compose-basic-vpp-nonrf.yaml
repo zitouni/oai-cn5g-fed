@@ -18,7 +18,7 @@ services:
             timeout: 5s
             retries: 5
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
@@ -39,7 +39,7 @@ services:
         depends_on:
             - mysql
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.136
         volumes:
             - ./udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
@@ -67,7 +67,7 @@ services:
         depends_on:
             - oai-udr
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.137
         volumes:
             - ./udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
@@ -94,7 +94,7 @@ services:
         depends_on:
             - oai-udm
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.138
         volumes:
             - ./ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
@@ -171,7 +171,7 @@ services:
             timeout: 15s
             retries: 5
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
@@ -217,7 +217,7 @@ services:
              timeout: 5s
              retries: 5
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.133
     vpp-upf:
         image: oai-upf-vpp:latest
@@ -238,9 +238,9 @@ services:
             - VPP_CORE_WORKER=1
 #           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
             - VPP_PLUGIN_PATH=/usr/lib/x86_64-linux-gnu/vpp_plugins/ # Ubntu18.04
-            - INTERFACE_ACCESS=eth0
-            - INTERFACE_CORE=eth1
-            - INTERFACE_CP=eth2
+            - INTERFACE_ACCESS=eth1
+            - INTERFACE_CORE=eth2
+            - INTERFACE_CP=eth0
             - NSSAI_SD_0=222
             - SST=123
             - DNN=default
@@ -254,7 +254,7 @@ services:
             timeout: 5s
             retries: 5
         networks:
-            public_net_cp:
+            public_net:
                 ipv4_address: 192.168.70.134
             public_net_access:
                 ipv4_address: 192.168.72.134
@@ -265,7 +265,7 @@ services:
         privileged: true
         container_name: "oai-ext-dn"
         entrypoint: /bin/bash -c \
-              "apt update; apt install -y iptables iproute2 iputils-ping;"\
+              "apt update; apt install -y iptables iproute2 iperf3 iputils-ping;"\
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.73.202 dev eth0; sleep infinity"
         command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
@@ -275,13 +275,14 @@ services:
             public_net_core:
                 ipv4_address: 192.168.73.135
 networks:
-    public_net_cp:
-        name: oai-public-cp
+    public_net:
+        driver: bridge
+        name: demo-oai-public-net
         ipam:
             config:
                 - subnet: 192.168.70.0/24
         driver_opts:
-            com.docker.network.bridge.name: "cn5g-public"
+            com.docker.network.bridge.name: "demo-oai"
     public_net_access:
         name: oai-public-access
         ipam:

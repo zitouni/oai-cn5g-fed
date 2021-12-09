@@ -24,11 +24,11 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.132
-            - GTPuLocalAddr=192.168.70.136
+            - GTPuLocalAddr=192.168.70.156
             - GTPuIFname=eth0
         networks:
             public_net:
-                ipv4_address: 192.168.70.136
+                ipv4_address: 192.168.70.156
         healthcheck:
             test: /bin/bash -c "ifconfig gtp-gnb"
             interval: 10s
@@ -58,11 +58,11 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.132
-            - GTPuLocalAddr=192.168.70.137
+            - GTPuLocalAddr=192.168.70.157
             - GTPuIFname=eth0
         networks:
             public_net:
-                ipv4_address: 192.168.70.137
+                ipv4_address: 192.168.70.157
         healthcheck:
             test: /bin/bash -c "ifconfig gtp-gnb"
             interval: 10s
@@ -92,11 +92,11 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.132
-            - GTPuLocalAddr=192.168.70.138
+            - GTPuLocalAddr=192.168.70.158
             - GTPuIFname=eth0
         networks:
             public_net:
-                ipv4_address: 192.168.70.138
+                ipv4_address: 192.168.70.158
         healthcheck:
             test: /bin/bash -c "ifconfig gtp-gnb"
             interval: 10s
@@ -126,11 +126,11 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.132
-            - GTPuLocalAddr=192.168.70.139
+            - GTPuLocalAddr=192.168.70.159
             - GTPuIFname=eth0
         networks:
             public_net:
-                ipv4_address: 192.168.70.139
+                ipv4_address: 192.168.70.159
         healthcheck:
             test: /bin/bash -c "ifconfig gtp-gnb"
             interval: 10s
@@ -160,11 +160,11 @@ services:
             - NRCellID=1
             - USE_FQDN=no
             - NGAPPeerAddr=192.168.70.132
-            - GTPuLocalAddr=192.168.70.140
+            - GTPuLocalAddr=192.168.70.160
             - GTPuIFname=eth0
         networks:
             public_net:
-                ipv4_address: 192.168.70.140
+                ipv4_address: 192.168.70.160
         healthcheck:
             test: /bin/bash -c "ifconfig gtp-gnb"
             interval: 10s
@@ -202,64 +202,7 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-    gnbsim-vpp:
-        container_name: gnbsim-vpp
-        image: gnbsim:latest
-        privileged: true
-        environment:
-            - MCC=208
-            - MNC=95
-            - GNBID=5
-            - TAC=0x00a000
-            - SST=222
-            - SD=00007b
-            - PagingDRX=v32
-            - RANUENGAPID=0
-            - IMEISV=35609204079514
-            - MSIN=0000000035
-            - RoutingIndicator=1234
-            - ProtectionScheme=null
-            - KEY=0C0A34601D4F07677303652C0462535B
-            - OPc=63bfa50ee6523365ff14c1f45f88737d
-            - DNN=default
-            - URL=http://www.asnt.org:8080/
-            - NRCellID=1
-            - USE_FQDN=no
-#           - USE_FQDN=yes
-#           - AMF_FQDN=amf.oai-5gc.eur
-            - NGAPPeerAddr=192.168.71.132
-            - GTPuLocalAddr=192.168.72.141
-            - GTPuIFname=eth1
-        networks:
-            public_net_core:
-                ipv4_address: 192.168.71.141
-            public_net_access:
-                ipv4_address: 192.168.72.141
-        healthcheck:
-            test: /bin/bash -c "ifconfig gtp-gnb"
-            interval: 10s
-            timeout: 5s
-            retries: 5
 networks:
     public_net:
         external:
             name: demo-oai-public-net
-    public_net_core:
-        name: oai-public-core
-        ipam:
-            config:
-                - subnet: 192.168.71.0/24
-    public_net_access:
-        name: oai-public-access
-        ipam:
-            config:
-                - subnet: 192.168.72.0/24
-# Incase the user wants docker-compose to create a bridge rather than creating the bridge manually then uncomment the below lines
-#     public_net:
-#         driver: bridge
-#         name: demo-oai-public-net
-#         ipam:
-#             config:
-#                 - subnet: 192.168.70.128/26
-#         driver_opts:
-#             com.docker.network.bridge.name: "demo-oai"

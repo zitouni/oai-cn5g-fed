@@ -61,7 +61,7 @@ we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
 ```bash
-oai-cn5g-fed/docker-compose$ ./core-network.py --type start-mini --fqdn no --scenario 1
+oai-cn5g-fed/docker-compose$ python3 core-network.py --type start-mini --fqdn no --scenario 1
 ...
 [2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
@@ -80,6 +80,11 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 sec
 oai-cn5g-fed/docker-compose$ 
 ```
 
+We can also use basic deployment of 5GCN (with AUSF, UDM, UDR) as below -
+
+```bash 
+oai-cn5g-fed/docker-compose$ python3 core-network.py --type start-basic
+```
 ## 6. Getting a `gnbsim` docker image ##
 
 You have the choice:
@@ -124,6 +129,7 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minu
 ```
 Now we are ready to perform some traffic test.
 * Ping test <br/>
+
 Here we ping UE from external DN container.
 ```bash
 $ docker exec -it oai-ext-dn ping -c 3 12.1.1.2
@@ -137,6 +143,20 @@ PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.145/0.276/0.448/0.127 ms
 rohan@rohan:~/gitrepo/oai-cn5g-fed/docker-compose$ 
 ```
+
+Here we ping external DN from UE (gnbsim) container.
+```bash
+oai-cn5g-fed/docker-compose$ docker exec gnbsim ping -c 3 -I 12.1.1.2 google.com
+PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
+64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=1 ttl=115 time=5.12 ms
+64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=2 ttl=115 time=7.52 ms
+64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=3 ttl=115 time=7.19 ms
+
+--- google.com ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 4ms
+rtt min/avg/max/mdev = 5.119/6.606/7.515/1.064 ms
+```
+
 * Iperf test <br/>
 Here we do iperf traffic test between gnbsim UE and external DN node. We can make any node as iperf server/client.<br/>
 Running iperf server on external DN container
@@ -221,6 +241,12 @@ Here we try some scaling test with gnbsim. There are additional IMSIs are added 
 ```bash
 oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
 Creating gnbsim2 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
+Creating gnbsim3 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
+Creating gnbsim4 ... done
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
+Creating gnbsim5 ... done
 ```
 So here basically, minimum configuration parameters that need to change is gnbid, imsi and container ip address in docker-compose-gnbsim.yaml.
 Please make sure status of instance is healthy before creating one more instance. Now here we have deployed all 5 gnbsim intances - 
@@ -309,7 +335,15 @@ Last thing is to remove all services - <br/>
 ```bash
 /oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml down
 Stopping service gnbsim ...
+Stopping gnbsim5 ... done
+Stopping gnbsim4 ... done
+Stopping gnbsim3 ... done
+Stopping gnbsim2 ... done
 Stopping gnbsim ... done
+Removing gnbsim5 ... done
+Removing gnbsim4 ... done
+Removing gnbsim3 ... done
+Removing gnbsim2 ... done
 Removing gnbsim ... done
 Network demo-oai-public-net is external, skipping
 Service gnbsim is  stopped
@@ -317,7 +351,7 @@ Service gnbsim is  stopped
 
 * Undeploy the core network
 ```bash
-oai-cn5g-fed/docker-compose$ ./core-network.py --type stop-mini --fqdn no --scenario 1
+oai-cn5g-fed/docker-compose$ python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
