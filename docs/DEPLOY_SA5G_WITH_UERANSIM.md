@@ -64,7 +64,8 @@ we did for dsTest-host.
 #### NOTE: #### 
 UERANSIM currently does not support integraty and ciphering algorithm NIA0, NEA0 repectively. Hence we have to update AMF config in the docker-compose as below -
 
-Add following parametrs in oai-amf service of docker-compose
+#### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network.
+
 ```bash
             - INT_ALGO_LIST=["NIA1" , "NIA2"]
             - CIPH_ALGO_LIST=["NEA1" , "NEA2"]
