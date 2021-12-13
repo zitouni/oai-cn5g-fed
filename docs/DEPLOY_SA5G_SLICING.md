@@ -28,8 +28,10 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 2.  Building Container Images
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
-5.  Deploying OAI 5G Core Network
-6.  [Getting a `gnbsim` docker image](#6-getting-a-gnbsim-docker-image)
-7.  [Executing `gnbsim` Scenario](#7-executing-the-gnbsim-scenario)
+5.  [Deploying OAI 5G Core Network](#5-deploying-oai-5g-core-network)
+6.  [Getting a `ransim` docker image](#6-getting-a-gnbsim-docker-image)
+7.  [Executing `ransim` Scenario](#7-executing-the-gnbsim-scenario)
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
-9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
+
+
+![SA dsTest Demo](./images/5gcn_slicing_ue_multislice.png) 
