@@ -12,8 +12,6 @@
   </tr>
 </table>
 
-**CAUTION: 2021/12/12: This page may be obsolete and needs update.**
-
 ![SA Slicing Demo](./images/5gcn_slicing.png)
 
 **Reading time: ~ 30mins**
@@ -32,8 +30,9 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 6.  [Getting a `ransim` docker images](#6-getting-a-gnbsim-docker-images)
 7.  [Executing `ransim` Scenario](#7-executing-the-gnbsim-scenario)
 8.  [Traffic test](#8-traffic-test)
-9.  [UE with multiple S-NSSAIs](#9-ue-with-multiple-s-nssais)
-10. [Analysing Scenario Results](#8-analysing-the-scenario-results)
+9.  [Analysing Scenario Results](#9-analysing-the-scenario-results)
+10. [UE with multiple S-NSSAIs](#10-ue-with-multiple-s-nssais)
+11. [Undeploy network](#11-analysing-the-scenario-results)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
@@ -75,7 +74,7 @@ As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated
 Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in S-NSSAI 2 and 3 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in S-NSSAI 2 and 3. Here number of SMFs/UPFs for registered under single NRF is part of operator network planning.<br/>
 
 
-######Let's begin !!
+###### Let's begin !!
 
 * Steps 1 to 4 are similar as previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
@@ -128,7 +127,7 @@ bf6544a04f1f   oai-nssf:develop         "/bin/bash /openair-…"   51 seconds ag
 
 ## 6. Getting a `ransim` docker images ##
 
-We are using 3 different ran simulators viz.ueransim, rfsimulator and gnbsim for slice 2,3 and 4 repectively. Each of them has there set of features, and one can use as per need basis. You can pull docker images from official repositories as below -
+We are using 3 different ran simulators viz. [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has there set of features, and one can use as per need basis (For the moment, rfsimulator is validated with multiplr UEs for this tutorial). You can pull docker images from official repositories as below -
 
 ```bash
 $ docker pull rohankharade/gnbsim:latest
@@ -145,7 +144,8 @@ $ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
 ```
 
 ## 7. Executing `ransim` Scenario ##
-We run first, ueransim, gnbsim and rfsimulator gnb then rfsimulator UEs. Here we deploy rfsimulator UEs later as we need to make sure rfsimulator gnb is connected to AMF successfully.
+We run first, ueransim, gnbsim, rfsimulator gnb and rfsim5g-oai-nr-ue1 first. Here we deploy rfsim5g-oai-nr-ue2 later as we need to make sure rfsimulator gnb/ue is connected to AMF successfully (As rfsimulator simulates complete protocol stack and radio interface, it is bit resource intensive).
+
 ```bash
 oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-slicing-ransim.yaml up -d gnbsim ueransim oai-gnb oai-nr-ue1
 Creating gnbsim             ... done
@@ -198,6 +198,8 @@ After successful deployment we can verify at AMF that all gnbs and ues are succe
 
 ## 8. Traffic Test ##
 
+In this section we perform traffic test between oai-ext-dn node and Ues <br/>
+
 ```bash
 $ docker exec oai-ext-dn ping -c 2 12.1.1.3
 PING 12.1.1.3 (12.1.1.3) 56(84) bytes of data.
@@ -232,8 +234,102 @@ PING 12.1.1.129 (12.1.1.129) 56(84) bytes of data.
 rtt min/avg/max/mdev = 122.181/138.131/154.082/15.954 ms
 $ 
 ```
+## 9. Analysing Scenario Results ##
 
-## 9. UE with multiple S-NSSAIs ##
+#### To be explained in detail
+
+| Container             |   Ip-address   |
+| ----------------------|:-------------- |
+| mysql                 | 192.168.70.131 |
+| oai-nssf              | 192.168.70.132 |
+| oai-udr               | 192.168.70.133 |
+| oai-udm               | 192.168.70.134 |
+| oai-ausf              | 192.168.70.135 |
+| oai-nrf-slice12       | 192.168.70.136 |
+| oai-nrf-slice3        | 192.168.70.137 |
+| oai-amf               | 192.168.70.138 |
+| oai-smf-slice1        | 192.168.70.139 |
+| oai-smf-slice2        | 192.168.70.140 |
+| oai-smf-slice3        | 192.168.70.141 |
+| oai-spgwu-slice1      | 192.168.70.142 |
+| oai-spgwu-slice2      | 192.168.70.143 |
+| vpp-upf-slice3 (N4)   | 192.168.70.144 |
+| vpp-upf-slice3 (N3)   | 192.168.72.144 |
+| vpp-upf-slice3 (N6)   | 192.168.73.144 |
+| oai-ext-dn            | 192.168.70.145 |
+| ueransim gNB          | 192.168.70.152 |
+| rfsim gNB             | 192.168.70.153 |
+| rfsim UE1             | 192.168.70.154 |
+| rfsim UE2             | 192.168.70.155 |
+| gnbsim gNB            | 192.168.70.156 |
+| UE1                   | 12.1.1.2       |
+| UE2                   | 12.1.1.3       |
+| UE3                   | 12.1.1.129     |
+| UE4                   | 12.2.1.1       |
+
+| Pcap/log files                                                                             |
+|:------------------------------------------------------------------------------------------ |
+| [5gcn-deployment-slicing.pcap](./results/slicing/pcap/5gcn-deployment-slicing.pcap)        |
+
+## 10. UE with multiple S-NSSAIs ##
+OAI 5G CN also supports UE with multiple slice, Appereantly ransimulators that we have validated are does not support UE with multiple slice at a time.
+Hence, we have validated this feature using commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. Pipeline triggers deployement scenario as shown in figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF anf UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
 
 ![Multislice](./images/5gcn_slicing_ue_multislice.png)
 
+## 11. Undeploy network ##
+* Use docker-compose down to undeploy network <br/>
+Undeploy RAN
+```bash
+$ docker-compose -f docker-compose-slicing-ransim.yaml down
+Stopping ueransim           ... done
+Stopping rfsim5g-oai-nr-ue2 ... done
+Stopping rfsim5g-oai-nr-ue1 ... done
+Stopping rfsim5g-oai-gnb    ... done
+Removing ueransim           ... done
+Removing gnbsim             ... done
+Removing rfsim5g-oai-nr-ue2 ... done
+Removing rfsim5g-oai-nr-ue1 ... done
+Removing rfsim5g-oai-gnb    ... done
+Network demo-oai-public-net is external, skipping
+Network oai-public-access is external, skipping
+```
+
+Undeploy 5GCN
+
+```bash
+$ docker-compose -f docker-compose-slicing-basic-nrf.yaml down
+Stopping oai-spgwu-slice1 ... done
+Stopping oai-smf-slice3   ... done
+Stopping oai-smf-slice1   ... done
+Stopping oai-smf-slice2   ... done
+Stopping oai-amf          ... done
+Stopping oai-ausf         ... done
+Stopping oai-udm          ... done
+Stopping oai-udr          ... done
+Stopping vpp-upf-slice3   ... done
+Stopping oai-spgwu-slice2 ... done
+Stopping oai-nrf-slice12  ... done
+Stopping mysql            ... done
+Stopping oai-nssf         ... done
+Stopping oai-ext-dn       ... done
+Stopping oai-nrf-slice3   ... done
+Removing oai-spgwu-slice1 ... done
+Removing oai-smf-slice3   ... done
+Removing oai-smf-slice1   ... done
+Removing oai-smf-slice2   ... done
+Removing oai-amf          ... done
+Removing oai-ausf         ... done
+Removing oai-udm          ... done
+Removing oai-udr          ... done
+Removing vpp-upf-slice3   ... done
+Removing oai-spgwu-slice2 ... done
+Removing oai-nrf-slice12  ... done
+Removing mysql            ... done
+Removing oai-nssf         ... done
+Removing oai-ext-dn       ... done
+Removing oai-nrf-slice3   ... done
+Removing network demo-oai-public-net
+Removing network oai-public-access
+Removing network oai-public-core
+```
