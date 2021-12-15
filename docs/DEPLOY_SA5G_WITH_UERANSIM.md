@@ -52,12 +52,12 @@ Moreover, there are various other opensource gnb/ue simulator tools that are ava
 
 ##### About UERANSIM -
 
-[UERANSIM](https://github.com/aligungr/UERANSIM) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation). It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. UERANSIM can simulate multiple UEs and it also aims to simulate radio. Moreover for detailed feature set, please refer its [official page.](https://github.com/aligungr/UERANSIM/wiki/Feature-Set)
+[UERANSIM](https://github.com/aligungr/UERANSIM) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. UERANSIM can simulate multiple UEs and it also aims to simulate radio. Moreover for detailed feature set, please refer its [official page.](https://github.com/aligungr/UERANSIM/wiki/Feature-Set)
 
 Let's begin !!
 
 * Steps 1 to 5 are similar as previous [tutorial on vpp-upf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network). Please follow these steps to deploy OAI 5G core network components.
-* We depoloy ueransim docker service on same host as of core network, so there is no need to create additional route as
+* We deploy ueransim docker service on same host as of core network, so there is no need to create additional route as
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
@@ -101,7 +101,7 @@ You have the choice:
 * Build `UERANSIM` docker image
 
 ```bash
-$ git clone -B docker_support https://github.com/orion-belt/UERANSIM.git
+$ git clone -b docker_support https://github.com/orion-belt/UERANSIM.git
 $ cd UERANSIM
 $  docker build --target ueransim --tag ueransim:latest -f docker/Dockerfile.ubuntu.18.04 .
 ```
@@ -117,10 +117,10 @@ docker image tag rohankharade/ueransim:latest ueransim:latest
 
 ## 7. Executing the `UERANSIM` Scenario ##
 
-* The configuration parameters, are preconfigured in [docker-compose.yaml](../docker-compose/docker-compose.yaml) and [docker-compose.yaml OF UERANSIM](https://github.com/orion-belt/UERANSIM/blob/docker_support/docker/docker-compose.yamll) and one can modify it for test.
+* The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose.yaml OF UERANSIM](../docker-compose/docker-compose-ueransim-vpp.yaml) and one can modify it for test.
 * Launch ueransim docker service
 ```bash
-UERANSIM$ docker-compose -f docker/docker-compose-vpp.yaml up -d
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-ueransim-vpp.yaml up -d
 Creating ueransim ... done
 ```
 * After launching UERANSIM, make sure all services status are healthy -
@@ -284,7 +284,7 @@ Last thing is to remove all services - <br/>
 
 * Undeploy the UERANSIM
 ```bash
-UERANSIM$ docker-compose -f docker-compose-vpp.yaml down
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-ueransim-vpp.yaml down
 Stopping ueransim ... done
 Removing ueransim ... done
 Network demo-oai-public-net is external, skipping
