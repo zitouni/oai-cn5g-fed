@@ -64,7 +64,7 @@ we did for dsTest-host.
 #### NOTE: #### 
 UERANSIM currently does not support integraty and ciphering algorithm NIA0, NEA0 repectively. Hence we have to update AMF config in the docker-compose as below -
 
-#### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network.
+##### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network.
 
 ```bash
             - INT_ALGO_LIST=["NIA1" , "NIA2"]
@@ -73,12 +73,20 @@ UERANSIM currently does not support integraty and ciphering algorithm NIA0, NEA0
 
 Then we follow deployment procedure as usual.
 ```bash
-oai-cn5g-fed/docker-compose$  python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
-...
-[2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
+Creating mysql   ... done
+Creating oai-nrf ... done
+Creating vpp-upf ... done
+Creating oai-udr ... done
+Creating oai-udm    ... done
+Creating oai-ext-dn ... done
+Creating oai-ausf   ... done
+Creating oai-amf    ... done
+Creating oai-smf    ... done
 ```
 
 More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
+After deploying core network, make sure all services are healthy.
 
 ```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
