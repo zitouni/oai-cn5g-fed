@@ -199,11 +199,11 @@ Now we are ready to perform some traffic test.
 * Ping test <br/>
 Here we ping UE from external DN container.
 ```bash
-$ docker exec -it oai-ext-dn ping -c 3 12.1.1.2
-PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
-64 bytes from 12.1.1.2: icmp_seq=1 ttl=64 time=0.235 ms
-64 bytes from 12.1.1.2: icmp_seq=2 ttl=64 time=0.145 ms
-64 bytes from 12.1.1.2: icmp_seq=3 ttl=64 time=0.448 ms
+$ docker exec -it oai-ext-dn ping -c 3 12.2.1.2
+PING 12.2.1.2 (12.2.1.2) 56(84) bytes of data.
+64 bytes from 12.2.1.2: icmp_seq=1 ttl=64 time=0.235 ms
+64 bytes from 12.2.1.2: icmp_seq=2 ttl=64 time=0.145 ms
+64 bytes from 12.2.1.2: icmp_seq=3 ttl=64 time=0.448 ms
 
 --- 12.1.1.2 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2036ms
@@ -212,7 +212,7 @@ rtt min/avg/max/mdev = 0.145/0.276/0.448/0.127 ms
 Here we ping external DN from UE (UERANSIM) container.
 ```bash
 oai-cn5g-fed/docker-compose$ docker exec ueransim ping -I uesimtun0 google.com
-PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
+PING google.com (172.217.18.238) from 12.2.1.2 : 56(84) bytes of data.
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=1 ttl=115 time=5.12 ms
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=2 ttl=115 time=7.52 ms
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=3 ttl=115 time=7.19 ms
@@ -230,8 +230,8 @@ $ docker exec -it oai-ext-dn iperf3 -s
 -----------------------------------------------------------
 Server listening on 5201
 -----------------------------------------------------------
-Accepted connection from 12.1.1.3, port 49925
-[  5] local 192.168.73.135 port 5201 connected to 12.1.1.2 port 58455
+Accepted connection from 12.2.1.2, port 49925
+[  5] local 192.168.73.135 port 5201 connected to 12.2.1.2 port 58455
 [ ID] Interval           Transfer     Bandwidth
 [  5]   0.00-1.00   sec  4.13 MBytes  34.6 Mbits/sec                  
 [  5]   1.00-2.00   sec  2.33 MBytes  19.5 Mbits/sec                  
@@ -254,9 +254,9 @@ Server listening on 5201
 ```
 Running iperf client on ueransim
 ```bash
-$ docker exec -it ueransim iperf3 -c 192.168.73.135 -B 12.1.1.2
+$ docker exec -it ueransim iperf3 -c 192.168.73.135 -B 12.2.1.2
 Connecting to host 192.168.73.135, port 5201
-[  4] local 12.1.1.2 port 58455 connected to 192.168.73.135 port 5201
+[  4] local 12.2.1.2 port 58455 connected to 192.168.73.135 port 5201
 [ ID] Interval           Transfer     Bandwidth       Retr  Cwnd
 [  4]   0.00-1.00   sec  5.07 MBytes  42.5 Mbits/sec  318   34.2 KBytes       
 [  4]   1.00-2.00   sec  2.34 MBytes  19.7 Mbits/sec  268   22.4 KBytes       
