@@ -28,7 +28,7 @@ services:
             - IMEI_SV=0035609204079514
             - GNB_IP_ADDRESS=192.168.70.152
             - PDU_TYPE=IPv4
-            - APN=oai.ipv4
+            - APN=default
             - SST_C=1
             - SD_C=1
             - SST_D=1
@@ -93,29 +93,29 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-    oai-nr-ue2:
-        image: oai-nr-ue:develop
-        privileged: true
-        container_name: rfsim5g-oai-nr-ue2
-        environment: 
-            RFSIMULATOR: 192.168.70.153
-            FULL_IMSI: '208950000000037'
-            FULL_KEY: '0C0A34601D4F07677303652C0462535B'
-            OPC: '63bfa50ee6523365ff14c1f45f88737d'
-            DNN: oai.ipv4
-            NSSAI_SST: 2
-            NSSAI_SD: 2
-            USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod
-        depends_on:
-            - oai-gnb
-        networks:
-            public_net:
-                ipv4_address: 192.168.70.155
-        healthcheck:
-            test: /bin/bash -c "pgrep nr-uesoftmodem"
-            interval: 10s
-            timeout: 5s
-            retries: 5
+#    oai-nr-ue2:
+#        image: oai-nr-ue:develop
+#        privileged: true
+#        container_name: rfsim5g-oai-nr-ue2
+#        environment: 
+#            RFSIMULATOR: 192.168.70.153
+#            FULL_IMSI: '208950000000037'
+#            FULL_KEY: '0C0A34601D4F07677303652C0462535B'
+#            OPC: '63bfa50ee6523365ff14c1f45f88737d'
+#            DNN: oai
+#            NSSAI_SST: 3
+#            NSSAI_SD: 3
+#            USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod
+#        depends_on:
+#            - oai-gnb
+#        networks:
+#            public_net:
+#                ipv4_address: 192.168.70.155
+#        healthcheck:
+#            test: /bin/bash -c "pgrep nr-uesoftmodem"
+#            interval: 10s
+#            timeout: 5s
+#            retries: 5
     gnbsim:
         container_name: gnbsim
         image: gnbsim:latest
@@ -135,7 +135,7 @@ services:
             - ProtectionScheme=null
             - KEY=0C0A34601D4F07677303652C0462535B
             - OPc=63bfa50ee6523365ff14c1f45f88737d
-            - DNN=default
+            - DNN=oai.ipv4
             - URL=http://www.asnt.org:8080/
             - NRCellID=1
             - USE_FQDN=no
