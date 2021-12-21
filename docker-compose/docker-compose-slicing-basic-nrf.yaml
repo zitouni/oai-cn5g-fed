@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-nssf:
         container_name: "oai-nssf"
-        image: oai-nssf:develop
+        image: oai-nssf:latest
         environment:
             - INSTANCE=0
             - TZ=Europe/Paris
@@ -53,7 +53,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai_udr:
         container_name: oai-udr
-        image: oai-udr:develop
+        image: oai-udr:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -81,7 +81,7 @@ services:
             retries: 5
     oai_udm:
         container_name: oai-udm
-        image: oai-udm:develop
+        image: oai-udm:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -109,7 +109,7 @@ services:
             retries: 5
     oai_ausf:
         container_name: oai-ausf
-        image: oai-ausf:develop
+        image: oai-ausf:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE_ID=0
@@ -136,7 +136,7 @@ services:
             retries: 5
     oai_nrf_slice12:
         container_name: oai-nrf-slice12
-        image: oai-nrf:develop
+        image: oai-nrf:latest
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -156,7 +156,7 @@ services:
             retries: 5
     oai_nrf_slice3:
         container_name: oai-nrf-slice3
-        image: oai-nrf:develop
+        image: oai-nrf:latest
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -176,7 +176,7 @@ services:
             retries: 5
     oai_amf:
         container_name: oai-amf
-        image: oai-amf:develop
+        image: oai-amf:latest
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -254,7 +254,7 @@ services:
                 ipv4_address: 192.168.70.138
     oai_smf_slice1:
         container_name: oai-smf-slice1
-        image: oai-smf:develop
+        image: oai-smf:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -300,7 +300,7 @@ services:
                 ipv4_address: 192.168.70.139
     oai_smf_slice2:
         container_name: oai-smf-slice2
-        image: oai-smf:develop
+        image: oai-smf:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -346,7 +346,7 @@ services:
                 ipv4_address: 192.168.70.140
     oai_smf_slice3:
         container_name: oai-smf-slice3
-        image: oai-smf:develop
+        image: oai-smf:latest
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -395,7 +395,7 @@ services:
                 ipv4_address: 192.168.70.141
     oai_spgwu_slice1:
         container_name: oai-spgwu-slice1
-        image: oai-spgwu-tiny:develop
+        image: oai-spgwu-tiny:latest
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -403,7 +403,7 @@ services:
             - SGW_INTERFACE_NAME_FOR_SX=eth0
             - PGW_INTERFACE_NAME_FOR_SGI=eth0
             - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.1.1.0/24
+            - NETWORK_UE_IP=12.2.1.0/24
             - BYPASS_UL_PFCP_RULES=no
             - MCC=208
             - MNC=95
@@ -421,7 +421,7 @@ services:
             - NRF_FQDN=oai_nrf_slice12
             - NSSAI_SST_0=2
             - NSSAI_SD_0=2
-            - DNN_0=oai.opv4
+            - DNN_0=default
         depends_on:
             - oai_nrf_slice12
             - oai_smf_slice1
@@ -443,7 +443,7 @@ services:
                 ipv4_address: 192.168.70.142
     oai_spgwu_slice2:
         container_name: oai-spgwu-slice2
-        image: oai-spgwu-tiny:develop
+        image: oai-spgwu-tiny:latest
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -489,7 +489,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.143
     vpp_upf_slice3:
-        image: oai-upf-vpp:develop
+        image: oai-upf-vpp:latest
         privileged: true
         container_name: vpp-upf-slice3
         environment:
@@ -511,7 +511,7 @@ services:
             - INTERFACE_CP=eth0
             - NSSAI_SD_0=4
             - SST=4
-            - DNN=default
+            - DNN=oai.ipv4
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.137
             - NRF_PORT=8080
@@ -537,15 +537,14 @@ services:
         entrypoint: /bin/bash -c \
               "apt update; apt install -y iptables iproute2 iperf3 iputils-ping;"\
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
-              "ip route add 12.1.1.2/32 via 192.168.70.142 dev eth0;"\
-              "ip route add 12.1.1.3/32 via 192.168.70.142 dev eth0;"\
+              "ip route add 12.2.1.2/32 via 192.168.70.142 dev eth0;"\
               "ip route add 12.1.1.129/32 via 192.168.70.143 dev eth0;"\
-              "ip route add 12.2.1.1/32 via 192.168.73.202 dev eth1; sleep infinity"
+              "ip route add 12.1.1.2/32 via 192.168.73.202 dev eth1; sleep infinity"
         healthcheck:
             test: /bin/bash -c "ip route"
             interval: 10s
             timeout: 5s
-            retries: 5
+            retries: 10
         networks:
             public_net:
                 ipv4_address: 192.168.70.145
