@@ -193,7 +193,7 @@ UERANSIM v3.2.4
 [2021-12-01 07:46:03.036] [ngap] [info] PDU session resource(s) setup for UE[1] count[1]
 [2021-12-01 07:46:03.037] [nas] [debug] PDU Session Establishment Accept received
 [2021-12-01 07:46:03.037] [nas] [info] PDU Session establishment is successful PSI[1]
-[2021-12-01 07:46:03.055] [app] [info] Connection setup for PDU session[1] is successful, TUN interface[uesimtun0, 12.1.1.2] is up.
+[2021-12-01 07:46:03.055] [app] [info] Connection setup for PDU session[1] is successful, TUN interface[uesimtun0, 12.2.1.2] is up.
 ```
 Now we are ready to perform some traffic test.
 * Ping test <br/>
@@ -211,7 +211,7 @@ rtt min/avg/max/mdev = 0.145/0.276/0.448/0.127 ms
 ```
 Here we ping external DN from UE (UERANSIM) container.
 ```bash
-oai-cn5g-fed/docker-compose$ docker exec ueransim ping -I uesimtun0 google.com
+oai-cn5g-fed/docker-compose$ docker exec ueransim ping -c 3 -I uesimtun0 google.com
 PING google.com (172.217.18.238) from 12.2.1.2 : 56(84) bytes of data.
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=1 ttl=115 time=5.12 ms
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=2 ttl=115 time=7.52 ms
