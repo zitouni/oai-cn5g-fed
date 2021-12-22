@@ -67,11 +67,12 @@ A Network Slice is defined within a PLMN and it incorporates the 5G Core and 5G 
 * Role od SMF  -> SMF can associates with multiple UPFs at same time as in slice 2 and 3 from above figure. UPF is selected here based on S-NSSAI and DNN.
 
 As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated with colors) viz. <br/>
-###### Slice1: [SST=2,SD=2] =>   NRF1, SMF1, UPF1, GNB1, UE1, UE2
-###### Slice2: [SST=3,SD=3] =>   NRF1, SMF2, UPF2, GNB2, UE3
-###### Slice3: [SST=4,SD=4] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE4
+Note:- Here we have used standardised SST values (2,3,4), because rf-simulator only supports SST values 1,2,3,4. Moreover, it only for numerical refernece and does not reflect standrd SST behaviour e.g. URLCC, MIoT, V2X etc.<br/>
+###### Slice1: [SST=2,SD=2] =>   NRF1, SMF1, UPF1, GNB1, UE1
+###### Slice2: [SST=3,SD=3] =>   NRF1, SMF2, UPF2, GNB2, UE2
+###### Slice3: [SST=4,SD=4] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE3
 
-Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in S-NSSAI 2 and 3 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in S-NSSAI 2 and 3. Here number of SMFs/UPFs for registered under single NRF is part of operator network planning.<br/>
+Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in S-NSSAI 2 and 3 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in S-NSSAI 2 and 3. Here number of SMFs/UPFs for registered under single (NSI) NRF is part of operator's network planning.<br/>
 
 
 ###### Let's begin !!
@@ -127,7 +128,9 @@ bf6544a04f1f   oai-nssf:develop         "/bin/bash /openair-…"   51 seconds ag
 
 ## 6. Getting a `ransim` docker images ##
 
-We are using 3 different ran simulators viz. [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has there set of features, and one can use as per need basis (For the moment, rfsimulator is validated with multiplr UEs for this tutorial). You can pull docker images from official repositories as below -
+We are using 3 different ran simulators viz. [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has there set of features, and one can use as per need basis. Different ransimulator usage mimics here, the realistic deployemnt scenario where operator can have multi vendor devices deployed  in the network. <br/>
+
+You can pull docker images from official repositories as below -
 
 ```bash
 $ docker pull rohankharade/gnbsim:latest
@@ -144,10 +147,11 @@ $ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
 ```
 
 ## 7. Executing `ransim` Scenario ##
-We run first, ueransim, gnbsim, rfsimulator gnb and rfsim5g-oai-nr-ue1 first. Here we deploy rfsim5g-oai-nr-ue2 later as we need to make sure rfsimulator gnb/ue is connected to AMF successfully (As rfsimulator simulates complete protocol stack and radio interface, it is bit resource intensive).
+
+We deploy ran simulators with the help of docker-compose as below -
 
 ```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-slicing-ransim.yaml up -d gnbsim ueransim oai-gnb oai-nr-ue1
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-slicing-ransim.yaml up -d
 Creating gnbsim             ... done
 Creating ueransim           ... done
 Creating rfsim5g-oai-gnb    ... done
@@ -163,17 +167,7 @@ rfsim5g-oai-gnb      /opt/oai-gnb/bin/entrypoin ...   Up (healthy)
 rfsim5g-oai-nr-ue1   /opt/oai-nr-ue/bin/entrypo ...   Up (healthy)        
 ueransim             /ueransim/bin/entrypoint.sh      Up (healthy)  
 ```
-Similarly, run rfsimulator ue2 and make sure all services are healthy.
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-slicing-ransim.yaml ps -a
-       Name                     Command                  State       Ports
---------------------------------------------------------------------------
-gnbsim               /gnbsim/bin/entrypoint.sh  ...   Up (healthy)        
-rfsim5g-oai-gnb      /opt/oai-gnb/bin/entrypoin ...   Up (healthy)        
-rfsim5g-oai-nr-ue1   /opt/oai-nr-ue/bin/entrypo ...   Up (healthy)        
-rfsim5g-oai-nr-ue2   /opt/oai-nr-ue/bin/entrypo ...   Up (healthy)        
-ueransim             /ueransim/bin/entrypoint.sh      Up (healthy)        
-```
+
 After successful deployment we can verify at AMF that all gnbs and ues are successfully registered to network.
 ```bash
 [2021-12-13T20:47:20.265472] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
@@ -190,9 +184,6 @@ After successful deployment we can verify at AMF that all gnbs and ues are succe
 [2021-12-13T20:47:20.265951] [AMF] [amf_app] [info ] |      1|       5GMM-REGISTERED|   208950000000035|               |               1|          2| 208, 95 |    256|
 [2021-12-13T20:47:20.265967] [AMF] [amf_app] [info ] |      2|       5GMM-REGISTERED|   208950000000036|               |     -1441334349|          3| 208, 95 |14680064|
 [2021-12-13T20:47:20.265976] [AMF] [amf_app] [info ] |      3|       5GMM-REGISTERED|   208950000000037|               |      -372062044|          4| 208, 95 |14680064|
-[2021-12-13T20:47:20.265983] [AMF] [amf_app] [info ] |      4|       5GMM-REGISTERED|   208950000000038|               |               0|          1| 208, 95 |1310736|
-[2021-12-13T20:47:20.265989] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
-[2021-12-13T20:47:20.265994] [AMF] [amf_app] [info ] 
 
 ```
 
@@ -201,34 +192,26 @@ After successful deployment we can verify at AMF that all gnbs and ues are succe
 In this section we perform traffic test between oai-ext-dn node and Ues <br/>
 
 ```bash
-$ docker exec oai-ext-dn ping -c 2 12.1.1.3
-PING 12.1.1.3 (12.1.1.3) 56(84) bytes of data.
-64 bytes from 12.1.1.3: icmp_seq=1 ttl=63 time=2.82 ms
-64 bytes from 12.1.1.3: icmp_seq=2 ttl=63 time=0.836 ms
---- 12.1.1.3 ping statistics ---
+$ docker exec oai-ext-dn ping -c 2 12.1.1.2
+PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
+64 bytes from 12.1.1.2: icmp_seq=3 ttl=63 time=0.547 ms
+64 bytes from 12.1.1.2: icmp_seq=4 ttl=63 time=0.460 ms
+--- 12.1.1.2 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 0.836/1.832/2.828/0.996 ms
 
-$ docker exec oai-ext-dn ping -c 2 12.2.1.1
-PING 12.2.1.1 (12.2.1.1) 56(84) bytes of data.
-64 bytes from 12.2.1.1: icmp_seq=1 ttl=63 time=3.77 ms
-64 bytes from 12.2.1.1: icmp_seq=2 ttl=63 time=2.77 ms
---- 12.2.1.1 ping statistics ---
+$ docker exec oai-ext-dn ping -c 2 docker exec oai-ext-dn ping 12.2.1.2
+PING 12.2.1.2 (12.2.1.2) 56(84) bytes of data.
+64 bytes from 12.2.1.2: icmp_seq=2 ttl=63 time=0.793 ms
+64 bytes from 12.2.1.2: icmp_seq=3 ttl=63 time=0.769 ms
+--- 12.2.1.2 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 2.772/3.274/3.776/0.502 ms
 
-$ docker exec oai-ext-dn ping -c 2 12.1.1.2
-PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
-64 bytes from 12.1.1.2: icmp_seq=1 ttl=63 time=119 ms
-64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=243 ms
---- 12.1.1.2 ping statistics ---
-2 packets transmitted, 2 received, 0% packet loss, time 1000ms
-rtt min/avg/max/mdev = 119.374/181.621/243.869/62.248 ms
-
 $ docker exec oai-ext-dn ping -c 2 12.1.1.129
 PING 12.1.1.129 (12.1.1.129) 56(84) bytes of data.
-64 bytes from 12.1.1.129: icmp_seq=1 ttl=63 time=122 ms
-64 bytes from 12.1.1.129: icmp_seq=2 ttl=63 time=154 ms
+64 bytes from 12.1.1.129: icmp_seq=1 ttl=63 time=39.1 ms
+64 bytes from 12.1.1.129: icmp_seq=2 ttl=63 time=24.5 ms
 --- 12.1.1.129 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1000ms
 rtt min/avg/max/mdev = 122.181/138.131/154.082/15.954 ms
@@ -262,10 +245,9 @@ $
 | rfsim UE1             | 192.168.70.154 |
 | rfsim UE2             | 192.168.70.155 |
 | gnbsim gNB            | 192.168.70.156 |
-| UE1                   | 12.1.1.2       |
-| UE2                   | 12.1.1.3       |
-| UE3                   | 12.1.1.129     |
-| UE4                   | 12.2.1.1       |
+| UE1                   | 12.2.1.2       |
+| UE2                   | 12.1.1.129     |
+| UE3                   | 12.1.1.2       |
 
 | Pcap/log files                                                                             |
 |:------------------------------------------------------------------------------------------ |
@@ -283,12 +265,10 @@ Undeploy RAN
 ```bash
 $ docker-compose -f docker-compose-slicing-ransim.yaml down
 Stopping ueransim           ... done
-Stopping rfsim5g-oai-nr-ue2 ... done
 Stopping rfsim5g-oai-nr-ue1 ... done
 Stopping rfsim5g-oai-gnb    ... done
 Removing ueransim           ... done
 Removing gnbsim             ... done
-Removing rfsim5g-oai-nr-ue2 ... done
 Removing rfsim5g-oai-nr-ue1 ... done
 Removing rfsim5g-oai-gnb    ... done
 Network demo-oai-public-net is external, skipping

@@ -130,7 +130,7 @@ services:
             - PagingDRX=v32
             - RANUENGAPID=0 
             - IMEISV=35609204079514
-            - MSIN=0000000038
+            - MSIN=0000000037
             - RoutingIndicator=1234
             - ProtectionScheme=null
             - KEY=0C0A34601D4F07677303652C0462535B
