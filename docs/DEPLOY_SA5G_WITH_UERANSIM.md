@@ -31,6 +31,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 6.  [Getting a `ueransim` docker image](#6-getting-a-ueransim-docker-image)
 7.  [Executing `ueransim` Scenario](#7-executing-the-ueransim-scenario)
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
+9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
@@ -285,8 +286,77 @@ iperf Done.
 
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
+## 9. Trying Some Advanced Stuff ##
 
-## 9. Undeploy ##
+Here we try some scaling test with ueransim. There are additional IMSIs added into database (208950000000031-208950000000131).
+Now we register 100 UEs using ueransim. 
+#### Note: We have to update `NUMBER_OF_UE` parameter in docker-compose of ueransim.
+```bash
+NUMBER_OF_UE=100
+```
+* Launch ueransim docker service
+```bash
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-ueransim-vpp.yaml up -d
+Creating ueransim ... done
+```
+Wait a bit <br/>
+Now we can verify that all UEs are successfully registered from AMF or SMF logs.
+```bash
+[2021-12-23T22:14:40.065414] [AMF] [amf_app] [info ] 
+[2021-12-23T22:14:40.065442] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
+[2021-12-23T22:14:40.065447] [AMF] [amf_app] [info ] |----------------------------------------------------gNBs' information-------------------------------------------|
+[2021-12-23T22:14:40.065450] [AMF] [amf_app] [info ] |    Index    |      Status      |       Global ID       |       gNB Name       |               PLMN             |
+[2021-12-23T22:14:40.065457] [AMF] [amf_app] [info ] |      1      |    Connected     |         0x1       |         UERANSIM-gnb-208-95-1        |            208, 95             | 
+[2021-12-23T22:14:40.065460] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
+[2021-12-23T22:14:40.065463] [AMF] [amf_app] [info ] 
+[2021-12-23T22:14:40.065465] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
+[2021-12-23T22:14:40.065468] [AMF] [amf_app] [info ] |----------------------------------------------------UEs' information--------------------------------------------|
+[2021-12-23T22:14:40.065471] [AMF] [amf_app] [info ] | Index |      5GMM state      |      IMSI        |     GUTI      | RAN UE NGAP ID | AMF UE ID |  PLMN   |Cell ID|
+[2021-12-23T22:14:40.065477] [AMF] [amf_app] [info ] |      1|       5GMM-REGISTERED|   208950000000031|               |              50|         50| 208, 95 |    256|
+[2021-12-23T22:14:40.065481] [AMF] [amf_app] [info ] |      2|       5GMM-REGISTERED|   208950000000032|               |              61|         61| 208, 95 |    256|
+[2021-12-23T22:14:40.065486] [AMF] [amf_app] [info ] |      3|       5GMM-REGISTERED|   208950000000033|               |              82|         82| 208, 95 |    256|
+[2021-12-23T22:14:40.065490] [AMF] [amf_app] [info ] |      4|       5GMM-REGISTERED|   208950000000034|               |              32|         32| 208, 95 |    256|
+[2021-12-23T22:14:40.065494] [AMF] [amf_app] [info ] |      5|       5GMM-REGISTERED|   208950000000035|               |              23|         23| 208, 95 |    256|
+[2021-12-23T22:14:40.065499] [AMF] [amf_app] [info ] |      6|       5GMM-REGISTERED|   208950000000036|               |              87|         87| 208, 95 |    256|
+[2021-12-23T22:14:40.065504] [AMF] [amf_app] [info ] |      7|       5GMM-REGISTERED|   208950000000037|               |              30|         30| 208, 95 |    256|
+          [[ Truncated Output :) ]]
+[2021-12-23T22:14:40.066113] [AMF] [amf_app] [info ] |     91|       5GMM-REGISTERED|   208950000000121|               |               4|          4| 208, 95 |    256|
+[2021-12-23T22:14:40.066120] [AMF] [amf_app] [info ] |     92|       5GMM-REGISTERED|   208950000000122|               |               2|          2| 208, 95 |    256|
+[2021-12-23T22:14:40.066127] [AMF] [amf_app] [info ] |     93|       5GMM-REGISTERED|   208950000000123|               |               7|          7| 208, 95 |    256|
+[2021-12-23T22:14:40.066145] [AMF] [amf_app] [info ] |     94|       5GMM-REGISTERED|   208950000000124|               |              20|         20| 208, 95 |    256|
+[2021-12-23T22:14:40.066152] [AMF] [amf_app] [info ] |     95|       5GMM-REGISTERED|   208950000000125|               |               1|          1| 208, 95 |    256|
+[2021-12-23T22:14:40.066161] [AMF] [amf_app] [info ] |     96|       5GMM-REGISTERED|   208950000000126|               |              35|         35| 208, 95 |    256|
+[2021-12-23T22:14:40.066168] [AMF] [amf_app] [info ] |     97|       5GMM-REGISTERED|   208950000000127|               |              44|         44| 208, 95 |    256|
+[2021-12-23T22:14:40.066175] [AMF] [amf_app] [info ] |     98|       5GMM-REGISTERED|   208950000000128|               |              57|         57| 208, 95 |    256|
+[2021-12-23T22:14:40.066182] [AMF] [amf_app] [info ] |     99|       5GMM-REGISTERED|   208950000000129|               |              85|         85| 208, 95 |    256|
+[2021-12-23T22:14:40.066189] [AMF] [amf_app] [info ] |    100|       5GMM-REGISTERED|   208950000000130|               |              93|         93| 208, 95 |    256|
+[2021-12-23T22:14:40.066194] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
+[2021-12-23T22:14:40.066199] [AMF] [amf_app] [info ] 
+[2021-12-23T22:15:00.065577] [AMF] [amf_app] [info ] 
+
+```
+
+Ping to two random UEs
+```bash
+$ docker exec oai-ext-dn ping -c 2 12.2.1.101
+PING 12.2.1.101 (12.2.1.101) 56(84) bytes of data.
+64 bytes from 12.2.1.101: icmp_seq=1 ttl=63 time=0.896 ms
+64 bytes from 12.2.1.101: icmp_seq=2 ttl=63 time=1.53 ms
+
+--- 12.2.1.101 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1000ms
+rtt min/avg/max/mdev = 0.896/1.216/1.537/0.322 ms
+
+$ docker exec oai-ext-dn ping -c 2 12.2.1.88
+PING 12.2.1.88 (12.2.1.88) 56(84) bytes of data.
+64 bytes from 12.2.1.88: icmp_seq=1 ttl=63 time=0.977 ms
+64 bytes from 12.2.1.88: icmp_seq=2 ttl=63 time=0.687 ms
+
+--- 12.2.1.88 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1001ms
+rtt min/avg/max/mdev = 0.687/0.832/0.977/0.145 ms
+```
+## 10. Undeploy ##
 
 Last thing is to remove all services - <br/>
 
