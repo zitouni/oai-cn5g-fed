@@ -336,7 +336,7 @@ Now we can verify that all UEs are successfully registered from AMF or SMF logs.
 
 ```
 
-Ping to two random UEs
+* Ping to two random UEs
 ```bash
 $ docker exec oai-ext-dn ping -c 2 12.2.1.101
 PING 12.2.1.101 (12.2.1.101) 56(84) bytes of data.
@@ -355,6 +355,23 @@ PING 12.2.1.88 (12.2.1.88) 56(84) bytes of data.
 --- 12.2.1.88 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1001ms
 rtt min/avg/max/mdev = 0.687/0.832/0.977/0.145 ms
+```
+* DIY: You can further investigate usage and help information for sub-commands with the help of UE console.([Refer official page](https://github.com/aligungr/UERANSIM/wiki/Usage))
+```bash
+$ docker exec -it ueransim ./nr-cli imsi-208950000000130
+--------------------------------------------------------------------------------------------
+$ commands
+info           | Show some information about the UE
+status         | Show some status information about the UE
+timers         | Dump current status of the timers in the UE
+rls-state      | Show status information about RLS
+coverage       | Dump available cells and PLMNs in the coverage
+ps-establish   | Trigger a PDU session establishment procedure
+ps-list        | List all PDU sessions
+ps-release     | Trigger a PDU session release procedure
+ps-release-all | Trigger PDU session release procedures for all active sessions
+deregister     | Perform a de-registration by the UE
+--------------------------------------------------------------------------------------------
 ```
 ## 10. Undeploy ##
 
