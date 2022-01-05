@@ -42,7 +42,7 @@ Please follow the tutorial step by step to create a stable working testbed.
 5.  [Reference Logs and PCAPs](#5-reference-logs)
 6.  [Notes](#6-notes)
 
-## 1. Pre-requisites ##
+## 1. Pre-requisites
 
 Read the tutorial on [how to deploy a Basic OAI-5G core network](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) you can choose to deploy with or without NRF. In this tutorial we are choosing with nrf scenarion.  
 
@@ -52,7 +52,7 @@ Create a folder where you can store all the result files of the tutorial and lat
 docker-compose-host $: mkdir -p /tmp/oai/static-ue-ip
 ```
 
-## 2. Configuring the OAI-5G Core Network Functions ##
+## 2. Configuring the OAI-5G Core Network Functions
 
 Edit the correct docker-compose file of Basic OAI 5G core network, set the parameter `USE_LOCAL_SUBSCRIPTION_INFO` to `no` in the smf service configuration of the docker-compose file. 
 
@@ -89,7 +89,7 @@ Make sure you perform this for all the UEs, if there is a user information prese
 For now these two entries are present in the database file
 
 
-## 3. Deploying OAI 5g Core Network ##
+## 3. Deploying OAI 5g Core Network
 
 In the previous tutorial we explain how to deploy the core network using our [python deployer](../docker-compose/core-network.py). Here we will only provide quick commands needed to deploy the core network, to learn how to use the python dployer please follow 
 
@@ -147,13 +147,19 @@ docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.p
 ```
 
 
-## 4. Deploying RAN Emulator ##
+## 4. Deploying RAN Emulator
 
 - **Scenario Execution**: 
     + On the ran emulator host instantiate the ran emulator of your choice here we will show it using gnbsim. We are running everything on one host thus the ran-emulator-host and docker-compose-host is the same for the moment. 
     ``` shell
     docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
     ```
+    <!---
+    ``` shell
+    docker-compose-host $: sleep 5
+    ```
+    -->
+
     + (Optional) in case you want you can also run another instance of gnbsim to check dynamic ip-address allocation is also working or not
     ``` console
     docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
@@ -169,13 +175,13 @@ docker-compose-host $: docker logs gnbsim2 | grep "UE address:"
 
 
 ``` shell
-docker-compose-host $: docker exec -it oai-ext-dn ping 12.1.1.4
+docker-compose-host $: docker exec -it oai-ext-dn ping 12.1.1.4 -c4
 PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
 64 bytes from 12.1.1.4: icmp_seq=1 ttl=63 time=0.297 ms
 64 bytes from 12.1.1.4: icmp_seq=2 ttl=63 time=0.824 ms
 64 bytes from 12.1.1.4: icmp_seq=3 ttl=63 time=0.723 ms
 64 bytes from 12.1.1.4: icmp_seq=4 ttl=63 time=0.849 ms
-^C
+
 --- 12.1.1.4 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3072ms
 rtt min/avg/max/mdev = 0.297/0.673/0.849/0.223 ms
@@ -190,7 +196,7 @@ docker-compose-host $: pkill tshark
 
 - **Collect the logs of all the components**: 
 
-```shell
+``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/static-ue-ip/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/static-ue-ip/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/static-ue-ip/nrf.log 2>&1
@@ -236,7 +242,7 @@ Removing network demo-oai-public-net
 
 - If you replicate then your log files and pcap file will be present in `/tmp/oai/static-ue-ip/` if you want to compare it with our provided logs and pcaps. Then follow the next section
 
-## 5. Reference logs ##
+## 5. Reference logs
 
 
 | PCAP and Logs                                       |
