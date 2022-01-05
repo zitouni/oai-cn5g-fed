@@ -67,7 +67,6 @@ docker-compose-host $: sed -i 's/SMF_SELECTION=yes/SMF_SELECTION=no/g' docker-co
 
 ``` console
 docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=yes/USE_LOCAL_SUBSCRIPTION_INFO=no/g' docker-compose-basic-nonrf.yaml
-docker-compose-host $: sed -i 's/SMF_SELECTION=yes/SMF_SELECTION=no/g' docker-compose-basic-nonrf.yaml
 ```
 
 Then configure the [user subscription database sql file](../docker-compose/oai_db2.sql) with IMSI and DNN information mapping. In the table `SessionManagementSubscriptionData` add below entries
