@@ -39,7 +39,7 @@ DOCUMENT_FOLDER = '../docs'
 SLEEP_BETWEEN_COMMANDS = 2
 SLEEP_BETWEEN_HEADERS = 5
 DOCKER_COMPOSE_DIRECTORY='../docker-compose'
-
+COMMAND_STATUS = dict()         # A mapping of command and its exit code status
 
 def _parse_args() -> argparse.Namespace:
     """Parse the command line args
@@ -71,7 +71,10 @@ def subprocess_call(command,cwd):
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
-        raise subprocess.CalledProcessError(return_code, command)
+        COMMAND_STATUS.update({command:'FAIL'})
+        #raise subprocess.CalledProcessError(return_code, command) # This will stop the tutorial at the command which returned exit code>0
+    else:
+        COMMAND_STATUS.update({command:'PASS'})
 
 
 def extract_h2_blocks(headers,text):
@@ -100,14 +103,26 @@ def execute_shell_command(h2_blocks):
         logging.info('\033[0;32m {}\033[0m'.format(value))
         shell_blocks = re.findall(r"`{3} shell\n([\S\s]+?)`{3}",'\n'.join(h2_blocks[value]))
         for block in shell_blocks:
-            commands = re.findall(r"docker-compose-host \$: (.*)",block)
+            commands = re.findall(r"\$: (.*)",block)
             for command in commands:
                 logging.info('\033[0;31m Executing command "{}"\033[0m'.format(command))
                 for output in subprocess_call(command=command, cwd=DOCKER_COMPOSE_DIRECTORY):
                     print(output)
                 time.sleep(SLEEP_BETWEEN_COMMANDS)
             time.sleep(SLEEP_BETWEEN_HEADERS)
-    return 0
+
+def print_tutorial_summary(command_status,name):
+    count = 0
+    final_result = 'FAIL'
+    for command in command_status:
+        if command_status[command] == 'PASS':
+            count+=1
+    if count == len(command_status):
+        final_result = 'PASS'
+    statement = "\nFinal result for the tutorial {} is {}\nCommand execution summary:".format(name,final_result)
+    print(statement)
+    for command in command_status:
+        print("{}: {}".format(command,command_status[command]))
 
 def check_tutorial(name):
     filename = DOCUMENT_FOLDER + '/' + name
@@ -115,9 +130,8 @@ def check_tutorial(name):
         text = f.read()
     h2 = re.findall(r"## (.*)\n",text)
     h2_blocks = extract_h2_blocks(h2,text)
-    rc = execute_shell_command(h2_blocks)
-    print("Finish checking the tutorial {} with exit code {}".format(name,str(rc)))
-    sys.exit(rc)
+    execute_shell_command(h2_blocks)
+    print_tutorial_summary(COMMAND_STATUS,name)
 
 if __name__ == '__main__':
     # Parse the arguments to get the deployment instruction

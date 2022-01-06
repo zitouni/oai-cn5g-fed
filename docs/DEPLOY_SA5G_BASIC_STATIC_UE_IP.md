@@ -48,6 +48,13 @@ Read the tutorial on [how to deploy a Basic OAI-5G core network](./DEPLOY_SA5G_B
 
 Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files, we recommend creating exactly the same folder to not break the flow of commands afterwards 
 
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: rm -rf /tmp/oai/static-ue-ip
+```
+-->
+
 ``` shell
 docker-compose-host $: mkdir -p /tmp/oai/static-ue-ip
 ```
@@ -155,6 +162,7 @@ docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.p
     docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
     ```
     <!---
+    For CI purposes please ignore this line
     ``` shell
     docker-compose-host $: sleep 5
     ```
@@ -204,6 +212,7 @@ docker-compose-host $: docker logs oai-spgwu > /tmp/oai/static-ue-ip/spgwu.log 2
 docker-compose-host $: docker logs oai-udr > /tmp/oai/static-ue-ip/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/static-ue-ip/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/static-ue-ip/ausf.log 2>&1
+docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&1
 ```
 
 - **Undeploy the ran emulator**: 
