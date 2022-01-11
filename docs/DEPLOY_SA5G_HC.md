@@ -19,17 +19,18 @@ The cloud native network functions in production will be deployed using a produc
 ![Helm Chart Deployment](./images/helm_diagram.png)
 
 
-**Reading time: ~40mins**
+**Reading time**: ~
 
-**Tutorial replication time: ~1h30mins**
-
+**Tutorial replication time**: ~
 
 **TABLE OF CONTENTS**
 
 1.  [Description](#1-description)
 2.  [Building Images](#2-building-images)
 3.  [Configuring Helm Charts](#3-configuring-helm-charts)
-4.  [Deploying Helm Charts](#4-deploying-helm-charts)
+4.  [Deploying 5g Core Helm Charts](#4-deploying-helm-charts)
+5.  [Optional: Testing with OAI gNB RFsimulator and NR-UE](#5-testing-with-oai-gnb-rfsimulator-and-nr-ue)
+6.  [Changes for Vanila Kubernetes](#6-changes-for-vanila-kubernetes)
 
 
 ## 1. Description
