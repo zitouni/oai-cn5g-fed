@@ -25,9 +25,9 @@ This tutorial will help in understanding how to deploy a `basic` OAI core networ
 
 Please follow the tutorial step by step to create a stable working testbed. 
 
-**Reading time: ~20mins**
+**Reading time**: ~
 
-**Tutorial replication time: ~1hr**
+**Tutorial replication time**: ~
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 

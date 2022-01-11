@@ -19,10 +19,9 @@ The cloud native network functions in production will be deployed using a produc
 ![Helm Chart Deployment](./images/helm_diag.png)
 
 
-**Reading time: ~1hr**
+**Reading time**: ~
 
-**Tutorial replication time: ~1h30mins**
-
+**Tutorial replication time**: ~
 
 **Humble request**: Our tutorial and helm chart are based on Openshift (RH) cluster, the workloads and objects are tailored according to openshift security policies. Some of Openshift objects and APIs are not available in Kubernetes in that case read the last section of this tutorial to make the changes which are specific to Kubernetes. 
 

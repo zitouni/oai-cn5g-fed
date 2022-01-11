@@ -198,10 +198,14 @@ services:
             - NRF_IPV4_ADDRESS=0.0.0.0
             - NRF_PORT=80
             - NRF_API_VERSION=v1
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
             - NRF_FQDN=oai-nrf
             - REGISTER_NRF=no
             - DISCOVER_UPF=no
             - USE_FQDN_DNS=yes
+            - DNN_RANGE1=12.1.1.2 - 12.1.1.128
+            - DNN_RANGE0=12.2.1.2 - 12.2.1.128
+            - DNN_NI1=default
         depends_on:
             - oai-amf
         volumes:

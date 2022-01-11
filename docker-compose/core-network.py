@@ -52,8 +52,8 @@ def _parse_args() -> argparse.Namespace:
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
-        python3 core-network.py --type start-mini --fqdn no --scenario 2
-        python3 core-network.py --type start-basic --fqdn no --scenario 2'''
+        python3 core-network.py --type start-mini --fqdn no --scenario 1
+        python3 core-network.py --type start-basic --fqdn no --scenario 1'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK DEPLOY',
                                     epilog=example_text,
@@ -183,13 +183,31 @@ def check_config(file_name):
                 exit(-1)
             else:
                 logging.debug('\033[0;32m SMF receiving heathbeats from UPF\033[0m....')
+        elif file_name == BASIC_W_NRF:
+            logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
+            cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: oai-spgwu"'
+            upf_logs1 = run_cmd(cmd1)
+            upf_logs2 = run_cmd(cmd2)
+            if upf_logs1 is None or upf_logs2 is None:
+                logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
+            cmd1 = 'docker logs oai-smf | grep "PFCP HEARTBEAT PROCEDURE"'
+            upf_logs1 = run_cmd(cmd1)
+            if upf_logs1 is None:
+                logging.error('\033[0;31m SMF not receiving heartbeats from UPF\033[0m....')
+                exit(-1)
+            else:
+                logging.debug('\033[0;32m SMF receiving heathbeats from UPF\033[0m....')
         else:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT RESPONSE"'
             cmd2 = 'docker logs oai-spgwu | grep "Received SX HEARTBEAT REQUEST"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
-            if upf_logs1 is None or upf_logs2 is None:
+            if upf_logs1 is None and upf_logs2 is None:
                 logging.error('\033[0;31m UPF not receiving heartbeats from SMF\033[0m....')
                 exit(-1)
             else:
