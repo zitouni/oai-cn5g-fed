@@ -40,15 +40,15 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8          |
 | ----------- |:-------------- | ----------------------------- | ------------ | ---------------|
-| NSSF        | `develop`      | `v1.2.1`                      | X            | X              |
-| AMF         | `develop`      | `v1.2.1`                      | X            | X              |
-| AUSF        | `develop`      | `v1.2.1`                      | X            | X              |
-| NRF         | `develop`      | `v1.2.1`                      | X            | X              |
-| SMF         | `develop`      | `v1.2.1`                      | X            | X              |
-| UDR         | `develop`      | `v1.2.1`                      | X            | X              |
-| UDM         | `develop`      | `v1.2.1`                      | X            | X              |
-| SPGWU       | `develop`      | `v1.2.1`                      | X            | X              |
-| UPF-VPP     | `develop`      | `v1.2.1`                      | X            | X              |
+| NSSF        | `develop`      | `v1.3.0`                      | X            | X              |
+| AMF         | `develop`      | `v1.3.0`                      | X            | X              |
+| AUSF        | `develop`      | `v1.3.0`                      | X            | X              |
+| NRF         | `develop`      | `v1.3.0`                      | X            | X              |
+| SMF         | `develop`      | `v1.3.0`                      | X            | X              |
+| UDR         | `develop`      | `v1.3.0`                      | X            | X              |
+| UDM         | `develop`      | `v1.3.0`                      | X            | X              |
+| SPGWU       | `develop`      | `v1.1.5`                      | X            | X              |
+| UPF-VPP     | `develop`      | `v1.3.0`                      | X            | X              |
 
 <br/>
 
@@ -59,12 +59,14 @@ In this tutorial we are going to explore slicing feature of OAI 5G core network.
 * AMF selection based on S-NSSAI (With help of NSSF - Next Release, March 2022)
 * Single UE with multiple S-NSSAIs (With the help of commercial tool dsTest)
 
-A Network Slice is defined within a PLMN and it incorporates the 5G Core and 5G RAN components. Network slice is identified as Single Network Slice Selection Assistance Information (S-NSSAI). A S-NSSAI is consist of Slice/Service type (SST) and Slice Differentiator (SD). SST is mandatory filed which defines expected slice behavior in terms of features and services. Whereas SD is optional field which can be used to differentiate amongst multiple slices. Currently 3GPP allows up to eight (8) S-NSSAIs in the NSSAI sent in signaling messages between the UE and the Network, means a single UE may be served by at most eight Network Slices at a time. SST length is 8 bits so it can provides 2^8= 256 SST values from which there are reserved values O to 127 for standardized SSTs (e.g. SST 2 = URLCC, SST 3 = MIoT, SST 4 = V2X etc.). 
+A Network Slice is defined within a PLMN and it incorporates the 5G Core and 5G RAN components. Network slice is identified as Single Network Slice Selection Assistance Information (S-NSSAI). A S-NSSAI consists of Slice/Service type (SST) and Slice Differentiator (SD). SST is mandatory filed which defines expected slice behavior in terms of features and services. Whereas SD is optional field which can be used to differentiate amongst multiple slices. 
+
+Currently 3GPP allows up to eight (8) S-NSSAIs in the NSSAI sent in signaling messages between the UE and the Network, it means a single UE may be served by at most eight Network Slices at a time. SST length is 8 bits; so it can provides 2^8= 256 SST values from which there are reserved values O to 127 for standardized SSTs (e.g. SST 2 = URLCC, SST 3 = MIoT, SST 4 = V2X etc.). 
 
 ###### Slicing current status in OAI 5G CN -
-* Role of NSSF -> NSSF currently supports, slice slection during pdu session establishment request. When AMF is not locally configured with NRF information, then with the help of NSSF it discovers appropriate NRF based on S-NSSAI provided.
-* Role of AMF  -> AMF slectes first available SMF from the NF instance list (of SMF) provided by appropriate NRF.
-* Role od SMF  -> SMF can associates with multiple UPFs at same time as in slice 2 and 3 from above figure. UPF is selected here based on S-NSSAI and DNN.
+* Role of NSSF -> NSSF currently supports slice selection during pdu session establishment request. When AMF is not locally configured with NRF information, then with the help of NSSF, it discovers an appropriate NRF based on S-NSSAI provided.
+* Role of AMF  -> AMF selectes first available SMF from the NF instance list (of SMF instances) provided by appropriate NRF.
+* Role od SMF  -> SMF can associate with multiple UPFs at same time as in slice 2 and 3 from above figure. UPF is selected here based on S-NSSAI and DNN.
 
 As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated with colors) viz. <br/>
 Note:- Here we have used standardised SST values (2,3,4), because rf-simulator only supports SST values 1,2,3,4. Moreover, it only for numerical refernece and does not reflect standrd SST behaviour e.g. URLCC, MIoT, V2X etc.<br/>
@@ -128,7 +130,7 @@ bf6544a04f1f   oai-nssf:develop         "/bin/bash /openair-…"   51 seconds ag
 
 ## 6. Getting a `ransim` docker images ##
 
-We are using 3 different ran simulators viz. [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has there set of features, and one can use as per need basis. Different ransimulator usage mimics here, the realistic deployemnt scenario where operator can have multi vendor devices deployed  in the network. <br/>
+We are using 3 different ran simulators: [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has their own set of features, and one can use as per need basis. Different ran simulator usage mimics here the realistic deployemnt scenario where operator can have multi vendor devices deployed  in the network. <br/>
 
 You can pull docker images from official repositories as below -
 
@@ -254,14 +256,15 @@ $
 | [5gcn-deployment-slicing.pcap](./results/slicing/pcap/5gcn-deployment-slicing.pcap)        |
 
 ## 10. UE with multiple S-NSSAIs ##
-OAI 5G CN also supports UE with multiple slice, Appereantly ransimulators that we have validated are does not support UE with multiple slice at a time.
-Hence, we have validated this feature using commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. Pipeline triggers deployement scenario as shown in figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF anf UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
+OAI 5G CN also supports UE with multiple slices, Appereantly the ran simulators, that we have validated, do not support UE with multiple slices at once.
+
+Hence, we have validated this feature using commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. Pipeline triggers a deployment scenario as shown in figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF anf UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
 
 ![Multislice](./images/5gcn_slicing_ue_multislice.png)
 
 ## 11. Undeploy network ##
 * Use docker-compose down to undeploy network <br/>
-Undeploy RAN
+### 11.1. Undeploy RAN
 ```bash
 $ docker-compose -f docker-compose-slicing-ransim.yaml down
 Stopping ueransim           ... done
@@ -275,7 +278,7 @@ Network demo-oai-public-net is external, skipping
 Network oai-public-access is external, skipping
 ```
 
-Undeploy 5GCN
+### 11.2. Undeploy 5GCN
 
 ```bash
 $ docker-compose -f docker-compose-slicing-basic-nrf.yaml down
