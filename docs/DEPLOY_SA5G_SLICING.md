@@ -18,6 +18,8 @@
 
 **Tutorial replication time: ~ 1h30mins**
 
+**Compute resource recommendation: ~ 6GB RAM, 4CPU (Based on docker stats)**
+
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
 **TABLE OF CONTENTS**
