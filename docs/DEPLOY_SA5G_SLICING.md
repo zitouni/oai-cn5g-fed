@@ -67,7 +67,7 @@ Currently 3GPP allows up to eight (8) S-NSSAIs in the NSSAI sent in signaling me
 
 ###### Slicing current status in OAI 5G CN -
 * Role of NSSF -> NSSF currently supports slice selection during pdu session establishment request. When AMF is not locally configured with NRF information, then with the help of NSSF, it discovers an appropriate NRF based on S-NSSAI provided.
-* Role of AMF  -> AMF selectes first available SMF from the NF instance list (of SMF instances) provided by appropriate NRF.
+* Role of AMF  -> AMF selects first available SMF from the NF instance list (of SMF instances) provided by appropriate NRF.
 * Role od SMF  -> SMF can associate with multiple UPFs at same time as in slice 2 and 3 from above figure. UPF is selected here based on S-NSSAI and DNN.
 
 As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated with colors) viz. <br/>
@@ -258,7 +258,7 @@ $
 | [5gcn-deployment-slicing.pcap](./results/slicing/pcap/5gcn-deployment-slicing.pcap)        |
 
 ## 10. UE with multiple S-NSSAIs ##
-OAI 5G CN also supports UE with multiple slices, Appereantly the ran simulators, that we have validated, do not support UE with multiple slices at once.
+OAI 5G CN also supports UE with multiple slices, Apparently the ran simulators, that we have validated, do not support UE with multiple slices at once.
 
 Hence, we have validated this feature using commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. Pipeline triggers a deployment scenario as shown in figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF anf UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
 
