@@ -76,6 +76,8 @@ def udrBranch = params.udrBranch
 def nssfTag = params.udrTag
 def nssfBranch = params.udrBranch
 
+def upfVppBranch = 'develop'
+
 //-------------------------------------------------------------------------------
 // Pipeline start
 pipeline {
@@ -214,7 +216,7 @@ pipeline {
             sh 'git checkout -f ' + upstreamTagToUse
             sh "zip -r -qq oai-cn5g-fed.zip .git"
             sh "mkdir -p archives"
-            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
+            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch + ' --upf-vpp-branch ' + upfVppBranch + ' --nssf-branch ' + nssfBranch
           }
           if (scmEvent) {
             mini = true
@@ -226,14 +228,14 @@ pipeline {
             }
             sh "zip -r -qq oai-cn5g-fed.zip .git"
             sh "mkdir -p archives"
-            sh './scripts/syncComponents.sh --nrf-branch develop --amf-branch develop --smf-branch develop --spgwu-tiny-branch develop --ausf-branch develop --udm-branch develop --udr-branch develop'
+            sh './scripts/syncComponents.sh --nrf-branch develop --amf-branch develop --smf-branch develop --spgwu-tiny-branch develop --ausf-branch develop --udm-branch develop --udr-branch develop --upf-vpp-branch develop --nssf-branch develop'
           }
           if ((!upstreamEvent) && (!scmEvent)) {
             mini = true
             basic = true
             slice = true
             sh "git clean -x -d -f > /dev/null 2>&1"
-            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch
+            sh './scripts/syncComponents.sh --nrf-branch ' + nrfBranch + ' --amf-branch ' + amfBranch + ' --smf-branch ' + smfBranch + ' --spgwu-tiny-branch ' + spgwuBranch + ' --ausf-branch ' + ausfBranch + ' --udm-branch ' + udmBranch + ' --udr-branch ' + udrBranch + ' --upf-vpp-branch ' + upfVppBranch + ' --nssf-branch ' + nssfBranch
             sh "mkdir -p archives"
           }
           // Verify that the images are available

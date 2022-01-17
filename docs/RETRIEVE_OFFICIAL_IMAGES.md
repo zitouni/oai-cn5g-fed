@@ -48,6 +48,7 @@ $ docker pull rdefosseoai/oai-udr:latest
 $ docker pull rdefosseoai/oai-udm:latest
 $ docker pull rdefosseoai/oai-ausf:latest
 $ docker pull rdefosseoai/oai-upf-vpp:latest
+$ docker pull rdefosseoai/oai-nssf:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
@@ -61,6 +62,7 @@ $ docker image tag rdefosseoai/oai-udr:latest oai-udr:latest
 $ docker image tag rdefosseoai/oai-udm:latest oai-udm:latest
 $ docker image tag rdefosseoai/oai-ausf:latest oai-ausf:latest
 $ docker image tag rdefosseoai/oai-upf-vpp:latest oai-upf-vpp:latest
+$ docker image tag rdefosseoai/oai-nssf:latest oai-nssf:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -77,26 +79,27 @@ We will push new versions when new features are validated.
 
 This repository only has tutorials and Continuous Integration scripts.
 
-**At the time of writing (2021/10/29), the release tag is `v1.2.1`.**
+**At the time of writing (2022/01/17), the release tag is `v1.3.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.2.1` |              |                 |
-| AMF         | `master`    | `v1.2.1` | X            | X               |
-| SMF         | `master`    | `v1.2.1` | X            | X               |
-| NRF         | `master`    | `v1.2.1` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.4` | X            | X               |
-| UDR         | `master`    | `v1.2.1` | X            | X               |
-| UDM         | `master`    | `v1.2.1` | X            | X               |
-| AUSF        | `master`    | `v1.2.1` | X            | X               |
-| UPF-VPP     | `master`    | `v1.2.1` | X            | X               |
+| FED REPO    | N/A         | `v1.3.0` |              |                 |
+| AMF         | `master`    | `v1.3.0` | X            | X               |
+| SMF         | `master`    | `v1.3.0` | X            | X               |
+| NRF         | `master`    | `v1.3.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.5` | X            | X               |
+| UDR         | `master`    | `v1.3.0` | X            | X               |
+| UDM         | `master`    | `v1.3.0` | X            | X               |
+| AUSF        | `master`    | `v1.3.0` | X            | X               |
+| UPF-VPP     | `master`    | `v1.3.0` | X            | X               |
+| NSSF        | `master`    | `v1.3.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.2.1 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v1.3.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.2.1
+$ git checkout -f v1.3.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh 
@@ -109,6 +112,7 @@ OAI-AUSF    component branch : master
 OAI-UDM     component branch : master
 OAI-UDR     component branch : master
 OAI-UPF-VPP component branch : master
+OAI-NSSF    component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -118,3 +122,5 @@ git submodule update
 Later versions of the `master` branch may not work with the pulled images.
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md).
+
+You can also go [back](./DEPLOY_HOME.md) to the list of tutorials.

@@ -30,26 +30,27 @@ We recommend to synchronize with the master branches on all git sub-modules.
 
 We also recommend that you synchronize this "tutorial" repository with a provided tag. By doing so, the `docker-compose` files will be aligned with feature sets of each cNF.
 
-**At the time of writing (2021/10/29), the release tag is `v1.2.1`.**
+**At the time of writing (2022/01/17), the release tag is `v1.3.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.2.1` |              |                 |
-| AMF         | `master`    | `v1.2.1` | X            | X               |
-| SMF         | `master`    | `v1.2.1` | X            | X               |
-| NRF         | `master`    | `v1.2.1` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.4` | X            | X               |
-| UDR         | `master`    | `v1.2.1` | X            | X               |
-| UDM         | `master`    | `v1.2.1` | X            | X               |
-| AUSF        | `master`    | `v1.2.1` | X            | X               |
-| UPF-VPP     | `master`    | `v1.2.1` | X            | X               |
+| FED REPO    | N/A         | `v1.3.0` |              |                 |
+| AMF         | `master`    | `v1.3.0` | X            | X               |
+| SMF         | `master`    | `v1.3.0` | X            | X               |
+| NRF         | `master`    | `v1.3.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.1.5` | X            | X               |
+| UDR         | `master`    | `v1.3.0` | X            | X               |
+| UDM         | `master`    | `v1.3.0` | X            | X               |
+| AUSF        | `master`    | `v1.3.0` | X            | X               |
+| UPF-VPP     | `master`    | `v1.3.0` | X            | X               |
+| NSSF        | `master`    | `v1.3.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.2.1 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v1.3.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.2.1
+$ git checkout -f v1.3.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh 
@@ -62,6 +63,7 @@ OAI-AUSF    component branch : master
 OAI-UDM     component branch : master
 OAI-UDR     component branch : master
 OAI-UPF-VPP component branch : master
+OAI-NSSF    component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -71,19 +73,21 @@ git submodule update
 or a little bit more dangerous
 
 ```bash
-$ ./scripts/syncComponents.sh --nrf-branch v1.2.1 --amf-branch v1.2.1 \
-                              --smf-branch v1.2.1 --spgwu-tiny-branch v1.1.4 \
-                              --udr-branch v1.2.1 --udm-branch v1.2.1 \
-                              --ausf-branch v1.2.1 --upf-vpp-branch v1.2.1
+$ ./scripts/syncComponents.sh --nrf-branch v1.3.0 --amf-branch v1.3.0 \
+                              --smf-branch v1.3.0 --spgwu-tiny-branch v1.1.5 \
+                              --udr-branch v1.3.0 --udm-branch v1.3.0 \
+                              --ausf-branch v1.3.0 --upf-vpp-branch v1.3.0 \
+                              --nssf-branch v1.3.0
 ---------------------------------------------------------
-OAI-NRF     component branch : v1.2.1
-OAI-AMF     component branch : v1.2.1
-OAI-SMF     component branch : v1.2.1
-OAI-SPGW-U  component branch : v1.1.4
-OAI-UDR     component branch : v1.2.1
-OAI-UDM     component branch : v1.2.1
-OAI-AUSF    component branch : v1.2.1
-OAI-UPF-VPP component branch : v1.2.1
+OAI-NRF     component branch : v1.3.0
+OAI-AMF     component branch : v1.3.0
+OAI-SMF     component branch : v1.3.0
+OAI-SPGW-U  component branch : v1.1.5
+OAI-UDR     component branch : v1.3.0
+OAI-UDM     component branch : v1.3.0
+OAI-AUSF    component branch : v1.3.0
+OAI-UPF-VPP component branch : v1.3.0
+OAI-NSSF    component branch : v1.3.0
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -116,7 +120,8 @@ $ git rebase origin/master
 $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
                               --smf-branch develop --spgwu-tiny-branch develop \
                               --ausf-branch develop --udm-branch develop \
-                              --udr-branch develop --upf-vpp-branch develop
+                              --udr-branch develop --upf-vpp-branch develop \
+                              --nssf-branch develop
 ---------------------------------------------------------
 OAI-NRF     component branch : develop
 OAI-AMF     component branch : develop
@@ -126,6 +131,7 @@ OAI-AUSF    component branch : develop
 OAI-UDM     component branch : develop
 OAI-UDR     component branch : develop
 OAI-UPF-VPP component branch : develop
+OAI-NSSF    component branch : develop
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -372,7 +378,7 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 10. Build UPF-VPP Image #
 
-## 9.1 On a Ubuntu 18.04 Host ##
+## 10.1 On a Ubuntu 18.04 Host ##
 
 ```bash
 $ docker build --target oai-upf-vpp --tag oai-upf-vpp:latest \
@@ -385,7 +391,7 @@ oai-upf-vpp             latest             581e07d59ec3        1 minute ago     
 ...
 ```
 
-## 9.2 On a RHEL8 Host ##
+## 10.2 On a RHEL8 Host ##
 
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
@@ -402,5 +408,39 @@ $ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:latest \
 
 The above command is with podman, in case of docker it can be changed with its docker equivalent.
 
+# 11. Build NSSF Image #
+
+## 11.1 On a Ubuntu 18.04 Host ##
+
+```bash
+$ docker build --target oai-nssf --tag oai-nssf:latest \
+               --file component/oai-nssf/docker/Dockerfile.nssf.ubuntu18 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-nssf
+$ docker image prune --force
+$ docker image ls
+oai-nssf          latest              77a96de94c23        1 minute ago        231MB
+...
+```
+
+## 11.2 On a RHEL8 Host ##
+
+RHEL base images generally needs a subscription to access the package repository.
+For that the base image needs ca and entitlement .pem files.
+
+Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+
+```bash
+$ sudo podman build --target oai-nssf --tag oai-nssf:latest \
+               --file component/oai-nssf/docker/Dockerfile.nssf.rhel8 \
+               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+               component/oai-nssf
+...
+```
+
+The above command is with podman, in case of docker it can be changed with its docker equivalent.
+
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)
+
+You can also go [back](./DEPLOY_HOME.md) to the list of tutorials.
