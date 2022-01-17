@@ -60,6 +60,9 @@ function usage {
     echo "    --upf-vpp-branch ####"
     echo "    Specify the source branch for the OAI-UPF-VPP component"
     echo ""
+    echo "    --nssf-branch ####"
+    echo "    Specify the source branch for the OAI-UDR component"
+    echo ""
     echo "    --help OR -h"
     echo "    Print this help message."
     echo ""
@@ -73,6 +76,7 @@ AUSF_BRANCH='master'
 UDM_BRANCH='master'
 UDR_BRANCH='master'
 UPF_VPP_BRANCH='master'
+NSSF_VPP_BRANCH='master'
 
 doDefault=1
 
@@ -134,6 +138,12 @@ case $key in
     shift
     shift
     ;;
+    --nssf-branch)
+    NSSF_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
     *)
     echo "Syntax Error: unknown option: $key"
     echo ""
@@ -152,6 +162,7 @@ echo "OAI-AUSF    component branch : ${AUSF_BRANCH}"
 echo "OAI-UDM     component branch : ${UDM_BRANCH}"
 echo "OAI-UDR     component branch : ${UDR_BRANCH}"
 echo "OAI-UPF-VPP component branch : ${UPF_VPP_BRANCH}"
+echo "OAI-NSSF    component branch : ${NSSF_BRANCH}"
 echo "---------------------------------------------------------"
 
 # First do a clean-up
@@ -237,6 +248,15 @@ else
         git checkout $UPF_VPP_BRANCH > /dev/null 2>&1
     else
         git checkout -b $UPF_VPP_BRANCH origin/$UPF_VPP_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-nssf
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $NSSF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $NSSF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $NSSF_BRANCH origin/$NSSF_BRANCH > /dev/null 2>&1
     fi
     popd
 fi
