@@ -18,6 +18,7 @@
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDM/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDM%2F&label=build%20UDM"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDR/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDR%2F&label=build%20UDR"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UPF-VPP/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UPF-VPP%2F&label=build%20UPF-VPP"></a>
+	<a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NSSF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-NSSF%2F&label=build%20NSSF"></a>
 </p>
 
 <p align="center">
@@ -29,6 +30,7 @@
   <a href="https://hub.docker.com/r/rdefosseoai/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udr?label=UDR%20docker%20pulls"></a>
   <a href="https://hub.docker.com/r/rdefosseoai/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-upf-vpp?label=UPF-VPP%20docker%20pulls"></a>
   <a href="https://hub.docker.com/r/rdefosseoai/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-spgwu-tiny?label=SPGWU-TINY%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/rdefosseoai/oai-nssf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nssf?label=NSSF%20docker%20pulls"></a>
 </p>
 
 <h2 align="center">
@@ -47,7 +49,7 @@ At the moment, it contains the following network elements:
 * User Plane Function (**UPF**) with 2 variants:
   * Simple Implementation based on our 4G CUPS component (**[SPGWU-TINY](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny)**)
   * VPP-Based Implementation (**[UPF-VPP](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp)**)
-* Network Slicing Selection Function (**NSSF**)
+* Network Slicing Selection Function (**[NSSF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nssf)**)
 * Network Data Analytics Function (**NWDAF**)
 * Unstructured Data Storage Function (**UDSF**)
 
