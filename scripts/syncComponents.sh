@@ -76,7 +76,7 @@ AUSF_BRANCH='master'
 UDM_BRANCH='master'
 UDR_BRANCH='master'
 UPF_VPP_BRANCH='master'
-NSSF_VPP_BRANCH='master'
+NSSF_BRANCH='master'
 
 doDefault=1
 
