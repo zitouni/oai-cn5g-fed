@@ -183,7 +183,7 @@ docker-compose-host $: docker logs gnbsim2 | grep "UE address:"
 
 
 ``` shell
-docker-compose-host $: docker exec -it oai-ext-dn ping 12.1.1.4 -c4
+docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.4 -c4
 PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
 64 bytes from 12.1.1.4: icmp_seq=1 ttl=63 time=0.297 ms
 64 bytes from 12.1.1.4: icmp_seq=2 ttl=63 time=0.824 ms
