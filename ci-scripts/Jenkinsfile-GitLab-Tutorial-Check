@@ -249,7 +249,7 @@ pipeline {
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml')
           dir ('ci-scripts') {
             try {
-              sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md 2>&1 | tee ../archives/static-ue-ip.log'
+              sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md | tee ../archives/static-ue-ip.log'
             } catch (Exception e) {
                 currentBuild.result = 'FAILURE'
                 echo "Static UE IP Tutorial FAILED"
