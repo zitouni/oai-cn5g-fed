@@ -158,13 +158,28 @@ def check_config(file_name):
         else:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd)
+        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"'
+            ausf_registration_nrf = run_cmd(cmd)
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"'
+            udm_registration_nrf = run_cmd(cmd)
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"'
+            udr_registration_nrf = run_cmd(cmd)
+        else:
+            ausf_registration_nrf = True
+            udm_registration_nrf = True
+            udr_registration_nrf = True
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF"'
         sample_registration = run_cmd(cmd)
         logging.debug(f'\033[0;34m For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {sample_registration}\033[0m....')
-        if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None:
+        if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None or \
+           ausf_registration_nrf is None or udm_registration_nrf is None or udr_registration_nrf is None:
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
         else:
-            logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
+            if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
+                logging.debug('\033[0;32m AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF\033[0m....')
+            else:
+                logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
         if file_name == BASIC_VPP_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
