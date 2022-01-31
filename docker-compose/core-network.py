@@ -27,9 +27,11 @@ import subprocess
 import time
 import logging
 import argparse
+import sys
 
 logging.basicConfig(
     level=logging.DEBUG,
+    stream=sys.stdout,
     format="[%(asctime)s] %(name)s:%(levelname)s: %(message)s"
 )
 
