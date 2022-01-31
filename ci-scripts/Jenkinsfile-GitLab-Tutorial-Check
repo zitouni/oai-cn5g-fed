@@ -43,8 +43,8 @@ def udmTag = params.udmTag
 def udmBranch = params.udmBranch
 def udrTag = params.udrTag
 def udrBranch = params.udrBranch
-def nssfTag = params.udrTag
-def nssfBranch = params.udrBranch
+def nssfTag = params.nssfTag
+def nssfBranch = params.nssfBranch
 
 def upfVppTag = params.upfVppTag
 def upfVppBranch = params.upfVppTag
