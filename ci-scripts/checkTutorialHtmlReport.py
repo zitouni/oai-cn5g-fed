@@ -117,14 +117,21 @@ class HtmlReport():
 			if re.search('gnbsim', log_file) is not None:
 				continue
 			rootName = re.sub('.log.*$', '', log_file)
+			containerName = 'oai-' + rootName
 			if rootName == 'spgwu':
 				imageRootName = 'oai-spgwu-tiny:'
+				fileRootName = rootName
+			elif rootName == 'vpp-upf':
+				imageRootName = 'oai-upf-vpp:'
+				fileRootName = 'upf_vpp'
+				containerName = rootName
 			else:
 				imageRootName = 'oai-' + rootName + ':'
+				fileRootName = rootName
 			imageTag = ''
 			imageSize = ''
 			imageDate = ''
-			with open(cwd + '/archives/oai_' + rootName + '_image_info.log','r') as imageDetailsFile:
+			with open(cwd + '/archives/oai_' + fileRootName + '_image_info.log','r') as imageDetailsFile:
 				for line in imageDetailsFile:
 					result = re.search('TAG: oai-.*:(?P<tag>[a-zA-Z0-9\-\_]+)', line)
 					if result is not None:
@@ -142,7 +149,7 @@ class HtmlReport():
 					if result is not None:
 						imageDate = re.sub('T', '  ', result.group('date'))
 			imageDetailsFile.close()
-			deployedContainerImages.append(('oai-' + rootName, imageRootName + imageTag, imageSize, imageDate))
+			deployedContainerImages.append((containerName, imageRootName + imageTag, imageSize, imageDate))
 
 		if tutoName == '':
 			return
