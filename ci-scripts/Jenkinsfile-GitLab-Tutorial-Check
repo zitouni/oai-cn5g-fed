@@ -248,14 +248,19 @@ pipeline {
         script {
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml')
           dir ('ci-scripts') {
-            try {
-              sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md | tee ../archives/static-ue-ip.log'
-            } catch (Exception e) {
-                currentBuild.result = 'FAILURE'
-                echo "Static UE IP Tutorial FAILED"
-            }
+            // Tee will make the command always pass
+            // Please use the same log name as the folder used in the tutorial
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md | tee ../archives/static-ue-ip.log'
           }
-          sh 'cp -Rf /tmp/oai/static-ue-ip/ archives'
+          // Checking if FAIL appears
+          try {
+            sh 'grep -L FAIL archives/static-ue-ip.log > /dev/null'
+            currentBuild.result = 'FAILURE'
+            echo "Static UE IP Tutorial FAILED"
+          } catch (Exception e) {
+            echo "Static UE IP Tutorial PASSED"
+          }
+          archivesArtifacts('docker-compose/docker-compose-basic-nrf.yaml', 'static-ue-ip')
           cleanUpDockerCompose('docker-compose/docker-compose-basic-nrf.yaml')
         }
       }
@@ -268,6 +273,10 @@ pipeline {
         sh "zip -r -qq cn5g_fed_tutorials_logs.zip archives*"
         if (fileExists('cn5g_fed_tutorials_logs.zip')) {
           archiveArtifacts artifacts: 'cn5g_fed_tutorials_logs.zip'
+        }
+        sh 'python3 ./ci-scripts/checkTutorialHtmlReport.py --job_name=' + JOB_NAME + ' --job_id=' + BUILD_ID + ' --job_url=' + BUILD_URL
+        if (fileExists('test_results_oai_cn5g_tutorials.html')) {
+          archiveArtifacts artifacts: 'test_results_oai_cn5g_tutorials.html'
         }
       }
     }
@@ -284,6 +293,12 @@ def updateDockerCompose(filename) {
   sh 'sed -i -e "s@oai-udr:latest@oai-udr:' + udmTag + '@" ' + filename 
   sh 'sed -i -e "s@oai-nssf:latest@oai-nssf:' + nssfTag + '@" ' + filename 
   sh 'sed -i -e "s@oai-upf-vpp:latest@oai-upf-vpp:' + upfVppTag + '@" ' + filename 
+}
+
+def archivesArtifacts(filename,folder) {
+  sh 'cp -Rf /tmp/oai/' + folder + ' archives'
+  // Making a copy of the docker-compose for debugging
+  sh 'cp ' + filename + ' archives/' + folder
 }
 
 def cleanUpDockerCompose(filename) {
