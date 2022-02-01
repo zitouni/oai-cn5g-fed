@@ -265,12 +265,34 @@ pipeline {
         }
       }
     }
+    stage ('Check UPF-VPP Tutorial') {
+      steps {
+        script {
+          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml')
+          dir ('ci-scripts') {
+            // Tee will make the command always pass
+            // Please use the same log name as the folder used in the tutorial
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_VPP_UPF.md | tee ../archives/vpp-upf-gnbsim.log'
+          }
+          // Checking if FAIL appears
+          try {
+            sh 'grep -L FAIL archives/vpp-upf-gnbsim.log > /dev/null'
+            currentBuild.result = 'FAILURE'
+            echo "UPF-VPP Tutorial FAILED"
+          } catch (Exception e) {
+            echo "UPF-VPP Tutorial PASSED"
+          }
+          archivesArtifacts('docker-compose/docker-compose-basic-vpp-nrf.yaml', 'vpp-upf-gnbsim')
+          cleanUpDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml')
+        }
+      }
+    }
   }
   post {
     always {
       script {
         // Zipping all archived log files
-        sh "zip -r -qq cn5g_fed_tutorials_logs.zip archives*"
+        sh "zip -r -qq cn5g_fed_tutorials_logs.zip archives"
         if (fileExists('cn5g_fed_tutorials_logs.zip')) {
           archiveArtifacts artifacts: 'cn5g_fed_tutorials_logs.zip'
         }
