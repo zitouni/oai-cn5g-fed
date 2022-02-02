@@ -31,6 +31,7 @@ import sys
 
 logging.basicConfig(
     level=logging.DEBUG,
+    stream=sys.stdout,
     format="%(message)s"
 )
 
@@ -65,9 +66,9 @@ def _parse_args() -> argparse.Namespace:
 
 
 def subprocess_call(command,cwd):
-    popen = subprocess.Popen(command,shell=True,universal_newlines=True,cwd=cwd,stdout=PIPE)
+    popen = subprocess.Popen(command,shell=True,universal_newlines=True,cwd=cwd,stdout=PIPE,stderr=STDOUT)
     for stdout_line in iter(popen.stdout.readline, ""):
-        yield stdout_line
+        yield stdout_line.strip()
     popen.stdout.close()
     return_code = popen.wait()
     if return_code:
@@ -123,6 +124,10 @@ def print_tutorial_summary(command_status,name):
     print(statement)
     for command in command_status:
         print("{}: {}".format(command,command_status[command]))
+    if final_result == 'FAIL':
+        return False
+    else:
+        return True
 
 def check_tutorial(name):
     filename = DOCUMENT_FOLDER + '/' + name
@@ -131,7 +136,11 @@ def check_tutorial(name):
     h2 = re.findall(r"## (.*)\n",text)
     h2_blocks = extract_h2_blocks(h2,text)
     execute_shell_command(h2_blocks)
-    print_tutorial_summary(COMMAND_STATUS,name)
+    status = print_tutorial_summary(COMMAND_STATUS,name)
+    if status:
+        sys.exit(0)
+    else:
+        sys.exit(-1)
 
 if __name__ == '__main__':
     # Parse the arguments to get the deployment instruction

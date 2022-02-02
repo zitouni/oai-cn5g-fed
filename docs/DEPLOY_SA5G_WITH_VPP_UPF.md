@@ -28,7 +28,8 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 4.  Configuring OAI 5G Core Network Functions
 5.  [Deploying OAI 5G Core Network with VPP-UPF](#5-deploying-oai-5g-core-network)
 6.  [Stimuli with a RAN emulator](#6-stimuli-with-a-ran-emulator)
-7.  [Undeploy the Core Network](#7-undeploy-the-core-network)
+7.  [Recover the logs](#7-recover-the-logs)
+8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
@@ -64,11 +65,28 @@ Let's begin !!
 
 * Steps 1 to 4 are similar as previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
-## 5. Deploying OAI 5g Core Network ##
+## 1. Pre-requisites
+
+Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files, we recommend creating exactly the same folder to not break the flow of commands afterwards.
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: rm -rf /tmp/oai/vpp-upf-gnbsim
+```
+-->
+
+``` shell
+docker-compose-host $: mkdir -p /tmp/oai/vpp-upf-gnbsim
+```
+
+## 5. Deploying OAI 5g Core Network
 
 * We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
 
-```bash
+All the following commands shall be executed from the `oai-cn5g-fed/docker-compose` folder.
+
+``` console
 oai-cn5g-fed/docker-compose$ $ python3 ./core-network.py --help
 usage: core-network.py [-h] --type
                        {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp}
@@ -103,8 +121,8 @@ In that deployment configuration, you can deploy with and without `NRF` (ie scen
 
 For the moment, `FQDN` shall be set to `no`.
 
-```bash
-oai-cn5g-fed/docker-compose$ python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
+``` shell
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
 [2021-10-29 11:11:43,753] root:DEBUG:  Starting 5gcn components... Please wait....
 Creating network "oai-public-cp" with the default driver
 Creating network "oai-public-access" with the default driver
@@ -151,7 +169,7 @@ Here I have deployed with `NRF`:
 You can also see this with the container logs:
 
 1. UPF registration to NRF
-```bash
+``` console
 $ docker logs oai-nrf
 ...
 [2021-10-29T11:12:10.995675] [nrf] [sbi_srv] [info ] Got a request to register an NF instance/Update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
@@ -173,7 +191,7 @@ $ docker logs oai-nrf
 ...
 ```
 2. SMF PFCP association with UPF-VPP
-```bash
+``` console
 $ docker logs oai-smf
 ...
 [2021-10-29T11:12:27.497176] [smf] [smf_sbi] [debug] Send NFSubscribeNotify to NRF to be notified when a new UPF becomes available (HTTP version 1)
@@ -224,28 +242,36 @@ $ docker logs oai-smf
 ...
 ```
 
-## 6. Stimuli with a RAN emulator ##
+## 6. Stimuli with a RAN emulator
 
-### 6.1 Test with Gnbsim ###
+### 6.1. Test with Gnbsim
+
 In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
-Launch gnbsim instance
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim-vpp.yaml up -d gnbsim-vpp
+Launch gnbsim instance:
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml up -d gnbsim-vpp
 Creating gnbsim-vpp ... done
 ```
 
-Make sure Gnbsim service is healthy
-``` bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim-vpp.yaml ps -a
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: sleep 20
+```
+-->
+
+Make sure Gnbsim service is healthy:
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml ps -a
    Name                 Command                  State       Ports
 ------------------------------------------------------------------
 gnbsim-vpp   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)        
-oai-cn5g-fed/docker-compose$ 
 ```
 
 After successfull registration of UE, we can perform traffic test
-```bash
-/oai-cn5g-fed$ docker exec gnbsim-vpp ping -c 3 -I 12.1.1.2 google.com
+``` console
+docker-compose-host $: docker exec gnbsim-vpp ping -c 3 -I 12.1.1.2 google.com
 PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
 64 bytes from mrs08s02-in-f14.1e100.net (172.217.18.238): icmp_seq=1 ttl=114 time=9.89 ms
 64 bytes from mrs08s02-in-f14.1e100.net (172.217.18.238): icmp_seq=2 ttl=114 time=7.10 ms
@@ -255,10 +281,60 @@ PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
 3 packets transmitted, 3 received, 0% packet loss, time 5ms
 rtt min/avg/max/mdev = 6.716/7.900/9.890/1.418 ms
 ```
-## 7. Undeploy the Core Network ##
 
-```bash
-oai-cn5g-fed/docker-compose$ python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
+``` shell
+docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.2 -c4
+PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
+64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.400 ms
+64 bytes from 12.1.1.2: icmp_seq=3 ttl=63 time=0.352 ms
+64 bytes from 12.1.1.2: icmp_seq=4 ttl=63 time=0.378 ms
+
+--- 12.1.1.2 ping statistics ---
+4 packets transmitted, 3 received, 25% packet loss, time 3055ms
+rtt min/avg/max/mdev = 0.352/0.376/0.400/0.029 ms
+
+docker-compose-host $: docker exec gnbsim-vpp ping -c4 -I 12.1.1.2 192.168.73.135
+PING 192.168.73.135 (192.168.73.135) from 12.1.1.2 : 56(84) bytes of data.
+64 bytes from 192.168.73.135: icmp_seq=1 ttl=63 time=0.289 ms
+64 bytes from 192.168.73.135: icmp_seq=2 ttl=63 time=0.307 ms
+64 bytes from 192.168.73.135: icmp_seq=3 ttl=63 time=0.183 ms
+64 bytes from 192.168.73.135: icmp_seq=4 ttl=63 time=0.353 ms
+
+--- 192.168.73.135 ping statistics ---
+4 packets transmitted, 4 received, 0% packet loss, time 71ms
+rtt min/avg/max/mdev = 0.183/0.283/0.353/0.062 ms
+```
+
+## 7. Recover the logs
+
+``` shell
+docker-compose-host $: docker logs oai-amf > /tmp/oai/vpp-upf-gnbsim/amf.log 2>&1
+docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-gnbsim/smf.log 2>&1
+docker-compose-host $: docker logs oai-nrf > /tmp/oai/vpp-upf-gnbsim/nrf.log 2>&1
+docker-compose-host $: docker logs vpp-upf > /tmp/oai/vpp-upf-gnbsim/vpp-upf.log 2>&1
+docker-compose-host $: docker logs oai-udr > /tmp/oai/vpp-upf-gnbsim/udr.log 2>&1
+docker-compose-host $: docker logs oai-udm > /tmp/oai/vpp-upf-gnbsim/udm.log 2>&1
+docker-compose-host $: docker logs oai-ausf > /tmp/oai/vpp-upf-gnbsim/ausf.log 2>&1
+docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/vpp-upf-gnbsim/gnbsim-vpp.log 2>&1
+```
+
+## 8. Undeploy the Core Network
+
+### 8.1. Undeploy the RAN emulator
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down
+Stopping gnbsim-vpp ... done
+WARNING: Found orphan containers (vpp-upf, oai-nrf, oai-smf, oai-udm, oai-amf, mysql, oai-ext-dn, oai-udr, oai-ausf) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
+Removing gnbsim-vpp ... done
+Network demo-oai-public-net is external, skipping
+Network oai-public-access is external, skipping
+```
+
+### 8.2. Undeploy the Core Network
+
+``` shell
+docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
 [2021-10-29 11:14:08,130] root:DEBUG:  UnDeploying OAI 5G core components....
 Stopping oai-smf    ... done
 Stopping oai-amf    ... done
@@ -285,4 +361,7 @@ Removing network oai-public-core
 [2021-10-29 11:15:21,322] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
+If you replicate then your log files and pcap file will be present in `/tmp/oai/vpp-upf-gnbsim/`.
+
+## 9. Reference logs
 
