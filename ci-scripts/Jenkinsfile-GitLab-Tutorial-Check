@@ -246,7 +246,7 @@ pipeline {
     stage ('Check Static UE IP Tutorial') {
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml')
+          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -268,7 +268,7 @@ pipeline {
     stage ('Check UPF-VPP Tutorial') {
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml')
+          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -305,16 +305,16 @@ pipeline {
   }
 }
 
-def updateDockerCompose(filename) {
-  sh 'sed -i -e "s@oai-amf:latest@oai-amf:' + amfTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-nrf:latest@oai-nrf:' + nrfTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-smf:latest@oai-smf:' + smfTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-spgwu-tiny:latest@oai-spgwu-tiny:' + spgwuTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-ausf:latest@oai-ausf:' + ausfTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-udm:latest@oai-udm:' + udmTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-udr:latest@oai-udr:' + udmTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-nssf:latest@oai-nssf:' + nssfTag + '@" ' + filename 
-  sh 'sed -i -e "s@oai-upf-vpp:latest@oai-upf-vpp:' + upfVppTag + '@" ' + filename 
+def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag) {
+  sh 'sed -i -e "s@oai-amf:latest@oai-amf:' + lAmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-nrf:latest@oai-nrf:' + lNrfTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-smf:latest@oai-smf:' + lSmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-spgwu-tiny:latest@oai-spgwu-tiny:' + lSpgwuTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-ausf:latest@oai-ausf:' + lAusfTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-udm:latest@oai-udm:' + lUdmTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-udr:latest@oai-udr:' + lUdrTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-nssf:latest@oai-nssf:' + lNssfTag + '@" ' + filename
+  sh 'sed -i -e "s@oai-upf-vpp:latest@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
 }
 
 def archivesArtifacts(filename,folder) {
