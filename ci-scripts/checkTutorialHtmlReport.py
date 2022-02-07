@@ -40,7 +40,7 @@ class HtmlReport():
 		self.file = open(cwd + '/test_results_oai_cn5g_tutorials.html', 'w')
 		self.generateHeader()
 
-		tutorials = ['static-ue-ip', 'vpp-upf-gnbsim']
+		tutorials = ['static-ue-ip', 'vpp-upf-gnbsim', 'slicing-with-nssf']
 		for tutorial in tutorials:
 			if not os.path.isfile(cwd + '/archives/' + tutorial + '.log'):
 				continue
@@ -109,25 +109,27 @@ class HtmlReport():
 					cmdSummary = True
 		tutoLog.close()
 
-		log_files = os.listdir(cwd + '/archives/' + tutorial)
+		log_files = sorted(os.listdir(cwd + '/archives/' + tutorial))
 		deployedContainerImages = []
 		for log_file in log_files:
 			if not log_file.endswith(".log"):
 				continue
-			if re.search('gnbsim', log_file) is not None:
+			if re.search('gnbsim', log_file) is not None or \
+			   re.search('rfsim5g-oai', log_file) is not None or \
+			   re.search('ueransim', log_file) is not None:
 				continue
 			rootName = re.sub('.log.*$', '', log_file)
 			containerName = 'oai-' + rootName
-			if rootName == 'spgwu':
+			if re.search('spgwu', rootName) is not None:
 				imageRootName = 'oai-spgwu-tiny:'
-				fileRootName = rootName
-			elif rootName == 'vpp-upf':
+				fileRootName = re.sub('-slice.*','',rootName)
+			elif re.search('vpp-upf', rootName) is not None:
 				imageRootName = 'oai-upf-vpp:'
 				fileRootName = 'upf_vpp'
 				containerName = rootName
 			else:
-				imageRootName = 'oai-' + rootName + ':'
-				fileRootName = rootName
+				imageRootName = 'oai-' + re.sub('-slice.*','',rootName) + ':'
+				fileRootName = re.sub('-slice.*','',rootName)
 			imageTag = ''
 			imageSize = ''
 			imageDate = ''
