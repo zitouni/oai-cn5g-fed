@@ -29,12 +29,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
 5.  [Deploying OAI 5G Core Network](#5-deploying-oai-5g-core-network)
-6.  [Getting a `ransim` docker images](#6-getting-a-gnbsim-docker-images)
-7.  [Executing `ransim` Scenario](#7-executing-the-gnbsim-scenario)
+6.  [Getting `ransim` docker images](#6-getting-ransim-docker-images)
+7.  [Executing `ransim` Scenario](#7-executing-ransim-scenario)
 8.  [Traffic test](#8-traffic-test)
-9.  [Analysing Scenario Results](#9-analysing-the-scenario-results)
+9.  [Analyzing Scenario Results](#9-analyzing-scenario-results)
 10. [UE with multiple S-NSSAIs](#10-ue-with-multiple-s-nssais)
-11. [Undeploy network](#11-analysing-the-scenario-results)
+11. [Undeploy network functions](#11-undeploy-network-functions)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
@@ -65,21 +65,23 @@ A Network Slice is defined within a PLMN and it incorporates the 5G Core and 5G 
 
 Currently 3GPP allows up to eight (8) S-NSSAIs in the NSSAI sent in signaling messages between the UE and the Network, it means a single UE may be served by at most eight Network Slices at a time. SST length is 8 bits; so it can provides 2^8= 256 SST values from which there are reserved values O to 127 for standardized SSTs (e.g. SST 2 = URLCC, SST 3 = MIoT, SST 4 = V2X etc.). 
 
-###### Slicing current status in OAI 5G CN -
+**Slicing current status in OAI 5G CN**
+
 * Role of NSSF -> NSSF currently supports slice selection during pdu session establishment request. When AMF is not locally configured with NRF information, then with the help of NSSF, it discovers an appropriate NRF based on S-NSSAI provided.
 * Role of AMF  -> AMF selects first available SMF from the NF instance list (of SMF instances) provided by appropriate NRF.
 * Role od SMF  -> SMF can associate with multiple UPFs at same time as in slice 2 and 3 from above figure. UPF is selected here based on S-NSSAI and DNN.
 
 As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated with colors) viz. <br/>
 Note:- Here we have used standardised SST values (2,3,4), because rf-simulator only supports SST values 1,2,3,4. Moreover, it only for numerical refernece and does not reflect standrd SST behaviour e.g. URLCC, MIoT, V2X etc.<br/>
-###### Slice1: [SST=2,SD=2] =>   NRF1, SMF1, UPF1, GNB1, UE1
-###### Slice2: [SST=3,SD=3] =>   NRF1, SMF2, UPF2, GNB2, UE2
-###### Slice3: [SST=4,SD=4] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE3
+
+* Slice1: [SST=2,SD=2] =>   NRF1, SMF1, UPF1, GNB1, UE1
+* Slice2: [SST=3,SD=3] =>   NRF1, SMF2, UPF2, GNB2, UE2
+* Slice3: [SST=4,SD=4] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE3
 
 Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in S-NSSAI 2 and 3 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in S-NSSAI 2 and 3. Here number of SMFs/UPFs for registered under single (NSI) NRF is part of operator's network planning.<br/>
 
 
-###### Let's begin !!
+**Let's begin !!**
 
 * Steps 1 to 4 are similar as previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
@@ -98,7 +100,7 @@ docker-compose-host $: rm -rf /tmp/oai/slicing-with-nssf
 docker-compose-host $: mkdir -p /tmp/oai/slicing-with-nssf
 ```
 
-## 5. Deploying OAI 5g Core Network ##
+## 5. Deploying OAI 5g Core Network
 
 * We deploy `basic` version 5g core with additional component oai-nssf. We will use `docker-compose` to deploy 5g core as below -
 ``` shell
@@ -150,7 +152,7 @@ oai-udr            /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
 vpp-upf-slice3     /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
 ```
 
-## 6. Getting a `ransim` docker images ##
+## 6. Getting `ransim` docker images
 
 We are using 3 different ran simulators: [ueransim](https://github.com/aligungr/UERANSIM), [rfsimulator](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/ci-scripts/yaml_files/5g_rfsimulator) and [gnbsim](https://gitlab.eurecom.fr/kharade/gnbsim) for slice 2, 3 and 4 repectively. Each of them has their own set of features, and one can use as per need basis. Different ran simulator usage mimics here the realistic deployemnt scenario where operator can have multi vendor devices deployed  in the network. <br/>
 
@@ -170,7 +172,7 @@ $ docker image tag rdefosseoai/oai-gnb:develop oai-gnb:develop
 $ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
 ```
 
-## 7. Executing `ransim` Scenario ##
+## 7. Executing `ransim` Scenario
 
 We deploy ran simulators with the help of docker-compose as below -
 
@@ -216,7 +218,7 @@ docker-compose-host $: docker logs oai-amf
 
 ```
 
-## 8. Traffic Test ##
+## 8. Traffic Test
 
 In this section we perform traffic test between oai-ext-dn node and Ues <br/>
 
@@ -254,7 +256,7 @@ PING 12.1.1.129 (12.1.1.129) 56(84) bytes of data.
 rtt min/avg/max/mdev = 11.206/25.511/40.071/14.292 ms
 ```
 
-## 9. Analysing Scenario Results ##
+## 9. Analyzing Scenario Results
 
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/slicing-with-nssf/amf.log 2>&1
@@ -276,7 +278,7 @@ docker-compose-host $: docker logs rfsim5g-oai-nr-ue1 > /tmp/oai/slicing-with-ns
 docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransim.log 2>&1
 ```
 
-#### To be explained in detail
+**To be explained in detail**
 
 | Container             |   Ip-address   |
 | ----------------------|:-------------- |
@@ -310,14 +312,14 @@ docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransi
 |:------------------------------------------------------------------------------------------ |
 | [5gcn-deployment-slicing.pcap](./results/slicing/pcap/5gcn-deployment-slicing.pcap)        |
 
-## 10. UE with multiple S-NSSAIs ##
+## 10. UE with multiple S-NSSAIs
 OAI 5G CN also supports UE with multiple slices, Apparently the ran simulators, that we have validated, do not support UE with multiple slices at once.
 
 Hence, we have validated this feature using commercial testing tool [dsTest](https://www.developingsolutions.com/products/about-dstest/). This test case is integrated in our [CI pipeline for NSSF](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/) and AMF. Pipeline triggers a deployment scenario as shown in figure below with two slices. During PDU session establishment request, AMF queries NSSF for NSI information with appropriate NRF Id. And then again corresponding SMF anf UPF is slected in the NSI, based on S-NSSAI provided. You can verify this scenario from the [pcap](https://jenkins-oai.eurecom.fr/view/CN5G/job/OAI-CN5G-NSSF/lastSuccessfulBuild/artifact/docker_logs.zip).
 
 ![Multislice](./images/5gcn_slicing_ue_multislice.png)
 
-## 11. Undeploy network ##
+## 11. Undeploy network functions
 
 Use docker-compose down to undeploy network <br/>
 
