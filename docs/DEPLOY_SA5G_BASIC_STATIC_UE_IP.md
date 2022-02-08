@@ -57,6 +57,7 @@ docker-compose-host $: rm -rf /tmp/oai/static-ue-ip
 
 ``` shell
 docker-compose-host $: mkdir -p /tmp/oai/static-ue-ip
+docker-compose-host $: chmod 777 /tmp/oai/static-ue-ip
 ```
 
 ## 2. Configuring the OAI-5G Core Network Functions
@@ -102,12 +103,24 @@ In the previous tutorial we explain how to deploy the core network using our [py
 
 - Start the core network components, check which scenario you are using with nrf or without nrf
 
-``` shell
+As a first timer, we recommend to first run without any PCAP capture.
+
+``` console
 docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --scenario 1
-[2022-01-05 09:10:34,017] root:DEBUG:  Starting 5gcn components... Please wait....
+```
+
+For CI purposes, we are deploying with an automated PCAP capture on the docker network.
+
+``` shell
+docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --scenario 1 --capture /tmp/oai/static-ue-ip/static-ue-ip.pcap
+[2022-02-08 15:49:14,903] root:DEBUG:  Starting 5gcn components... Please wait....
+[2022-02-08 15:49:14,903] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d mysql
 Creating network "demo-oai-public-net" with driver "bridge"
-Creating oai-nrf ... done
 Creating mysql   ... done
+[2022-02-08 15:49:19,672] root:DEBUG: nohup sudo tshark -i demo-oai -f "not arp and not port 53 and not port 2152" -w /tmp/oai/static-ue-ip/static-ue-ip.pcap > /dev/null 2>&1 &
+[2022-02-08 15:49:29,687] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d
+mysql is up-to-date
+Creating oai-nrf ... done
 Creating oai-udr ... done
 Creating oai-udm ... done
 Creating oai-ausf ... done
@@ -116,8 +129,9 @@ Creating oai-smf  ... done
 Creating oai-spgwu ... done
 Creating oai-ext-dn ... done
 
-[2022-01-05 09:11:10,327] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
-[2022-01-05 09:12:12,016] root:DEBUG:  All components are healthy, please see below for more details....
+[2022-02-08 15:50:04,044] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
+[2022-02-08 15:50:04,044] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml ps -a
+[2022-02-08 15:50:15,616] root:DEBUG:  All components are healthy, please see below for more details....
 Name                 Command                  State                  Ports            
 -----------------------------------------------------------------------------------------
 mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp         
@@ -129,16 +143,26 @@ oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9
 oai-spgwu    /openair-spgwu-tiny/bin/en ...   Up (healthy)   2152/udp, 8805/udp          
 oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp                      
 oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
-[2022-01-05 09:12:12,017] root:DEBUG:  Checking if the containers are configured....
-[2022-01-05 09:12:12,017] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
-[2022-01-05 09:12:12,057] root:DEBUG:  For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {"_links":{"item":[{"href":"192.168.70.133"}],"self":""}}....
-[2022-01-05 09:12:12,058] root:DEBUG:  AMF, SMF and UPF are registered to NRF....
-[2022-01-05 09:12:12,058] root:DEBUG:  Checking if SMF is able to connect with UPF....
-[2022-01-05T09:11:05.606691] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE from an UPF [2022-01-05T09:11:05.564714] [smf] [smf_app] [info ] Node ID Type FQDN: oai-spgwu
-[2022-01-05T09:11:05.565244] [smf] [smf_app] [info ] Node ID Type FQDN: oai-spgwu, IPv4 Addr: 192.168.70.134
-[2022-01-05 09:12:12,116] root:DEBUG:  UPF did answer to N4 Association request from SMF....
-[2022-01-05 09:12:12,146] root:DEBUG:  SMF receiving heathbeats from UPF....
-[2022-01-05 09:12:12,146] root:DEBUG:  OAI 5G Core network is configured and healthy....
+[2022-02-08 15:50:15,616] root:DEBUG:  Checking if the containers are configured....
+[2022-02-08 15:50:15,616] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
+[2022-02-08 15:50:15,616] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"
+192.168.70.132
+[2022-02-08 15:50:15,629] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"
+192.168.70.133
+[2022-02-08 15:50:15,641] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"
+192.168.70.134
+[2022-02-08 15:50:15,653] root:DEBUG:  Checking if AUSF, UDM and UDR registered with nrf core network....
+[2022-02-08 15:50:15,653] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"
+192.168.70.138
+[2022-02-08 15:50:15,665] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"
+192.168.70.137
+[2022-02-08 15:50:15,676] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"
+192.168.70.136
+[2022-02-08 15:50:15,688] root:DEBUG:  AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF....
+[2022-02-08 15:50:15,688] root:DEBUG:  Checking if SMF is able to connect with UPF....
+[2022-02-08 15:50:15,805] root:DEBUG:  UPF did answer to N4 Association request from SMF....
+[2022-02-08 15:50:15,863] root:DEBUG:  SMF receiving heathbeats from UPF....
+[2022-02-08 15:50:15,864] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
 - Without nrf scenario
@@ -147,7 +171,7 @@ oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
 docker-compose-host $: python3 core-network.py --type start-basic --fqdn no --scenario 1
 ```
 
-- Start capturing packets on **demo-oai** bridge on another terminal. In case you don't have enough permission use `sudo`,  
+- Start capturing packets on **demo-oai** bridge on another terminal. In case you don't have enough permission, please use `sudo`:
 
 ``` console
 docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.pcap &
@@ -160,11 +184,13 @@ docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.p
     + On the ran emulator host instantiate the ran emulator of your choice here we will show it using gnbsim. We are running everything on one host thus the ran-emulator-host and docker-compose-host is the same for the moment. 
     ``` shell
     docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
+    Found orphan containers (oai-ext-dn, oai-smf, oai-udr, oai-amf, oai-nrf, oai-udm, oai-spgwu, mysql, oai-ausf) for this project.
+    Creating gnbsim ... done
     ```
     <!---
     For CI purposes please ignore this line
     ``` shell
-    docker-compose-host $: sleep 5
+    docker-compose-host $: sleep 10
     ```
     -->
 
@@ -176,11 +202,14 @@ docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.p
 
 - **Verify PDN session establishment**: To check if a PDN session is properly estabilished there is an extra external data network container only for this demo purpose. The ran emulator UE can be reached using this container to validate the PDN session establishment. To understand the packet flow read the next analysis section. The allocated UE ip-address for first gnbsim should be 12.1.1.4 because we fixed in previous steps and for the other gnbsim instance you need to check, 
 
-``` console
-docker-compose-host $: docker logs gnbsim | grep "UE address:"
-docker-compose-host $: docker logs gnbsim2 | grep "UE address:"
+``` shell
+docker-compose-host $: docker logs gnbsim 2>&1 | grep "UE address:"
+[gnbsim]2022/02/08 14:50:40.584271 example.go:329: UE address: 12.1.1.4
 ```
 
+``` console
+docker-compose-host $: docker logs gnbsim2 2>&1 | grep "UE address:"
+```
 
 ``` shell
 docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.4 -c4
@@ -219,13 +248,18 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down
+Stopping gnbsim ... done
+Found orphan containers (oai-nrf, oai-ausf, oai-smf, oai-udr, oai-spgwu, mysql, oai-amf, oai-udm, oai-ext-dn) for this project.
+Removing gnbsim ... done
+Network demo-oai-public-net is external, skipping
 ```
 
 - **Undeploy the core network**
 
 ``` shell
 docker-compose-host $: python3 core-network.py --type stop-basic --fqdn yes --scenario 1
-[2022-01-05 09:05:30,880] root:DEBUG:  UnDeploying OAI 5G core components....
+[2022-02-08 15:51:06,388] root:DEBUG:  UnDeploying OAI 5G core components....
+[2022-02-08 15:51:06,389] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml down
 Stopping oai-ext-dn ... done
 Stopping oai-spgwu  ... done
 Stopping oai-smf    ... done
@@ -246,7 +280,7 @@ Removing oai-nrf    ... done
 Removing mysql      ... done
 Removing network demo-oai-public-net
 
-[2022-01-05 09:07:00,425] root:DEBUG:  OAI 5G core components are UnDeployed....
+[2022-02-08 15:53:33,332] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
 - If you replicate then your log files and pcap file will be present in `/tmp/oai/static-ue-ip/` if you want to compare it with our provided logs and pcaps. Then follow the next section

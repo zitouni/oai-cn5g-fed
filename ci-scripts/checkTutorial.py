@@ -37,8 +37,8 @@ logging.basicConfig(
 
 ## Global variables
 DOCUMENT_FOLDER = '../docs'
-SLEEP_BETWEEN_COMMANDS = 2
-SLEEP_BETWEEN_HEADERS = 5
+SLEEP_BETWEEN_COMMANDS = 1
+SLEEP_BETWEEN_HEADERS = 2
 DOCKER_COMPOSE_DIRECTORY='../docker-compose'
 COMMAND_STATUS = dict()         # A mapping of command and its exit code status
 

@@ -85,9 +85,15 @@ def _parse_args() -> argparse.Namespace:
         default='1',
         help='Scenario with NRF ("1") and without NRF ("2")',
     )
+	# Automatic PCAP capture
+    parser.add_argument(
+        '--capture', '-c',
+        action='store',
+        help='Add an automatic PCAP capture on docker networks to CAPTURE file',
+    )
     return parser.parse_args()
 
-def deploy(file_name, ct):
+def deploy(file_name, ct, extra_interface=False):
     """Deploy the containers using the docker-compose template
 
     Returns:
@@ -102,15 +108,43 @@ def deploy(file_name, ct):
         subprocess.run(f'sed -i -e "s#USE_FQDN_NRF=no#USE_FQDN_NRF=yes#g" {file_name}', shell=True)
     logging.debug('\033[0;34m Starting 5gcn components... Please wait\033[0m....')
 
-    cmd = f'docker-compose -f {file_name} up -d'
-    res = run_cmd(cmd)
+    if args.capture is None:
+        # When no capture, just deploy all at once.
+        cmd = f'docker-compose -f {file_name} up -d'
+        res = run_cmd(cmd, False)
+    else:
+        # First just deploy mysql container, all docker networks will be up.
+        cmd = f'docker-compose -f {file_name} up -d mysql'
+        res = run_cmd(cmd, False)
+        if res is None:
+            exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+        print(res)
+        # Then we can start the capture on the "demo-oai" interface.
+        # When we undeploy, the process will terminate automatically.
+        # Explanation of the capture filter:
+        #   * `not arp`                 --> NO ARP packets
+        #   * `not port 53`             --> NO DNS requests from any container
+        #   * `not port 2152`           --> When running w/ OAI RF simulator, remove all GTP packets
+        cmd = f'nohup sudo tshark -i demo-oai -f "not arp and not port 53 and not port 2152" -w {args.capture} > /dev/null 2>&1 &'
+        if extra_interface:
+            cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-core', cmd)
+        res = run_cmd(cmd, False)
+        if res is None:
+            exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+        cmd = f'sleep 20; sudo chmod 666 {args.capture}'
+        run_cmd(cmd)
+        # Finally deploy the rest of the network functions.
+        cmd = f'docker-compose -f {file_name} up -d'
+        res = run_cmd(cmd, False)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
     logging.debug('\033[0;32m OAI 5G Core network started, checking the health status of the containers... takes few secs\033[0m....')
+    notSilentForFirstTime = False
     for x in range(40):
         cmd = f'docker-compose -f {file_name} ps -a'
-        res = run_cmd(cmd)
+        res = run_cmd(cmd, notSilentForFirstTime)
+        notSilentForFirstTime = True
         if res is None:
             exit(f'\033[0;31m Incorrect/Unsupported executing command "{cmd}"')
         time.sleep(2)
@@ -133,7 +167,7 @@ def undeploy(file_name):
     """
     logging.debug('\033[0;34m UnDeploying OAI 5G core components\033[0m....')
     cmd = f'docker-compose -f {file_name} down'
-    res = run_cmd(cmd)
+    res = run_cmd(cmd, False)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
@@ -152,28 +186,38 @@ def check_config(file_name):
     if args.scenario == '1':
         logging.debug('\033[0;34m Checking if AMF, SMF and UPF registered with nrf core network\033[0m....')
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"'
-        amf_registration_nrf = run_cmd(cmd)
+        amf_registration_nrf = run_cmd(cmd, False)
+        if amf_registration_nrf is not None:
+            print(amf_registration_nrf)
         cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"'
-        smf_registration_nrf = run_cmd(cmd)
+        smf_registration_nrf = run_cmd(cmd, False)
+        if smf_registration_nrf is not None:
+            print(smf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"'
         else:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
-        upf_registration_nrf = run_cmd(cmd)
+        upf_registration_nrf = run_cmd(cmd, False)
+        if upf_registration_nrf is not None:
+            print(upf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
+            logging.debug('\033[0;34m Checking if AUSF, UDM and UDR registered with nrf core network\033[0m....')
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"'
-            ausf_registration_nrf = run_cmd(cmd)
+            ausf_registration_nrf = run_cmd(cmd, False)
+            if ausf_registration_nrf is not None:
+                print(ausf_registration_nrf)
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"'
-            udm_registration_nrf = run_cmd(cmd)
+            udm_registration_nrf = run_cmd(cmd, False)
+            if udm_registration_nrf is not None:
+                print(udm_registration_nrf)
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"'
-            udr_registration_nrf = run_cmd(cmd)
+            udr_registration_nrf = run_cmd(cmd, False)
+            if udr_registration_nrf is not None:
+                print(udr_registration_nrf)
         else:
             ausf_registration_nrf = True
             udm_registration_nrf = True
             udr_registration_nrf = True
-        cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF"'
-        sample_registration = run_cmd(cmd)
-        logging.debug(f'\033[0;34m For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {sample_registration}\033[0m....')
         if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None or \
            ausf_registration_nrf is None or udm_registration_nrf is None or udr_registration_nrf is None:
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
@@ -254,7 +298,9 @@ def check_config(file_name):
             logging.debug('\033[0;32m UPF receiving heathbeats from SMF\033[0m....')
     logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
 
-def run_cmd(cmd):
+def run_cmd(cmd, silent=True):
+    if not silent:
+        logging.debug(cmd)
     result = None
     try:
         res = subprocess.run(cmd,
@@ -290,10 +336,10 @@ if __name__ == '__main__':
             exit(-1)
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
-            deploy(BASIC_VPP_W_NRF, 8)
+            deploy(BASIC_VPP_W_NRF, 8, True)
         # Basic function without NRF but with VPP-UPF
         elif args.scenario == '2':
-            deploy(BASIC_VPP_NO_NRF, 7)
+            deploy(BASIC_VPP_NO_NRF, 7, True)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
             undeploy(MINI_W_NRF)
