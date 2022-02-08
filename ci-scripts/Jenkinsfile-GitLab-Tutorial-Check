@@ -361,9 +361,9 @@ def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag
 }
 
 def archivesArtifacts(filename,folder) {
-  sh 'cp -Rf /tmp/oai/' + folder + ' archives'
+  sh 'cp -Rf /tmp/oai/' + folder + ' archives || true'
   // Making a copy of the docker-compose for debugging
-  sh 'cp ' + filename + ' archives/' + folder
+  sh 'cp ' + filename + ' archives/' + folder + ' || true'
 }
 
 def cleanUpDockerCompose(filename) {
