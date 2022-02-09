@@ -122,12 +122,16 @@ def deploy(file_name, ct, extra_interface=False):
         # Then we can start the capture on the "demo-oai" interface.
         # When we undeploy, the process will terminate automatically.
         # Explanation of the capture filter:
+        #  - On all containers but oai-ext-dn
         #   * `not arp`                 --> NO ARP packets
         #   * `not port 53`             --> NO DNS requests from any container
         #   * `not port 2152`           --> When running w/ OAI RF simulator, remove all GTP packets
-        cmd = f'nohup sudo tshark -i demo-oai -f "not arp and not port 53 and not port 2152" -w {args.capture} > /dev/null 2>&1 &'
+        #  - On oai-ext-dn container
+        #   * `icmp`                    --> Only ping packets
+        cmd = f'nohup sudo tshark -i demo-oai -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w {args.capture} > /dev/null 2>&1 &'
         if extra_interface:
             cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-core', cmd)
+            cmd = re.sub('70', '73', cmd)
         res = run_cmd(cmd, False)
         if res is None:
             exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
@@ -136,6 +140,10 @@ def deploy(file_name, ct, extra_interface=False):
         # Finally deploy the rest of the network functions.
         cmd = f'docker-compose -f {file_name} up -d'
         res = run_cmd(cmd, False)
+    # sometimes first try does not go through
+    if args.capture is None:
+        cmd = f'sudo chmod 666 {args.capture}'
+        run_cmd(cmd)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)

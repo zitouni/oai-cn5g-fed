@@ -39,8 +39,11 @@ Please follow the tutorial step by step to create a stable working testbed.
 2.  [Configuring OAI 5G Core Network Functions](#2-configuring-the-oai-5g-core-network-functions)
 3.  [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
 4.  [Deploying RAN Emulator](#4-deploying-ran-emulator)
-5.  [Reference Logs and PCAPs](#5-reference-logs)
-6.  [Notes](#6-notes)
+5.  [Traffic Test](#5-traffic-test)
+6.  [Log Collection](#6-log-collection)
+7.  [Undeploy the network functions](#7-undeploy-the-network-functions)
+8.  [Reference Logs and PCAPs](#8-reference-logs)
+9.  [Notes](#9-notes)
 
 ## 1. Pre-requisites
 
@@ -111,13 +114,15 @@ docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --s
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker network.
 
+**REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
+
 ``` shell
 docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --scenario 1 --capture /tmp/oai/static-ue-ip/static-ue-ip.pcap
 [2022-02-08 15:49:14,903] root:DEBUG:  Starting 5gcn components... Please wait....
 [2022-02-08 15:49:14,903] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d mysql
 Creating network "demo-oai-public-net" with driver "bridge"
 Creating mysql   ... done
-[2022-02-08 15:49:19,672] root:DEBUG: nohup sudo tshark -i demo-oai -f "not arp and not port 53 and not port 2152" -w /tmp/oai/static-ue-ip/static-ue-ip.pcap > /dev/null 2>&1 &
+[2022-02-08 15:49:19,672] root:DEBUG: nohup sudo tshark -i demo-oai -f "(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)" -w /tmp/oai/static-ue-ip/static-ue-ip.pcap > /dev/null 2>&1 &
 [2022-02-08 15:49:29,687] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d
 mysql is up-to-date
 Creating oai-nrf ... done
@@ -211,6 +216,8 @@ docker-compose-host $: docker logs gnbsim 2>&1 | grep "UE address:"
 docker-compose-host $: docker logs gnbsim2 2>&1 | grep "UE address:"
 ```
 
+## 5. Traffic Test
+
 ``` shell
 docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.4 -c4
 PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
@@ -224,6 +231,7 @@ PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.297/0.673/0.849/0.223 ms
 ```
 
+## 6. Log Collection
 
 - **Stop PCAP collection**: Stop the wireshark or tshark process on the docker-compose-host.
 
@@ -244,7 +252,9 @@ docker-compose-host $: docker logs oai-ausf > /tmp/oai/static-ue-ip/ausf.log 2>&
 docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&1
 ```
 
-- **Undeploy the ran emulator**: 
+## 7. Undeploy the network functions
+
+### 7.1. Undeploy the ran emulator
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down
@@ -254,7 +264,7 @@ Removing gnbsim ... done
 Network demo-oai-public-net is external, skipping
 ```
 
-- **Undeploy the core network**
+### 7.2. Undeploy the core network
 
 ``` shell
 docker-compose-host $: python3 core-network.py --type stop-basic --fqdn yes --scenario 1
@@ -285,7 +295,7 @@ Removing network demo-oai-public-net
 
 - If you replicate then your log files and pcap file will be present in `/tmp/oai/static-ue-ip/` if you want to compare it with our provided logs and pcaps. Then follow the next section
 
-## 5. Reference logs
+## 8. Reference logs
 
 
 | PCAP and Logs                                       |
