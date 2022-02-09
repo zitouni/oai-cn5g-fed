@@ -78,6 +78,7 @@ docker-compose-host $: rm -rf /tmp/oai/vpp-upf-gnbsim
 
 ``` shell
 docker-compose-host $: mkdir -p /tmp/oai/vpp-upf-gnbsim
+docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-gnbsim
 ```
 
 ## 5. Deploying OAI 5g Core Network
@@ -104,6 +105,8 @@ optional arguments:
                         Deployment scenario with FQDN ("yes"|"no")
   --scenario {1,2}, -s {1,2}
                         Scenario with NRF ("1") and without NRF ("2")
+  --capture CAPTURE, -c CAPTURE
+                        Add an automatic PCAP capture on docker networks to CAPTURE file
 
 example:
         python3 core-network.py --type start-mini
@@ -121,13 +124,27 @@ In that deployment configuration, you can deploy with and without `NRF` (ie scen
 
 For the moment, `FQDN` shall be set to `no`.
 
-``` shell
+As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
+
+``` console
 docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
-[2021-10-29 11:11:43,753] root:DEBUG:  Starting 5gcn components... Please wait....
+```
+
+For CI purposes, we are deploying with an automated PCAP capture on the docker networks.
+
+**REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
+
+``` shell
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
+[2022-02-08 16:18:19,328] root:DEBUG:  Starting 5gcn components... Please wait....
+[2022-02-08 16:18:19,328] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d mysql
 Creating network "oai-public-cp" with the default driver
 Creating network "oai-public-access" with the default driver
 Creating network "oai-public-core" with the default driver
 Creating mysql   ... done
+[2022-02-08 16:18:32,203] root:DEBUG: nohup sudo tshark -i demo-oai -i cn5g-core -f "(not host 192.168.73.135 and not arp and not port 53 and not port 2152) or (host 192.168.73.135 and icmp)" -w /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap > /dev/null 2>&1 &
+[2022-02-08 16:18:52,217] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
+mysql is up-to-date
 Creating oai-nrf ... done
 Creating vpp-upf ... done
 Creating oai-udr ... done
@@ -137,8 +154,9 @@ Creating oai-ausf   ... done
 Creating oai-amf    ... done
 Creating oai-smf    ... done
 
-[2021-10-29 11:12:27,542] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
-[2021-10-29 11:13:22,607] root:DEBUG:  All components are healthy, please see below for more details....
+[2022-02-08 16:19:47,977] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
+[2022-02-08 16:19:47,977] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml ps -a
+[2022-02-08 16:20:11,681] root:DEBUG:  All components are healthy, please see below for more details....
 Name                 Command                  State                  Ports            
 -----------------------------------------------------------------------------------------
 mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp         
@@ -150,20 +168,31 @@ oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9
 oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp                      
 oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp                      
 vpp-upf      /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
-[2021-10-29 11:13:22,608] root:DEBUG:  Checking if the containers are configured....
-[2021-10-29 11:13:22,608] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
-[2021-10-29 11:13:22,695] root:DEBUG:  For example: oai-smf Registration with oai-nrf can be checked on this url /nnrf-nfm/v1/nf-instances?nf-type="SMF" {"_links":{"item":[{"href":"192.168.70.133"}],"self":""}}....
-[2021-10-29 11:13:22,695] root:DEBUG:  AMF, SMF and UPF are registered to NRF....
-[2021-10-29 11:13:22,695] root:DEBUG:  Checking if SMF is able to connect with UPF....
-[2021-10-29 11:13:22,822] root:DEBUG:  UPF did answer to N4 Association request from SMF....
-[2021-10-29 11:13:22,884] root:DEBUG:  SMF receiving heathbeats from UPF....
-[2021-10-29 11:13:22,885] root:DEBUG:  OAI 5G Core network is configured and healthy....
+[2022-02-08 16:20:11,681] root:DEBUG:  Checking if the containers are configured....
+[2022-02-08 16:20:11,681] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
+[2022-02-08 16:20:11,681] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"
+192.168.70.132
+[2022-02-08 16:20:11,694] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"
+192.168.70.133
+[2022-02-08 16:20:11,706] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"
+192.168.70.202
+[2022-02-08 16:20:11,717] root:DEBUG:  Checking if AUSF, UDM and UDR registered with nrf core network....
+[2022-02-08 16:20:11,717] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"
+192.168.70.138
+[2022-02-08 16:20:11,728] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"
+192.168.70.137
+[2022-02-08 16:20:11,739] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"
+192.168.70.136
+[2022-02-08 16:20:11,750] root:DEBUG:  AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF....
+[2022-02-08 16:20:11,750] root:DEBUG:  Checking if SMF is able to connect with UPF....
+[2022-02-08 16:20:11,868] root:DEBUG:  UPF did answer to N4 Association request from SMF....
+[2022-02-08 16:20:11,927] root:DEBUG:  SMF receiving heathbeats from UPF....
+[2022-02-08 16:20:11,928] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
 Here I have deployed with `NRF`:
 
-* The script validates that `AMF`, `SMF` and `UPF-VPP` did register to `NRF`
-  - Currently `AUSF`, `UDM` and `UDR` do not support this. Will be added soon.
+* The script validates that `AMF`, `SMF`, `UPF-VPP`, `AUSF`, `UDM` and `UDR` did register to `NRF`
 * The script also validates that SMF associates over `N4` with UPF.
 
 You can also see this with the container logs:
@@ -172,73 +201,73 @@ You can also see this with the container logs:
 ``` console
 $ docker logs oai-nrf
 ...
-[2021-10-29T11:12:10.995675] [nrf] [sbi_srv] [info ] Got a request to register an NF instance/Update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:10.995701] [nrf] [nrf_app] [info ] Handle Register NF Instance/Update NF Instance (HTTP version 2)
-[2021-10-29T11:12:10.996429] [nrf] [nrf_app] [info ] Check if a profile with this ID cdf2e275-ff1d-49e0-aa48-df2027af101f exist
-[2021-10-29T11:12:10.996442] [nrf] [nrf_app] [info ] NF profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) not found
-[2021-10-29T11:12:10.996446] [nrf] [nrf_app] [info ] Added/Updated NF Profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) to the DB
-[2021-10-29T11:12:10.996457] [nrf] [nrf_app] [info ] Handle NF status registered event, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:10.996460] [nrf] [nrf_app] [info ] 	Find a NF profile with ID cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:10.996464] [nrf] [nrf_app] [info ] 	Get the list of subscriptions related to this profile, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:10.996526] [nrf] [nrf_app] [info ] Added/Updated NF Instance, NF info: {"capacity":100,"fqdn":"gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org","heartBeatTimer":10,"ipv4Addresses":["192.168.70.202"],"json_data":null,"nfInstanceId":"cdf2e275-ff1d-49e0-aa48-df2027af101f","nfInstanceName":"OAI-UPF-VPP","nfServices":[],"nfStatus":"REGISTERED","nfType":"UPF","priority":1,"sNssais":[{"sd":"222","sst":123}],"upfInfo":{"interfaceUpfInfoList":[{"endpointFqdn":"access.oai.org","interfaceType":"N3","ipv4EndpointAddresses":["192.168.72.134"],"networkInstance":"access.oai.org"},{"endpointFqdn":"core.oai.org","interfaceType":"N6","ipv4EndpointAddresses":["192.168.70.134"],"networkInstance":"core.oai.org"}],"sNssaiUpfInfoList":[{"dnnUpfInfoList":[{"dnn":"default"}],"sNssai":{"sd":"222","sst":123}}]}}
-[2021-10-29T11:12:16.002236] [nrf] [sbi_srv] [info ] 
-[2021-10-29T11:12:16.002261] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:16.002268] [nrf] [nrf_app] [info ] Handle Update NF Instance request (HTTP version 2)
-[2021-10-29T11:12:16.002277] [nrf] [nrf_app] [info ] NF Heart-Beat procedure!
-[2021-10-29T11:12:16.002282] [nrf] [nrf_app] [info ] Updated the NF profile (profile ID cdf2e275-ff1d-49e0-aa48-df2027af101f)
-[2021-10-29T11:12:21.057964] [nrf] [sbi_srv] [info ] 
-[2021-10-29T11:12:21.057985] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.995675] [nrf] [sbi_srv] [info ] Got a request to register an NF instance/Update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.995701] [nrf] [nrf_app] [info ] Handle Register NF Instance/Update NF Instance (HTTP version 2)
+[2022-02-08T16:20:10.996429] [nrf] [nrf_app] [info ] Check if a profile with this ID cdf2e275-ff1d-49e0-aa48-df2027af101f exist
+[2022-02-08T16:20:10.996442] [nrf] [nrf_app] [info ] NF profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) not found
+[2022-02-08T16:20:10.996446] [nrf] [nrf_app] [info ] Added/Updated NF Profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) to the DB
+[2022-02-08T16:20:10.996457] [nrf] [nrf_app] [info ] Handle NF status registered event, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.996460] [nrf] [nrf_app] [info ] 	Find a NF profile with ID cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.996464] [nrf] [nrf_app] [info ] 	Get the list of subscriptions related to this profile, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.996526] [nrf] [nrf_app] [info ] Added/Updated NF Instance, NF info: {"capacity":100,"fqdn":"gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org","heartBeatTimer":10,"ipv4Addresses":["192.168.70.202"],"json_data":null,"nfInstanceId":"cdf2e275-ff1d-49e0-aa48-df2027af101f","nfInstanceName":"OAI-UPF-VPP","nfServices":[],"nfStatus":"REGISTERED","nfType":"UPF","priority":1,"sNssais":[{"sd":"222","sst":123}],"upfInfo":{"interfaceUpfInfoList":[{"endpointFqdn":"access.oai.org","interfaceType":"N3","ipv4EndpointAddresses":["192.168.72.134"],"networkInstance":"access.oai.org"},{"endpointFqdn":"core.oai.org","interfaceType":"N6","ipv4EndpointAddresses":["192.168.70.134"],"networkInstance":"core.oai.org"}],"sNssaiUpfInfoList":[{"dnnUpfInfoList":[{"dnn":"default"}],"sNssai":{"sd":"222","sst":123}}]}}
+[2022-02-08T16:20:16.002236] [nrf] [sbi_srv] [info ] 
+[2022-02-08T16:20:16.002261] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:16.002268] [nrf] [nrf_app] [info ] Handle Update NF Instance request (HTTP version 2)
+[2022-02-08T16:20:16.002277] [nrf] [nrf_app] [info ] NF Heart-Beat procedure!
+[2022-02-08T16:20:16.002282] [nrf] [nrf_app] [info ] Updated the NF profile (profile ID cdf2e275-ff1d-49e0-aa48-df2027af101f)
+[2022-02-08T16:20:11.057964] [nrf] [sbi_srv] [info ] 
+[2022-02-08T16:20:11.057985] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
 ...
 ```
 2. SMF PFCP association with UPF-VPP
 ``` console
 $ docker logs oai-smf
 ...
-[2021-10-29T11:12:27.497176] [smf] [smf_sbi] [debug] Send NFSubscribeNotify to NRF to be notified when a new UPF becomes available (HTTP version 1)
-[2021-10-29T11:12:27.497202] [smf] [smf_sbi] [debug] Send NFStatusNotify to NRF, NRF URL 192.168.70.130:80/nnrf-nfm/v1/subscriptions
-[2021-10-29T11:12:27.497423] [smf] [smf_sbi] [debug] Send NFStatusNotify to NRF, msg body: {"nfStatusNotificationUri":"192.168.70.133:80/nsmf-nfstatus-notify/v1/subscriptions","reqNotifEvents":["NF_REGISTERED","NF_DEREGISTERED"],"subscrCond":{"NfTypeCond":{"nfType":"UPF"}},"validityTime":"20390531T235959"}
-[2021-10-29T11:12:27.497450] [smf] [smf_sbi] [debug] Promise ID generated 1
-[2021-10-29T11:12:27.499881] [smf] [sbi_srv] [info ] NFStatusNotifyApiImpl, received a NF status notification...
-[2021-10-29T11:12:27.499897] [smf] [smf_app] [debug] Convert NotificationData (OpenAPI) to Data Notification Msg
-[2021-10-29T11:12:27.500400] [smf] [smf_app] [debug] NF instance info
-[2021-10-29T11:12:27.500411] [smf] [smf_app] [debug] 	Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2021-10-29T11:12:27.500415] [smf] [smf_app] [debug] 	Instance name: OAI-UPF-VPP
-[2021-10-29T11:12:27.500418] [smf] [smf_app] [debug] 	Instance type: UPF
-[2021-10-29T11:12:27.500422] [smf] [smf_app] [debug] 	Status: REGISTERED
-[2021-10-29T11:12:27.500425] [smf] [smf_app] [debug] 	HeartBeat timer: 10
-[2021-10-29T11:12:27.500429] [smf] [smf_app] [debug] 	Priority: 1
-[2021-10-29T11:12:27.500432] [smf] [smf_app] [debug] 	Capacity: 100
-[2021-10-29T11:12:27.500436] [smf] [smf_app] [debug] 	SNSSAI:
-[2021-10-29T11:12:27.500439] [smf] [smf_app] [debug] 		 SST 123, SD 222
-[2021-10-29T11:12:27.500443] [smf] [smf_app] [debug] 	FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
-[2021-10-29T11:12:27.500446] [smf] [smf_app] [debug] 	IPv4 Addr:
-[2021-10-29T11:12:27.500451] [smf] [smf_app] [debug] 		 192.168.70.202
-[2021-10-29T11:12:27.500454] [smf] [smf_app] [debug] 	UPF Info:
-[2021-10-29T11:12:27.500459] [smf] [smf_app] [debug] 		Parameters supported by the UPF:
-[2021-10-29T11:12:27.500463] [smf] [smf_app] [debug] 			SNSSAI (SST 123, SD 222)
-[2021-10-29T11:12:27.500468] [smf] [smf_app] [debug] 			DNN default
-[2021-10-29T11:12:27.500474] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N3, Network Instance access.oai.org, EndpointFqdn: access.oai.org
-[2021-10-29T11:12:27.500480] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
-[2021-10-29T11:12:27.500484] [smf] [smf_app] [debug] 						 192.168.72.134
-[2021-10-29T11:12:27.500489] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N6, Network Instance core.oai.org, EndpointFqdn: core.oai.org
-[2021-10-29T11:12:27.500494] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
-[2021-10-29T11:12:27.500498] [smf] [smf_app] [debug] 						 192.168.70.134
-[2021-10-29T11:12:27.500559] [smf] [smf_app] [info ] Handle a NF status notification from NRF (HTTP version 1)
-[2021-10-29T11:12:27.500587] [smf] [smf_app] [debug] Add a new UPF node, Ipv4 Addr 192.168.70.202
-[2021-10-29T11:12:27.501350] [smf] [smf_app] [debug] Got response with HTTP code  201!
+[2022-02-08T16:20:17.497176] [smf] [smf_sbi] [debug] Send NFSubscribeNotify to NRF to be notified when a new UPF becomes available (HTTP version 1)
+[2022-02-08T16:20:17.497202] [smf] [smf_sbi] [debug] Send NFStatusNotify to NRF, NRF URL 192.168.70.130:80/nnrf-nfm/v1/subscriptions
+[2022-02-08T16:20:17.497423] [smf] [smf_sbi] [debug] Send NFStatusNotify to NRF, msg body: {"nfStatusNotificationUri":"192.168.70.133:80/nsmf-nfstatus-notify/v1/subscriptions","reqNotifEvents":["NF_REGISTERED","NF_DEREGISTERED"],"subscrCond":{"NfTypeCond":{"nfType":"UPF"}},"validityTime":"20390531T235959"}
+[2022-02-08T16:20:17.497450] [smf] [smf_sbi] [debug] Promise ID generated 1
+[2022-02-08T16:20:17.499881] [smf] [sbi_srv] [info ] NFStatusNotifyApiImpl, received a NF status notification...
+[2022-02-08T16:20:17.499897] [smf] [smf_app] [debug] Convert NotificationData (OpenAPI) to Data Notification Msg
+[2022-02-08T16:20:17.500400] [smf] [smf_app] [debug] NF instance info
+[2022-02-08T16:20:17.500411] [smf] [smf_app] [debug] 	Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:17.500415] [smf] [smf_app] [debug] 	Instance name: OAI-UPF-VPP
+[2022-02-08T16:20:17.500418] [smf] [smf_app] [debug] 	Instance type: UPF
+[2022-02-08T16:20:17.500422] [smf] [smf_app] [debug] 	Status: REGISTERED
+[2022-02-08T16:20:17.500425] [smf] [smf_app] [debug] 	HeartBeat timer: 10
+[2022-02-08T16:20:17.500429] [smf] [smf_app] [debug] 	Priority: 1
+[2022-02-08T16:20:17.500432] [smf] [smf_app] [debug] 	Capacity: 100
+[2022-02-08T16:20:17.500436] [smf] [smf_app] [debug] 	SNSSAI:
+[2022-02-08T16:20:17.500439] [smf] [smf_app] [debug] 		 SST 123, SD 222
+[2022-02-08T16:20:17.500443] [smf] [smf_app] [debug] 	FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+[2022-02-08T16:20:17.500446] [smf] [smf_app] [debug] 	IPv4 Addr:
+[2022-02-08T16:20:17.500451] [smf] [smf_app] [debug] 		 192.168.70.202
+[2022-02-08T16:20:17.500454] [smf] [smf_app] [debug] 	UPF Info:
+[2022-02-08T16:20:17.500459] [smf] [smf_app] [debug] 		Parameters supported by the UPF:
+[2022-02-08T16:20:17.500463] [smf] [smf_app] [debug] 			SNSSAI (SST 123, SD 222)
+[2022-02-08T16:20:17.500468] [smf] [smf_app] [debug] 			DNN default
+[2022-02-08T16:20:17.500474] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N3, Network Instance access.oai.org, EndpointFqdn: access.oai.org
+[2022-02-08T16:20:17.500480] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
+[2022-02-08T16:20:17.500484] [smf] [smf_app] [debug] 						 192.168.72.134
+[2022-02-08T16:20:17.500489] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N6, Network Instance core.oai.org, EndpointFqdn: core.oai.org
+[2022-02-08T16:20:17.500494] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
+[2022-02-08T16:20:17.500498] [smf] [smf_app] [debug] 						 192.168.70.134
+[2022-02-08T16:20:17.500559] [smf] [smf_app] [info ] Handle a NF status notification from NRF (HTTP version 1)
+[2022-02-08T16:20:17.500587] [smf] [smf_app] [debug] Add a new UPF node, Ipv4 Addr 192.168.70.202
+[2022-02-08T16:20:17.501350] [smf] [smf_app] [debug] Got response with HTTP code  201!
 ...
-[2021-10-29T11:12:27.510608] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE from an UPF
-[2021-10-29T11:12:27.510634] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE
-[2021-10-29T11:12:27.510649] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
-[2021-10-29T11:12:27.511111] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org, IPv4 Addr: 192.168.70.202
-[2021-10-29T11:12:27.511213] [smf] [smf_app] [debug] NF instance info
-[2021-10-29T11:12:27.511221] [smf] [smf_app] [debug] 	Instance ID: 
-[2021-10-29T11:12:27.511225] [smf] [smf_app] [debug] 	Instance name: 
-[2021-10-29T11:12:27.511228] [smf] [smf_app] [debug] 	Instance type: UPF
-[2021-10-29T11:12:27.511231] [smf] [smf_app] [debug] 	Status: 
-[2021-10-29T11:12:27.511235] [smf] [smf_app] [debug] 	HeartBeat timer: 0
-[2021-10-29T11:12:27.511238] [smf] [smf_app] [debug] 	Priority: 0
-[2021-10-29T11:12:27.511241] [smf] [smf_app] [debug] 	Capacity: 0
+[2022-02-08T16:20:17.510608] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE from an UPF
+[2022-02-08T16:20:17.510634] [smf] [smf_n4 ] [info ] Received N4 ASSOCIATION SETUP RESPONSE
+[2022-02-08T16:20:17.510649] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+[2022-02-08T16:20:17.511111] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org, IPv4 Addr: 192.168.70.202
+[2022-02-08T16:20:17.511213] [smf] [smf_app] [debug] NF instance info
+[2022-02-08T16:20:17.511221] [smf] [smf_app] [debug] 	Instance ID: 
+[2022-02-08T16:20:17.511225] [smf] [smf_app] [debug] 	Instance name: 
+[2022-02-08T16:20:17.511228] [smf] [smf_app] [debug] 	Instance type: UPF
+[2022-02-08T16:20:17.511231] [smf] [smf_app] [debug] 	Status: 
+[2022-02-08T16:20:17.511235] [smf] [smf_app] [debug] 	HeartBeat timer: 0
+[2022-02-08T16:20:17.511238] [smf] [smf_app] [debug] 	Priority: 0
+[2022-02-08T16:20:17.511241] [smf] [smf_app] [debug] 	Capacity: 0
 ...
 ```
 
@@ -335,7 +364,8 @@ Network oai-public-access is external, skipping
 
 ``` shell
 docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
-[2021-10-29 11:14:08,130] root:DEBUG:  UnDeploying OAI 5G core components....
+[2022-02-08 16:21:39,317] root:DEBUG:  UnDeploying OAI 5G core components....
+[2022-02-08 16:21:39,317] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
 Stopping oai-smf    ... done
 Stopping oai-amf    ... done
 Stopping oai-ausf   ... done
@@ -358,7 +388,7 @@ Removing network oai-public-cp
 Removing network oai-public-access
 Removing network oai-public-core
 
-[2021-10-29 11:15:21,322] root:DEBUG:  OAI 5G core components are UnDeployed....
+[2022-02-08 16:22:59,980] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
 If you replicate then your log files and pcap file will be present in `/tmp/oai/vpp-upf-gnbsim/`.
