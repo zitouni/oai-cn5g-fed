@@ -565,11 +565,11 @@ networks:
             config:
                 - subnet: 192.168.72.0/24
         driver_opts:
-            com.docker.network.bridge.name: "access"
+            com.docker.network.bridge.name: "cn5g-access"
     public_net_core:
         name: oai-public-core
         ipam:
             config:
                 - subnet: 192.168.73.0/24
         driver_opts:
-            com.docker.network.bridge.name: "core"
+            com.docker.network.bridge.name: "cn5g-core"

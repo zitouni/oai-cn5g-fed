@@ -98,20 +98,41 @@ docker-compose-host $: rm -rf /tmp/oai/slicing-with-nssf
 
 ``` shell
 docker-compose-host $: mkdir -p /tmp/oai/slicing-with-nssf
+docker-compose-host $: chmod 777 /tmp/oai/slicing-with-nssf
 ```
 
 ## 5. Deploying OAI 5g Core Network
 
 * We deploy `basic` version 5g core with additional component oai-nssf. We will use `docker-compose` to deploy 5g core as below -
-``` shell
+
+Once again, if it is the first time, or you plan to run the experiment for a very long time: no capture:
+
+``` console
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml up -d
+```
+
+For CI purposes, we will capture packets and we won't run it for long, so the PCAP file is not too big.
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml up -d mysql
 Creating network "demo-oai-public-net" with driver "bridge"
 Creating network "oai-public-access" with the default driver
 Creating network "oai-public-core" with the default driver
+Creating mysql            ... done
+```
+
+We capture the packets on the docker networks with a complex filter --> smaller PCAP file.
+``` shell
+docker-compose-host $: nohup sudo tshark -i demo-oai -f '(not host 192.168.70.145 and not host 192.168.70.154) or (host 192.168.70.145 and icmp)' -w /tmp/oai/slicing-with-nssf/slicing-with-nssf.pcap > /dev/null 2>&1 &
+docker-compose-host $: sleep 30
+```
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml up -d
+mysql is up-to-date
 Creating oai-nrf-slice12 ... done
 Creating oai-nssf         ... done
 Creating oai-ext-dn       ... done
-Creating mysql            ... done
 Creating oai-nrf-slice3   ... done
 Creating oai-spgwu-slice2 ... done
 Creating oai-udr          ... done
@@ -126,6 +147,7 @@ Creating oai-spgwu-slice1 ... done
 ```
 
 ``` shell
+docker-compose-host $: sudo chmod 666 /tmp/oai/slicing-with-nssf/slicing-with-nssf.pcap
 docker-compose-host $: sleep 90
 ```
 

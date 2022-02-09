@@ -124,13 +124,15 @@ In that deployment configuration, you can deploy with and without `NRF` (ie scen
 
 For the moment, `FQDN` shall be set to `no`.
 
-As a first-timer, we recommend that you first deploy without any PCAP capture:
+As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
 
 ``` console
 docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
 ```
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker networks.
+
+**REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
 docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
@@ -140,7 +142,7 @@ Creating network "oai-public-cp" with the default driver
 Creating network "oai-public-access" with the default driver
 Creating network "oai-public-core" with the default driver
 Creating mysql   ... done
-[2022-02-08 16:18:32,203] root:DEBUG: nohup sudo tshark -i demo-oai -i cn5g-core -f "not arp and not port 53 and not port 2152" -w /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap > /dev/null 2>&1 &
+[2022-02-08 16:18:32,203] root:DEBUG: nohup sudo tshark -i demo-oai -i cn5g-core -f "(not host 192.168.73.135 and not arp and not port 53 and not port 2152) or (host 192.168.73.135 and icmp)" -w /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap > /dev/null 2>&1 &
 [2022-02-08 16:18:52,217] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
 mysql is up-to-date
 Creating oai-nrf ... done
