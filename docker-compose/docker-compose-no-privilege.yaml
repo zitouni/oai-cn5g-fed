@@ -93,6 +93,9 @@ services:
             - AUSF_IPV4_ADDRESS=127.0.0.1
             - AUSF_PORT=80
             - AUSF_API_VERSION=v1
+            - UDM_IPV4_ADDRESS=127.0.0.1
+            - UDM_PORT=80
+            - UDM_API_VERSION=v2
         depends_on:
             - mysql
         volumes:
