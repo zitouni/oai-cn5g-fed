@@ -158,6 +158,10 @@ services:
             - AUSF_PORT=80
             - AUSF_API_VERSION=v1
             - AUSF_FQDN=oai-ausf
+            - UDM_IPV4_ADDRESS=192.168.70.137
+            - UDM_PORT=80
+            - UDM_API_VERSION=v2
+            - UDM_FQDN=oai-udm
         depends_on:
             - mysql
             - vpp-upf
@@ -193,7 +197,7 @@ services:
             - AMF_FQDN=oai-amf
             - UDM_IPV4_ADDRESS=192.168.70.137
             - UDM_PORT=80
-            - UDM_API_VERSION=v1
+            - UDM_API_VERSION=v2
             - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.202
             - UPF_FQDN_0=gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
