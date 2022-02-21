@@ -358,6 +358,8 @@ def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag
   sh 'sed -i -e "s@oai-udr:latest@oai-udr:' + lUdrTag + '@" ' + filename
   sh 'sed -i -e "s@oai-nssf:latest@oai-nssf:' + lNssfTag + '@" ' + filename
   sh 'sed -i -e "s@oai-upf-vpp:latest@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
+  // Using the develop variant of gnbsim
+  sh 'sed -i -e "s@gnbsim:latest@gnbsim:develop@" docker-compose/docker-compose-gnbsim*.y*ml docker-compose/docker-compose*ransim.y*ml'
 }
 
 def archivesArtifacts(filename,folder) {
@@ -368,4 +370,5 @@ def archivesArtifacts(filename,folder) {
 
 def cleanUpDockerCompose(filename) {
   sh 'git checkout -- ' + filename
+  sh 'git checkout -- docker-compose/docker-compose-gnbsim*.y*ml docker-compose/docker-compose*ransim.y*ml'
 }
