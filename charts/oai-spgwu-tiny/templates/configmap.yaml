@@ -13,3 +13,10 @@ metadata:
   name: {{ .Chart.Name }}-health-cm
 data:
   {{ (.Files.Glob "scripts/live-ready.sh").AsConfig | indent 2 | trim }}
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: {{ .Chart.Name }}-real-config
+data:
+  {{ (.Files.Glob "scripts/spgw_u.conf").AsConfig | indent 2 | trim }}

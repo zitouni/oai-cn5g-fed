@@ -4,25 +4,25 @@
 
 replicaCount: 1
 
-namespace: "oai"
+namespace: oai5g
 
 nfimage:
   registry: local
-  repository: oai-ausf   ## rdefosseoai/oai-ausf # image name either locally present or in a public/private repository
-  version: develop       ## latest/v1.2.0 tag for stable and develop for experimental
+  repository: rdefosseoai/oai-ausf   ## rdefosseoai/oai-ausf # image name either locally present or in a public/private repository
+  version: develop       ## latest/v1.4.0 tag for stable and develop for experimental
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
   repository: corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
-#  - name: "personalkey"
+imagePullSecrets: 
+  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created

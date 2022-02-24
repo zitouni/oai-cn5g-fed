@@ -3,25 +3,25 @@
 
 replicaCount: 1
 
-namespace: "oai"
+namespace: oai5g
 
 nfimage:  # image name either locally present or in a public/private repository
   registry: local
-  repository: oai-amf           ## dockerhub rdefosseoai/oai-amf 
-  version: develop # image tag   ### v1.1.0  develop for experimental features
+  repository: rdefosseoai/oai-amf
+  version: develop
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
   repository: corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
-#  - name: "personalkey"
+imagePullSecrets: 
+  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,7 +37,7 @@ podSecurityContext:
   runAsGroup: 0
 
 securityContext:
-  privileged: false
+  privileged: true
 
 service:
   type: ClusterIP
@@ -53,63 +53,13 @@ start:
 ## This interface will be for N1/N2/NGAP
 
 multus:
-  create: true
-  n1IPadd: "192.168.18.177"
-  n1Netmask: "24"
-  n1Gateway: "192.168.18.129"
-  hostInterface: "bond0"
+  create: false
+  n1IPadd: "172.21.10.6"
+  n1Netmask: "22"
+  n1Gateway: "172.21.11.254"
+  hostInterface: "ens2f0np0"
 
-config:
-  instance: "0"
-  pidDirectory: "/var/run"
-  mcc: "208"
-  mnc: "95"
-  regionId: "128"
-  amfsetId: "1"
-  servedGuamiMcc0: "208"
-  servedGuamiMnc0: "95"
-  servedGuamiRegionId0: "128"
-  servedGuamiAmfSetId0: "1"
-  servedGuamiMcc1: "460"
-  servedGuamiMnc1: "11"
-  servedGuamiRegionId1: "10"
-  servedGuamiAmfSetId1: "1"
-  plmnSupportMcc: "208"
-  plmnSupportMnc: "95"
-  plmnSupportTac: "0x0001"
-  sst0: "1"
-  sd0: "1"
-  sst1: "111"
-  sd1: "124"
-  amfInterfaceNameForNGAP: "net1" # If multus creation is true then net1 else eth0
-  amfInterfaceNameForN11: "eth0"  # Service based interface
-  smfInstanceId0: "1"  # Only configure if not using NRF
-  smfIpv4Addr0: "0.0.0.0" # Only configure if not using NRF       
-  smfHttpVersion0: "v1" # Only configure if not using NRF
-  smfFqdn0: "localhost" # Only configure if not using NRF
-  smfInstanceId1: "2"  # Currently disabled in the amf.conf no need to configure
-  smfIpv4Addr1: "0.0.0.0" # Currently disabled in the amf.conf no need to configure
-  smfHttpVersion1: "v1" # Currently disabled in the amf.conf no need to configure
-  smfFqdn1: "localhost" # Currently disabled in the amf.conf no need to configure
-  nrfIpv4Addr: "0.0.0.0" 
-  nrfPort: 80
-  nrfApiVersion: "v1"
-  nrfFqdn: "oai-nrf-svc"  # amf communicates using FQDN
-  ausfFqdn: "oai-ausf-svc"
-  externalAusf: "no"
-  ausfIpv4Addr: "127.0.0.1" # configure only if there is an external AUSF else it will communicate with mysql directly
-  ausfPort: 80
-  ausfApiVersion: "v1"
-  nfRegistration: "yes" 
-  smfSelection: "yes" 
-  useFqdnDns: "yes"  # Important to avoid mentioning any static ip-address
-  mySqlServer: "mysql" # used only if not using AUSF
-  mySqlUser: "root" # used only if not using AUSF
-  mySqlPass: "linux" # used only if not using AUSF
-  mySqlDb: "oai_db" # used only if not using AUSF
-  operatorKey: "63bfa50ee6523365ff14c1f45f88737d"  # should be same as in susbcriber database 
-
-persistence:
+persistent:
   sharedvolume: false
   volumneName: managed-nfs-storage
   size: 1Gi
