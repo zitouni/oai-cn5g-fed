@@ -4,26 +4,27 @@
 
 replicaCount: 1
 
-namespace: "oai"
+namespace: oai5g
+
 
 # NF image
 nfimage:
   registry: local
   repository: rdefosseoai/oai-nrf
-  version: v1.1.0
+  version: develop
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
   repository: corfr/tcpdump
   version: latest
   # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 ## good to use when pulling images from docker-hub mention 
-#imagePullSecrets: 
-#  - name: "personalkey"
+imagePullSecrets: 
+  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -60,7 +61,7 @@ config:
   nrfInterfaceHttp2PortForSBI: "9090"
   nrfApiVersion: "v1"
 
-persistence:
+persistent:
   sharedvolume: false
   volumeName: managed-nfs-storage
   size: 1Gi

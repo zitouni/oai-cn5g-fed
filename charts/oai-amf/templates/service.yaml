@@ -7,12 +7,6 @@ metadata:
 spec:
   type: {{ .Values.service.type }}
   ports:
-    - name: oai-amf
-      # Port accessible outside cluster
-      port: {{ .Values.service.sctpPort }}
-      # Port to forward to inside the pod
-      targetPort: {{ .Values.service.sctpPort }}
-      protocol: SCTP
     - name: http1
       # Port accessible outside cluster
       port: {{ .Values.service.http1Port }}
@@ -28,3 +22,22 @@ spec:
       #
   selector:
     {{- include "oai-amf.selectorLabels" . | nindent 4 }}
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: {{ .Chart.Name }}-sctp-svc
+  labels:
+    {{- include "oai-amf.labels" . | nindent 4 }}
+spec:
+  type: LoadBalancer
+  ports:
+    - name: oai-amf
+      # Port accessible outside cluster
+      port: {{ .Values.service.sctpPort }}
+      # Port to forward to inside the pod
+      targetPort: {{ .Values.service.sctpPort }}
+      protocol: SCTP
+  selector:
+    {{- include "oai-amf.selectorLabels" . | nindent 4 }}
+

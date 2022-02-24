@@ -25,6 +25,7 @@ spec:
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -35,13 +36,14 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-        {{- if .Values.persistence.sharedvolume}}
+        {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
-          name: cn5g-pv
+          name: cn5g-pvc
         {{- end}}
       - name: nrf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -113,9 +115,9 @@ spec:
                 name: {{ .Chart.Name }}-configmap
                 key: nrfApiVersion
       volumes:
-      {{- if .Values.persistence.sharedvolume}}
-      - name: cn5g-pv
-        persistenceVolumeClaim:
+      {{- if .Values.persistent.sharedvolume}}
+      - name: cn5g-pvc
+        persistentVolumeClaim:
           claimName: cn5g-pvc
       {{- end }}
       - name: scripts

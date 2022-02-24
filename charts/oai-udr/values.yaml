@@ -4,21 +4,24 @@
 
 replicaCount: 1
 
-namespace: "oai"
+namespace: oai5g
 
 nfimage:
   registry: local
   repository: rdefosseoai/oai-udr # image name either locally present or in a public/private repository
-  version: v1.1.0 # image tag
+  version: develop # image tag
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always
+  pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
   repository: corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: Always  
+  pullPolicy: IfNotPresent
+
+imagePullSecrets: 
+  - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -49,11 +52,19 @@ start:
 config:
   tz: "Europe/Paris"
   instance: "0"
+  udrname: "oai-udr"
   pidDirectory: "/var/run"
+  registerNrf: "no"
+  usehttp2: "no"
+  useFqdnDns: "yes"
   udrInterfaceNameForNudr: "eth0"
   udrInterfaceHttp1PortForNudr: "80"
   udrInterfaceHttp2PortForNudr: "8080"
   udrApiVersion: "v1"
+  nrfIpv4Address: "127.0.0.1"
+  nrfPort: "80"
+  nrfApiVersion: "v1"
+  nrfFqdn: "oai-nrf-svc"
   mySqlServer: "mysql"
   mySqlUser: "root"
   mySqlPass: "linux"

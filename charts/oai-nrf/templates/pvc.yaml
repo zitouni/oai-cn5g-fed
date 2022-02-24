@@ -1,4 +1,4 @@
-{{- if .Values.persistence.sharedvolume }}
+{{- if .Values.persistent.sharedvolume }}
 apiVersion: v1
 kind: PersistentVolumeClaim
 metadata:
@@ -6,7 +6,7 @@ metadata:
 spec:
   accessModes:
     - ReadWriteMany
-  storageClassName: {{ .Values.persistent.volumneName }}
+  storageClassName: {{ .Values.persistent.volumeName }}
   resources:
     requests:
       storage: {{ .Values.persistent.size }}

@@ -25,6 +25,7 @@ spec:
       containers:
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -43,6 +44,7 @@ spec:
       - name: udm
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
+        {{- if .Values.resources.define}}
         resources:
           requests:
             memory: {{ .Values.resources.requests.memory | quote }}
