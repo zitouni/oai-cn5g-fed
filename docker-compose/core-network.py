@@ -141,7 +141,7 @@ def deploy(file_name, ct, extra_interface=False):
         cmd = f'docker-compose -f {file_name} up -d'
         res = run_cmd(cmd, False)
     # sometimes first try does not go through
-    if args.capture is None:
+    if args.capture is not None:
         cmd = f'sudo chmod 666 {args.capture}'
         run_cmd(cmd)
     if res is None:
