@@ -14,6 +14,11 @@ services:
           ipv4_address: 192.168.70.143
       public_net_access:
           ipv4_address: 192.168.72.143
+    healthcheck:
+      test: /bin/bash -c "ifconfig uetun1"
+      interval: 10s
+      timeout: 5s
+      retries: 5
 networks:
     public_net:
         external:
