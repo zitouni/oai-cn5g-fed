@@ -96,8 +96,6 @@ daa71ea02f62   oai-udm:latest       "/bin/bash /openair-…"   About a minute ag
 
 ## 6. Building a `My5g-RANTester` docker image ##
 
-You have the choice:
-
 * Build `My5g-RANTester` docker image
 
 ```bash
@@ -109,26 +107,18 @@ $ docker build --tag my5grantester:latest -f Dockerfile .
 
 ## 7. Executing the `My5g-RANTester` Scenario ##
 
-* The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose.yaml OF My5g-RANTester](../docker-compose/docker-compose-my5G-RANTester-vpp.yaml) and one can modify it for test.
+* The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml) and one can modify it for test.
 * Launch my5G-RANTester docker service
 ```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml -d
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml up -d
 Creating my5grantester ... done
 ```
-* After launching My5g-RANTester, make sure all services status are healthy -
+* After launching My5g-RANTester, make sure service status is healthy -
 ```bash
-oai-cn5g-fed/docker-compose$ docker ps -a
-CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                   PORTS                          NAMES
-a2b7991149db   my5grantester:latest   "./app ue"               30 seconds ago   Up 28 seconds (healthy)                                          my5grantester
-0c0f6920aedf   oai-smf:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-1eca41c99ceb   oai-amf:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-96956aa69cf8   oai-ausf:latest        "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp                         oai-ausf
-7c0c07f63ad6   ubuntu:bionic          "/bin/bash -c ' apt …"   2 minutes ago    Up 2 minutes                                            oai-ext-dn
-daa71ea02f62   oai-udm:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp                         oai-udm
-9afe69c737d9   oai-udr:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp                         oai-udr
-6faa329c97f9   oai-upf-vpp:latest     "/openair-upf/bin/en…"   2 minutes ago    Up 2 minutes (healthy)   2152/udp, 8085/udp             vpp-upf
-8cf8bcb54725   mysql:5.7              "docker-entrypoint.s…"   2 minutes ago    Up 2 minutes (healthy)   3306/tcp, 33060/tcp            mysql
-8e8037f2aadb   oai-nrf:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp, 9090/tcp               oai-nrf
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml ps -a
+    Name        Command       State       Ports
+-----------------------------------------------
+my5grantester   ./app ue   Up (healthy)        
 ```
 
 We can verify it using my5grantester container logs as below -
@@ -206,25 +196,27 @@ my5grantester | time="2022-03-08T15:09:22Z" level=info msg="[UE][NAS] Receiving 
 my5grantester | time="2022-03-08T15:09:27Z" level=info msg="[UE][DATA] UE is ready for using data plane"
 ```
 
-## ToDo: traffic test ##
+## ToDo: Traffic test ##
+
+## ToDo: Multiple UEs registration test ##
 
 
 ## 8. Analysing the Scenario Results ##
 
 | Pcap/log files                                                                             |
 |:------------------------------------------------------------------------------------------ |
-| [5gcn-deployment-my5G-RANTester.pcap](./results/My5g-RANTester/pcap/5gcn-deployment-my5G-RANTester.pcap)                  |
+| [5gcn-deployment-my5G-RANTester.pcap](./results/My5g-RANTester/5gcn-deployment-my5grantester.pcap)                  |
 
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
-## 10. Undeploy ##
+## 9. Undeploy ##
 
 Last thing is to remove all services - <br/>
 
 * Undeploy the My5g-RANTester
 ```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5G-RANTester-vpp.yaml down
+oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml down
 Stopping my5grantester ... done
 Removing my5grantester ... done
 Network demo-oai-public-net is external, skipping
@@ -233,9 +225,16 @@ Network oai-public-access is external, skipping
 
 * Undeploy the core network
 ```bash
-oai-cn5g-fed/docker-compose$  python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
-...
-[2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
+oai-cn5g-fed/docker-compose$  docker-compose -f docker-compose-basic-vpp-nrf.yaml down
+Stopping oai-smf    ... done
+Stopping oai-amf    ... 
+Stopping oai-ausf   ... 
+Stopping oai-ext-dn ... 
+Stopping oai-udm    ... 
+Stopping vpp-upf    ... 
+Stopping oai-udr    ... 
+Stopping mysql      ... 
+Stopping oai-nrf    ... 
 ```
 
 
