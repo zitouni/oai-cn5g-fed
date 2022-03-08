@@ -13,7 +13,7 @@
 </table>
 
 
-![SA dsTest Demo](./images/5gcn_vpp_upf_my5G-RANTester.png)
+![SA dsTest Demo](./images/5gcn_vpp_upf_my5grantester.png)
 
 **Reading time: ~ 30mins**
 
@@ -53,7 +53,7 @@ Moreover, there are various other opensource gnb/ue simulator tools that are ava
 
 ##### About My5g-RANTester -
 
-[My5g-RANTester](https://github.com/my5G/my5G-RANTester) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. My5g-RANTester can simulate multiple UEs and it also aims to simulate radio. Moreover for detailed feature set, please refer its [official page.](https://github.com/my5G/my5G-RANTester/wiki/Feature-Set)
+[My5g-RANTester](https://github.com/my5G/my5G-RANTester) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. my5G-RANTester follows the 3GPP Release 15 standard for NG-RAN. Using my5G-RANTester, it is possible to generate different workloads and test several functionalities of a 5G core, including its complaince to the 3GPP standards. Scalability is also a relevant feature of the my5G-RANTester, which is able mimic the behaviour of a large number of UEs and gNBs accessing simultaneously a 5G core.
 
 Let's begin !!
 
@@ -119,7 +119,7 @@ Creating my5grantester ... done
 ```bash
 oai-cn5g-fed/docker-compose$ docker ps -a
 CONTAINER ID   IMAGE                  COMMAND                  CREATED          STATUS                   PORTS                          NAMES
-a2b7991149db   my5grantester:latest   "./app ue"               30 seconds ago   Up 28 seconds                                           my5grantester
+a2b7991149db   my5grantester:latest   "./app ue"               30 seconds ago   Up 28 seconds (healthy)                                          my5grantester
 0c0f6920aedf   oai-smf:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
 1eca41c99ceb   oai-amf:latest         "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
 96956aa69cf8   oai-ausf:latest        "/bin/bash /openair-…"   2 minutes ago    Up 2 minutes (healthy)   80/tcp                         oai-ausf
@@ -206,7 +206,7 @@ my5grantester | time="2022-03-08T15:09:22Z" level=info msg="[UE][NAS] Receiving 
 my5grantester | time="2022-03-08T15:09:27Z" level=info msg="[UE][DATA] UE is ready for using data plane"
 ```
 
-// ToDo: Now we are ready to perform some traffic test.
+## ToDo: traffic test ##
 
 
 ## 8. Analysing the Scenario Results ##
