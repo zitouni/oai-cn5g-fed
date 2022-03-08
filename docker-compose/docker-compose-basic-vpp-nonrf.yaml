@@ -239,9 +239,7 @@ services:
             - MCC=208
             - REALM=3gppnetwork.org
             - NETWORK_UE_IP=12.2.1.0/24
-            - N3_IPV4_ADDRESS_REMOTE=192.168.72.141 #   GNB  IP Address
-            - N4_IPV4_ADDRESS_REMOTE=192.168.70.133 #   SMF  IP Address
-            - N6_IPV4_ADDRESS_REMOTE=192.168.73.135 # EXT-DN IP Address
+            - N6_IPV4_ADDRESS_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
 #           - VPP_PLUGIN_PATH=/usr/lib64/vpp_plugins/                # RHEL7
