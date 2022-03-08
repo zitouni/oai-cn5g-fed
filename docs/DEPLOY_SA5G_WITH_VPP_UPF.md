@@ -286,7 +286,7 @@ Creating gnbsim-vpp ... done
 <!---
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 20
+docker-compose-host $: sleep 40
 ```
 -->
 

@@ -195,7 +195,7 @@ docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.p
     <!---
     For CI purposes please ignore this line
     ``` shell
-    docker-compose-host $: sleep 10
+    docker-compose-host $: sleep 30
     ```
     -->
 
