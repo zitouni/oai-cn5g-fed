@@ -1,6 +1,6 @@
 version: '3.8'
 services:
-  tester:
+  my5grantester:
     image: my5grantester:latest
     container_name: my5grantester
     privileged: true
@@ -9,7 +9,6 @@ services:
       - ./my5grantester-vpp-config.yaml:/workspace/my5G-RANTester/config/config.yml
     cap_add:
       - NET_ADMIN
-    networks:
     networks:
       public_net:
           ipv4_address: 192.168.70.143
