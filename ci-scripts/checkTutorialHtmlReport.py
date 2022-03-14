@@ -40,7 +40,7 @@ class HtmlReport():
 		self.file = open(cwd + '/test_results_oai_cn5g_tutorials.html', 'w')
 		self.generateHeader()
 
-		tutorials = ['static-ue-ip', 'vpp-upf-gnbsim', 'slicing-with-nssf']
+		tutorials = ['mini-gnbsim', 'static-ue-ip', 'vpp-upf-gnbsim', 'slicing-with-nssf']
 		for tutorial in tutorials:
 			if not os.path.isfile(cwd + '/archives/' + tutorial + '.log'):
 				continue
