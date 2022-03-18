@@ -35,7 +35,7 @@ services:
             public_net_access:
                 ipv4_address: 192.168.72.141
         healthcheck:
-            test: /bin/bash -c "ifconfig gtp-gnb"
+            test: /bin/bash -c "ip address show dev gtp-gnb"
             interval: 10s
             timeout: 5s
             retries: 5
