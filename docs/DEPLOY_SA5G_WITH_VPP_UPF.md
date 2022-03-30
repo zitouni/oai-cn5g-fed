@@ -85,6 +85,14 @@ docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-gnbsim
 
 * We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
 
+##### Note 1: - To use vpp-upf on bare metal, follow [these instructions.](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/develop/docs/INSTALL_ON_HOST.md)
+##### Note 2: - To Enable UE usage report (periodic report of UE volume measurement), set below flag for SMF service in the docker-compose. <br/>
+
+```bash
+ - ENABLE_USAGE_REPORTING=yes 
+```
+
+
 All the following commands shall be executed from the `oai-cn5g-fed/docker-compose` folder.
 
 ``` console
