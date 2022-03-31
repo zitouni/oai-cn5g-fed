@@ -49,6 +49,8 @@ $ docker pull rdefosseoai/oai-udm:latest
 $ docker pull rdefosseoai/oai-ausf:latest
 $ docker pull rdefosseoai/oai-upf-vpp:latest
 $ docker pull rdefosseoai/oai-nssf:latest
+# Utility image to generate traffic
+$ docker pull rdefosseoai/trf-gen-cn5g:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
@@ -63,6 +65,7 @@ $ docker image tag rdefosseoai/oai-udm:latest oai-udm:latest
 $ docker image tag rdefosseoai/oai-ausf:latest oai-ausf:latest
 $ docker image tag rdefosseoai/oai-upf-vpp:latest oai-upf-vpp:latest
 $ docker image tag rdefosseoai/oai-nssf:latest oai-nssf:latest
+$ docker image tag rdefosseoai/trf-gen-cn5g:latest trf-gen-cn5g:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
