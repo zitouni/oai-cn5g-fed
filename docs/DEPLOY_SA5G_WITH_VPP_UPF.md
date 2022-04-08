@@ -51,7 +51,7 @@ In previous tutorials, we were using the `oai-spgwu-tiny` implementation UPF. Th
 
 Moreover in this tutorial, we are going to integrate OAI 5G core with opensource `VPP-UPF` by [Travelping](https://www.travelping.com/). VPP-based UPF uses vector packet processing and it is has proven very good performance in the user plane. Motivation for this integration to test and validate high performance VPP-UPF in with OAI 5G core.
 
-##### About VPP-UPG -
+**About VPP-UPG**
 
 UPG implements a GTP-U user plane based on `3GPP TS 23.214` and `3GPP TS 29.244` Release `15`. It is implemented as an
 out-of-tree plugin for [Fdio VPP](https://github.com/FDio/vpp). The possible uses for UPG are:
@@ -85,7 +85,7 @@ docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-gnbsim
 
 * We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
 
-##### Note: - To use vpp-upf on bare metal, follow [these instructions.](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/develop/docs/INSTALL_ON_HOST.md)
+**Note: - To use vpp-upf on bare metal, follow [these instructions.](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/develop/docs/INSTALL_ON_HOST.md)**
 
 All the following commands shall be executed from the `oai-cn5g-fed/docker-compose` folder.
 
@@ -288,7 +288,7 @@ Creating gnbsim-vpp ... done
 <!---
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 40
+docker-compose-host $: sleep 20
 ```
 -->
 
@@ -334,6 +334,94 @@ PING 192.168.73.135 (192.168.73.135) from 12.1.1.2 : 56(84) bytes of data.
 --- 192.168.73.135 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 71ms
 rtt min/avg/max/mdev = 0.183/0.283/0.353/0.062 ms
+```
+
+Let's analyze the N4 Traffic report from the UPF.
+
+``` shell
+docker-compose-host $: sleep 10
+docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-gnbsim/smf.log 2>&1
+docker-compose-host $: python3 ../ci-scripts/validateN4UpfReportMessages.py --filename /tmp/oai/vpp-upf-gnbsim/smf.log
+Received 7 N4 SESSION REPORT REQUESTS from an UPF
+-  for a total duration of 70 seconds
+-  Total Number of Packets : 16
+-     DL Number of Packets : 8
+-     UL Number of Packets : 8
+-  Total Volume            : 1344 bytes
+-     DL Volume            : 672 bytes
+-     UL Volume            : 672 bytes
+```
+
+The SMF receives regularly N4 messages like this one:
+
+``` console
+[2022-04-08T11:27:46.540271] [smf] [smf_n4 ] [info ] Received N4 SESSION REPORT REQUEST from an UPF
+[2022-04-08T11:27:46.540357] [smf] [smf_app] [info ] 		 SEID            -> 1
+[2022-04-08T11:27:46.540378] [smf] [smf_app] [info ] 		 UR-SEQN         -> 4
+[2022-04-08T11:27:46.540384] [smf] [smf_app] [info ] 		 Duration        -> 10
+[2022-04-08T11:27:46.540389] [smf] [smf_app] [info ] 		 NoP    Total    -> 2
+[2022-04-08T11:27:46.540394] [smf] [smf_app] [info ] 		        Uplink   -> 1
+[2022-04-08T11:27:46.540399] [smf] [smf_app] [info ] 		        Downlink -> 1
+[2022-04-08T11:27:46.540404] [smf] [smf_app] [info ] 		 Volume Total    -> 168
+[2022-04-08T11:27:46.540409] [smf] [smf_app] [info ] 		        Uplink   -> 84
+[2022-04-08T11:27:46.540423] [smf] [smf_app] [info ] 		        Downlink -> 84
+```
+
+Let's create a bigger traffic:
+
+``` shell
+docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.2 -c40 -i0.1 -s500
+docker-compose-host $: sleep 10
+docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-gnbsim/smf.log 2>&1
+docker-compose-host $: python3 ../ci-scripts/validateN4UpfReportMessages.py --filename /tmp/oai/vpp-upf-gnbsim/smf.log
+Received 9 N4 SESSION REPORT REQUESTS from an UPF
+-  for a total duration of 90 seconds
+-  Total Number of Packets : 96
+-     DL Number of Packets : 48
+-     UL Number of Packets : 48
+-  Total Volume            : 43584 bytes
+-     DL Volume            : 21792 bytes
+-     UL Volume            : 21792 bytes
+```
+
+Now create an asymmetrical traffic with iperf3 in Downlink:
+
+``` shell
+docker-compose-host $: docker exec -d gnbsim-vpp /bin/bash -c "nohup iperf3 -B 12.1.1.2 -s -i 1 > /tmp/iperf-server-dl.log 2>&1"
+docker-compose-host $: sleep 1
+docker-compose-host $: docker exec oai-ext-dn iperf3 -c 12.1.1.2 -t 20 -i 1
+docker-compose-host $: sleep 10
+docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-gnbsim/smf.log 2>&1
+docker-compose-host $: python3 ../ci-scripts/validateN4UpfReportMessages.py --filename /tmp/oai/vpp-upf-gnbsim/smf.log
+Received 13 N4 SESSION REPORT REQUESTS from an UPF
+-  for a total duration of 130 seconds
+-  Total Number of Packets : 20926
+-     DL Number of Packets : 13306
+-     UL Number of Packets : 7620
+-  Total Volume            : 23912637 bytes
+-     DL Volume            : 23436499 bytes
+-     UL Volume            : 476138 bytes
+```
+
+**Don't forget to kill the iperf3 server process on `gnbsim-vpp` container.**
+
+``` console
+docker-compose-host $: docker exec gnbsim-vpp ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  1.0  0.0 927132  9952 ?        Ssl  11:51   0:01 /gnbsim/bin/example
+root       126  0.0  0.0  18384  3064 ?        Ss   11:53   0:00 /bin/bash -c nohup iperf3 -B 12.1.1.2 -s -i 1 > /tmp/iperf-server-dl.log 2>&1
+root       131  0.2  0.0  10412  2752 ?        S    11:53   0:00 iperf3 -B 12.1.1.2 -s -i 1
+root       174  0.0  0.0  18516  3480 pts/0    Ss   11:54   0:00 /bin/bash
+root       195  0.0  0.0  34412  2924 pts/0    R+   11:54   0:00 ps aux
+
+# Here it is an example, kill the one corresponding to your run
+docker-compose-host $: docker exec gnbsim-vpp kill -9 131
+
+docker-compose-host $: docker exec gnbsim-vpp ps aux
+USER       PID %CPU %MEM    VSZ   RSS TTY      STAT START   TIME COMMAND
+root         1  1.0  0.0 927132  9952 ?        Ssl  11:51   0:01 /gnbsim/bin/example
+root       174  0.0  0.0  18516  3480 pts/0    Ss   11:54   0:00 /bin/bash
+root       208  0.0  0.0  34412  2900 pts/0    R+   11:54   0:00 ps aux
 ```
 
 ## 7. Recover the logs
