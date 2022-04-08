@@ -251,6 +251,7 @@ services:
             - DNN_RANGE1=12.1.1.2 - 12.1.1.128
             - DNN_RANGE0=12.2.1.2 - 12.2.1.128
             - DNN_NI1=default
+            - ENABLE_USAGE_REPORTING=yes
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         depends_on:
