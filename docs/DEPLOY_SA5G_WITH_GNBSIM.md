@@ -24,15 +24,16 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 **TABLE OF CONTENTS**
 
-1.  Pre-requisites
+1.  [Pre-requisites](#1-pre-requisites)
 2.  Building Container Images
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
-5.  Deploying OAI 5G Core Network
+5.  [Deploying OAI 5G Core Network](#5-deploying-oai-5g-core-network)
 6.  [Getting a `gnbsim` docker image](#6-getting-a-gnbsim-docker-image)
 7.  [Executing `gnbsim` Scenario](#7-executing-the-gnbsim-scenario)
-8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
+8.  [Analysing the Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
+10. [Undeploy the network functions](#10-undeploy-the-network-functions)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
@@ -49,26 +50,56 @@ This tutorial is an extension of a previous tutorial: [testing a `minimalist` de
 
 Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G test. In this tutorial, we use an opensource simulator tool called `gnbsim`. With the help of `gnbsim` tool, we can perform very basic SA5G test by simulating one gnb and one ue.
 
-##### About gnbsim -
+**About gnbsim:**
 
 Gnbsim is a 5G SA gNB/UE (Rel. 16) simulator for testing 5G System. It is a 3rd party opensource tool written in golang. The [original repository](https://github.com/hhorai/gnbsim) is not available anymore, but a number of forks can be found, e.g., [here](https://github.com/AlohaLuo/gnbsim-backup), [here](https://github.com/Prabhjot-Sethi/gnbsim), and in [this repo](https://gitlab.eurecom.fr/kharade/gnbsim) which we will use in the following. Gnbsim simulates NGAP, NAS and GTPU protocols. Current version of gnbsim simulates one gnb and one ue.
 
 Let's begin !!
 
 * Steps 1 to 5 are similar as previous tutorial. Please follow these steps to deploy OAI 5G core network components.
-* We depoloy gnbsim docker service on same host as of core network, so there is no need to create additional route as
+* We deploy gnbsim docker service on same host as of core network, so there is no need to create additional route as
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
-```bash
-oai-cn5g-fed/docker-compose$ python3 core-network.py --type start-mini --fqdn no --scenario 1
+## 1. Pre-requisites
+
+Create the folder to store the logs.
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: rm -rf /tmp/oai/mini-gnbsim
+```
+-->
+
+``` shell
+docker-compose-host $: mkdir -p /tmp/oai/mini-gnbsim
+docker-compose-host $: chmod 777 /tmp/oai/mini-gnbsim
+```
+
+**CAUTION: all the commands are to be executed from the `docker-compose` folder on the `CN5G host` server.**
+
+## 5. Deploying OAI 5G Core Network
+
+As a first timer, we recommend to first run without any PCAP capture.
+
+``` console
+docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1
 ...
 [2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
+For CI purposes, we are deploying with an automated PCAP capture on the docker network.
+
+**REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
+
+``` shell
+docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
+```
+
 More details in [section 7 of the `minimalist` tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#7-deploying-oai-5g-core-network).
 
-```bash
+``` console
 oai-cn5g-fed/docker-compose$ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 seconds ago   Up 22 seconds                                            oai-ext-dn
@@ -82,16 +113,19 @@ oai-cn5g-fed/docker-compose$
 
 We can also use basic deployment of 5GCN (with AUSF, UDM, UDR) as below -
 
-```bash 
-oai-cn5g-fed/docker-compose$ python3 core-network.py --type start-basic
+``` console
+docker-compose-host $: python3 ./core-network.py --type start-basic
 ```
-## 6. Getting a `gnbsim` docker image ##
+## 6. Getting a `gnbsim` docker image
 
 You have the choice:
 
-* Build `gnbsim` docker image
+* Building `gnbsim` docker image
 
-```bash
+Please clone the repository outside of the `oai-cn5g-fed` workspace.
+
+``` console
+$ cd
 $ git clone https://gitlab.eurecom.fr/kharade/gnbsim.git
 $ cd gnbsim
 $ docker build --tag gnbsim:latest --target gnbsim --file docker/Dockerfile.ubuntu.18.04 .
@@ -101,23 +135,30 @@ OR
 
 * You can pull a prebuilt docker image for `gnbsim`
 
-```bash
+``` console
 docker pull rohankharade/gnbsim
 docker image tag rohankharade/gnbsim:latest gnbsim:latest
 ```
 
-## 7. Executing the `gnbsim` Scenario ##
+## 7. Executing the `gnbsim` Scenario
 
-* The configuration parameters, are preconfigured in [docker-compose.yaml](../docker-compose/docker-compose.yaml) and [docker-compose-gnbsim.yaml](../docker-compose/docker-compose-gnbsim.yaml) and one can modify it for test.
-* Launch gnbsim docker service
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
+* The configuration parameters are preconfigured in [docker-compose-gnbsim.yaml](../docker-compose/docker-compose-gnbsim.yaml) and one can modify it for test.
 
+### 7.1. Launch gnbsim docker service
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
 Creating gnbsim ... done
+docker-compose-host $: sleep 40
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml ps -a
+Name               Command                  State       Ports
+--------------------------------------------------------------
+gnbsim   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)
 ```
-* After launching gnbsim, make sure all services status are healthy -
-```bash
-oai-cn5g-fed/docker-compose$ docker ps -a
+
+After launching gnbsim, make sure all services status are healthy -
+``` console
+docker-compose-host $: docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 2ad428f94fb0   gnbsim:latest                   "/gnbsim/bin/entrypo…"   33 seconds ago   Up 32 seconds (healthy)                                  gnbsim
 c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minutes ago    Up 4 minutes                                             oai-ext-dn
@@ -128,11 +169,19 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minu
 565617169b42   mysql:5.7                       "docker-entrypoint.s…"   4 minutes ago    Up 4 minutes (healthy)    3306/tcp, 33060/tcp            mysql
 ```
 Now we are ready to perform some traffic test.
-* Ping test <br/>
+
+You can see also if the UE got an allocated IP address.
+
+``` shell
+docker-compose-host $: docker logs gnbsim 2>&1 | grep "UE address:"
+[gnbsim]2022/09/14 16:45:40.584271 example.go:329: UE address: 12.1.1.2
+```
+
+### 7.2. Ping test
 
 Here we ping UE from external DN container.
-```bash
-$ docker exec -it oai-ext-dn ping -c 3 12.1.1.2
+``` shell
+docker-compose-host $: docker exec oai-ext-dn ping -c 3 12.1.1.2
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=1 ttl=64 time=0.235 ms
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=64 time=0.145 ms
@@ -141,12 +190,11 @@ PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 --- 12.1.1.2 ping statistics ---
 3 packets transmitted, 3 received, 0% packet loss, time 2036ms
 rtt min/avg/max/mdev = 0.145/0.276/0.448/0.127 ms
-rohan@rohan:~/gitrepo/oai-cn5g-fed/docker-compose$ 
 ```
 
 Here we ping external DN from UE (gnbsim) container.
-```bash
-oai-cn5g-fed/docker-compose$ docker exec gnbsim ping -c 3 -I 12.1.1.2 google.com
+``` console
+docker-compose-host $: docker exec gnbsim ping -c 3 -I 12.1.1.2 google.com
 PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=1 ttl=115 time=5.12 ms
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=2 ttl=115 time=7.52 ms
@@ -157,10 +205,11 @@ PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
 rtt min/avg/max/mdev = 5.119/6.606/7.515/1.064 ms
 ```
 
-* Iperf test <br/>
+### 7.3. Iperf test
+
 Here we do iperf traffic test between gnbsim UE and external DN node. We can make any node as iperf server/client.<br/>
 Running iperf server on external DN container
-```bash
+``` console
 $ docker exec -it oai-ext-dn iperf3 -s 
 -----------------------------------------------------------
 Server listening on 5201
@@ -188,7 +237,7 @@ Server listening on 5201
 -----------------------------------------------------------
 ```
 Running iperf client on gnbsim
-```bash
+``` console
 $ docker exec -it gnbsim iperf3 -c 192.168.70.135 -B 12.1.1.2
 Connecting to host 192.168.70.135, port 5201
 [  5] local 12.1.1.2 port 55553 connected to 192.168.70.135 port 5201
@@ -210,9 +259,20 @@ Connecting to host 192.168.70.135, port 5201
 
 iperf Done.
 ```
-* Note:- The iperf test is just for illustration purpose and results of the test may vary based on resources available for the docker services
 
-## 8. Analysing the Scenario Results ##
+**Note:- The iperf test is just for illustration purpose and results of the test may vary based on resources available for the docker services.**
+
+## 8. Analysing the Scenario Results
+
+You can recover the logs like this:
+
+``` console
+docker-compose-host $: docker logs oai-nrf > /tmp/oai/mini-gnbsim/nrf.log 2>&1
+docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
+docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
+docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
+docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
+```
 
 | Container     | Ip-address     |
 | ------------- |:-------------- |
@@ -235,22 +295,32 @@ iperf Done.
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
-## 9. Trying Some Advanced Stuff ##
+## 9. Trying Some Advanced Stuff
 
 Here we try some scaling test with gnbsim. There are additional IMSIs are added into database (208950000000031-208950000000040). Now we create few more gnbsim instances (4 more for now). We use same script to generate additional instance as follow -
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
 Creating gnbsim2 ... done
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
 Creating gnbsim3 ... done
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
 Creating gnbsim4 ... done
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
 Creating gnbsim5 ... done
+docker-compose-host $: sleep 40
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml ps -a
+docker-compose-host $: docker logs gnbsim2 2>&1 | grep "UE address:"
+[gnbsim]2022/09/14 16:45:41.584271 example.go:329: UE address: 12.1.1.3
+docker-compose-host $: docker logs gnbsim3 2>&1 | grep "UE address:"
+[gnbsim]2022/09/14 16:45:42.584271 example.go:329: UE address: 12.1.1.4
+docker-compose-host $: docker logs gnbsim4 2>&1 | grep "UE address:"
+[gnbsim]2022/09/14 16:45:43.584271 example.go:329: UE address: 12.1.1.5
+docker-compose-host $: docker logs gnbsim5 2>&1 | grep "UE address:"
+[gnbsim]2022/09/14 16:45:44.584271 example.go:329: UE address: 12.1.1.6
 ```
 So here basically, minimum configuration parameters that need to change is gnbid, imsi and container ip address in docker-compose-gnbsim.yaml.
 Please make sure status of instance is healthy before creating one more instance. Now here we have deployed all 5 gnbsim intances - 
-```bash
+``` console
 $ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 a25174c51297   gnbsim:latest                   "/gnbsim/bin/entrypo…"   3 minutes ago    Up 3 minutes  (healthy)                                  gnbsim5
@@ -267,7 +337,7 @@ cc407925adf2   oai-nrf:latest                  "/bin/bash /openair-…"   16 min
 
 ```
 * Let's verify all gnb and ue are registered at our 5G core -
-```bash
+``` console
 $ docker logs oai-amf
 truncated output
 [2021-05-17T12:17:28.539943] [AMF] [amf_app] [info ] 
@@ -294,8 +364,8 @@ truncated output
 
 ```
 * Finally lets ping UE from external DN node -
-```bash
-$ docker exec -it oai-ext-dn ping -c 2 12.1.1.2
+``` shell
+docker-compose-host $: docker exec oai-ext-dn ping -c 2 12.1.1.2
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=1 ttl=64 time=0.416 ms
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=64 time=0.763 ms
@@ -303,7 +373,7 @@ PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 --- 12.1.1.2 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1008ms
 rtt min/avg/max/mdev = 0.416/0.589/0.763/0.175 ms
-$ docker exec -it oai-ext-dn ping -c 2 12.1.1.3
+docker-compose-host $: docker exec oai-ext-dn ping -c 2 12.1.1.3
 PING 12.1.1.3 (12.1.1.3) 56(84) bytes of data.
 64 bytes from 12.1.1.3: icmp_seq=1 ttl=64 time=0.328 ms
 64 bytes from 12.1.1.3: icmp_seq=2 ttl=64 time=0.620 ms
@@ -311,7 +381,7 @@ PING 12.1.1.3 (12.1.1.3) 56(84) bytes of data.
 --- 12.1.1.3 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1005ms
 rtt min/avg/max/mdev = 0.328/0.474/0.620/0.146 ms
-$ docker exec -it oai-ext-dn ping -c 2 12.1.1.4
+docker-compose-host $: docker exec oai-ext-dn ping -c 2 12.1.1.4
 PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
 64 bytes from 12.1.1.4: icmp_seq=1 ttl=64 time=0.408 ms
 64 bytes from 12.1.1.4: icmp_seq=2 ttl=64 time=0.694 ms
@@ -319,7 +389,7 @@ PING 12.1.1.4 (12.1.1.4) 56(84) bytes of data.
 --- 12.1.1.4 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1032ms
 rtt min/avg/max/mdev = 0.408/0.551/0.694/0.143 ms
-$ docker exec -it oai-ext-dn ping -c 2 12.1.1.5
+docker-compose-host $: docker exec oai-ext-dn ping -c 2 12.1.1.5
 PING 12.1.1.5 (12.1.1.5) 56(84) bytes of data.
 64 bytes from 12.1.1.5: icmp_seq=1 ttl=64 time=0.289 ms
 64 bytes from 12.1.1.5: icmp_seq=2 ttl=64 time=0.233 ms
@@ -327,13 +397,37 @@ PING 12.1.1.5 (12.1.1.5) 56(84) bytes of data.
 --- 12.1.1.5 ping statistics ---
 2 packets transmitted, 2 received, 0% packet loss, time 1004ms
 rtt min/avg/max/mdev = 0.233/0.261/0.289/0.028 ms
+docker-compose-host $: docker exec oai-ext-dn ping -c 2 12.1.1.6
+PING 12.1.1.6 (12.1.1.6) 56(84) bytes of data.
+64 bytes from 12.1.1.6: icmp_seq=1 ttl=63 time=0.577 ms
+64 bytes from 12.1.1.6: icmp_seq=2 ttl=63 time=0.346 ms
+
+--- 12.1.1.6 ping statistics ---
+2 packets transmitted, 2 received, 0% packet loss, time 1015ms
+rtt min/avg/max/mdev = 0.346/0.461/0.577/0.117 ms
 ```
+
+Let recover one last time the logs:
+
+``` shell
+docker-compose-host $: docker logs oai-nrf > /tmp/oai/mini-gnbsim/nrf.log 2>&1
+docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
+docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
+docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
+docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
+docker-compose-host $: docker logs gnbsim2 > /tmp/oai/mini-gnbsim/gnbsim2.log 2>&1
+docker-compose-host $: docker logs gnbsim3 > /tmp/oai/mini-gnbsim/gnbsim3.log 2>&1
+docker-compose-host $: docker logs gnbsim4 > /tmp/oai/mini-gnbsim/gnbsim4.log 2>&1
+docker-compose-host $: docker logs gnbsim5 > /tmp/oai/mini-gnbsim/gnbsim5.log 2>&1
+```
+## 10. Undeploy the network functions
 
 Last thing is to remove all services - <br/>
 
-* Undeploy the gnbsim
-```bash
-/oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-gnbsim.yaml down
+### 10.1. Undeploy the gnbsim container(s)
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down
 Stopping service gnbsim ...
 Stopping gnbsim5 ... done
 Stopping gnbsim4 ... done
@@ -349,10 +443,12 @@ Network demo-oai-public-net is external, skipping
 Service gnbsim is  stopped
 ```
 
-* Undeploy the core network
-```bash
-oai-cn5g-fed/docker-compose$ python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
+### 10.2. Undeploy the core network
+
+``` shell
+docker-compose-host $: python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
+## 11. End of tutorial

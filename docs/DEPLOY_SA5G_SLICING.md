@@ -207,7 +207,7 @@ Creating rfsim5g-oai-nr-ue1 ... done
 ```
 Wait a bit 
 ``` shell
-docker-compose-host $: sleep 30
+docker-compose-host $: sleep 60
 ```
 
 ``` shell

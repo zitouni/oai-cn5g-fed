@@ -125,8 +125,8 @@ services:
             - SMF_INTERFACE_PORT_FOR_SBI=80
             - SMF_INTERFACE_HTTP2_PORT_FOR_SBI=9090
             - SMF_API_VERSION=v1
-            - DEFAULT_DNS_IPV4_ADDRESS=192.168.18.129
-            - DEFAULT_DNS_SEC_IPV4_ADDRESS=192.168.18.129
+            - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
+            - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
             - AMF_IPV4_ADDRESS=192.168.70.132
             - AMF_PORT=80
             - AMF_API_VERSION=v1
@@ -147,6 +147,7 @@ services:
             - DNN_RANGE1=12.1.1.2 - 12.1.1.128
             - DNN_RANGE0=12.2.1.2 - 12.2.1.128
             - DNN_NI1=default
+            - UE_MTU=1500
         depends_on:
             - oai-nrf
             - oai-amf
@@ -210,12 +211,10 @@ services:
             public_net:
                 ipv4_address: 192.168.70.134
     oai-ext-dn:
-        image: ubuntu:bionic
+        image: trf-gen-cn5g:latest
         privileged: true
         container_name: oai-ext-dn
         entrypoint: /bin/bash -c \
-              "apt update; apt install -y iptables iproute2 iperf3 iputils-ping;"\
-              "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; sleep infinity"
         depends_on:
             - oai-spgwu

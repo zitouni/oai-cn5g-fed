@@ -50,6 +50,7 @@ def upfVppTag = params.upfVppTag
 def upfVppBranch = params.upfVppTag
 
 // means to shorten the pipeline
+def run_mini_gnbsim = true
 def run_static_ue_ip = true
 def run_vpp_upf = true
 def run_slicing_w_nssf = true
@@ -88,6 +89,7 @@ pipeline {
             if (params.NRF_TAG != null) {
               nrfTag = params.NRF_TAG
               echo "Upstream Job passed NRF_TAG to use: ${nrfTag}"
+              run_mini_gnbsim = true
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -99,6 +101,7 @@ pipeline {
             if (params.AMF_TAG != null) {
               amfTag = params.AMF_TAG
               echo "Upstream Job passed AMF_TAG to use: ${amfTag}"
+              run_mini_gnbsim = true
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -110,6 +113,7 @@ pipeline {
             if (params.SMF_TAG != null) {
               smfTag = params.SMF_TAG
               echo "Upstream Job passed SMF_TAG to use: ${smfTag}"
+              run_mini_gnbsim = true
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -121,6 +125,7 @@ pipeline {
             if (params.SPGWU_TAG != null) {
               spgwuTag = params.SPGWU_TAG
               echo "Upstream Job passed SPGWU_TAG to use: ${spgwuTag}"
+              run_mini_gnbsim = true
               run_static_ue_ip = true
               run_vpp_upf = false
               run_slicing_w_nssf = true
@@ -132,6 +137,7 @@ pipeline {
             if (params.AUSF_TAG != null) {
               ausfTag = params.AUSF_TAG
               echo "Upstream Job passed AUSF_TAG to use: ${ausfTag}"
+              run_mini_gnbsim = false
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -143,6 +149,7 @@ pipeline {
             if (params.UDM_TAG != null) {
               udmTag = params.UDM_TAG
               echo "Upstream Job passed UDM_TAG to use: ${udmTag}"
+              run_mini_gnbsim = false
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -154,6 +161,7 @@ pipeline {
             if (params.UDR_TAG != null) {
               udrTag = params.UDR_TAG
               echo "Upstream Job passed UDR_TAG to use: ${udrTag}"
+              run_mini_gnbsim = false
               run_static_ue_ip = true
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -165,6 +173,7 @@ pipeline {
             if (params.NSSF_TAG != null) {
               nssfTag = params.NSSF_TAG
               echo "Upstream Job passed NSSF_TAG to use: ${nssfTag}"
+              run_mini_gnbsim = false
               run_static_ue_ip = false
               run_vpp_upf = false
               run_slicing_w_nssf = true
@@ -176,6 +185,7 @@ pipeline {
             if (params.UPF_VPP_TAG != null) {
               upfVppTag = params.UPF_VPP_TAG
               echo "Upstream Job passed UPF_VPP_TAG to use: ${upfVppTag}"
+              run_mini_gnbsim = false
               run_static_ue_ip = false
               run_vpp_upf = true
               run_slicing_w_nssf = true
@@ -258,6 +268,29 @@ pipeline {
           } catch (Exception e) {
             error "OAI UPF-VPP Image tag to test does not exist!"
           }
+        }
+      }
+    }
+    stage ('Check Minimalist Deployment Tutorial') {
+      when { expression {run_mini_gnbsim} }
+      steps {
+        script {
+          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          dir ('ci-scripts') {
+            // Tee will make the command always pass
+            // Please use the same log name as the folder used in the tutorial
+            sh 'python3 ./checkTutorial.py --tutorial DEPLOY_SA5G_WITH_GNBSIM.md | tee ../archives/mini-gnbsim.log'
+          }
+          // Checking if FAIL appears
+          try {
+            sh 'grep -L FAIL archives/mini-gnbsim.log > /dev/null'
+            currentBuild.result = 'FAILURE'
+            echo "Minimalist gnbsim Tutorial FAILED"
+          } catch (Exception e) {
+            echo "Minimalist gnbsim Tutorial PASSED"
+          }
+          archivesArtifacts('docker-compose/docker-compose-mini-nrf.yaml', 'mini-gnbsim')
+          cleanUpDockerCompose('docker-compose/docker-compose-mini-nrf.yaml')
         }
       }
     }
