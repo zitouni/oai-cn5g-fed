@@ -193,7 +193,7 @@ rtt min/avg/max/mdev = 0.145/0.276/0.448/0.127 ms
 ```
 
 Here we ping external DN from UE (gnbsim) container.
-``` shell
+``` console
 docker-compose-host $: docker exec gnbsim ping -c 3 -I 12.1.1.2 google.com
 PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
 64 bytes from par10s10-in-f238.1e100.net (172.217.18.238): icmp_seq=1 ttl=115 time=5.12 ms
