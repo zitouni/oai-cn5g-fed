@@ -440,6 +440,15 @@ $ sudo podman build --target oai-nssf --tag oai-nssf:latest \
 
 The above command is with podman, in case of docker it can be changed with its docker equivalent.
 
+# 12. Build Traffic-Generator Image #
+
+This is just an utility image.
+
+```bash
+$ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
+               --file ci-scripts/Dockerfile.traffic.generator.ubuntu18.04 \
+                .
+```
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)
 
