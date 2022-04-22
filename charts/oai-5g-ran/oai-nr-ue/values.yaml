@@ -64,14 +64,14 @@ multus:
 
 config:
   timeZone: "Europe/Paris"
-  rfSimulator: "172.17.0.8"    # ip-address of gnb rf-sim
-  fullImsi: "208990100001100"       # make sure all the below entries are present in the subscriber database
+  rfSimulator: "172.17.0.9"    # ip-address of gnb rf-sim
+  fullImsi: "208990100001121"       # make sure all the below entries are present in the subscriber database
   fullKey: "fec86ba6eb707ed08905757b1bb44b8f" 
   opc: "C42449363BBAD02B66D16BC975D77CC1"
   dnn: "oai" 
   nssaiSst: "1"                     # configure according to gnb and amf, smf and upf 
   nssaiSd: "10203"                       
-  useAdditionalOptions: "-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod"
+  useAdditionalOptions: "-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod"  #"--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time"
   
 persistence:
   sharedvolume: false

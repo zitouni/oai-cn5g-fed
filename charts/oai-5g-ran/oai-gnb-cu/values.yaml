@@ -52,7 +52,7 @@ service:
   f1Port: 2153
 
 start:
-  gnb: true
+  gnbcu: true
   tcpdump: false
 
 # gNB needs two seperate interface one for ngap (N2) and other one for gtpu (N3) 
@@ -79,7 +79,7 @@ multus:    # needed when gnB service will run on another interface rather than t
 config:
   timeZone: "Europe/Paris"
   rfSimulator: "server" 
-  gnbName: "oai-cu-rfsim"
+  gnbcuName: "oai-cu-rfsim"
   usesacu: "yes"
   mcc: "208"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "99"    # check the information with AMF, SMF, UPF/SPGWU
@@ -95,10 +95,10 @@ config:
   gnbNguIpAddress: "status.podIP" # n3IPadd in case multus create is true
   f1IfName: "eth0"                # net3 incase multus create is true
   f1cuIpAddress: "status.podIP"   
-  f1duIpAddress: ""
+  f1duIpAddress: "127.0.0.1"
   f1cuPort: "2153"
   f1duPort: "2153"
-  useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
+  useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
 
 persistence:
   sharedvolume: false

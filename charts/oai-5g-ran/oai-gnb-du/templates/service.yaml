@@ -3,7 +3,7 @@ kind: Service
 metadata:
   name: {{ .Chart.Name }}
   labels:
-    {{- include "oai-gnb.labels" . | nindent 4 }}
+    {{- include "oai-gnb-du.labels" . | nindent 4 }}
 spec:
   type: {{ .Values.service.type }}
 {{- if  contains "ClusterIP" .Values.service.type }}
@@ -27,4 +27,4 @@ spec:
       targetPort: {{ .Values.service.f1Port }}
       protocol: UDP
   selector:
-    {{- include "oai-gnb.selectorLabels" . | nindent 4 }}
+    {{- include "oai-gnb-du.selectorLabels" . | nindent 4 }}
