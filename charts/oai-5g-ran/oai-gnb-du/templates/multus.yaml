@@ -39,7 +39,6 @@ spec:
         ]
       }
     }'
-{{- end }}
 ---
 apiVersion: "k8s.cni.cncf.io/v1"
 kind: NetworkAttachmentDefinition 

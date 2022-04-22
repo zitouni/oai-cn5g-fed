@@ -3,6 +3,8 @@ mysql:
   weight: 0
   imagePullPolicy: IfNotPresent
   oai5gdatabase: basic
+  imagePullSecrets:
+    - name: regcred
   persistence:
     enabled: false
 oai-nssf:

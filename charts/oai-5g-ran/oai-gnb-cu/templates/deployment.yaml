@@ -35,7 +35,7 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
-      - name: gnb-cu
+      - name: gnbcu
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         {{- if .Values.resources.define}}
         resources:
@@ -58,7 +58,7 @@ spec:
         - containerPort: {{ .Values.service.x2cPort }}
           name: x2c
           protocol: UDP
-        {{- if .Values.start.gnb-cu}}
+        {{- if .Values.start.gnbcu}}
         {{- else}}
         command:
           - /bin/sleep
@@ -84,7 +84,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: gnb-cuName
+                key: gnbcuName
           - name: MCC
             valueFrom:
               configMapKeyRef:
@@ -129,9 +129,9 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: gnb-cuNgaIfName
+                key: gnbNgaIfName
           - name: GNB_NGA_IP_ADDRESS
-            {{- if eq .Values.config.gnb-cuNgaIpAddress "status.podIP" }}
+            {{- if eq .Values.config.gnbNgaIpAddress "status.podIP" }}
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
@@ -139,15 +139,15 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: gnb-cuNgaIpAddress
+                key: gnbNgaIpAddress
             {{- end}}
           - name: GNB_NGU_IF_NAME
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: gnb-cuNguIfName
+                key: gnbNguIfName
           - name: GNB_NGU_IP_ADDRESS
-            {{- if eq .Values.config.gnb-cuNguIpAddress "status.podIP" }}
+            {{- if eq .Values.config.gnbNguIpAddress "status.podIP" }}
             valueFrom:
               fieldRef:
                 fieldPath: status.podIP
@@ -155,7 +155,7 @@ spec:
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
-                key: gnb-cuNguIpAddress
+                key: gnbNguIpAddress
             {{- end}}
           - name: F1_IF_NAME
             valueFrom:
