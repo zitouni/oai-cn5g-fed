@@ -171,9 +171,9 @@ In case of pulling images from docker-hub it will be good to configure an image 
 
 ```console
 #kubernetes
-$: kubectl create secret docker-registry personalkey --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+$: kubectl create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 #openshift
-$: oc create secret docker-registry personalkey --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
+$: oc create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```
 
 There are more ways to make docker secrete you can follow this [link](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). After creating the secrete mention it in the `values.yaml` 
@@ -245,6 +245,48 @@ Once the configuration is finished the charts can be deployed with a user who ha
 
 ``` shell
 $: helm spray .
+[spray] processing chart from local file or directory "."...
+[spray] deploying solution chart "." in namespace "default"
+[spray] processing sub-charts of weight 0
+[spray]   > upgrading release "mysql": deploying first revision (appVersion 5.7.30)...
+[spray]     o release: "mysql" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 1
+[spray]   > upgrading release "oai-nrf": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-nrf" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 2
+[spray]   > upgrading release "oai-udr": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-udr" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 3
+[spray]   > upgrading release "oai-udm": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-udm" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 4
+[spray]   > upgrading release "oai-ausf": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-ausf" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 5
+[spray]   > upgrading release "oai-amf": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-amf" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 6
+[spray]   > upgrading release "oai-spgwu-tiny": deploying first revision (appVersion 1.1.5)...
+[spray]     o release: "oai-spgwu-tiny" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] processing sub-charts of weight 7
+[spray]   > upgrading release "oai-smf": deploying first revision (appVersion 1.4.0)...
+[spray]     o release: "oai-smf" upgraded
+[spray]   > waiting for liveness and readiness...
+[spray] upgrade of solution chart "." completed in 3m23s
+$: export AMF_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-amf" -o jsonpath="{.items[0].metadata.name}")
+$: export SMF_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-smf" -o jsonpath="{.items[0].metadata.name}")
+$: export SPGWU_TINY_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-spgwu-tiny" -o jsonpath="{.items[0].metadata.name}"
+$: export AMF_eth0_POD_IP=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-amf" -o jsonpath="{.items[0].status.podIP}")
+$: kubectl logs -c spgwu $SPGWU_TINY_POD_NAME | grep 'Received SX HEARTBEAT REQUEST' | wc -l
+$: kubectl logs -c smf $SMF_POD_NAME | grep 'handle_receive(16 bytes)' | wc -l
+
 ```
 
 This command can take around 5-7 mins depending on your network speed and cluster configuration (computational capacity) 
@@ -301,6 +343,32 @@ config:
 ### 5.3 Deploy OAI-gNB RFSimulator
 
 
+```shell
+$: helm install gnb oai-gnb
+helm install gnb oai-gnb/
+NAME: gnb
+LAST DEPLOYED: Fri Apr 22 17:42:38 2022
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+1. Get the application name by running these commands:
+  export GNB_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
+  export GNB_eth0_IP=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
+2. Note: This helm chart of OAI-gNB is only tested in RF-simulator mode not tested with hardware on Openshift/Kubernetes Cluster
+$: export GNB_POD_NAME=$(kubectl get pods --namespace oa -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
+$: export GNB_eth0_IP=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
+```
+
+
+To check if gnB is connected, read the logs of amf and check N2 setup procedure was correct or not, 
+
+```shell
+$: kubectl logs -c amf $AMF_POD_NAME | grep 'Sending NG_SETUP_RESPONSE Ok' 
+[2022-04-22T15:42:45.370382] [AMF] [amf_n2 ] [debug] Sending NG_SETUP_RESPONSE Ok
+```
+
 ### 5.4 Configure OAI-NR-UE RFSimulator
 
 NR-UE requires the ip-address of the gNB which you have acquired earlier, use that ip-address and configure it in `config.rfSimulator`. We are not using multus here just for similicity, generally there should be two interfaces.
@@ -322,22 +390,32 @@ config:
 ### 5.5 Deploy OAI-NR-UE RFSimulator
 
 
-```bash
+```shell
+$: sed -i 's/rfSimulator: "172.17.0.9"/rfSimulator: '"$GNB_eth0_IP"'/g' oai-nr-ue/values.yaml
+$: helm install nrue oai-nr-ue/
+NAME: nrue
+LAST DEPLOYED: Fri Apr 22 17:52:39 2022
+NAMESPACE: default
+STATUS: deployed
+REVISION: 1
+TEST SUITE: None
+NOTES:
+1. Get the application name by running these commands:
+  export NR_UE_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
+2. Note: This helm chart of OAI-NR-UE is only tested in RF-simulator mode not tested with hardware on Openshift/Kubernetes Cluster
+$: export NR_UE_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
+```
+
+Now at this time you would have received an ip-address, you can confirm that ue properly got attached via AMF logs or SMF logs. We recommend that you read the logs to understand the message exchanges between different entities. 
+
+### 5.6 Performing some traffic testing
+
+Inside the nr-ue pod there is an extra tcdump container which can be use to perform traffic testing via iperf3 or 
+
+```shell
 $ oc rsh -c nr-ue oai-nr-ue-6dd669d78f-ktttg
 or 
 $ kubectl exec -it nr-ue oai-nr-ue-6dd669d78f-ktttg bash
-
-$ route -n 
-sh-4.4# route -n
-Kernel IP routing table
-Destination     Gateway         Genmask         Flags Metric Ref    Use Iface
-0.0.0.0         192.168.18.129  0.0.0.0         UG    0      0        0 net1
-10.128.0.0      0.0.0.0         255.252.0.0     U     0      0        0 eth0
-10.130.4.0      0.0.0.0         255.255.254.0   U     0      0        0 eth0
-12.1.1.0        0.0.0.0         255.255.255.0   U     0      0        0 oaitun_ue1
-172.30.0.0      10.130.4.1      255.255.0.0     UG    0      0        0 eth0
-192.168.18.0    0.0.0.0         255.255.255.0   U     0      0        0 net1
-224.0.0.0       0.0.0.0         240.0.0.0       U     0      0        0 eth0
 
 $ ping -I oaitun_ue1 -c4 google.fr 
 PING google.fr (172.217.19.131) 56(84) bytes of data.
