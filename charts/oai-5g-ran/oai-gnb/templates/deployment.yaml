@@ -21,10 +21,10 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-net1",
-                 "default-route": ["{{ .Values.multus.gateway }}"]
+                 "default-route": ["{{ .Values.multus.n2Gateway }}"]
           },
           {
-                 "name": "{{ .Chart.Name }}-net2",
+                 "name": "{{ .Chart.Name }}-net2"
           }]
     {{- end }}
     spec:
