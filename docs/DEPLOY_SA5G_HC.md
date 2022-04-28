@@ -29,12 +29,13 @@ OAI 5G core network have different network functions which can be used invidiual
 3.  [Configuring Helm Charts](#3-configuring-helm-charts)
 4.  [Deploying 5g Core Helm Charts](#4-deploying-helm-charts)
 5.  [Optional: Testing with OAI gNB RFsimulator and NR-UE](#5-testing-with-oai-gnb-rfsimulator-and-nr-ue)
+6.  [Extra](#6-extra)
 
 
 ## 1. Description
 
 
-The helm charts can be used on any production grade kubernetes cluster or even vanilla kubernetes we tested on a single node 4 CPU minikube cluster with docker virtualization environment. In our testing environment we deploy these charts on our inhouse Openshift cluster the cluster information can be found below.
+The helm charts can be used on any production grade kubernetes cluster or even vanilla kubernetes. We have also tested on a single node 4 CPU minikube cluster with docker virtualization environment. In our testing environment we deploy these charts on our inhouse Openshift cluster the cluster information can be found below.
 
 | Software                        | Version                             |
 |:--------------------------------|:----------------------------------- |
@@ -42,7 +43,7 @@ The helm charts can be used on any production grade kubernetes cluster or even v
 | Kubernetes Version              | Kubernetes Version: v1.22.5+5c84e52 |
 | helm                            | v3.6.2+5.el8                        |
 | helm-spray (plugin)             | v4.0.10                             |
-| Base images of Network functions| Ubuntu 18.04/UBI 8 (CoreOS RHEL)    |
+| Base images of Network functions| Ubuntu 18.04/UBI 8(RHEL)            |
 
 We are deploying the helm charts using `helm spray` plugin of `helm` as the network functions have dependency and they are required to be deployed in a certain order. To get more information on helm spray you can follow this [link](https://github.com/ThalesGroup/helm-spray).
 
@@ -83,9 +84,9 @@ testing-pod.yaml
 
 All the OAI core network charts are present in `oai-5g-core` folder, there you can find charts of individual network functions and for the above described three different deployment settings. 
 
-1. Folder `oai-5g-mini` is for minimilist deployment
-2. Folder `oai-5g-basic` is for basic deployment
-3. Folder `oai-5g-slicing` is for slicing deployment
+1. Folder `oai-5g-mini` is for [minimilist deployment](../charts/oai-5g-core/oai-5g-mini)
+2. Folder `oai-5g-basic` is for [basic deployment](../charts/oai-5g-core/oai-5g-basic)
+3. Folder `oai-5g-slicing` is for [slicing deployment](../charts/oai-5g-core/oai-5g-slicing)
 
 These charts are configured keeping in mind 5G service based architecture, if you want to deploy using reference based architecture then you need to make certain changes. 
 
@@ -101,7 +102,7 @@ oai-5g-basic/
 
 In the `values.yaml` file we have put only those configuration parameters which we think are really necessary and they should be changed based on PLMN, DNN and sim card information. In case you want to change some other parameters we suggest you go in the helm charts of the network function and do the change there. 
 
-Helm chart of every network function looks similar and has the below structure. Only the chart of mysql database is different and the NRF 
+Helm chart of every network function looks similar and has the below structure. Only the chart of mysql database is different and the AMF 
 
 ```
 Network_function/
@@ -144,6 +145,7 @@ or
 $: oc new-project oai
 ```
 
+**NOTE**: Any changes done in the parent chart (Mini, basic, slicing scenario helm charts) will overwrite the sub charts. 
 
 ### 3.1 Networking related information
 
@@ -151,17 +153,28 @@ Network function discovers each-other using NRF and instead of using the ip-addr
 
 *For example: AMF registers with NRF using NRF FQDN (`oai-nrf-svc.oai.svc.cluster.local`). This way we can get rid of any static ip-address configuration. Though we are still keeping the fields where we are mentioning ip-addresses for example `nrfIpv4Addr` in amf values.yaml but that is not being used if `USE_FQDN_DNS` is set to `true`*
 
-To reduce the complexity of this tutorial we will provide only one interface for every network function. This type of setting is not encouraged for testing the core network. Generally AMF, SMF and UPF require multiple interface those interfaces can be configured using multus CNI. 
+To reduce the complexity of this tutorial we will provide only one interface for every network function. This type of setting is not encouraged for testing the core network. Generally AMF, SMF and UPF require multiple interface those interfaces can be configured using multus CNI. You can configure the extra interfaces inside parent charts of basic, mini or slicing scenario or inside individual network function. 
 
 **Note**: AMF, SMF and UPF (oai-spgwu-tiny) can be configured with multiple interfaces using multus CNI if needed. In the `values.yaml` of each network function there are appropriate comments. There is a section `multus` in the value.yaml of these network functions.
 
 ```
-## Example from ../charts/oai-amf/values.yaml
+## Example from charts/oai-5g-core/oai-amf/values.yaml
 multus:
   create: false
-  n4IPadd: "192.168.18.178"
-  n4Netmask: "24"
-  n4Gw: "192.168.18.129"
+  n1IPadd: "172.21.10.6"
+  n1Netmask: "22"
+  n1Gateway: "172.21.11.254"
+  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+
+## If you change in a parent chart basic, mini or slicing you don't have to change in the network function chart
+
+## Example from charts/oai-5g-core/oai-5g-basic
+multus:
+  create: false
+  n1IPadd: "172.21.10.6"
+  n1Netmask: "22"
+  n1Gateway: "172.21.11.254"
+  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
 ```
 
 ### 3.2 Network function Images
@@ -246,7 +259,7 @@ Once the configuration is finished the charts can be deployed with a user who ha
 ``` shell
 $: helm spray .
 [spray] processing chart from local file or directory "."...
-[spray] deploying solution chart "." in namespace "default"
+[spray] deploying solution chart "." in namespace "oai"
 [spray] processing sub-charts of weight 0
 [spray]   > upgrading release "mysql": deploying first revision (appVersion 5.7.30)...
 [spray]     o release: "mysql" upgraded
@@ -282,10 +295,8 @@ $: helm spray .
 [spray] upgrade of solution chart "." completed in 3m23s
 $: export AMF_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-amf" -o jsonpath="{.items[0].metadata.name}")
 $: export SMF_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-smf" -o jsonpath="{.items[0].metadata.name}")
-$: export SPGWU_TINY_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-spgwu-tiny" -o jsonpath="{.items[0].metadata.name}"
+$: export SPGWU_TINY_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-spgwu-tiny" -o jsonpath="{.items[0].metadata.name}")
 $: export AMF_eth0_POD_IP=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-amf" -o jsonpath="{.items[0].status.podIP}")
-$: kubectl logs -c spgwu $SPGWU_TINY_POD_NAME | grep 'Received SX HEARTBEAT REQUEST' | wc -l
-$: kubectl logs -c smf $SMF_POD_NAME | grep 'handle_receive(16 bytes)' | wc -l
 
 ```
 
@@ -296,11 +307,11 @@ This command can take around 5-7 mins depending on your network speed and cluste
 Check the logs `smf` and `upf` to see that the PFCP session is properly configured, 
 
 ```shell
-$: 
-$:
+$: kubectl logs -c spgwu $SPGWU_TINY_POD_NAME | grep 'Received SX HEARTBEAT REQUEST' | wc -l
+$: kubectl logs -c smf $SMF_POD_NAME | grep 'handle_receive(16 bytes)' | wc -l
 ```
 
-This will verify that `smf` and `upf` have successfully registered to `nrf` and there is a PFCP session. 
+If the value is more than 1 for both then it will verify that `smf` and `upf` have successfully registered to `nrf` and there is a PFCP session. 
 
 
 ## 5 Testing with OAI gNB RFsimulator and NR-UE
@@ -337,28 +348,30 @@ config:
   gnbNgaIpAddress: "status.podIP" # n2IPadd in case multus create is true
   gnbNguIfName: "eth0"   #net2 in case multus create is true gtu interface for upf/spgwu
   gnbNguIpAddress: "status.podIP" # n3IPadd in case multus create is true
-  useAdditionalOptions: "--sa -E --rfsim"
+  useAdditionalOptions: "--sa -E --rfsim"   #Do not change this option this is for rf-simulator
 ``` 
 
 ### 5.3 Deploy OAI-gNB RFSimulator
 
 
 ```shell
+$: cd ../../oai-5g-ran/
+$: sed -i 's/amfIpAddress: "172.17.0.8"/amfIpAddress: '"$AMF_eth0_POD_IP"'/g' oai-gnb/values.yaml
 $: helm install gnb oai-gnb
 helm install gnb oai-gnb/
 NAME: gnb
 LAST DEPLOYED: Fri Apr 22 17:42:38 2022
-NAMESPACE: default
+NAMESPACE: oai
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 NOTES:
 1. Get the application name by running these commands:
-  export GNB_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
-  export GNB_eth0_IP=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
+  export GNB_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
+  export GNB_eth0_IP=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
 2. Note: This helm chart of OAI-gNB is only tested in RF-simulator mode not tested with hardware on Openshift/Kubernetes Cluster
-$: export GNB_POD_NAME=$(kubectl get pods --namespace oa -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
-$: export GNB_eth0_IP=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
+$: export GNB_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[0].metadata.name}")
+$: export GNB_eth0_IP=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-gnb,app.kubernetes.io/instance=gnb" -o jsonpath="{.items[*].status.podIP}")
 ```
 
 
@@ -384,7 +397,7 @@ config:
   dnn: "oai" 
   nssaiSst: "1"                     # configure according to gnb and amf, smf and upf 
   nssaiSd: "10203"                       
-  useAdditionalOptions: "-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod"
+  useAdditionalOptions: "-E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod" 
 ```
 
 ### 5.5 Deploy OAI-NR-UE RFSimulator
@@ -395,29 +408,27 @@ $: sed -i 's/rfSimulator: "172.17.0.9"/rfSimulator: '"$GNB_eth0_IP"'/g' oai-nr-u
 $: helm install nrue oai-nr-ue/
 NAME: nrue
 LAST DEPLOYED: Fri Apr 22 17:52:39 2022
-NAMESPACE: default
+NAMESPACE: oai
 STATUS: deployed
 REVISION: 1
 TEST SUITE: None
 NOTES:
 1. Get the application name by running these commands:
-  export NR_UE_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
+  export NR_UE_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
 2. Note: This helm chart of OAI-NR-UE is only tested in RF-simulator mode not tested with hardware on Openshift/Kubernetes Cluster
-$: export NR_UE_POD_NAME=$(kubectl get pods --namespace default -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
+$: export NR_UE_POD_NAME=$(kubectl get pods --namespace oai -l "app.kubernetes.io/name=oai-nr-ue,app.kubernetes.io/instance=nrue" -o jsonpath="{.items[0].metadata.name}")
 ```
 
-Now at this time you would have received an ip-address, you can confirm that ue properly got attached via AMF logs or SMF logs. We recommend that you read the logs to understand the message exchanges between different entities. 
+Now you are start reading the logs of amf, smf and other network function to understand the message flow. Once the pdu session establishment procedure is finished you will receive an ip-address. You can start performing some testing. 
+
 
 ### 5.6 Performing some traffic testing
 
 Inside the nr-ue pod there is an extra tcdump container which can be use to perform traffic testing via iperf3 or 
 
 ```shell
-$ oc rsh -c nr-ue oai-nr-ue-6dd669d78f-ktttg
-or 
-$ kubectl exec -it nr-ue oai-nr-ue-6dd669d78f-ktttg bash
-
-$ ping -I oaitun_ue1 -c4 google.fr 
+$: kubectl exec -it -c nr-ue $NR_UE_POD_NAME -- /bin/bash
+$ ping -I oaitun_ue1 -c4 google.fr
 PING google.fr (172.217.19.131) 56(84) bytes of data.
 64 bytes from par03s12-in-f131.1e100.net (172.217.19.131): icmp_seq=1 ttl=116 time=27.4 ms
 64 bytes from par03s12-in-f131.1e100.net (172.217.19.131): icmp_seq=2 ttl=116 time=12.5 ms
@@ -431,7 +442,17 @@ rtt min/avg/max/mdev = 12.513/21.352/29.042/7.031 ms
 ## incase above doesn't work try with 8.8.8.8 instead of dns. If that works then probably you have't configure dns properly in SMF. 
 ```
 
-## 6. Changes for Vanila Kubernetes
+### 5.7 Uninstall the helm charts
+
+You can remove them one by one or you can use this command
+
+``` shell
+$ helm uninstall -n oai $(helm list -aq -n oai)
+```
+
+## 6. Extra
+
+### 6.1 Changes for Vanila Kubernetes
 
 All the OAI containers run the network function process as they are root inside the container in the docker engine this is not a problem because by default user is root inside container. But incase of podman in openshift, the containers run as non root users. Some containers like SPGWU, gnb and nr-ue and the tcpdump container to capture packets are privileged containers. In this case in `specs` of these pods the `privilaged` flag should be true. 
 
@@ -467,3 +488,26 @@ roleRef:
   name: {{ .Chart.Name }}-{{ .Values.namespace }}-role
   apiGroup: rbac.authorization.k8s.io
 ```
+
+### 6.2 How to install helm spray plugin?
+
+
+``` console
+$: helm plugin install https://github.com/ThalesGroup/helm-spray
+Downloading and installing spray v4.0.0...
+Installed plugin: spray
+-bash-4.2$ helm plugin list
+NAME    VERSION DESCRIPTION
+spray   4.0.0   Helm plugin for upgrading sub-charts from umbrella chart with dependency orders
+```
+
+### 6.2 How to capture pcaps inside a network function?
+
+We have specially provided a sperate container to capture pcap you can get inside this container and use tcpdump command 
+
+```console
+$ kubectl exec -it -c amf $AMF_POD_NAME -- /bin/sh 
+#
+```
+
+
