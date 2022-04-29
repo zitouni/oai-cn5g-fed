@@ -5,7 +5,7 @@ replicaCount: 1
 
 nfimage:  # image name either locally present or in a public/private repository
   registry: local
-  repository: docker.io/rdefosseoai/oai-amf           ## The image will be pulled from dockerhub
+  repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
   version: develop                                    ## The branch to be used to pull from dockerhub
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent

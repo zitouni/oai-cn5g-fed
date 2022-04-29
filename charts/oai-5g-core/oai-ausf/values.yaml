@@ -6,7 +6,7 @@ replicaCount: 1
 
 nfimage:
   registry: local
-  repository: docker.io/rdefosseoai/oai-ausf   ## rdefosseoai/oai-ausf # image name either locally present or in a public/private repository
+  repository: docker.io/oaisoftwarealliance/oai-ausf   ## oaisoftwarealliance/oai-ausf # image name either locally present or in a public/private repository
   version: develop       ## latest/v1.4.0 tag for stable and develop for experimental
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent

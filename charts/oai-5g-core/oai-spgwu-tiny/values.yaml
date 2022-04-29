@@ -6,14 +6,14 @@ replicaCount: 1
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-spgwu-tiny # dockerhub rdefosseoai/oai-spgwu-tiny
+  repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny # dockerhub oaisoftwarealliance/oai-spgwu-tiny
   version: develop            # develop for experimental feature in that case check the configuration file 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
+  repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent

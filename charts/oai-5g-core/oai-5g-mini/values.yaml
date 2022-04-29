@@ -11,7 +11,7 @@ oai-nrf:
   enabled: true
   weight: 1
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/rdefosseoai/oai-nrf           ## The image will be pulled from dockerhub
+    repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
@@ -22,7 +22,7 @@ oai-amf:
   enabled: true
   weight: 2
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/rdefosseoai/oai-amf           ## The image will be pulled from dockerhub
+    repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
@@ -59,7 +59,7 @@ oai-spgwu-tiny:
   enabled: true
   weight: 3
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/rdefosseoai/oai-spgwu-tiny    ## The image will be pulled from dockerhub
+    repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
@@ -83,7 +83,7 @@ oai-smf:
   enabled: true
   weight: 4
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/rdefosseoai/oai-smf           ## The image will be pulled from dockerhub
+    repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
     version: develop                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent

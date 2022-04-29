@@ -7,7 +7,7 @@ replicaCount: 1
 # NF image
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-nrf
+  repository: oaisoftwarealliance/oai-nrf
   version: develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent

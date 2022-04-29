@@ -6,7 +6,7 @@ replicaCount: 1
 
 nfimage:
   registry: local
-  repository: docker.io/rdefosseoai/oai-nr-ue           # dockehub rdefosseoai/oai-nr-ue
+  repository: docker.io/oaisoftwarealliance/oai-nr-ue           # dockehub oaisoftwarealliance/oai-nr-ue
   version: develop # image tag    # develop tag experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
