@@ -5,14 +5,14 @@ replicaCount: 1
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-smf          # dockerhub rdefosseoai/oai-smf
+  repository: docker.io/oaisoftwarealliance/oai-smf          # dockerhub oaisoftwarealliance/oai-smf
   version: develop             # develop for experimental features
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
+  repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent

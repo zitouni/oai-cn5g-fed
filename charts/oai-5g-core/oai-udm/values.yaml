@@ -6,7 +6,7 @@ replicaCount: 1
 
 nfimage:
   registry: local
-  repository: docker.io/rdefosseoai/oai-udm          ## rdefosseoai/oai-udm # image name either locally present or in a public/private repository
+  repository: docker.io/oaisoftwarealliance/oai-udm          ## oaisoftwarealliance/oai-udm # image name either locally present or in a public/private repository
   version: develop                         ## latest/v1.1.2 stable and develop for experimental
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
