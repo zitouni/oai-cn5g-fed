@@ -13,17 +13,13 @@
 </table>
 
 
+OAI 5G core network have different network functions which can be used invidiually or deployed all together in different combination on a production grade Kubernetes cluster like Openshift or a vanilla kubernetes cluster. 
 
-The cloud native network functions in production will be deployed using a production grade container orchestrator like Openshift of customize Kubernetes. OAI 5g Core network is being designed to keep up with the latest cloud native deployment scenarios. Each network function will be deployed individually using its own helm chart. In this tutorial we will deploy MFCN (Minimalist Functional Core Network) Flavour of OAI 5GC. 
+![Helm Chart Deployment](./images/helm-chart-mini.png)
 
-![Helm Chart Deployment](./images/helm_diag.png)
+**Reading time**: ~30
 
-
-**Reading time**: ~
-
-**Tutorial replication time**: ~
-
-**Humble request**: Our tutorial and helm chart are based on Openshift (RH) cluster, the workloads and objects are tailored according to openshift security policies. Some of Openshift objects and APIs are not available in Kubernetes in that case read the last section of this tutorial to make the changes which are specific to Kubernetes. 
+**Tutorial replication time**: ~40 mins
 
 
 **TABLE OF CONTENTS**
@@ -41,12 +37,12 @@ The cloud native network functions in production will be deployed using a produc
 The helm charts can be used on any production grade kubernetes cluster. In our lab we an Openshift cluster, the cluster information can be found below. We have also tested these charts on vanilla kubernetes.
 
 
-|Software                        |Version                            |
-|:-------------------------------|:----------------------------------|
-|Openshift Client Version        |4.4.10                             |
-|Kubernetes Version              |Kubernetes Version: v1.17.1+45f8ddb|
-|helm                            |v3.5.3                             |
-|Base images of Network functions|Ubuntu 18.04/UBI 8 (CoreOS RHEL)   |
+| Software                        | Version                             |
+|:--------------------------------|:----------------------------------- |
+| Openshift Client Version        | 4.9.X                               |
+| Kubernetes Version              | Kubernetes Version: v1.22.5+5c84e52 |
+| helm                            | v3.6.2+5.el8                        |
+| Base images of Network functions| Ubuntu 18.04/UBI 8 (CoreOS RHEL)    |
 
 
 ### Pre-requisite
@@ -125,18 +121,6 @@ There are more ways to make docker secrete you can follow this [link](https://ku
 ## good to use when pulling images from docker-hub
 imagePullSecrets: ['personalkey']
 ```
-
-In this tutorial we are using below images 
-
-|Network Function|Docker image name:tag            |
-|:---------------|:--------------------------------|
-|OAI-AMF         |rdefosseoai/oai-amf:v1.1.0       |
-|OAI-SMF         |rdefosseoai/oai-smf:develop      |
-|OAI-NRF         |rdefosseoai/oai-nrf:v1.1.0       |
-|OAI-SPGWU-TINY  |rdefosseoai/oai-spgwu-tiny:v1.1.2|
-|OAI-gNB         |rdefosseoai/oai-gnb:develop      |
-|OAI-nr-ue       |rdefosseoai/oai-nr-ue:develop    |
-|mysql           |mysql:5.7.30                     |
 
 
 ### 3.2 Networking related information
@@ -403,7 +387,7 @@ oai-spgwu-tiny-676bc47467-pbjn6   2/2     Running   0          58m
 
 ```
 
-## 4.1 How to check if the Core network is properly configured? 
+## 4.1 How to check if the Core network is properly configured?
 
 Check the logs `smf` and `upf` to see that the PFCP session is properly configured, 
 
@@ -420,8 +404,6 @@ Now go ahead and use OAI-gNB/dsTest/gNBSIM or any other gNB or emulator to test 
 
 
 ## 5 Testing with OAI gNB RFsimulator and NR-UE
-
-![Helm Chart Deployment RF Simulator](./images/helm-chart-rfsim.jpg)
 
 The images which are used in the tutorial are already present in docker-hub like the other images of OAI 5g core network functions. The charts of all the network functions are preconfigured to work with OAI-gnB and OAI-NR-UE end to end installation. 
 
@@ -637,7 +619,7 @@ roleRef:
 
 ## 7. Demo video
 
-## 8. Bonus 
+## 8. Bonus
 
 - If you want to use only one interface but still would like to expose a service endpoint of a network function then you can use the LoadBalancer service of the cloud provider/Kubernetes/Openshift. Instead of NodePort or ClusterIP. 
 - Static ip-address allocation in [calico]() 
