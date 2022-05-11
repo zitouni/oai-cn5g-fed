@@ -4,7 +4,8 @@ services:
     image: my5grantester:latest
     container_name: my5grantester
     privileged: true
-    command: ./app ue
+    #command: ./app ue
+    command: ./app load-test -n 1
     volumes:
       - ./my5grantester-vpp-config.yaml:/workspace/my5G-RANTester/config/config.yml
     cap_add:
