@@ -99,7 +99,7 @@ daa71ea02f62   oai-udm:latest       "/bin/bash /openair-…"   About a minute ag
 * Build `My5g-RANTester` docker image
 
 ```bash
-$ git clone https://github.com/my5G/my5G-RANTester-docker.git
+$ git clone https://github.com/orion-belt/my5G-RANTester.git
 $ cd my5G-RANTester-docker/nf_tester
 $ docker build --tag my5grantester:latest -f Dockerfile .
 ```
@@ -196,8 +196,32 @@ my5grantester | time="2022-03-08T15:09:22Z" level=info msg="[UE][NAS] Receiving 
 my5grantester | time="2022-03-08T15:09:27Z" level=info msg="[UE][DATA] UE is ready for using data plane"
 ```
 
-## ToDo: Traffic test ##
+## Traffic test ##
+UL Test ->
+```bash
+$ docker exec -it my5grantester ping -c 3 -I uetun1 192.168.73.135
+PING 192.168.73.135 (192.168.73.135) from 12.1.1.2 uetun1: 56(84) bytes of data.
+64 bytes from 192.168.73.135: icmp_seq=1 ttl=63 time=5.35 ms
+64 bytes from 192.168.73.135: icmp_seq=2 ttl=63 time=0.456 ms
+64 bytes from 192.168.73.135: icmp_seq=3 ttl=63 time=0.595 ms
 
+--- 192.168.73.135 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2016ms
+rtt min/avg/max/mdev = 0.456/2.136/5.357/2.278 ms
+```
+
+DL Test ->
+```bash
+$ docker exec -it oai-ext-dn ping -c 3 12.1.1.2
+PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
+64 bytes from 12.1.1.2: icmp_seq=1 ttl=63 time=1.01 ms
+64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.531 ms
+64 bytes from 12.1.1.2: icmp_seq=3 ttl=63 time=0.467 ms
+
+--- 12.1.1.2 ping statistics ---
+3 packets transmitted, 3 received, 0% packet loss, time 2010ms
+rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
+```
 ## ToDo: Multiple UEs registration test ##
 
 
