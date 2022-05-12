@@ -95,13 +95,19 @@ daa71ea02f62   oai-udm:latest       "/bin/bash /openair-…"   About a minute ag
 ```
 
 ## 6. Building a `My5g-RANTester` docker image ##
+* Pull pre-built docker image 
+```bash
+docker pull rohankharade/my5grantester:latest
+docker tag rohankharade/my5grantester:latest my5grantester:latest
+```
+
+OR 
 
 * Build `My5g-RANTester` docker image
-
 ```bash
 $ git clone https://github.com/orion-belt/my5G-RANTester.git
-$ cd my5G-RANTester-docker/nf_tester
-$ docker build --tag my5grantester:latest -f Dockerfile .
+$ cd my5G-RANTester/
+$  docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
 ```
 
 
@@ -227,11 +233,10 @@ rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
 ```
 ## Multiple UEs registration test ##
 Load-test with UEs in queue*: 
-You can use following command to test with number of UEs: <br/> `./app load-test -n <number of UEs that you want to test in load tests>` <br/>
-For example for testing with 10 UEs: `./app load-test -n 10`
 * Update value in the [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml)
+
 ```bash
-     command: ./app load-test -n 10
+     NUM_UE: 10
 ```
 * Verify at AMF logs
 ```bash
