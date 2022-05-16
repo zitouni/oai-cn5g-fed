@@ -105,7 +105,7 @@ OR
 
 * Build `My5g-RANTester` docker image
 ```bash
-$ git clone https://github.com/orion-belt/my5G-RANTester.git
+$ git clone https://github.com/my5G/my5G-RANTester
 $ cd my5G-RANTester/
 $  docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
 ```
