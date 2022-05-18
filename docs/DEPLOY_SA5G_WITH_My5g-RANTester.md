@@ -64,8 +64,9 @@ we did for dsTest-host.
 
 
 Then we follow deployment procedure as usual.
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
+```shell
+docker-compose-host $: cd oai-cn5g-fed/docker-compose
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
 Creating mysql   ... done
 Creating oai-nrf ... done
 Creating vpp-upf ... done
@@ -80,8 +81,8 @@ Creating oai-smf    ... done
 More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
 After deploying core network, make sure all services are healthy.
 
-```bash
-oai-cn5g-fed/docker-compose$ docker ps -a
+```shell
+docker-compose-host $: docker ps -a
 CONTAINER ID   IMAGE                COMMAND                  CREATED              STATUS                        PORTS                          NAMES
 0c0f6920aedf   oai-smf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
 1eca41c99ceb   oai-amf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
@@ -96,18 +97,18 @@ daa71ea02f62   oai-udm:latest       "/bin/bash /openair-…"   About a minute ag
 
 ## 6. Building a `My5g-RANTester` docker image ##
 * Pull pre-built docker image 
-```bash
-docker pull rohankharade/my5grantester:latest
-docker tag rohankharade/my5grantester:latest my5grantester:latest
+```shell
+docker-compose-host $: docker pull rohankharade/my5grantester:latest
+docker-compose-host $: docker tag rohankharade/my5grantester:latest my5grantester:latest
 ```
 
 OR 
 
 * Build `My5g-RANTester` docker image
-```bash
-$ git clone https://github.com/my5G/my5G-RANTester
-$ cd my5G-RANTester/
-$  docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
+```shell
+docker-compose-host $: git clone https://github.com/my5G/my5G-RANTester
+docker-compose-host $: cd my5G-RANTester/
+docker-compose-host $: docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
 ```
 
 
@@ -115,21 +116,22 @@ $  docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:
 
 * The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml) and one can modify it for test.
 * Launch my5G-RANTester docker service
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml up -d
+```shell
+docker-compose-host $: cd oai-cn5g-fed/docker-compose
+docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml up -d
 Creating my5grantester ... done
 ```
 * After launching My5g-RANTester, make sure service status is healthy -
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml ps -a
+```shell
+docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml ps -a
     Name        Command       State       Ports
 -----------------------------------------------
 my5grantester   ./app ue   Up (healthy)        
 ```
 
 We can verify it using my5grantester container logs as below -
-```bash
-$ docker logs my5G-RANTester
+```shell
+docker-compose-host $: docker logs my5G-RANTester
 Creating my5grantester ... done
 Attaching to my5grantester
 my5grantester    | time="2022-05-11T21:59:28Z" level=info msg="my5G-RANTester version 0.1"
@@ -207,8 +209,8 @@ my5grantester    | time="2022-05-11T21:59:30Z" level=info msg="[UE][DATA] UE is 
 
 ## Traffic test ##
 UL Test ->
-```bash
-$ docker exec -it my5grantester ping -c 3 -I uetun1 192.168.73.135
+```shell
+docker-compose-host $: docker exec -it my5grantester ping -c 3 -I uetun1 192.168.73.135
 PING 192.168.73.135 (192.168.73.135) from 12.1.1.2 uetun1: 56(84) bytes of data.
 64 bytes from 192.168.73.135: icmp_seq=1 ttl=63 time=5.35 ms
 64 bytes from 192.168.73.135: icmp_seq=2 ttl=63 time=0.456 ms
@@ -220,8 +222,8 @@ rtt min/avg/max/mdev = 0.456/2.136/5.357/2.278 ms
 ```
 
 DL Test ->
-```bash
-$ docker exec -it oai-ext-dn ping -c 3 12.1.1.2
+```shell
+docker-compose-host $: docker exec -it oai-ext-dn ping -c 3 12.1.1.2
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=1 ttl=63 time=1.01 ms
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.531 ms
@@ -234,13 +236,14 @@ rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
 ## Multiple UEs registration test ##
 Load-test with UEs in queue*: 
 * Update value in the [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml)
-
-```bash
+<!---
+```shell
      NUM_UE: 10
 ```
+-->
 * Verify at AMF logs
-```bash
-$ docker logs oai-amf
+```shell
+docker-compose-host $: docker logs oai-amf
 [2022-05-11T21:53:21.866098] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2022-05-11T21:53:21.866102] [AMF] [amf_app] [info ] |----------------------------------------------------gNBs' information-------------------------------------------|
 [2022-05-11T21:53:21.866105] [AMF] [amf_app] [info ] |    Index    |      Status      |       Global ID       |       gNB Name       |               PLMN             |
@@ -278,8 +281,8 @@ $ docker logs oai-amf
 Last thing is to remove all services - <br/>
 
 * Undeploy the My5g-RANTester
-```bash
-oai-cn5g-fed/docker-compose$ docker-compose -f docker-compose-my5grantester-vpp.yaml down
+```shell
+docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml down
 Stopping my5grantester ... done
 Removing my5grantester ... done
 Network demo-oai-public-net is external, skipping
@@ -287,8 +290,8 @@ Network oai-public-access is external, skipping
 ```
 
 * Undeploy the core network
-```bash
-oai-cn5g-fed/docker-compose$  docker-compose -f docker-compose-basic-vpp-nrf.yaml down
+```shell
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
 Stopping oai-smf    ... done
 Stopping oai-amf    ... 
 Stopping oai-ausf   ... 
