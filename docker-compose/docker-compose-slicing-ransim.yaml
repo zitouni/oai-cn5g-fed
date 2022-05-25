@@ -14,7 +14,7 @@ services:
             - NGAP_IP=192.168.70.152
             - GTP_IP=192.168.70.152
             - NGAP_PEER_IP=192.168.70.138
-            - SST=2
+            - SST=128
             - SD=2
             - IGNORE_STREAM_IDS=true
             # UE Config Parameters
@@ -29,10 +29,10 @@ services:
             - GNB_IP_ADDRESS=192.168.70.152
             - PDU_TYPE=IPv4
             - APN=default
-            - SST_C=1
-            - SD_C=1
-            - SST_D=1
-            - SD_D=1
+            - SST_C=128
+            - SD_C=2
+            - SST_D=128
+            - SD_D=2
         networks:
             public_net:
                 ipv4_address: 192.168.70.152
@@ -53,7 +53,7 @@ services:
             MCC: '208'
             MNC: '95'
             MNC_LENGTH: 2
-            NSSAI_SST: 3
+            NSSAI_SST: 129
             NSSAI_SD0: 3
             NSSAI_SD1: 112233
             AMF_IP_ADDRESS: 192.168.70.138
@@ -80,7 +80,7 @@ services:
             FULL_KEY: '0C0A34601D4F07677303652C0462535B'
             OPC: '63bfa50ee6523365ff14c1f45f88737d'
             DNN: oai
-            NSSAI_SST: 3
+            NSSAI_SST: 129
             NSSAI_SD: 3
             USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod
         depends_on:
@@ -103,7 +103,7 @@ services:
 #            FULL_KEY: '0C0A34601D4F07677303652C0462535B'
 #            OPC: '63bfa50ee6523365ff14c1f45f88737d'
 #            DNN: oai
-#            NSSAI_SST: 3
+#            NSSAI_SST: 129
 #            NSSAI_SD: 3
 #            USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod
 #        depends_on:
@@ -125,7 +125,7 @@ services:
             - MNC=95
             - GNBID=5
             - TAC=0x00a000
-            - SST=4
+            - SST=130
             - SD=000004
             - PagingDRX=v32
             - RANUENGAPID=0 
