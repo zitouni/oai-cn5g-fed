@@ -62,12 +62,36 @@ Let's begin !!
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
+## 1. Pre-requisites
 
-Then we follow deployment procedure as usual.
-```shell
-docker-compose-host $: cd oai-cn5g-fed/docker-compose
-docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
+Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files, we recommend creating exactly the same folder to not break the flow of commands afterwards.
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: rm -rf /tmp/oai/vpp-upf-my5g
+```
+-->
+
+``` shell
+docker-compose-host $: mkdir -p /tmp/oai/vpp-upf-my5g
+docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-my5g
+```
+
+## 5. Deploying OAI 5g Core Network
+* We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
+
+``` shell
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-my5g/vpp-upf-my5g.pcap
+[2022-02-08 16:18:19,328] root:DEBUG:  Starting 5gcn components... Please wait....
+[2022-02-08 16:18:19,328] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d mysql
+Creating network "oai-public-cp" with the default driver
+Creating network "oai-public-access" with the default driver
+Creating network "oai-public-core" with the default driver
 Creating mysql   ... done
+[2022-02-08 16:18:32,203] root:DEBUG: nohup sudo tshark -i demo-oai -i cn5g-core -f "(not host 192.168.73.135 and not arp and not port 53 and not port 2152) or (host 192.168.73.135 and icmp)" -w /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap > /dev/null 2>&1 &
+[2022-02-08 16:18:52,217] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d
+mysql is up-to-date
 Creating oai-nrf ... done
 Creating vpp-upf ... done
 Creating oai-udr ... done
@@ -76,28 +100,48 @@ Creating oai-ext-dn ... done
 Creating oai-ausf   ... done
 Creating oai-amf    ... done
 Creating oai-smf    ... done
+
+[2022-02-08 16:19:47,977] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
+[2022-02-08 16:19:47,977] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml ps -a
+[2022-02-08 16:20:11,681] root:DEBUG:  All components are healthy, please see below for more details....
+Name                 Command                  State                  Ports
+-----------------------------------------------------------------------------------------
+mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
+oai-amf      /bin/bash /openair-amf/bin ...   Up (healthy)   38412/sctp, 80/tcp, 9090/tcp
+oai-ausf     /bin/bash /openair-ausf/bi ...   Up (healthy)   80/tcp
+oai-ext-dn   /bin/bash -c  apt update;  ...   Up
+oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp
+oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
+oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp
+oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
+vpp-upf      /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
+[2022-02-08 16:20:11,681] root:DEBUG:  Checking if the containers are configured....
+[2022-02-08 16:20:11,681] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
+[2022-02-08 16:20:11,681] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"
+192.168.70.132
+[2022-02-08 16:20:11,694] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"
+192.168.70.133
+[2022-02-08 16:20:11,706] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"
+192.168.70.202
+[2022-02-08 16:20:11,717] root:DEBUG:  Checking if AUSF, UDM and UDR registered with nrf core network....
+[2022-02-08 16:20:11,717] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"
+192.168.70.138
+[2022-02-08 16:20:11,728] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"
+192.168.70.137
+[2022-02-08 16:20:11,739] root:DEBUG: curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"
+192.168.70.136
+[2022-02-08 16:20:11,750] root:DEBUG:  AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF....
+[2022-02-08 16:20:11,750] root:DEBUG:  Checking if SMF is able to connect with UPF....
+[2022-02-08 16:20:11,868] root:DEBUG:  UPF did answer to N4 Association request from SMF....
+[2022-02-08 16:20:11,927] root:DEBUG:  SMF receiving heathbeats from UPF....
+[2022-02-08 16:20:11,928] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
 More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
-After deploying core network, make sure all services are healthy.
-
-```shell
-docker-compose-host $: docker ps -a
-CONTAINER ID   IMAGE                COMMAND                  CREATED              STATUS                        PORTS                          NAMES
-0c0f6920aedf   oai-smf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-1eca41c99ceb   oai-amf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-96956aa69cf8   oai-ausf:latest      "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp                         oai-ausf
-7c0c07f63ad6   ubuntu:bionic        "/bin/bash -c ' apt …"   About a minute ago   Up About a minute                                            oai-ext-dn
-daa71ea02f62   oai-udm:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp                         oai-udm
-9afe69c737d9   oai-udr:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp                         oai-udr
-6faa329c97f9   oai-upf-vpp:latest   "/openair-upf/bin/en…"   About a minute ago   Up About a minute (healthy)   2152/udp, 8085/udp             vpp-upf
-8cf8bcb54725   mysql:5.7            "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   3306/tcp, 33060/tcp            mysql
-8e8037f2aadb   oai-nrf:latest       "/bin/bash /openair-…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp               oai-nrf
-```
 
 ## 6. Building a `My5g-RANTester` docker image ##
 * Pull pre-built docker image 
-```shell
+``` console
 docker-compose-host $: docker pull rohankharade/my5grantester:latest
 docker-compose-host $: docker tag rohankharade/my5grantester:latest my5grantester:latest
 ```
@@ -105,24 +149,39 @@ docker-compose-host $: docker tag rohankharade/my5grantester:latest my5granteste
 OR 
 
 * Build `My5g-RANTester` docker image
-```shell
+``` console
 docker-compose-host $: git clone https://github.com/my5G/my5G-RANTester
 docker-compose-host $: cd my5G-RANTester/
 docker-compose-host $: docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
 ```
 
-
-## 7. Executing the `My5g-RANTester` Scenario ##
+## 7. Executing the `My5g-RANTester` Scenario 
 
 * The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml) and one can modify it for test.
 * Launch my5G-RANTester docker service
-```shell
-docker-compose-host $: cd oai-cn5g-fed/docker-compose
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: sleep 5
+```
+-->
+
+
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml up -d
 Creating my5grantester ... done
 ```
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: sleep 10
+```
+-->
+
 * After launching My5g-RANTester, make sure service status is healthy -
-```shell
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml ps -a
     Name        Command       State       Ports
 -----------------------------------------------
@@ -130,7 +189,7 @@ my5grantester   ./app ue   Up (healthy)
 ```
 
 We can verify it using my5grantester container logs as below -
-```shell
+``` console
 docker-compose-host $: docker logs my5G-RANTester
 Creating my5grantester ... done
 Attaching to my5grantester
@@ -207,10 +266,10 @@ my5grantester    | time="2022-05-11T21:59:30Z" level=info msg="[UE][NAS] Receivi
 my5grantester    | time="2022-05-11T21:59:30Z" level=info msg="[UE][DATA] UE is ready for using data plane"
 ```
 
-## Traffic test ##
+## Traffic test 
 UL Test ->
-```shell
-docker-compose-host $: docker exec -it my5grantester ping -c 3 -I uetun1 192.168.73.135
+``` shell
+docker-compose-host $: docker exec my5grantester ping -c4 -I uetun1 192.168.73.135
 PING 192.168.73.135 (192.168.73.135) from 12.1.1.2 uetun1: 56(84) bytes of data.
 64 bytes from 192.168.73.135: icmp_seq=1 ttl=63 time=5.35 ms
 64 bytes from 192.168.73.135: icmp_seq=2 ttl=63 time=0.456 ms
@@ -222,8 +281,8 @@ rtt min/avg/max/mdev = 0.456/2.136/5.357/2.278 ms
 ```
 
 DL Test ->
-```shell
-docker-compose-host $: docker exec -it oai-ext-dn ping -c 3 12.1.1.2
+``` shell
+docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.2 -c4
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=1 ttl=63 time=1.01 ms
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.531 ms
@@ -236,13 +295,12 @@ rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
 ## Multiple UEs registration test ##
 Load-test with UEs in queue*: 
 * Update value in the [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml)
-<!---
-```shell
+``` console
      NUM_UE: 10
 ```
--->
+
 * Verify at AMF logs
-```shell
+``` console
 docker-compose-host $: docker logs oai-amf
 [2022-05-11T21:53:21.866098] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2022-05-11T21:53:21.866102] [AMF] [amf_app] [info ] |----------------------------------------------------gNBs' information-------------------------------------------|
@@ -267,7 +325,20 @@ docker-compose-host $: docker logs oai-amf
 
 ```
 
-## 8. Analysing the Scenario Results ##
+##  Recover the logs
+
+``` shell
+docker-compose-host $: docker logs oai-amf > /tmp/oai/vpp-upf-my5g/amf.log 2>&1
+docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-my5g/smf.log 2>&1
+docker-compose-host $: docker logs oai-nrf > /tmp/oai/vpp-upf-my5g/nrf.log 2>&1
+docker-compose-host $: docker logs vpp-upf > /tmp/oai/vpp-upf-my5g/vpp-upf.log 2>&1
+docker-compose-host $: docker logs oai-udr > /tmp/oai/vpp-upf-my5g/udr.log 2>&1
+docker-compose-host $: docker logs oai-udm > /tmp/oai/vpp-upf-my5g/udm.log 2>&1
+docker-compose-host $: docker logs oai-ausf > /tmp/oai/vpp-upf-my5g/ausf.log 2>&1
+docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5grantester.log 2>&1
+```
+
+## 8. Analysing the Scenario Results 
 
 | Pcap/log files                                                                             |
 |:------------------------------------------------------------------------------------------ |
@@ -276,12 +347,12 @@ docker-compose-host $: docker logs oai-amf
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
-## 9. Undeploy ##
+## 9. Undeploy 
 
 Last thing is to remove all services - <br/>
 
 * Undeploy the My5g-RANTester
-```shell
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml down
 Stopping my5grantester ... done
 Removing my5grantester ... done
@@ -290,7 +361,7 @@ Network oai-public-access is external, skipping
 ```
 
 * Undeploy the core network
-```shell
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
 Stopping oai-smf    ... done
 Stopping oai-amf    ... 
