@@ -64,7 +64,7 @@ services:
             - PLMN_SUPPORT_TAC=0xa000
             - SST_0=222
             - SD_0=123
-            - SST_1=1
+            - SST_1=128
             - SD_1=1
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
             - AMF_INTERFACE_NAME_FOR_N11=eth0
