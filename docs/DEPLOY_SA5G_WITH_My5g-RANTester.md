@@ -33,17 +33,17 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
-* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
+* In this demo the image tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. When pulling images of network functions from dockerhub pull images for `develop` tag
 
-| CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
-| ----------- | ----------- | -------- | ------------ | ----------------|
-| AMF         | `develop`   | `v1.3.0` | X            | X               |
-| SMF         | `develop`   | `v1.3.0` | X            | X               |
-| NRF         | `develop`   | `v1.3.0` | X            | X               |
-| VPP-UPF     | `develop`   | `v1.3.0` | X            | X               |
-| UDR         | `develop`   | `v1.3.0` | X            | X               |
-| UDM         | `develop`   | `v1.3.0` | X            | X               |
-| AUSF        | `develop`   | `v1.3.0` | X            | X               |
+| CNF Name    | Branch Name | Ubuntu 18.04 | RHEL8 (UBI8)    |
+| ----------- | ----------- | ------------ | ----------------|
+| AMF         | `develop`   | X            | X               |
+| SMF         | `develop`   | X            | X               |
+| NRF         | `develop`   | X            | X               |
+| VPP-UPF     | `develop`   | X            | X               |
+| UDR         | `develop`   | X            | X               |
+| UDM         | `develop`   | X            | X               |
+| AUSF        | `develop`   | X            | X               |
 
 <br/>
 
@@ -139,7 +139,7 @@ vpp-upf      /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
 
 More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
 
-## 6. Building a `My5g-RANTester` docker image ##
+## 6. Building a `My5g-RANTester` docker image
 * Pull pre-built docker image 
 ``` console
 docker-compose-host $: docker pull rohankharade/my5grantester:latest
@@ -155,7 +155,7 @@ docker-compose-host $: cd my5G-RANTester/
 docker-compose-host $: docker build -f docker/Dockerfile --target my5grantester --tag my5grantester:latest .
 ```
 
-## 7. Executing the `My5g-RANTester` Scenario 
+## 7. Executing the `My5g-RANTester` Scenario
 
 * The configuration parameters, are preconfigured in [docker-compose-basic-vpp-nrf.yaml](../docker-compose/docker-compose-basic-vpp-nrf.yaml) and [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml) and one can modify it for test.
 * Launch my5G-RANTester docker service
@@ -176,7 +176,7 @@ Creating my5grantester ... done
 <!---
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sleep 10
+docker-compose-host $: sleep 15
 ```
 -->
 
@@ -266,7 +266,7 @@ my5grantester    | time="2022-05-11T21:59:30Z" level=info msg="[UE][NAS] Receivi
 my5grantester    | time="2022-05-11T21:59:30Z" level=info msg="[UE][DATA] UE is ready for using data plane"
 ```
 
-## Traffic test 
+## Traffic test
 UL Test ->
 ``` shell
 docker-compose-host $: docker exec my5grantester ping -c4 -I uetun1 192.168.73.135
@@ -292,7 +292,7 @@ PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 3 packets transmitted, 3 received, 0% packet loss, time 2010ms
 rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
 ```
-## Multiple UEs registration test ##
+## Multiple UEs registration test
 Load-test with UEs in queue*: 
 * Update value in the [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml)
 ``` console
@@ -325,7 +325,7 @@ docker-compose-host $: docker logs oai-amf
 
 ```
 
-##  Recover the logs
+## Recover the logs
 
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/vpp-upf-my5g/amf.log 2>&1
@@ -338,7 +338,7 @@ docker-compose-host $: docker logs oai-ausf > /tmp/oai/vpp-upf-my5g/ausf.log 2>&
 docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5grantester.log 2>&1
 ```
 
-## 8. Analysing the Scenario Results 
+## 8. Analysing the Scenario Results
 
 | Pcap/log files                                                                             |
 |:------------------------------------------------------------------------------------------ |
@@ -347,7 +347,7 @@ docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5gran
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
-## 9. Undeploy 
+## 9. Undeploy
 
 Last thing is to remove all services - <br/>
 
@@ -373,5 +373,3 @@ Stopping oai-udr    ...
 Stopping mysql      ... 
 Stopping oai-nrf    ... 
 ```
-
-
