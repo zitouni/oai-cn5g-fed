@@ -56,9 +56,9 @@ start:
 
 multus:
   create: false
-  n1IPadd: "172.21.10.101"
-  n1Netmask: "22"
-  n1Gateway: "172.21.11.254"
+  n4IPadd: "172.21.10.101"
+  n4Netmask: "22"
+  n4Gateway: "172.21.11.254"
   hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
