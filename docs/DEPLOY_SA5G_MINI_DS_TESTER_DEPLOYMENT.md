@@ -104,9 +104,9 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| AMF         | `master`    | `v1.2.0` | X            | X               |
-| SMF         | `master`    | `v1.2.0` | X            | X               |
-| NRF         | `master`    | `v1.2.0` | X            | X               |
+| AMF         | `master`    | `v1.3.0` | X            | X               |
+| SMF         | `master`    | `v1.3.0` | X            | X               |
+| NRF         | `master`    | `v1.3.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
 
 - In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
@@ -122,7 +122,7 @@ There are two ways to create this bridge either manually or automatically using 
 
 **NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
 
-### 4.1 Creating bridge manually
+### 4.1 Creating bridge manually ###
 
 Since this is not the `default` behavior, you **SHALL** edit the docker-compose file.
 
@@ -165,7 +165,7 @@ Since this is not the `default` behavior, you **SHALL** edit the docker-compose 
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-### 4.2 Create bridge automatically  
+### 4.2 Create bridge automatically ###
 
 - Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
 
@@ -188,7 +188,7 @@ The bottom section SHALL look like this:
                   com.docker.network.bridge.name: "demo-oai"
     ```
 
-### 4.3 In case you forgot. True for manual or automatic network creation.
+### 4.3 In case you forgot. True for manual or automatic network creation. ###
 
 - If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (**important step**), 
 
@@ -453,7 +453,7 @@ Using wireshark, open `5gcn-mini-deployment-nrf.pcap` and use the filter `http |
 ![Analysing initial message exchange](./images/docker-compose/start.png)
 
 
-### Analysing scenario execution
+### Analysing scenario execution ###
 
 Using wireshark, open `5gcn-mini-deployment-nrf.pcap` and use the filter `ngap || http || pfcp || gtp`
 

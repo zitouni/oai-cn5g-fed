@@ -16,13 +16,11 @@ This page is only valid for an `Ubuntu18` host.
 
 If you are using any other distributions, please refer to [Build your own images](./BUILD_IMAGES.md).
 
-If you want to the up-to-date new features, please refer to [Build your own images](./BUILD_IMAGES.md).
+If you want to use a specific branch or commit, please refer to [Build your own images](./BUILD_IMAGES.md).
 
 # Pulling the images from Docker Hub #
 
-Currently the images are hosted under the user account `rdefosseoai`.
-
-This may change in the future.
+The images are hosted under the oai account `oaisoftwarealliance`.
 
 Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has reached pulling limit as `anonymous`.
 
@@ -33,39 +31,39 @@ Username:
 Password:
 ```
 
-The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `rdefosseoai` account. Two important things to be noted:
+The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `oaisoftwarealliance` account. Two important things to be noted:
   - We will keep pushing to the `latest` tag when a milestone is reached.
   - We are making pushes on the `develop` tag whenever a contribution has been accepted. These images are **EXPERIMENTAL**.
 
-Now pull images.
+Now pull images according to your requirement,
 
 ```bash
-$ docker pull rdefosseoai/oai-amf:latest
-$ docker pull rdefosseoai/oai-nrf:latest
-$ docker pull rdefosseoai/oai-spgwu-tiny:latest
-$ docker pull rdefosseoai/oai-smf:latest
-$ docker pull rdefosseoai/oai-udr:latest
-$ docker pull rdefosseoai/oai-udm:latest
-$ docker pull rdefosseoai/oai-ausf:latest
-$ docker pull rdefosseoai/oai-upf-vpp:latest
-$ docker pull rdefosseoai/oai-nssf:latest
+$ docker pull oaisoftwarealliance/oai-amf:latest
+$ docker pull oaisoftwarealliance/oai-nrf:latest
+$ docker pull oaisoftwarealliance/oai-spgwu-tiny:latest
+$ docker pull oaisoftwarealliance/oai-smf:latest
+$ docker pull oaisoftwarealliance/oai-udr:latest
+$ docker pull oaisoftwarealliance/oai-udm:latest
+$ docker pull oaisoftwarealliance/oai-ausf:latest
+$ docker pull oaisoftwarealliance/oai-upf-vpp:latest
+$ docker pull oaisoftwarealliance/oai-nssf:latest
 # Utility image to generate traffic
-$ docker pull rdefosseoai/trf-gen-cn5g:latest
+$ docker pull oaisoftwarealliance/trf-gen-cn5g:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
 
 ```bash
-$ docker image tag rdefosseoai/oai-amf:latest oai-amf:latest
-$ docker image tag rdefosseoai/oai-nrf:latest oai-nrf:latest
-$ docker image tag rdefosseoai/oai-smf:latest oai-smf:latest
-$ docker image tag rdefosseoai/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
-$ docker image tag rdefosseoai/oai-udr:latest oai-udr:latest
-$ docker image tag rdefosseoai/oai-udm:latest oai-udm:latest
-$ docker image tag rdefosseoai/oai-ausf:latest oai-ausf:latest
-$ docker image tag rdefosseoai/oai-upf-vpp:latest oai-upf-vpp:latest
-$ docker image tag rdefosseoai/oai-nssf:latest oai-nssf:latest
-$ docker image tag rdefosseoai/trf-gen-cn5g:latest trf-gen-cn5g:latest
+$ docker image tag oaisoftwarealliance/oai-amf:latest oai-amf:latest
+$ docker image tag oaisoftwarealliance/oai-nrf:latest oai-nrf:latest
+$ docker image tag oaisoftwarealliance/oai-smf:latest oai-smf:latest
+$ docker image tag oaisoftwarealliance/oai-spgwu-tiny:latest oai-spgwu-tiny:latest
+$ docker image tag oaisoftwarealliance/oai-udr:latest oai-udr:latest
+$ docker image tag oaisoftwarealliance/oai-udm:latest oai-udm:latest
+$ docker image tag oaisoftwarealliance/oai-ausf:latest oai-ausf:latest
+$ docker image tag oaisoftwarealliance/oai-upf-vpp:latest oai-upf-vpp:latest
+$ docker image tag oaisoftwarealliance/oai-nssf:latest oai-nssf:latest
+$ docker image tag oaisoftwarealliance/trf-gen-cn5g:latest trf-gen-cn5g:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -90,7 +88,7 @@ This repository only has tutorials and Continuous Integration scripts.
 | AMF         | `master`    | `v1.3.0` | X            | X               |
 | SMF         | `master`    | `v1.3.0` | X            | X               |
 | NRF         | `master`    | `v1.3.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.5` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.2.0` | X            | X               |
 | UDR         | `master`    | `v1.3.0` | X            | X               |
 | UDM         | `master`    | `v1.3.0` | X            | X               |
 | AUSF        | `master`    | `v1.3.0` | X            | X               |
