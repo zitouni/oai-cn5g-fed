@@ -15,7 +15,7 @@ services:
             - GTP_IP=192.168.70.152
             - NGAP_PEER_IP=192.168.70.138
             - SST=128
-            - SD=2
+            - SD=128
             - IGNORE_STREAM_IDS=true
             # UE Config Parameters
             - NUMBER_OF_UE=1
@@ -29,10 +29,12 @@ services:
             - GNB_IP_ADDRESS=192.168.70.152
             - PDU_TYPE=IPv4
             - APN=default
+            - SST_R=128
+            - SD_R=128
             - SST_C=128
-            - SD_C=2
+            - SD_C=128
             - SST_D=128
-            - SD_D=2
+            - SD_D=128
         networks:
             public_net:
                 ipv4_address: 192.168.70.152
@@ -126,7 +128,7 @@ services:
             - GNBID=5
             - TAC=0x00a000
             - SST=130
-            - SD=000004
+            - SD=000082
             - PagingDRX=v32
             - RANUENGAPID=0 
             - IMEISV=35609204079514
