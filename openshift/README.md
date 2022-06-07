@@ -2,7 +2,7 @@
   <tr style="border-collapse: collapse; border: none;">
     <td style="border-collapse: collapse; border: none;">
       <a href="http://www.openairinterface.org/">
-         <img src="./images/oai_final_logo.png" alt="" border=3 height=50 width=150>
+         <img src="./docs/images/oai_final_logo.png" alt="" border=3 height=50 width=150>
          </img>
       </a>
     </td>
@@ -64,7 +64,7 @@ For the moment the dockerfiles used in these build configs is based on develop b
 
 Just be careful sometimes some functionality can break but you can report back to us in that case. 
 
-## 2. How to Build gNB and UE Images?
+## 2. How to Build UBI Images of gNB and UE?
 
 For the moment CU and DU are using the same image with different configuration parameters so you just need to build one monolythic gNB image. Also CU and DU are running fine in simulated mode but not with RRU, there is a problem which we will fix soon. 
 
