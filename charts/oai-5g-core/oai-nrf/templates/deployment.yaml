@@ -128,8 +128,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: 
-        {{- toYaml .Values.nodeSelector | nindent 12 }}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}
