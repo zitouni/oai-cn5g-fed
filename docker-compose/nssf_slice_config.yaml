@@ -11,8 +11,7 @@ configuration:
         nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
         nsiId: '11'
     - snssai:
-        sst: 129
-        sd: '3'
+        sst: 1
       nsiInformationList:
         nrfId: http://192.168.70.136:80/nnrf-disc/v1/nf-instances
         nsiId: '12'
@@ -76,8 +75,7 @@ configuration:
               supportedSnssaiList:
                 - sst: 128
                   sd: 2
-                - sst: 129
-                  sd: 3
+                - sst: 1
                 - sst: 130
                   sd: 4
         - nfId: 405e8251-cc5a-45dd-a494-efb9eaf1cd68
