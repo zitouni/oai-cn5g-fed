@@ -197,18 +197,37 @@ $ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
 ## 7. Executing `ransim` Scenario
 
 We deploy ran simulators with the help of docker-compose as below -
-
+Deploy ran simulator for slice 1
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d
-Creating gnbsim             ... done
-Creating ueransim           ... done
-Creating rfsim5g-oai-gnb    ... done
-Creating rfsim5g-oai-nr-ue1 ... done
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d ueransim
+Creating ueransim             ... done
 ```
 Wait a bit 
 ``` shell
-docker-compose-host $: sleep 60
+docker-compose-host $: sleep 10
 ```
+Deploy ran simulator for slice 2
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d oai-gnb oai-nr-ue1
+Creating rfsim5g-oai-gnb    ... done
+Creating rfsim5g-oai-nr-ue1 ... done
+```
+Wait a bit
+``` shell
+docker-compose-host $: sleep 10
+```
+Deploy ran simulator for slice 3
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d gnbsim
+Creating gnbsim             ... done
+```
+Wait a bit
+``` shell
+docker-compose-host $: sleep 10
+```
+
+Make sure all ran simulator services are healthy.
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml ps -a
