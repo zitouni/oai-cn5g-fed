@@ -74,11 +74,11 @@ Currently 3GPP allows up to eight (8) S-NSSAIs in the NSSAI sent in signaling me
 As shown in figure above, there are 3 S-NSSAIs configured (Can be differentiated with colors) viz. <br/>
 Note:- Here we have used standardised SST values (2,3,4), because rf-simulator only supports SST values 1,2,3,4. Moreover, it only for numerical refernece and does not reflect standrd SST behaviour e.g. URLCC, MIoT, V2X etc.<br/>
 
-* Slice1: [SST=2,SD=2] =>   NRF1, SMF1, UPF1, GNB1, UE1
-* Slice2: [SST=3,SD=3] =>   NRF1, SMF2, UPF2, GNB2, UE2
-* Slice3: [SST=4,SD=4] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE3
+* Slice1: [SST=128,SD=128] =>   NRF1, SMF1, UPF1, GNB1, UE1
+* Slice2: [SST=1]          =>   NRF1, SMF2, UPF2, GNB2, UE2
+* Slice3: [SST=130,SD=130] =>   NRF2, SMF3, VPP-UPF3, GNB3, UE3
 
-Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in S-NSSAI 2 and 3 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in S-NSSAI 2 and 3. Here number of SMFs/UPFs for registered under single (NSI) NRF is part of operator's network planning.<br/>
+Here AMF, NSSF, UDM, UDR, AUSF are common to all slices. SMF and UPF in slice 1 and 2 have same NRF hence both UPFs are discoverable to both SMF. You can verify in the logs that both SMFs are successfullt associated to both UPFs in slice 2 and 3. Here number of SMFs/UPFs for registered under single (NSI) NRF is part of operator's network planning.<br/>
 
 
 **Let's begin !!**
@@ -197,18 +197,37 @@ $ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
 ## 7. Executing `ransim` Scenario
 
 We deploy ran simulators with the help of docker-compose as below -
-
+Deploy ran simulator for slice 1
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d
-Creating gnbsim             ... done
-Creating ueransim           ... done
-Creating rfsim5g-oai-gnb    ... done
-Creating rfsim5g-oai-nr-ue1 ... done
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d ueransim
+Creating ueransim             ... done
 ```
 Wait a bit 
 ``` shell
-docker-compose-host $: sleep 60
+docker-compose-host $: sleep 10
 ```
+Deploy ran simulator for slice 2
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d oai-gnb oai-nr-ue1
+Creating rfsim5g-oai-gnb    ... done
+Creating rfsim5g-oai-nr-ue1 ... done
+```
+Wait a bit
+``` shell
+docker-compose-host $: sleep 10
+```
+Deploy ran simulator for slice 3
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml up -d gnbsim
+Creating gnbsim             ... done
+```
+Wait a bit
+``` shell
+docker-compose-host $: sleep 10
+```
+
+Make sure all ran simulator services are healthy.
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml ps -a
@@ -400,4 +419,3 @@ Removing network oai-public-core
 ```
 
 ## 12. Reference logs
-
