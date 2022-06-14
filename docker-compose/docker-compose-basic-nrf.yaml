@@ -242,7 +242,7 @@ services:
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
-            - USE_LOCAL_SUBSCRIPTION_INFO=no
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
             - NRF_FQDN=oai-nrf
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
