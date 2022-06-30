@@ -4,8 +4,8 @@ services:
         container_name: mysql
         image: mysql:5.7
         volumes:
-            - ./oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
+            - ./database/oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./healthscripts/mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-nssf:
         container_name: "oai-nssf"
-        image: oai-nssf:latest
+        image: oai-nssf:v1.4.0
         environment:
             - INSTANCE=0
             - TZ=Europe/Paris
@@ -42,7 +42,7 @@ services:
             - ALL
         privileged: true
         volumes: 
-            - ./nssf_slice_config.yaml:/openair-nssf/etc/nssf_slice_config.yaml
+            - ./healthscripts/nssf_slice_config.yaml:/openair-nssf/etc/nssf_slice_config.yaml
         healthcheck:
             test: /bin/bash -c "pgrep oai_nssf"
             interval: 10s
@@ -53,7 +53,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai_udr:
         container_name: oai-udr
-        image: oai-udr:latest
+        image: oai-udr:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -73,7 +73,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.133
         volumes:
-            - ./udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
+            - ./healthscripts/udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-udr/bin/udr-healthcheck.sh"
             interval: 10s
@@ -81,7 +81,7 @@ services:
             retries: 5
     oai_udm:
         container_name: oai-udm
-        image: oai-udm:latest
+        image: oai-udm:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -101,7 +101,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.134
         volumes:
-            - ./udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
+            - ./healthscripts/udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
             interval: 10s
@@ -109,7 +109,7 @@ services:
             retries: 5
     oai_ausf:
         container_name: oai-ausf
-        image: oai-ausf:latest
+        image: oai-ausf:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE_ID=0
@@ -128,7 +128,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.135
         volumes:
-            - ./ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
+            - ./healthscripts/ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
             interval: 10s
@@ -136,7 +136,7 @@ services:
             retries: 5
     oai_nrf_slice12:
         container_name: oai-nrf-slice12
-        image: oai-nrf:latest
+        image: oai-nrf:v1.4.0
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -148,7 +148,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.136
         volumes:
-            - ./nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
+            - ./healthscripts/nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-nrf/bin/nrf-healthcheck.sh"
             interval: 10s
@@ -156,7 +156,7 @@ services:
             retries: 5
     oai_nrf_slice3:
         container_name: oai-nrf-slice3
-        image: oai-nrf:latest
+        image: oai-nrf:v1.4.0
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -168,7 +168,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.137
         volumes:
-            - ./nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
+            - ./healthscripts/nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-nrf/bin/nrf-healthcheck.sh"
             interval: 10s
@@ -176,7 +176,7 @@ services:
             retries: 5
     oai_amf:
         container_name: oai-amf
-        image: oai-amf:latest
+        image: oai-amf:v1.4.0
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -249,7 +249,7 @@ services:
             - vpp_upf_slice3
             - oai_ausf
         volumes:
-            - ./amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
+            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
             interval: 10s
@@ -260,7 +260,7 @@ services:
                 ipv4_address: 192.168.70.138
     oai_smf_slice1:
         container_name: oai-smf-slice1
-        image: oai-smf:latest
+        image: oai-smf:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -295,7 +295,7 @@ services:
             - oai_amf
             - oai_nrf_slice12
         volumes:
-            - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
             interval: 10s
@@ -306,7 +306,7 @@ services:
                 ipv4_address: 192.168.70.139
     oai_smf_slice2:
         container_name: oai-smf-slice2
-        image: oai-smf:latest
+        image: oai-smf:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -341,7 +341,7 @@ services:
             - oai_amf
             - oai_nrf_slice12
         volumes:
-            - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
              test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
              interval: 10s
@@ -352,7 +352,7 @@ services:
                 ipv4_address: 192.168.70.140
     oai_smf_slice3:
         container_name: oai-smf-slice3
-        image: oai-smf:latest
+        image: oai-smf:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -390,7 +390,7 @@ services:
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         volumes:
-            - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
              test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
              interval: 10s
@@ -401,7 +401,7 @@ services:
                 ipv4_address: 192.168.70.141
     oai_spgwu_slice1:
         container_name: oai-spgwu-slice1
-        image: oai-spgwu-tiny:latest
+        image: oai-spgwu-tiny:v1.3.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -438,7 +438,7 @@ services:
             - ALL
         privileged: true
         volumes:
-            - ./spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
+            - ./healthscripts/spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-spgwu-tiny/bin/spgwu-healthcheck.sh"
             interval: 10s
@@ -449,7 +449,7 @@ services:
                 ipv4_address: 192.168.70.142
     oai_spgwu_slice2:
         container_name: oai-spgwu-slice2
-        image: oai-spgwu-tiny:latest
+        image: oai-spgwu-tiny:v1.3.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -485,7 +485,7 @@ services:
             - ALL
         privileged: true
         volumes:
-            - ./spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
+            - ./healthscripts/spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-spgwu-tiny/bin/spgwu-healthcheck.sh"
             interval: 10s
@@ -495,7 +495,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.143
     vpp_upf_slice3:
-        image: oai-upf-vpp:latest
+        image: oai-upf-vpp:v1.4.0
         privileged: true
         container_name: vpp-upf-slice3
         environment:
@@ -535,10 +535,10 @@ services:
                 ipv4_address: 192.168.72.144
             public_net_core:
                 ipv4_address: 192.168.73.144
-    oai_ext_dn:
-        image: trf-gen-cn5g:latest
+    oai-traffic-gen:
+        image: trf-gen-cn5g:v1.4
         privileged: true
-        container_name: oai-ext-dn
+        container_name: oai-traffic-gen
         entrypoint: /bin/bash -c \
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.2.1.2/32 via 192.168.70.142 dev eth0;"\

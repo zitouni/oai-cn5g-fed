@@ -1,25 +1,40 @@
 # This is a YAML-formatted file.
 # Declare variables to be passed into your templates.
 
-replicaCount: 1
+replicaCount: 1  # can't be changed 
+
+imageOS: ubuntu  # only ubi (Openshift) and ubuntu (Ubuntu based worker nodes in Kubernetes) 
+
+# this variable takes care of adding dependency between this nf and other nfs, so that the core network can be deployed properly
+handleDependencies: true
 
 nfimage:  # image name either locally present or in a public/private repository
-  registry: local
-  repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-  version: develop                                    ## The branch to be used to pull from dockerhub
-  # pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
+  ubuntu:
+    repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
+    tag: develop                                    ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  ubi:
+    repository: oai-amf           ## The image will be pulled from dockerhub
+    tag: develop                                    ## The branch to be used to pull from dockerhub
+    # pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
 
 tcpdumpimage:
-  registry: local
-  repository: docker.io/corfr/tcpdump
-  version: latest
-  #pullPolicy: IfNotPresent or Never or Always
-  pullPolicy: IfNotPresent
+  ubuntu:
+    repository: docker.io/corfr/tcpdump
+    tag: latest
+    #pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  ubi:
+    repository: network-tools-rhel8
+    tag: latest
+    #pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
 
-## good to use when pulling images from docker-hub mention 
-imagePullSecrets: 
-  - name: "regcred"
+## good to use when pulling images from docker-hub, the same pull secrets will be used to pull both the images, if you have multiple secrets mention all of them. 
+# imagePullSecrets: 
+#   - name: "regcred"
 
 serviceAccount:
   # Specifies whether a service account should be created
@@ -37,7 +52,10 @@ podSecurityContext:
 
 ## OPENSHIFT terminology
 securityContext:
-  privileged: true
+  nf:
+    privileged: false
+  tcpdump:
+    privileged: true    #Always be true for capturing on a interface
 
 servicehttp:
   type: ClusterIP
@@ -48,9 +66,13 @@ servicesctp:
   type: ClusterIP #LoadBalancer
   sctpPort: 38412
 
+# If you will turn turn this to false TCPdump container will not run
+keepTcpContainer: false
+
+# Turning it to false will make the nf and tcpdump container to go in sleep mode and you can run any command for debugging
 start:
-  amf: true
-  tcpdump: false # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume
+  nf: true
+  tcpdump: false # WARNING: start tcpdump collection to analyse but beware it will take a lot of space in the container/persistent volume  
 
 # AMF needs two seperate interface one for http and other one for SCTP (N1/N2) to communicate with gNB. 
 # But for experimentation only one interface can be used. 
@@ -59,13 +81,12 @@ start:
 # 2. Your gnB is outside the cluster and the host machine can communicate but pods can not then you can provide ip-address in the same range as your host machine
 # 3. You want static ip-address for N1/N2 interface, Namf can be discovered by its service name
 
-
 multus:
   create: false
   n1IPadd: "172.21.10.6"
   n1Netmask: "22"
   n1Gateway: "172.21.11.254"
-  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
   instance: "0"
@@ -126,11 +147,10 @@ config:
   mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
   mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
 
-
+# Currently this presistent volume is only used for storing the tcpdump of network functions at one common place. 
 persistent:
   sharedvolume: false
-  volumneName: managed-nfs-storage
-  size: 1Gi
+  volumeName: cn5g-pv
 
 resources:
   define: false

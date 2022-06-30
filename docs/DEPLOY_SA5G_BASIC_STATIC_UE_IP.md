@@ -13,7 +13,7 @@
 </table>
 
 
-![SA Basic Demo](./images/docker-compose/5gCN-basic.jpg)
+![SA Basic Demo](./images/docker-compose/5gCN-basic-withue.jpg)
 
 This tutorial shows how to configure OAI 5G core for providing static UE ip-addresses based on UE subscription data. In SMF configuration there is a parameter `USE_LOCAL_SUBSCRIPTION_INFO` which forces SMF to use local subscription information. For example using the DNN parameters (name,type and ip-address range) as defined in the configuration file. But all this information can be moved to mysql database and SMF can fetch it via communicating with UDM <--> UDR <--> MySql. 
 
@@ -25,13 +25,14 @@ In this tutorial you will learn how to change this parameter and configure an ip
 
 Please follow the tutorial step by step to create a stable working testbed. 
 
-**Reading time**: ~ 15 mins
+**Reading time**: ~ 20 mins
 
 **Tutorial replication time**: ~ 40 mins
 
 **Note**: 
 - The commands mentioned in the document assume that your present working directory is `./docker-compose`. Make sure in the terminal in which you copy and paste the commands or write the tutorial commands as `pwd` as `./docker-compose`.
-- Best practice open this markdown file without favourite editor or online on gitlab and open a terminal separately 
+- Best practice open this markdown file with your favourite editor or online on gitlab and open a terminal separately 
+- Before reading this tutorial read this [one](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md)
 
 **TABLE OF CONTENTS**
 
@@ -109,7 +110,7 @@ In the previous tutorial we explain how to deploy the core network using our [py
 As a first timer, we recommend to first run without any PCAP capture.
 
 ``` console
-docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --scenario 1
+docker-compose-host $: python3 core-network.py --type start-basic --scenario 1
 ```
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker network.
@@ -117,7 +118,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 core-network.py --type start-basic --fqdn yes --scenario 1 --capture /tmp/oai/static-ue-ip/static-ue-ip.pcap
+docker-compose-host $: python3 core-network.py --type start-basic --scenario 1 --capture /tmp/oai/static-ue-ip/static-ue-ip.pcap
 [2022-02-08 15:49:14,903] root:DEBUG:  Starting 5gcn components... Please wait....
 [2022-02-08 15:49:14,903] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d mysql
 Creating network "demo-oai-public-net" with driver "bridge"
@@ -173,13 +174,7 @@ oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
 - Without nrf scenario
 
 ``` console
-docker-compose-host $: python3 core-network.py --type start-basic --fqdn no --scenario 1
-```
-
-- Start capturing packets on **demo-oai** bridge on another terminal. In case you don't have enough permission, please use `sudo`:
-
-``` console
-docker-compose-host $: tshark -i demo-oai  -f -w /tmp/oai/static-ue-ip/capture.pcap &
+docker-compose-host $: python3 core-network.py --type start-basic --scenario 2
 ```
 
 
@@ -298,15 +293,32 @@ Removing network demo-oai-public-net
 ## 8. Reference logs
 
 
-| PCAP and Logs                                       |
-|:--------------------------------------------------- |
+| PCAP and Logs      |
+|:-------------------|
 | [capture.pcap](./results/static-ue-ip/capture.pcap) |
-| [amf.log](./results/static-ue-ip/amf.log)           |
-| [smf.log](./results/static-ue-ip/smf.log)           |
-| [nrf.log](./results/static-ue-ip/nrf.log)           |
-| [spgwu.log](./results/static-ue-ip/spgwu.log)       |
-| [udm.log](./results/static-ue-ip/udm.log)           |
-| [udr.log](./results/static-ue-ip/udr.log)           |
-| [ausf.log](./results/static-ue-ip/ausf.log)         |
+| [amf.log](./results/static-ue-ip/amf.log)      |
+| [smf.log](./results/static-ue-ip/smf.log)      |
+| [nrf.log](./results/static-ue-ip/nrf.log)      |
+| [spgwu.log](./results/static-ue-ip/spgwu.log)    |
+| [udm.log](./results/static-ue-ip/udm.log)      |
+| [udr.log](./results/static-ue-ip/udr.log)      |
+| [ausf.log](./results/static-ue-ip/ausf.log)     |
 
 
+## 9. Notes
+
+- The `oai-ext-dn` container is optional and is only required if the user wants to ping from the UE. In general this container is not required except for testing purposes.
+- Using the python script from above you can perform minimum `AMF, SMF, UPF (SPGWU), NRF, MYSQL` and basic `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL` 5g core funtional testing with `FQDN/IP` based feature along with `NRF/noNRF`. Check the configuration before using the docker compose [files](../docker-compose/).
+- This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
+- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+
+``` bash
+#To start the containers 
+docker-compose-host $: docker-compose -f <file-name> up -d
+#To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
+docker-compose-host $: watch docker-compose -f <file-name> ps -a
+#To stop the containers 
+docker-compose-host $: docker-compose -f <file-name> down -t 0
+```

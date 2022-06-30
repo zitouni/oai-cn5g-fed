@@ -13,16 +13,12 @@
 </table>
 
 
-![SA dsTest Demo](./images/docker-compose/5gCN-mini.jpg)
+![SA Demo](./images/docker-compose/5gCN-mini.jpg)
 
 
 **OVERVIEW**
 
 This tutorial will help in understanding how to deploy a `minimalist` OAI core network using docker-compose.
-
-* In this tutorial we have used [dsTest](https://www.developingsolutions.com/products/dstest-5g-core-network-testing/), a commercial paid gNB emulator.
-* Though, instead of this, readers can also use `gNBsim` (an opensource gNB emulator), you can follow another tutorial for [this](./DEPLOY_SA5G_WITH_GNBSIM.md).
-* Readers could also replace the RAN emulator by a real RAN, it means the `so-called dsTest Host` could be a real `gNB`.
 
 Please follow the tutorial step by step to create a stable working testbed. 
 
@@ -37,12 +33,9 @@ Please follow the tutorial step by step to create a stable working testbed.
 3.  [Network Function Container Images](#2-network-function-container-images)
 4.  [Configuring Host Machines](#4-configuring-host-machines)
 5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
-6.  [Configuring dsTest Scenario](#6-configuring-dstester-scenario)
 7.  [Deploying OAI 5G Core Network](#7-deploying-oai-5g-core-network)
-8.  [Executing dsTest Scenario](#8-executing-the-dstest-scenario)
-9.  [Analysing Scenario Results](#9-analysing-the-scenario-results)
-10. [Demo Video](#10-demo-video)
-11. [Notes](#11-notes)
+8.  [Demo Video](#8-demo-video)
+9.  [Notes](#11-notes)
 
 ## 1. Minimalist Deployment Flavours ##
 
@@ -64,7 +57,6 @@ The requried softwares and their respected versions are listed below. To replica
 | docker-compose             | 1.27.4, build 40524192          |
 | Host operating system      | Ubuntu 18.04.4 LTS              |
 | Container operating system | Ubuntu 18.04                    |
-| dsTest (Licensed)          | 5.5                             |
 | tshark                     | 3.4.4 (Git commit c33f6306cbb2) |
 | wireshark                  | 3.4.4 (Git commit c33f6306cbb2) |
 
@@ -105,11 +97,11 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
 | AMF         | `master`    | `v1.3.0` | X            | X               |
-| SMF         | `master`    | `v1.3.0` | X            | X               |
-| NRF         | `master`    | `v1.3.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.3` | X            | X               |
+| SMF         | `master`    | `v1.4.0` | X            | X               |
+| NRF         | `master`    | `v1.4.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.3.0` | X            | X               |
 
-- In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
+- In case readers are interested in using different branch then develop or releases (example v1.4.0) **they have to build images from scratch they can't use the docker-hub images**.
 
 ## 4. Configuring Host Machines ##
 

@@ -31,11 +31,12 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
+    {{- if .Values.keepTcpContainer }}
       - name: tcpdump
-        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        image: "{{ .Values.tcpdumpimage.imageOS.tag }}:{{ .Values.tcpdumpimage.imageOS.tag }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
         securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+          {{- toYaml .Values.securityContext.tcpdump | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -49,11 +50,12 @@ spec:
         {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
-          name: cn5g-pv
+          name: {{ .Values.persistent.volumeName}}
         {{- end}}
+    {{- end }}
       - name: amf
-        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
-        imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
+        image: "{{ .Values.nfimage.imageOS.tag }}:{{ .Values.nfimage.imageOS.tag }}"
+        imagePullPolicy: {{ .Values.nfimage.imageOS.pullPolicy }}
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -96,7 +98,7 @@ spec:
         - containerPort: {{ .Values.servicehttp.http2Port }}
           name: http2
           protocol: TCP
-        {{- if .Values.start.amf}}
+        {{- if .Values.start.nf}}
         {{- else}}
         command:
           - /bin/sleep
@@ -385,9 +387,9 @@ spec:
                 key: operatorKey
       volumes:
       {{- if .Values.persistent.sharedvolume}}
-      - name: cn5g-pv
+      - name: {{ .Values.persistent.volumeName}}
         persistentVolumeClaim:
-          claimName: cn5g-pvc
+          claimName: {{ .Values.persistent.volumeName}}
       {{- end }}
       - name: scripts
         configMap:

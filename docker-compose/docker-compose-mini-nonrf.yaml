@@ -4,8 +4,8 @@ services:
         container_name: "mysql"
         image: mysql:5.7
         volumes:
-            - ./oai_db1.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./mysql-healthcheck1.sh:/tmp/mysql-healthcheck.sh
+            - ./database/oai_db1.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./healthscripts/mysql-healthcheck1.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:latest
+        image: oai-amf:v1.4.0
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -42,10 +42,12 @@ services:
             - PLMN_SUPPORT_MCC=208
             - PLMN_SUPPORT_MNC=95
             - PLMN_SUPPORT_TAC=0xa000
-            - SST_0=222
-            - SD_0=123
+            - SST_0=1
+            - SD_0=0xFFFFFF
             - SST_1=1
-            - SD_1=12
+            - SD_1=1
+            - SST_2=222
+            - SD_2=123
             - AMF_INTERFACE_NAME_FOR_NGAP=eth0
             - AMF_INTERFACE_NAME_FOR_N11=eth0
             - SMF_INSTANCE_ID_0=1
@@ -70,6 +72,9 @@ services:
             - SMF_SELECTION=no
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=no
+            - EXTERNAL_UDM=no
+            - EXTERNAL_NSSF=no
+            - USE_HTTP2=no
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
             - AUSF_IPV4_ADDRESS=0.0.0.0
@@ -83,7 +88,7 @@ services:
         depends_on:
             - mysql
         volumes:
-            - ./amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
+            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
             interval: 10s
@@ -94,7 +99,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:latest
+        image: oai-smf:v1.4.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -113,23 +118,50 @@ services:
             - UDM_IPV4_ADDRESS=0.0.0.0
             - UDM_PORT=80
             - UDM_API_VERSION=v2
-            - UDM_FQDN=oai-udm
+            - UDM_FQDN=localhost
             - UPF_IPV4_ADDRESS=192.168.70.134
             - UPF_FQDN_0=oai-spgwu
-            - NRF_IPV4_ADDRESS=0.0.0.0
+            - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
-            - NRF_FQDN=oai-nrf
+            - USE_LOCAL_SUBSCRIPTION_INFO=no  #Set to yes if SMF uses local subscription information instead of from an UDM
+            - USE_NETWORK_INSTANCE=no  #Set yes if network instance is to be used for given UPF
+            - NRF_FQDN=localhost
             - REGISTER_NRF=no
             - DISCOVER_UPF=no
             - USE_FQDN_DNS=yes
-            - DNN_RANGE1=12.1.1.2 - 12.1.1.128
-            - DNN_RANGE0=12.2.1.2 - 12.2.1.128
-            - DNN_NI1=default
+            - HTTP_VERSION=1        # Default: 1
+            - UE_MTU=1500
+            - DNN_NI0=oai
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.1.1.2 - 12.1.1.100
+            - NSSAI_SST0=1
+            - NSSAI_SD0=0xFFFFFF
+            - SESSION_AMBR_UL0=200Mbps
+            - SESSION_AMBR_DL0=400Mbps
+            - DNN_NI1=oai.ipv4
+            - TYPE1=IPv4
+            - DNN_RANGE1=12.1.1.101 - 12.1.1.200
+            - NSSAI_SST1=1
+            - NSSAI_SD1=1
+            - SESSION_AMBR_UL1=100Mbps
+            - SESSION_AMBR_DL1=200Mbps
+            - DNN_NI2=default
+            - TYPE2=IPv4
+            - DNN_RANGE2=12.1.1.201 - 12.1.1.253
+            - NSSAI_SST2=222
+            - NSSAI_SD2=123
+            - SESSION_AMBR_UL2=50Mbps
+            - SESSION_AMBR_DL2=100Mbps
+            - DNN_NI3=ims
+            - TYPE3=IPv4v6
+            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
+            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
+            - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
         depends_on:
             - oai-amf
         volumes:
-            - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
             interval: 10s
@@ -140,7 +172,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oai-spgwu-tiny:latest
+        image: oai-spgwu-tiny:v1.3.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -158,16 +190,22 @@ services:
             - GW_ID=1
             - REALM=openairinterface.org
             - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=no
+            - REGISTER_NRF=yes
             - USE_FQDN_NRF=yes
             - UPF_FQDN_5G=oai-spgwu
-            - NRF_IPV4_ADDRESS=0.0.0.0
+            - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_PORT=80
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
-            - NSSAI_SST_0=222
-            - NSSAI_SD_0=123
-            - DNN_0=default
+            - NSSAI_SST_0=1
+            - NSSAI_SD_0=0xFFFFFF
+            - DNN_0=oai
+            - NSSAI_SST_1=1
+            - NSSAI_SD_1=1
+            - DNN_1=oai.ipv4
+            - NSSAI_SST_2=222
+            - NSSAI_SD_2=123
+            - DNN_2=default
         depends_on:
             - oai-smf
         cap_add:
@@ -177,7 +215,7 @@ services:
             - ALL
         privileged: true
         volumes:
-            - ./spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
+            - ./healthscripts/spgwu-healthcheck.sh:/openair-spgwu-tiny/bin/spgwu-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-spgwu-tiny/bin/spgwu-healthcheck.sh"
             interval: 10s
@@ -186,10 +224,10 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.134
-    oai-ext-dn:
+    oai-traffic-gen:
         image: trf-gen-cn5g:latest
         privileged: true
-        container_name: oai-ext-dn
+        container_name: oai-traffic-gen
         entrypoint: /bin/bash -c \
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; sleep infinity"
         depends_on:

@@ -51,7 +51,7 @@ This tutorial is an extension of a previous tutorial: [testing a `basic` deploym
 
 Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G test. In this tutorial, we use an opensource simulator tool called `UERANSIM`. With the help of `UERANSIM` tool, we can perform very basic SA5G test by simulating one gnb and multiple ues.
 
-##### About UERANSIM -
+##### About UERANSIM - #####
 
 [UERANSIM](https://github.com/aligungr/UERANSIM) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. It can be considered as a 5G mobile phone and a base station in basic terms. The project can be used for testing 5G Core Network and studying 5G System. UERANSIM can simulate multiple UEs and it also aims to simulate radio. Moreover for detailed feature set, please refer its [official page.](https://github.com/aligungr/UERANSIM/wiki/Feature-Set)
 
@@ -62,10 +62,10 @@ Let's begin !!
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
-#### NOTE: #### 
+#### NOTE: ####
 UERANSIM currently does not support integraty and ciphering algorithm NIA0, NEA0 repectively. Hence we have to update AMF config in the docker-compose as below -
 
-##### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network.
+##### IMPORTANT: Add following parameters in oai-amf service of docker-compose, before deploying core network. #####
 
 ```bash
             - INT_ALGO_LIST=["NIA1" , "NIA2"]
@@ -290,7 +290,7 @@ iperf Done.
 
 Here we try some scaling test with ueransim. There are additional IMSIs added into database (208950000000031-208950000000131).
 Now we register 100 UEs using ueransim. 
-#### Note: We have to update `NUMBER_OF_UE` parameter in docker-compose of ueransim.
+#### Note: We have to update `NUMBER_OF_UE` parameter in docker-compose of ueransim. ####
 ```bash
 NUMBER_OF_UE=100
 ```

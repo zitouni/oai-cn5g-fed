@@ -37,13 +37,13 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8          |
 | ----------- |:-------------- | ----------------------------- | ------------ | ---------------|
-| AMF         | `master`       | `v1.2.1`                      | X            | X              |
-| AUSF        | `master`       | `v1.2.1`                      | X            | X              |
-| NRF         | `master`       | `v1.2.1`                      | X            | X              |
-| SMF         | `master`       | `v1.2.1`                      | X            | X              |
-| UDR         | `master`       | `v1.2.1`                      | X            | X              |
-| UDM         | `master`       | `v1.2.1`                      | X            | X              |
-| UPF-VPP     | `master`       | `v1.2.1`                      | X            | X              |
+| AMF         | `master`       | `v1.4.0`                      | X            | X              |
+| AUSF        | `master`       | `v1.4.0`                      | X            | X              |
+| NRF         | `master`       | `v1.4.0`                      | X            | X              |
+| SMF         | `master`       | `v1.4.0`                      | X            | X              |
+| UDR         | `master`       | `v1.4.0`                      | X            | X              |
+| UDM         | `master`       | `v1.4.0`                      | X            | X              |
+| UPF-VPP     | `master`       | `v1.4.0`                      | X            | X              |
 
 <br/>
 
@@ -103,8 +103,6 @@ optional arguments:
                         Functional type of 5g core network ("start-
                         mini"|"start-basic"|"start-basic-vpp"|"stop-
                         mini"|"stop-basic"|"stop-basic-vpp")
-  --fqdn {yes,no}, -fq {yes,no}
-                        Deployment scenario with FQDN ("yes"|"no")
   --scenario {1,2}, -s {1,2}
                         Scenario with NRF ("1") and without NRF ("2")
   --capture CAPTURE, -c CAPTURE
@@ -115,8 +113,8 @@ example:
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
-        python3 core-network.py --type start-mini --fqdn no --scenario 2
-        python3 core-network.py --type start-basic --fqdn no --scenario 2
+        python3 core-network.py --type start-mini --scenario 2
+        python3 core-network.py --type start-basic --scenario 2
 
 ```
 
@@ -129,7 +127,7 @@ For the moment, `FQDN` shall be set to `no`.
 As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
 
 ``` console
-docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --scenario 1
 ```
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker networks.
@@ -137,7 +135,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp  --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
 [2022-02-08 16:18:19,328] root:DEBUG:  Starting 5gcn components... Please wait....
 [2022-02-08 16:18:19,328] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d mysql
 Creating network "oai-public-cp" with the default driver
@@ -273,7 +271,7 @@ $ docker logs oai-smf
 ...
 ```
 
-## 6. Stimuli with a RAN emulator
+## 6. Simulate with a RAN emulator
 
 ### 6.1. Test with Gnbsim
 
@@ -453,7 +451,7 @@ Network oai-public-access is external, skipping
 ### 8.2. Undeploy the Core Network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenario 1
 [2022-02-08 16:21:39,317] root:DEBUG:  UnDeploying OAI 5G core components....
 [2022-02-08 16:21:39,317] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
 Stopping oai-smf    ... done

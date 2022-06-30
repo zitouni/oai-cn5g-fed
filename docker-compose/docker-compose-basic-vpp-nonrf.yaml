@@ -4,8 +4,8 @@ services:
         container_name: "mysql"
         image: mysql:5.7
         volumes:
-            - ./oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
+            - ./database/oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./healthscripts/mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
-        image: oai-udr:latest
+        image: oai-udr:v1.4
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -42,7 +42,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.136
         volumes:
-            - ./udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
+            - ./healthscripts/udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-udr/bin/udr-healthcheck.sh"
             interval: 10s
@@ -50,7 +50,7 @@ services:
             retries: 5
     oai-udm:
         container_name: "oai-udm"
-        image: oai-udm:latest
+        image: oai-udm:v1.4
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -70,7 +70,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.137
         volumes:
-            - ./udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
+            - ./healthscripts/udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
             interval: 10s
@@ -78,7 +78,7 @@ services:
             retries: 5
     oai-ausf:
         container_name: "oai-ausf"
-        image: oai-ausf:latest
+        image: oai-ausf:v1.4
         environment:
             - TZ=Europe/Paris
             - INSTANCE_ID=0
@@ -97,7 +97,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.138
         volumes:
-            - ./ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
+            - ./healthscripts/ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
             interval: 10s
@@ -105,7 +105,7 @@ services:
             retries: 5
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:latest
+        image: oai-amf:v1.4
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -169,7 +169,7 @@ services:
             - oai-ext-dn
             - oai-ausf
         volumes:
-            - ./amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
+            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
         healthcheck:
             test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
             interval: 10s
@@ -180,7 +180,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:latest
+        image: oai-smf:v1.4
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -219,7 +219,7 @@ services:
         depends_on:
             - oai-amf
         volumes:
-             - ./smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
+             - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         healthcheck:
              test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
              interval: 10s
@@ -229,7 +229,7 @@ services:
             public_net:
                 ipv4_address: 192.168.70.133
     vpp-upf:
-        image: oai-upf-vpp:latest
+        image: oai-upf-vpp:v1.4
         privileged: true
         container_name: "vpp-upf"
         environment:
@@ -267,10 +267,10 @@ services:
                 ipv4_address: 192.168.72.134
             public_net_core:
                 ipv4_address: 192.168.73.134
-    oai-ext-dn:
+    oai-traffic-gen:
         image: image: trf-gen-cn5g:latest
         privileged: true
-        container_name: "oai-ext-dn"
+        container_name: "oai-traffic-gen"
         entrypoint: /bin/bash -c \
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.2.1.0/24 via 192.168.73.202 dev eth0; sleep infinity"

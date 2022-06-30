@@ -16,9 +16,9 @@
 
 ![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
 
-**Reading time: ~ 30mins**
+**Reading time: ~ 20mins**
 
-**Tutorial replication time: ~ 1h30mins**
+**Tutorial replication time: ~ 40mins**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
@@ -39,7 +39,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 | CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
 | ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
-| AMF         | `master`                | `82ca64fe8d79dbadbb1a495124ee26352f81bd7a` | X            | X              |
+| AMF         | `master`                | `` | X            | X              |
 | SMF         | `master`                | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | X              |
 | NRF         | `master`                | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | X              |
 | SPGW-U-TINY | `master`                | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | X              |
@@ -84,7 +84,7 @@ docker-compose-host $: chmod 777 /tmp/oai/mini-gnbsim
 As a first timer, we recommend to first run without any PCAP capture.
 
 ``` console
-docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1
 ...
 [2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
@@ -94,7 +94,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
 ```
 
 More details in [section 7 of the `minimalist` tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#7-deploying-oai-5g-core-network).

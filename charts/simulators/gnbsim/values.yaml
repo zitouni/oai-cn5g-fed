@@ -7,14 +7,14 @@ replicaCount: 1
 # NF image
 nfimage:
   registry: local
-  repository: rohankharade/gnbsim
+  repository: docker.io/rohankharade/gnbsim
   version: develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
+  repository: docker.io/corfr/tcpdump
   version: latest
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
