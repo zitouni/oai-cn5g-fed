@@ -30,6 +30,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 6.  [Stimuli with a RAN emulator](#6-stimuli-with-a-ran-emulator)
 7.  [Recover the logs](#7-recover-the-logs)
 8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
+9.  [Notes](#9-notes)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
@@ -93,7 +94,7 @@ All the following commands shall be executed from the `oai-cn5g-fed/docker-compo
 oai-cn5g-fed/docker-compose$ $ python3 ./core-network.py --help
 usage: core-network.py [-h] --type
                        {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp}
-                       [--fqdn {yes,no}] [--scenario {1,2}]
+                      [--scenario {1,2}]
 
 OAI 5G CORE NETWORK DEPLOY
 
@@ -121,8 +122,6 @@ example:
 Currently in this tutorial format, we support a `basic` deployment with the `UPF-VPP`: `basic-vpp`.
 
 In that deployment configuration, you can deploy with and without `NRF` (ie scenarios `1` and `2`).
-
-For the moment, `FQDN` shall be set to `no`.
 
 As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
 
@@ -481,5 +480,19 @@ Removing network oai-public-core
 
 If you replicate then your log files and pcap file will be present in `/tmp/oai/vpp-upf-gnbsim/`.
 
-## 9. Reference logs
+## 9. Notes
+
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
+- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
+
+``` console
+#To start the containers 
+docker-compose-host $: docker-compose -f <file-name> up -d
+#To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
+docker-compose-host $: watch docker-compose -f <file-name> ps -a
+#To stop the containers with zero graceful period
+docker-compose-host $: docker-compose -f <file-name> down -t 0
+```
+
 

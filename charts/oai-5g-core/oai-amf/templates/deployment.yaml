@@ -31,12 +31,11 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
-    {{- if .Values.keepTcpContainer }}
       - name: tcpdump
-        image: "{{ .Values.tcpdumpimage.imageOS.tag }}:{{ .Values.tcpdumpimage.imageOS.tag }}"
+        image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
         securityContext:
-          {{- toYaml .Values.securityContext.tcpdump | nindent 12 }}
+          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -50,12 +49,11 @@ spec:
         {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
         - mountPath: "/pcap"
-          name: {{ .Values.persistent.volumeName}}
+          name: cn5g-pv
         {{- end}}
-    {{- end }}
       - name: amf
-        image: "{{ .Values.nfimage.imageOS.tag }}:{{ .Values.nfimage.imageOS.tag }}"
-        imagePullPolicy: {{ .Values.nfimage.imageOS.pullPolicy }}
+        image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -98,7 +96,7 @@ spec:
         - containerPort: {{ .Values.servicehttp.http2Port }}
           name: http2
           protocol: TCP
-        {{- if .Values.start.nf}}
+        {{- if .Values.start.amf}}
         {{- else}}
         command:
           - /bin/sleep
@@ -387,9 +385,9 @@ spec:
                 key: operatorKey
       volumes:
       {{- if .Values.persistent.sharedvolume}}
-      - name: {{ .Values.persistent.volumeName}}
+      - name: cn5g-pv
         persistentVolumeClaim:
-          claimName: {{ .Values.persistent.volumeName}}
+          claimName: cn5g-pvc
       {{- end }}
       - name: scripts
         configMap:
@@ -399,8 +397,7 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: 
-        {{- toYaml .Values.nodeSelector | nindent 12 }}
+      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}

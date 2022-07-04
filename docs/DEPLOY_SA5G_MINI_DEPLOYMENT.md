@@ -15,6 +15,7 @@
 
 ![SA Demo](./images/docker-compose/5gCN-mini.jpg)
 
+**Caution:** This is an old tutorial so artifacts like logs and pcap will not be from the new version of the core network but the docker-compose files are up to date. 
 
 **OVERVIEW**
 
@@ -33,9 +34,13 @@ Please follow the tutorial step by step to create a stable working testbed.
 3.  [Network Function Container Images](#2-network-function-container-images)
 4.  [Configuring Host Machines](#4-configuring-host-machines)
 5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
+6.  [Configuring dsTest Scenario](#6-configuring-dstester-scenario)
 7.  [Deploying OAI 5G Core Network](#7-deploying-oai-5g-core-network)
-8.  [Demo Video](#8-demo-video)
-9.  [Notes](#11-notes)
+8.  [Executing dsTest Scenario](#8-executing-the-dstest-scenario)
+9.  [Analysing Scenario Results](#9-analysing-the-scenario-results)
+10. [Demo Video](#10-demo-video)
+11. [Notes](#11-notes)
+
 
 ## 1. Minimalist Deployment Flavours ##
 
@@ -45,7 +50,7 @@ The `Minimalist` functional 5g core network can be deployed into 2 scenarios:
     - Scenario II:  AMF, SMF, UPF (SPGWU), MYSQL
 
 ## 2. Pre-requisites ##
-
+v 
 The container images are built using `docker build` command on Ubuntu 18.04 host machine. The base image for all the containers is Ubuntu 18.04. 
 
 The requried softwares and their respected versions are listed below. To replicate the testbed use these versions. 
@@ -282,29 +287,30 @@ The dsTest UE which will request for a PDU session will have this user profile. 
 - If the script is executed without any arguments then the helper menu is visible 
 
     ```bash
-    (docker-compose-host)$ pwd
+    docker-compose-host $: pwd
     /home/<docker-compose-host>/oai/oai-cn-fed/docker-compose
-    (docker-compose-host)$ python3 core-network.py --help
+    docker-compose-host $: python3 core-network.py --help
 
-    usage: core-network.py [-h] --type {start-mini,start-basic,stop-mini,stop-basic} [--fqdn {yes,no}] [--scenario {1,2}]
+    usage: core-network.py [-h] --type {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp} [--scenario {1,2}] [--capture CAPTURE]
 
     OAI 5G CORE NETWORK DEPLOY
 
     optional arguments:
-    -h, --help            show this help message and exit
-    --type {start-mini,start-basic,stop-mini,stop-basic}, -t {start-mini,start-basic,stop-mini,stop-basic}
-                            Functional type of 5g core network ("start-mini"|"start-basic"|"stop-mini"|"stop-basic")
-    --fqdn {yes,no}, -fq {yes,no}
-                            Deployment scenario with FQDN ("yes"|"no")
-    --scenario {1,2}, -s {1,2}
+      -h, --help            show this help message and exit
+      --type {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp}, -t {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp}
+                            Functional type of 5g core network ("start-mini"|"start-basic"|"start-basic-vpp"|"stop-mini"|"stop-basic"|"stop-basic-vpp")
+      --scenario {1,2}, -s {1,2}
                             Scenario with NRF ("1") and without NRF ("2")
+      --capture CAPTURE, -c CAPTURE
+                            Add an automatic PCAP capture on docker networks to CAPTURE file
 
     example:
             python3 core-network.py --type start-mini
             python3 core-network.py --type start-basic
+            python3 core-network.py --type start-basic-vpp
             python3 core-network.py --type stop-mini
-            python3 core-network.py --type start-mini --fqdn no --scenario 2
-            python3 core-network.py --type start-basic --fqdn no --scenario 2
+            python3 core-network.py --type start-mini --scenario 2
+            python3 core-network.py --type start-basic --scenario 2
     ```
 - Before executing the script it is better to start capturing packets to see the message flow between smf <--> nrf <--> upf. The packets will be captured on **demo-oai** bridge which should be configured on the `docker-compose-host` machine. 
 
@@ -476,15 +482,16 @@ Using wireshark, open `5gcn-mini-deployment-nrf.pcap` and use the filter `ngap |
 
 - The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes. 
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
-- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose-mini-nrf.yaml](../docker-compose/docker-compose-mini-nrf.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
-- It is not necessary to use [core-network.py](../docker-compose/core-network.py) python script, it is possible to directly deploy using `docker-compose` command
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
 
-    ```
+    ``` console
     #To start the containers 
-    docker-compose -f <file-name> -p <project-name> up -d
-    #To check their health status
-    docker-compose -f <file-name> -p <project-name> ps -a
-    #To stop the containers 
-    docker-compose -f <file-name> -p <project-name> down
+    docker-compose-host $: docker-compose -f <file-name> up -d
+    #To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
+    docker-compose-host $: watch docker-compose -f <file-name> ps -a
+    #To stop the containers with zero graceful period
+    docker-compose-host $: docker-compose -f <file-name> down -t 0
     ```
+    

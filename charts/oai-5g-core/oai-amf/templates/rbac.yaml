@@ -1,5 +1,4 @@
 ---
-{{- if or (eq .Values.securityContext.nf.privileged true) (eq .Values.keepTcpContainer true) }}
 apiVersion: rbac.authorization.k8s.io/v1
 kind: Role
 metadata:
@@ -26,32 +25,3 @@ roleRef:
   kind: Role
   name: {{ .Chart.Name }}-{{ .Release.Namespace }}-role
   apiGroup: rbac.authorization.k8s.io
-{{ else }}
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: Role
-metadata:
-  name: {{ .Chart.Name }}-{{ .Release.Namespace }}-role
-rules:
-- apiGroups:
-  - security.openshift.io
-  resourceNames:
-  - anyuid
-  resources:
-  - securitycontextconstraints
-  verbs:
-  - use
----
-apiVersion: rbac.authorization.k8s.io/v1
-kind: RoleBinding
-metadata:
-  name: {{ .Chart.Name }}-{{ .Release.Namespace }}-binding
-subjects:
-- kind: ServiceAccount
-  name: {{ .Values.serviceAccount.name }}
-  namespace: {{ .Release.Namespace }}
-roleRef:
-  kind: Role
-  name: {{ .Chart.Name }}-{{ .Release.Namespace }}-role
-  apiGroup: rbac.authorization.k8s.io
-{{- end }}

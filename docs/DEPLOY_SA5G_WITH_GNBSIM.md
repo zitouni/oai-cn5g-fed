@@ -12,8 +12,6 @@
   </tr>
 </table>
 
-**CAUTION: 2021/10/29: This page may be obsolete and needs update.**
-
 ![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
 
 **Reading time: ~ 20mins**
@@ -37,12 +35,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
-| CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
-| ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
-| AMF         | `master`                | `` | X            | X              |
-| SMF         | `master`                | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | X              |
-| NRF         | `master`                | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | X              |
-| SPGW-U-TINY | `master`                | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | X              |
+| CNF Name    | Branch Name             | tag      | Ubuntu 18.04 | RHEL8          |
+| ----------- |:----------------------- | ---------| ------------ | ---------------|
+| AMF         | `master`                | `v1.4.0` | X            | X              |
+| SMF         | `master`                | `v1.4.0` | X            | X              |
+| NRF         | `master`                | `v1.4.0` | X            | X              |
+| SPGW-U-TINY | `master`                | `v1.3.0` | X            | X              |
 
 <br/>
 
@@ -320,7 +318,7 @@ docker-compose-host $: docker logs gnbsim5 2>&1 | grep "UE address:"
 ```
 So here basically, minimum configuration parameters that need to change is gnbid, imsi and container ip address in docker-compose-gnbsim.yaml.
 Please make sure status of instance is healthy before creating one more instance. Now here we have deployed all 5 gnbsim intances - 
-``` console
+``` shell
 $ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 a25174c51297   gnbsim:latest                   "/gnbsim/bin/entrypo…"   3 minutes ago    Up 3 minutes  (healthy)                                  gnbsim5

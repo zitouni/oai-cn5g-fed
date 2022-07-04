@@ -394,9 +394,9 @@ docker-compose-host $: ping <ue-ip-address>
 - The `oai-traffic-gen` container is optional and is only required if the user wants to ping from the UE. In general this container is not required except for testing purposes.
 - Using the python script from above you can perform minimum `AMF, SMF, UPF (SPGWU), NRF, MYSQL` and basic `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL` 5g core funtional testing with `FQDN/IP` based feature along with `NRF/noNRF`. Check the configuration before using the docker compose [files](../docker-compose/).
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
-- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
-- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
 
 ``` console
 #To start the containers 
@@ -406,3 +406,5 @@ docker-compose-host $: watch docker-compose -f <file-name> ps -a
 #To stop the containers with zero graceful period
 docker-compose-host $: docker-compose -f <file-name> down -t 0
 ```
+
+
