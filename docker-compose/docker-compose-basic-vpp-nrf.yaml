@@ -277,7 +277,7 @@ services:
             - MNC03=95
             - MCC=208
             - REALM=3gppnetwork.org
-            - NETWORK_UE_IP=12.2.1.0/24
+            - NETWORK_UE_IP=12.1.1.0/24
             - N6_IPV4_ADDRESS_REMOTE=192.168.73.135 # EXT-DN (NAT Gateway) IP Address
             - VPP_MAIN_CORE=0
             - VPP_CORE_WORKER=1
