@@ -59,7 +59,7 @@ multus:
   create: false
   ipadd: "172.21.10.18"  # interface needed to connect with gnb
   netmask: "22"
-  gateway: "172.21.11.254"
+  defaultGateway: "172.21.11.254"
   hostInterface: "ens2f0np0"
 
 config:

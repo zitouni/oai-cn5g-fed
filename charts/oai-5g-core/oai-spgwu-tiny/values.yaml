@@ -7,7 +7,7 @@ replicaCount: 1
 nfimage:
   registry: local
   repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny # dockerhub oaisoftwarealliance/oai-spgwu-tiny
-  version: develop            # develop for experimental feature in that case check the configuration file 
+  version: v1.3.0           #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 

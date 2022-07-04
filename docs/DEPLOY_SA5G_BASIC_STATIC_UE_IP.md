@@ -262,7 +262,7 @@ Network demo-oai-public-net is external, skipping
 ### 7.2. Undeploy the core network
 
 ``` shell
-docker-compose-host $: python3 core-network.py --type stop-basic --fqdn yes --scenario 1
+docker-compose-host $: python3 core-network.py --type stop-basic --scenario 1
 [2022-02-08 15:51:06,388] root:DEBUG:  UnDeploying OAI 5G core components....
 [2022-02-08 15:51:06,389] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml down
 Stopping oai-ext-dn ... done
@@ -290,6 +290,16 @@ Removing network demo-oai-public-net
 
 - If you replicate then your log files and pcap file will be present in `/tmp/oai/static-ue-ip/` if you want to compare it with our provided logs and pcaps. Then follow the next section
 
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=no/USE_LOCAL_SUBSCRIPTION_INFO=yes/g' docker-compose-basic-nrf.yaml
+docker-compose-host $: sed -i 's/SMF_SELECTION=no/SMF_SELECTION=yes/g' docker-compose-basic-nrf.yaml
+```
+-->
+
+
 ## 8. Reference logs
 
 
@@ -310,6 +320,7 @@ Removing network demo-oai-public-net
 - The `oai-ext-dn` container is optional and is only required if the user wants to ping from the UE. In general this container is not required except for testing purposes.
 - Using the python script from above you can perform minimum `AMF, SMF, UPF (SPGWU), NRF, MYSQL` and basic `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL` 5g core funtional testing with `FQDN/IP` based feature along with `NRF/noNRF`. Check the configuration before using the docker compose [files](../docker-compose/).
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
+- In case you are interested to use HTTP V2 for SBI between the network functions instead of HTTP V1 then you have to use [docker-compose-basic-nrf-httpv2.yaml](../docker-compose/docker-compose-basic-nrf-httpv2.yaml)
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. Currently some parameters can not be configured via [docker-compose-basic-nrf.yaml](../docker-compose/docker-compose-basic-nrf.yaml). We recommend you directly configure them in the conf file and mount the file in the docker during run time. 
 - It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)

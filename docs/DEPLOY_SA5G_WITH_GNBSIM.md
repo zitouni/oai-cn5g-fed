@@ -444,7 +444,7 @@ Service gnbsim is  stopped
 ### 10.2. Undeploy the core network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type stop-mini --scenario 2
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```

@@ -208,6 +208,16 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: sd1
+          - name: SST_2
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: sst2
+          - name: SD_2
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: sd2
           - name: AMF_INTERFACE_NAME_FOR_NGAP
             valueFrom:
               configMapKeyRef:
@@ -397,7 +407,8 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
+      nodeSelector: 
+         {{- toYaml .Values.nodeSelector | nindent 12 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}

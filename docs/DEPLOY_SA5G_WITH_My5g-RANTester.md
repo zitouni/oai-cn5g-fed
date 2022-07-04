@@ -35,15 +35,17 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 * In this demo the image tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. When pulling images of network functions from dockerhub pull images for `develop` tag
 
-| CNF Name    | Branch Name | Ubuntu 18.04 | RHEL8 (UBI8)    |
-| ----------- | ----------- | ------------ | ----------------|
-| AMF         | `develop`   | X            | X               |
-| SMF         | `develop`   | X            | X               |
-| NRF         | `develop`   | X            | X               |
-| VPP-UPF     | `develop`   | X            | X               |
-| UDR         | `develop`   | X            | X               |
-| UDM         | `develop`   | X            | X               |
-| AUSF        | `develop`   | X            | X               |
+| CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
+| ----------- |:-------------- | ----------------------------- | ------------ | --------------|
+| AMF         | `master`      | `v1.4.0`                      | X            | X              |
+| AUSF        | `master`      | `v1.4.0`                      | X            | X              |
+| NRF         | `master`      | `v1.4.0`                      | X            | X              |
+| SMF         | `master`      | `v1.4.0`                      | X            | X              |
+| UDR         | `master`      | `v1.4.0`                      | X            | X              |
+| UDM         | `master`      | `v1.4.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.3.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
+
 
 <br/>
 
@@ -82,7 +84,7 @@ docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-my5g
 * We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-my5g/vpp-upf-my5g.pcap
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --scenario 1 --capture /tmp/oai/vpp-upf-my5g/vpp-upf-my5g.pcap
 [2022-02-08 16:18:19,328] root:DEBUG:  Starting 5gcn components... Please wait....
 [2022-02-08 16:18:19,328] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d mysql
 Creating network "oai-public-cp" with the default driver
@@ -349,27 +351,9 @@ docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5gran
 
 ## 9. Undeploy
 
-Last thing is to remove all services - <br/>
+Last thing is to remove the gnb simulator and core network
 
-* Undeploy the My5g-RANTester
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml down
-Stopping my5grantester ... done
-Removing my5grantester ... done
-Network demo-oai-public-net is external, skipping
-Network oai-public-access is external, skipping
-```
-
-* Undeploy the core network
-``` shell
-docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
-Stopping oai-smf    ... done
-Stopping oai-amf    ... 
-Stopping oai-ausf   ... 
-Stopping oai-ext-dn ... 
-Stopping oai-udm    ... 
-Stopping vpp-upf    ... 
-Stopping oai-udr    ... 
-Stopping mysql      ... 
-Stopping oai-nrf    ... 
+docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenario 1
 ```

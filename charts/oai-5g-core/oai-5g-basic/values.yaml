@@ -12,7 +12,7 @@ oai-nrf:
   weight: 1
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets: 
@@ -23,7 +23,7 @@ oai-udr:
   weight: 2
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets: 
@@ -34,7 +34,7 @@ oai-udm:
   weight: 3
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets: 
@@ -45,7 +45,7 @@ oai-ausf:
   weight: 4
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets: 
@@ -56,7 +56,7 @@ oai-amf:
   weight: 5
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   imagePullSecrets:
@@ -66,7 +66,7 @@ oai-amf:
     n1IPadd: "172.21.10.6"
     n1Netmask: "22"
     n1Gateway: "172.21.11.254"
-    hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
     amfInterfaceNameForN11: "eth0"  # Service based interface
@@ -94,7 +94,7 @@ oai-spgwu-tiny:
   weight: 6
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.3.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:
@@ -102,7 +102,7 @@ oai-spgwu-tiny:
     n3Ip: "172.21.10.102"
     n3Netmask: "22"
     sgiGw: "172.21.11.254"
-    hostInterface: "ens2f0np0"
+    hostInterface: "bond0"
   config:
     sgwS1uIf: "eth0"  # n3 interface, net1 if gNB is outside the cluster network and multus creation is true else eth0
     pgwSgiIf: "eth0"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
@@ -118,7 +118,7 @@ oai-smf:
   weight: 7
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   config:

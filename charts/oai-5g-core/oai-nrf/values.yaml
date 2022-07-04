@@ -8,7 +8,7 @@ replicaCount: 1
 nfimage:
   registry: local
   repository: oaisoftwarealliance/oai-nrf
-  version: develop
+  version: v1.4.0 #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 

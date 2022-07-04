@@ -485,7 +485,7 @@ If you replicate then your log files and pcap file will be present in `/tmp/oai/
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 - It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
-
+- In case you are interested to use HTTP V2 for SBI between the network functions instead of HTTP V1 then you have to use [docker-compose-basic-vpp-nrf-http2.yaml](../docker-compose/docker-compose-basic-vpp-nrf-http2.yaml)
 ``` console
 #To start the containers 
 docker-compose-host $: docker-compose -f <file-name> up -d

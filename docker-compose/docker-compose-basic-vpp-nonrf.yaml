@@ -229,10 +229,6 @@ services:
             - DNN_RANGE1=12.1.1.2 - 12.1.1.128
             - DNN_RANGE0=12.2.1.2 - 12.2.1.128
             - DNN_NI1=default
-            - DNN_NI3=ims
-            - TYPE3=IPv4v6
-            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
-            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
             - ENABLE_USAGE_REPORTING=yes
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
@@ -288,7 +284,7 @@ services:
             public_net_core:
                 ipv4_address: 192.168.73.134
     oai-ext-dn:
-        image: image: trf-gen-cn5g:latest
+        image: trf-gen-cn5g:latest
         privileged: true
         container_name: "oai-ext-dn"
         entrypoint: /bin/bash -c \

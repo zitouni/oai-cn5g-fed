@@ -71,7 +71,7 @@ The new version of `wireshark` may not be available in ubuntu 18.04 repository:
 
 You may also use the developer PPA:
 
-```shell
+```console
 docker-compose-host $: sudo add-apt-repository ppa:wireshark-dev/stable
 docker-compose-host $: sudo apt update
 docker-compose-host $: sudo apt install wireshark
@@ -86,7 +86,7 @@ Most of the times the `docker-compose-host` machine is not configured with packe
 
 **This is the most important step towards end-to-end connectivity.**
 
-```shell
+```console
 docker-compose-host $: sudo sysctl net.ipv4.conf.all.forwarding=1
 docker-compose-host $: sudo iptables -P FORWARD ACCEPT
 ```
@@ -203,7 +203,7 @@ The bottom section SHALL look like this:
 
 - To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the gNB host machine.
 
-    ```bash
+    ```console
     gNB-host$: ping 192.168.70.129
     PING 192.168.70.129 (192.168.70.129) 56(84) bytes of data.
     64 bytes from 192.168.70.129: icmp_seq=1 ttl=64 time=0.260 ms
@@ -332,7 +332,7 @@ Make sure you edit the IMSI, opc and key according to your setting user device.
     Creating oai-amf  ... done
     Creating oai-smf  ... done
     Creating oai-spgwu ... done
-    Creating oai-traffic-gen ... done
+    Creating oai-ext-dn ... done
 
     [2022-06-29 16:14:02,294] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
     [2022-06-29 16:14:02,294] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml ps -a
@@ -345,7 +345,7 @@ Make sure you edit the IMSI, opc and key according to your setting user device.
     oai-nrf           /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp            
     oai-smf           /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8080/tcp, 8805/udp  
     oai-spgwu         /bin/bash /openair-spgwu-t ...   Up (healthy)   2152/udp, 8805/udp          
-    oai-traffic-gen   /bin/bash -c  ip route add ...   Up                                         
+    oai-ext-dn   /bin/bash -c  ip route add ...   Up                                         
     oai-udm           /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp                      
     oai-udr           /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
     [2022-06-29 16:15:00,843] root:DEBUG:  Checking if the containers are configured....
@@ -381,23 +381,23 @@ Make sure you edit the IMSI, opc and key according to your setting user device.
 
 Your core network is ready you can use it this your gNB.
 
-You can use `oai-traffic-gen` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-traffic-gen` contianer using `ip route` command. 
+You can use `oai-ext-dn` to perform iperf or ping towards the UE, just make sure that the subnet used by the UE is properly defined in the `oai-ext-dn` contianer using `ip route` command. 
 
 ``` shell
-docker-compose-host $: docker exec -it oai-traffic-gen bash
+docker-compose-host $: docker exec -it oai-ext-dn bash
 docker-compose-host $: ping <ue-ip-address>
 ```
 
 
 ## 7. Notes ##
 
-- The `oai-traffic-gen` container is optional and is only required if the user wants to ping from the UE. In general this container is not required except for testing purposes.
+- The `oai-ext-dn` container is optional and is only required if the user wants to ping from the UE. In general this container is not required except for testing purposes.
 - Using the python script from above you can perform minimum `AMF, SMF, UPF (SPGWU), NRF, MYSQL` and basic `AMF, SMF, UPF (SPGWU), NRF, UDM, UDR, AUSF, MYSQL` 5g core funtional testing with `FQDN/IP` based feature along with `NRF/noNRF`. Check the configuration before using the docker compose [files](../docker-compose/).
 - This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
+- In case you are interested to use HTTP V2 for SBI between the network functions instead of HTTP V1 then you have to use [docker-compose-basic-nrf-httpv2.yaml](../docker-compose/docker-compose-basic-nrf-httpv2.yaml)
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 - It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
-
 ``` console
 #To start the containers 
 docker-compose-host $: docker-compose -f <file-name> up -d

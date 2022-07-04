@@ -1,5 +1,59 @@
 # RELEASE NOTES: #
 
+## v1.4.0 -- July 2022 ##
+
+* Image Size Reduction effort for all Network functions.
+* All official images produced by CI are pushed to `oaisoftwarealliance` Docker-Hub Team account
+* New tutorials:
+  - My5gRAN Tester --> `docs/DEPLOY_SA5G_WITH_My5g-RANTester.md`
+* Updated the helm charts and helm chart tutorial
+* New wiki page to know more about variable which can be configured for each network function
+* Fix HTTPV2 support for all network functions `docker-compose/docker-compose-basic-nrf-httpv2.yaml`
+* `AMF` Changes:
+  - Fix(sctp): simple fix for SCTP NG deconnection / shutdown
+  - Fix 100% CPU consumption issue
+  - Fix ran ue id display
+  - Fix issue for TMSI and GUTI value
+  - Handling no sd value, sd is optional 
+  - Removed opc value from amf configuration
+  - Support for ubuntu 20.04 bare-metal installation
+* `AUSF` Changes:
+  - Removed unused packages
+  - HTTP2 support for SBI interface
+  - NRF Registration and heartbeat exchange
+* `NRF` Changes:
+  - Removed unused packages
+  - Added NF profile handling for PCF
+  - HTTP2 support for SBI interface
+* `NSSF` Changes:
+  - Handling of SNSSAI matching
+  - Fix bare-metal setup configuration management
+  - HTTP2 support for SBI interface
+* `SMF` Changes:
+  - Handling no sd value, sd is optional 
+  - Fix for USER_PLANE_IP_RESOURCE_INFORMATION IE
+  - Support for ubuntu 20.04 bare-metal installation
+  - Added support for IMS
+  - HTTP2 support for SBI interface
+  - Added usage report feature
+  - Flexiable MTU
+* `UDM` Changes:
+  - Fix HTTP2 support
+  - NRF Registration and heartbeat exchange
+* `UDR` Changes:
+  - Fix sync failure issue
+  - Fix issue to support slice selection subscription data retrieval
+  - NRF Registration and heartbeat exchange
+* `SPGWU-TINY` Changes:
+  - Handling of no sd value, sd is optional
+  - Added support for multiple slices via config file
+  - Allowed reusing GTPV1U socket
+  - Fix GTPU offset sequence number
+  - Fix configurable number of DL threads for data path
+* `UPF-VPP` Changes:
+  - Added instructions for bare-metal installation
+* `NEF` it is ongoing so far it is not functional
+
 ## v1.3.0 -- January 2022 ##
 
 * Incorporation of new public network functions:
