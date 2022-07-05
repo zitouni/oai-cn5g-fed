@@ -26,8 +26,7 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
     - [Using Docker-Compose, perform a `basic` deployment and test with `UERANSIM`](./DEPLOY_SA5G_WITH_UERANSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `My5g-RANTester`](./DEPLOY_SA5G_WITH_My5g-RANTester.md)
     - [Using Docker-Compose, when testing with Commercial UE, troubleshoot traffic issues](./TROUBLESHOOT_COTS_UE_TRAFFIC.md)
-- The Developer Corner
+- The Developers Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
     - [Using Virtual Machine, deploy and test with a Commercial UE](./DEPLOY_SA5G_VM_COTSUE.md)
-- How to Open an Issue or Report a bug
-- Frequently Asked Questions
+- [Report an issue](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md#8-how-to-report-an-issue)

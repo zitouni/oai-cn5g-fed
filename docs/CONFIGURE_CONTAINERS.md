@@ -12,6 +12,8 @@
   </tr>
 </table>
 
+**Caution**: We will remove this page in the next release, the configuration of network functions can be found on [wiki](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/wikis/home)
+
 
 **TABLE OF CONTENTS**
 

@@ -23,13 +23,19 @@ This tutorial will help in understanding how to deploy a `basic` OAI core networ
 - 16GiB RAM
 - Minimum 1.5 GiB of free storage for docker images
 
-Please follow the tutorial step by step to create a stable working testbed. 
+Please follow the tutorial step by step to create a stable working testbed. You can use this tutorial to deploy OAI-5G core and test it with oai-gNB and oai-nr-ue. 
+
 
 **Reading time**: ~ 20 mins
 
 **Tutorial replication time**: ~ 30 mins
 
-Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+
+**Note**
+
+- In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md). 
+- In this tutorial we have considered two different host machines, `docker-compose-host` as the host machine to deploy core network functions and `gNB-host` as gNB host machine. 
+
 
 **TABLE OF CONTENTS**
 
@@ -40,6 +46,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
 6.  [Deploying OAI 5G Core Network](#6-deploying-oai-5g-core-network)
 7.  [Notes](#7-notes)
+8.  [How to report an issue?](#8-how-to-report-an-issue)
 
 ## 1. Basic Deployment Flavours ##
 
@@ -67,9 +74,7 @@ The requried softwares and their respected versions are listed below. To replica
 
 The new version of `wireshark` may not be available in ubuntu 18.04 repository:
 
-- So it is better to build it from source.
-
-You may also use the developer PPA:
+- You can either build it from source or you may also use the developer PPA:
 
 ```console
 docker-compose-host $: sudo add-apt-repository ppa:wireshark-dev/stable
@@ -105,7 +110,7 @@ docker-compose-host $: sudo iptables -P FORWARD ACCEPT
 | UDM         | `master`    | `v1.4.0` | X            | X               |
 | AUSF        | `master`    | `v1.4.0` | X            | X               |
 
-- In case readers are interested in making images using different branch then **they have to build images from scratch they can't use the docker-hub images**.
+- In case readers are interested in making images using different branch than master or develop then, **they have to build images from scratch they can't use the docker-hub images**.
 
 ## 4. Configuring Host Machines ##
 
@@ -115,8 +120,6 @@ There are two ways to create this bridge either manually or automatically using 
 
 * The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to NRF. 
 * The second option of automatic deployment is good when initial packet capture is not important.
-
-**NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
 
 ### 4.1 Creating bridge manually ###
 
@@ -223,7 +226,7 @@ The bottom section SHALL look like this:
 
 Configuring network functions with static ip-addresses is prefered for bare-metal deployment of network functions. Whereas for docker-compose or helm chart based deployment it is better to use FQDN of network functions. In the docker-compose file you will see each network function is configured with both ip-address and FQDN, but if you are using FQDN then the code of network function will ignore the ip-address configuration.  
 
-In docker-compose the service-name is actually the FQDN of the service.
+In docker-compose the [service-name](https://docs.docker.com/compose/compose-file/#services-top-level-element) is actually the FQDN of the service.
 
 ### 5.1. Core Network Configuration ###
 
@@ -407,4 +410,12 @@ docker-compose-host $: watch docker-compose -f <file-name> ps -a
 docker-compose-host $: docker-compose -f <file-name> down -t 0
 ```
 
+## 8. How to report an issue? ##
 
+To report an issue regarding any-component of CN5G,
+
+1. Share the testing scenario, what the test is trying to achieve
+2. Logs of the 5GCN components and packet capture/tcpdump of the 5GCN components. Depending on where the packets are captured take care of interface on which the packets are captured. Also it will be nice to capture packets using a filter `ngap || http || pfcp || gtp`. So that the size of `.pcap` file is not huge.
+3. You can send an email at openair5g-cn@lists.eurecom.fr with the configuration files, log files in debug mode and pcaps with appropriate filters. Choose an appropriate subject.
+4. You can also report an issue or create bug directly on gitlab. You don't need to sign `Contributor License Agreement` for opening issues, it is only needed when you want to contribute and push your changes. You have to send us an email to whitelist your domain/email-address for creating a gitlab account, please contact us at contact@openairinterface.org.
+5. If you are interested to contribute then please follow [contribution guidelines](../CONTRIBUTING.md). 
