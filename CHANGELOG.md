@@ -2,58 +2,58 @@
 
 ## v1.4.0 -- July 2022 ##
 
-* Image Size Reduction effort for all Network functions.
 * All official images produced by CI are pushed to `oaisoftwarealliance` Docker-Hub Team account
-* New tutorials:
+* New tutorial:
   - My5gRAN Tester --> `docs/DEPLOY_SA5G_WITH_My5g-RANTester.md`
-* Updated the helm charts and helm chart tutorial
+* Update the helm charts and helm chart tutorial
+* Reduce image size for all network functions
 * New wiki page to know more about variable which can be configured for each network function
-* Fix HTTPV2 support for all network functions `docker-compose/docker-compose-basic-nrf-httpv2.yaml`
+* Fix HTTP/2 support for all network functions `docker-compose/docker-compose-basic-nrf-httpv2.yaml`
 * `AMF` Changes:
-  - Fix(sctp): minor fix for SCTP NG deconnection / shutdown
+  - Fix SCTP NG Shutdown issue
   - Fix 100% CPU consumption issue
-  - Fix ran ue id display
+  - Fix RAN UE ID display
   - Fix issue for TMSI and GUTI value
   - Fix for handling S-NSSAI 
-  - Removed opc value from amf configuration
-  - Support for ubuntu 20.04 bare-metal installation
+  - Remove OPC value from AMF configuration
+  - Support for Ubuntu 20.04 bare-metal installation
 * `AUSF` Changes:
-  - Removed unused packages
-  - HTTP2 support for SBI interface
+  - Remove unused packages
+  - HTTP/2 support for SBI interface
   - NRF Registration and heartbeat exchange
 * `NRF` Changes:
-  - Removed unused packages
-  - Added NF profile handling for PCF
-  - HTTP2 support for SBI interface
+  - Remove unused packages
+  - Add NF profile handling for PCF
+  - HTTP/2 support for SBI interface
 * `NSSF` Changes:
   - Network slice selection for UE registration 
   - NS-AVAIBALITY API support to CREATE new slice
   - Fix bare-metal setup configuration management
-  - HTTP2 support for SBI interface
+  - HTTP/2 support for SBI interface
 * `SMF` Changes:
   - Fix for handling S-NSSAI 
-  - Added support for IMS
-  - HTTP2 support for SBI interface
-  - Added usage report feature
+  - Add support for IMS
+  - HTTP/2 support for SBI interface
+  - Add usage report feature
   - Flexiable MTU
-  - Support for ubuntu 20.04 bare-metal installation
+  - Support for Ubuntu 20.04 bare-metal installation
 * `UDM` Changes:
-  - Fix HTTP2 support
+  - Fix HTTP/2 support
   - NRF Registration and heartbeat exchange
 * `UDR` Changes:
   - Fix sync failure issue
-  - Fix issue to support slice selection subscription data retrieval
+  - Fix issue to support Slice Selection Subscription Data retrieval
   - NRF Registration and heartbeat exchange
 * `SPGWU-TINY` Changes:
   - Fix for handling S-NSSAI 
-  - Added support for multiple slices via config file
-  - Allowed reusing GTPV1U socket
+  - Add support for multiple slices via config file
+  - Allowed reusing GTPv1-U socket
   - Fix GTPU offset sequence number
   - Fix configurable number of DL threads for data path
 * `UPF-VPP` Changes:
   - Standalone support validated for traffic steering and redirection
   - Added instructions for bare-metal installation
-  - Support for ubuntu 20.04 bare-metal/docker installation
+  - Support for Ubuntu 20.04 bare-metal/docker installation
 * `NEF` It is ongoing so far it is not functional
 
 ## v1.3.0 -- January 2022 ##
