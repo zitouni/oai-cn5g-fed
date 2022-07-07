@@ -25,9 +25,6 @@ spec:
           },
           {
                  "name": "{{ .Chart.Name }}-net2"
-          },
-          {
-                 "name": "{{ .Chart.Name }}-net3"
           }]
     {{- end }}
     spec:

@@ -39,4 +39,4 @@ dependencies:
 - condition: oai-spgwu-tiny.enabled
   name: oai-spgwu-tiny
   repository: "file://../oai-spgwu-tiny"
-  version: v1.3.0
+  version: v1.4.0

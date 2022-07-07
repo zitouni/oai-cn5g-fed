@@ -101,10 +101,10 @@ To know how to configure the machine with the above requirements vist [pre-requi
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| AMF         | `master`    | `v1.3.0` | X            | X               |
+| AMF         | `master`    | `v1.4.0` | X            | X               |
 | SMF         | `master`    | `v1.4.0` | X            | X               |
 | NRF         | `master`    | `v1.4.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.3.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
 
 - In case readers are interested in using different branch then develop or releases (example v1.4.0) **they have to build images from scratch they can't use the docker-hub images**.
 

@@ -30,9 +30,9 @@ oai-amf:
     - name: "regcred"
   multus:
     create: false
-    n1IPadd: "172.21.10.6"
+    n1IPadd: "172.21.6.201"
     n1Netmask: "22"
-    n1Gateway: "172.21.11.254"
+    n1Gateway: "172.21.7.254"
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   config:
     amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
@@ -60,14 +60,16 @@ oai-spgwu-tiny:
   weight: 3
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: v1.3.0                                    ## The branch to be used to pull from dockerhub
+    version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  imagePullSecrets: 
+    - name: "regcred"
   multus:
     create: false
-    n3Ip: "172.21.10.102"
+    n3Ip: "172.21.6.200"
     n3Netmask: "22"
-    sgiGw: "172.21.11.254"
+    sgiGw: "172.21.7.254"
     hostInterface: "bond0"
   nodeSelector: {}
   config:
@@ -87,6 +89,8 @@ oai-smf:
     version: v1.4.0                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
+  imagePullSecrets: 
+    - name: "regcred"
   config:
     useLocalSubscriptionInfo: "yes"
     ueMtu: 1500

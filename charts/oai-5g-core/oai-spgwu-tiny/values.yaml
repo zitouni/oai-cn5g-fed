@@ -7,7 +7,7 @@ replicaCount: 1
 nfimage:
   registry: local
   repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny # dockerhub oaisoftwarealliance/oai-spgwu-tiny
-  version: v1.3.0           #image tag, develop tag for experimental features 
+  version: v1.4.0           #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -85,6 +85,15 @@ config:
   nssaiSst0: 1 # should match with SMF information
   nssaiSd0: 1  # should match with SMF information
   dnn0: "oai" # should match with SMF information
+  nssaiSst1: 1 # should match with SMF information
+  nssaiSd1: 1  # should match with SMF information
+  dnn1: "oai" # should match with SMF information
+  nssaiSst2: 1 # should match with SMF information
+  nssaiSd2: 1  # should match with SMF information
+  dnn2: "oai" # should match with SMF information
+  nssaiSst3: 1 # should match with SMF information
+  nssaiSd3: 1  # should match with SMF information
+  dnn3: "oai" # should match with SMF information
   netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
 
 

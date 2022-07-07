@@ -29,4 +29,4 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
 - The Developers Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
     - [Using Virtual Machine, deploy and test with a Commercial UE](./DEPLOY_SA5G_VM_COTSUE.md)
-- [Report an issue](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md#8-how-to-report-an-issue)
+- [Report an Issue or bug for Core Network Functions](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md#8-report-an-issue)

@@ -46,7 +46,7 @@ Please follow the tutorial step by step to create a stable working testbed. You 
 5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
 6.  [Deploying OAI 5G Core Network](#6-deploying-oai-5g-core-network)
 7.  [Notes](#7-notes)
-8.  [How to report an issue?](#8-how-to-report-an-issue)
+8.  [Report an Issue](#8-report-an-issue)
 
 ## 1. Basic Deployment Flavours ##
 
@@ -105,7 +105,7 @@ docker-compose-host $: sudo iptables -P FORWARD ACCEPT
 | AMF         | `master`    | `v1.4.0` | X            | X               |
 | SMF         | `master`    | `v1.4.0` | X            | X               |
 | NRF         | `master`    | `v1.4.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.3.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
 | UDR         | `master`    | `v1.4.0` | X            | X               |
 | UDM         | `master`    | `v1.4.0` | X            | X               |
 | AUSF        | `master`    | `v1.4.0` | X            | X               |
@@ -231,6 +231,9 @@ In docker-compose the [service-name](https://docs.docker.com/compose/compose-fil
 ### 5.1. Core Network Configuration ###
 
 The docker-compose file has configuration parameters of each core network component. The file is pre-configured with parameters related to this scenario. The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
+
+You can also check configuration on our [wiki](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/wikis/home)
+
 
 ```console
 | File Name   | Repository                                   | Location                                                                                              |
@@ -402,16 +405,16 @@ docker-compose-host $: ping <ue-ip-address>
 - Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 - It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
-``` console
-#To start the containers 
-docker-compose-host $: docker-compose -f <file-name> up -d
-#To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
-docker-compose-host $: watch docker-compose -f <file-name> ps -a
-#To stop the containers with zero graceful period
-docker-compose-host $: docker-compose -f <file-name> down -t 0
-```
+  ``` console
+  #To start the containers 
+  docker-compose-host $: docker-compose -f <file-name> up -d
+  #To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
+  docker-compose-host $: watch docker-compose -f <file-name> ps -a
+  #To stop the containers with zero graceful period
+  docker-compose-host $: docker-compose -f <file-name> down -t 0
+  ```
 
-## 8. How to report an issue? ##
+## 8. Report an Issue ##
 
 To report an issue regarding any-component of CN5G,
 

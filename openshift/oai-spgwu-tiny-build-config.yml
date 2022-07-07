@@ -37,7 +37,7 @@ spec:
     source:
         git:
             uri: "https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny.git"
-            ref: "develop"
+            ref: "v1.4.0"
         secrets:
           - secret:
               name: etc-pki-entitlement
@@ -55,5 +55,5 @@ spec:
     output:
         to:
             kind: "ImageStreamTag"
-            name: "oai-spgwu-tiny:develop"
+            name: "oai-spgwu-tiny:v1.4.0"
 

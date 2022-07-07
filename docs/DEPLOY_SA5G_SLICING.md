@@ -49,7 +49,7 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 | SMF         | `master`      | `v1.4.0`                      | X            | X              |
 | UDR         | `master`      | `v1.4.0`                      | X            | X              |
 | UDM         | `master`      | `v1.4.0`                      | X            | X              |
-| SPGWU       | `master`      | `v1.3.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.4.0`                      | X            | X              |
 | UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
 
 <br/>

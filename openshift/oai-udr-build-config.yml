@@ -37,7 +37,7 @@ spec:
     source:
         git:
             uri: "https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udr.git"
-            ref: "develop"
+            ref: "v1.4.0"
         secrets:
           - secret:
               name: etc-pki-entitlement
@@ -55,5 +55,5 @@ spec:
     output:
         to:
             kind: "ImageStreamTag"
-            name: "oai-udr:develop"
+            name: "oai-udr:v1.4.0"
 

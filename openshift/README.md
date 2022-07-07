@@ -60,9 +60,7 @@ $: oc start-bc oai-udm
 $: oc start-bc oai-udr
 ```
 
-For the moment the dockerfiles used in these build configs is based on develop branch which have a new push every week, there are new features all the time. 
-
-Just be careful sometimes some functionality can break but you can report back to us in that case. 
+For the moment the dockerfiles used in these build configs are based on v1.4.0 release tag of all the network functions. 
 
 ## 2. How to Build UBI Images of gNB and UE?
 

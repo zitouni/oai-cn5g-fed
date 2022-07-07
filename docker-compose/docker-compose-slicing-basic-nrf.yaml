@@ -4,7 +4,7 @@ services:
         container_name: mysql
         image: mysql:5.7
         volumes:
-            - /database/oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./database/oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
             - ./healthscripts/mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
@@ -403,7 +403,7 @@ services:
                 ipv4_address: 192.168.70.141
     oai_spgwu_slice1:
         container_name: oai-spgwu-slice1
-        image: oai-spgwu-tiny:v1.3.0
+        image: oai-spgwu-tiny:v1.4.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run
@@ -451,7 +451,7 @@ services:
                 ipv4_address: 192.168.70.142
     oai_spgwu_slice2:
         container_name: oai-spgwu-slice2
-        image: oai-spgwu-tiny:v1.3.0
+        image: oai-spgwu-tiny:v1.4.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run

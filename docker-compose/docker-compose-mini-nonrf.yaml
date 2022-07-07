@@ -173,7 +173,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oai-spgwu-tiny:v1.3.0
+        image: oai-spgwu-tiny:v1.4.0
         environment:
             - TZ=Europe/Paris
             - PID_DIRECTORY=/var/run

@@ -43,7 +43,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 | SMF         | `master`      | `v1.4.0`                      | X            | X              |
 | UDR         | `master`      | `v1.4.0`                      | X            | X              |
 | UDM         | `master`      | `v1.4.0`                      | X            | X              |
-| SPGWU       | `master`      | `v1.3.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.4.0`                      | X            | X              |
 | UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
 
 

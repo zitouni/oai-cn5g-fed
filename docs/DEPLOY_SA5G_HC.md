@@ -41,7 +41,7 @@ The gNB simulator requires lot of resources. The configuration of the machine on
 Clone the git repository 
 
 ```console 
-$: git clone -b <branch-of-the-tutorial> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed
+$: git clone -b master https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed
 ```
 
 ## 1. Description
@@ -206,6 +206,8 @@ imagePullSecrets:
 ```
 
 When pulling images from docker hub you have several choices either to use images with develop tag (based on latest develop branch somtimes might not be stable), latest (built from current master branch) and release tags. 
+
+At the time of writing this tutorial the latest image was tag v1.4.0. 
 
 ### 3.3 Configuring Helm Chart Parameters
 

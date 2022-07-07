@@ -37,13 +37,13 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| AMF         | `develop`   | `v1.2.0` | X            | X               |
-| SMF         | `develop`   | `v1.2.0` | X            | X               |
-| NRF         | `develop`   | `v1.2.0` | X            | X               |
-| VPP-UPF     | `develop`   | `v1.1.3` | X            | X               |
-| UDR         | `develop`   | `v1.2.0` | X            | X               |
-| UDM         | `develop`   | `v1.2.0` | X            | X               |
-| AUSF        | `develop`   | `v1.2.0` | X            | X               |
+| AMF         | `develop`   | `v1.4.0` | X            | X               |
+| SMF         | `develop`   | `v1.4.0` | X            | X               |
+| NRF         | `develop`   | `v1.4.0` | X            | X               |
+| VPP-UPF     | `develop`   | `v1.4.0` | X            | X               |
+| UDR         | `develop`   | `v1.4.0` | X            | X               |
+| UDM         | `develop`   | `v1.4.0` | X            | X               |
+| AUSF        | `develop`   | `v1.4.0` | X            | X               |
 
 <br/>
 

@@ -40,7 +40,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 | AMF         | `master`                | `v1.4.0` | X            | X              |
 | SMF         | `master`                | `v1.4.0` | X            | X              |
 | NRF         | `master`                | `v1.4.0` | X            | X              |
-| SPGW-U-TINY | `master`                | `v1.3.0` | X            | X              |
+| SPGW-U-TINY | `master`                | `v1.4.0` | X            | X              |
 
 <br/>
 

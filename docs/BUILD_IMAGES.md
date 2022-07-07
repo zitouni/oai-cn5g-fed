@@ -38,7 +38,7 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 | AMF         | `master`    | `v1.4.0` | X            | X               |
 | SMF         | `master`    | `v1.4.0` | X            | X               |
 | NRF         | `master`    | `v1.4.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.3.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
 | UDR         | `master`    | `v1.4.0` | X            | X               |
 | UDM         | `master`    | `v1.4.0` | X            | X               |
 | AUSF        | `master`    | `v1.4.0` | X            | X               |
@@ -50,7 +50,7 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 # Clone directly on the v1.4.0 release tag
 $ git clone --branch v1.4.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
-# If you forgot to clone directly to the v1.3.0 release tag
+# If you forgot to clone directly to the v1.4.0 release tag
 $ git checkout -f v1.4.0
 
 # Synchronize all git submodules
@@ -251,12 +251,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 6.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.3.0 \
+$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
                --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu18.04 \
                component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
-oai-spgwu-tiny          v1.3.0             dec6311cef3b        1 minute ago          255MB
+oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago          255MB
 ...
 ```
 
@@ -271,7 +271,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.3.0 \
+$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
                --file component/oai-spgwu-tiny/docker/Dockerfile.rhel8 \
                component/oai-upf-equivalent
 ...
