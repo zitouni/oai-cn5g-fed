@@ -75,7 +75,7 @@ or a little bit more dangerous
 
 ```bash
 $ ./scripts/syncComponents.sh --nrf-branch v1.4.0 --amf-branch v1.4.0 \
-                              --smf-branch v1.4.0 --spgwu-tiny-branch v1.1.6 \
+                              --smf-branch v1.4.0 --spgwu-tiny-branch v1.4.0 \
                               --udr-branch v1.4.0 --udm-branch v1.4.0 \
                               --ausf-branch v1.4.0 --upf-vpp-branch v1.4.0 \
                               --nssf-branch v1.4.0
@@ -83,7 +83,7 @@ $ ./scripts/syncComponents.sh --nrf-branch v1.4.0 --amf-branch v1.4.0 \
 OAI-NRF     component branch : v1.4.0
 OAI-AMF     component branch : v1.4.0
 OAI-SMF     component branch : v1.4.0
-OAI-SPGW-U  component branch : v1.1.6
+OAI-SPGW-U  component branch : v1.4.0
 OAI-UDR     component branch : v1.4.0
 OAI-UDM     component branch : v1.4.0
 OAI-AUSF    component branch : v1.4.0

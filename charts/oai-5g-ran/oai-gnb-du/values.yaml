@@ -68,9 +68,8 @@ multus:    # needed when gnB service will run on another interface rather than t
   f1Netmask: "22"
   defaultGateway: "172.21.11.254"
   hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
-  rruInterfaceIpadd: "192.168.80.200"
+  rruInterfaceIpadd: "192.168.80.95"
   rruInterfaceNetmask: "24"
-  rruInterfaceGateway: "192.168.80.1"
 
 config:
   timeZone: "Europe/Paris"

@@ -338,7 +338,16 @@ docker-compose-host $: docker logs oai-udr > /tmp/oai/vpp-upf-my5g/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/vpp-upf-my5g/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/vpp-upf-my5g/ausf.log 2>&1
 docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5grantester.log 2>&1
+
 ```
+
+## Stop the core network
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml down
+docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenario 1
+```
+
 
 ## 8. Analysing the Scenario Results
 
@@ -349,11 +358,4 @@ docker-compose-host $: docker logs my5grantester > /tmp/oai/vpp-upf-my5g/my5gran
 
 * For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
 
-## 9. Undeploy
 
-Last thing is to remove the gnb simulator and core network
-
-``` shell
-docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml down
-docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenario 1
-```

@@ -111,6 +111,12 @@ oai-spgwu-tiny:
     nssaiSst0: 1 # should match with SMF information
     nssaiSd0: 10203  # should match with SMF information
     dnn0: "oai" # should match with SMF information
+    nssaiSst1: 1 # should match with SMF information
+    nssaiSd1: 1  # should match with SMF information
+    dnn1: "oai.ipv4" # should match with SMF information
+    nssaiSst2: 222 # should match with SMF information
+    nssaiSd2: 123  # should match with SMF information
+    dnn2: "default" # should match with SMF information
     mcc: 208 # should match with AMF and SMF
     mnc: 99 # should match with AMF and SMF
     netUeIp: "12.1.1.0/24"        #Make sure that the UE ip-address are allocated in this range
