@@ -15,6 +15,9 @@
 
 OAI 5G core network have different network functions which can be used invidiually or deployed all together in different combination on a production grade Kubernetes cluster like Openshift or a vanilla kubernetes cluster. 
 
+**Caution**: This is an old tutorial, the helm charts can be slightly different
+
+
 ![Helm Chart Deployment](./images/helm-chart-mini.png)
 
 **Reading time**: ~30
@@ -185,8 +188,8 @@ namespace: "oai"
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-amf # image name either locally present or in a public/private repository
-  version: develop # image tag
+  repository: docker.io/oaisoftwarealliance/oai-amf # image name either locally present or in a public/private repository
+  version: v1.4.0 # image tag
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
@@ -243,14 +246,14 @@ namespace: "oai" # namespace where SMF will be deployed
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-smf
-  version: develop
+  repository: docker.io/oaisoftwarealliance/oai-smf
+  version: v1.4.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
+  repository: docker.io/corfr/tcpdump
   version: latest
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
@@ -275,22 +278,22 @@ namespace: "oai" # namespace where SMF will be deployed
 
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-spgwu-tiny
-  version: develop
+  repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny
+  version: v1.4.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
-  version: latest
+  repository: docker.io/corfr/tcpdump
+  version: v1.4.0
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
 config:
   gwId: 1
   mnc: 208 # should match with AMF and SMF and gNB information
-  mcc: 95 # should match with AMF and SMF and gNB information
+  mcc: 99 # should match with AMF and SMF and gNB information
   realm: "3gpp.org" 
   pidDirectory: "/var/run"
 ```
@@ -309,14 +312,14 @@ namespace: "oai"
 # NF image
 nfimage:
   registry: local
-  repository: rdefosseoai/oai-nrf
-  version: develop
+  repository: docker.io/oaisoftwarealliance/oai-nrf
+  version: v1.4.0
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always
 
 tcpdumpimage:
   registry: local
-  repository: corfr/tcpdump
+  repository: docker.io/corfr/tcpdump
   version: latest
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: Always

@@ -4,8 +4,8 @@ services:
         container_name: "mysql"
         image: mysql:5.7
         volumes:
-            - ./database/oai_db1.sql:/docker-entrypoint-initdb.d/oai_db.sql
-            - ./healthscripts/mysql-healthcheck1.sh:/tmp/mysql-healthcheck.sh
+            - ./database/oai_db2.sql:/docker-entrypoint-initdb.d/oai_db.sql
+            - ./healthscripts/mysql-healthcheck2.sh:/tmp/mysql-healthcheck.sh
         environment:
             - TZ=Europe/Paris
             - MYSQL_DATABASE=oai_db
@@ -20,6 +20,132 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.131
+    oai-udr:
+        container_name: "oai-udr"
+        image: oai-udr:v1.4.0
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE=0
+            - PID_DIRECTORY=/var/run
+            - UDR_NAME=OAI_UDR
+            - UDR_INTERFACE_NAME_FOR_NUDR=eth0
+            - UDR_INTERFACE_PORT_FOR_NUDR=80
+            - UDR_INTERFACE_HTTP2_PORT_FOR_NUDR=8080
+            - UDR_API_VERSION=v1
+            - MYSQL_IPV4_ADDRESS=192.168.70.131
+            - MYSQL_USER=test
+            - MYSQL_PASS=test
+            - MYSQL_DB=oai_db
+            - WAIT_MYSQL=120
+            - USE_FQDN_DNS=yes
+            - REGISTER_NRF=yes
+            - NRF_IPV4_ADDRESS=192.168.70.130
+            - NRF_PORT=8080
+            - NRF_API_VERSION=v1
+            - NRF_FQDN=oai-nrf
+            - USE_HTTP2=yes         #change for HTTP2
+        depends_on:
+            - mysql
+            - oai-nrf
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.136
+        volumes:
+            - ./healthscripts/udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-udr/bin/udr-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    oai-udm:
+        container_name: "oai-udm"
+        image: oai-udm:v1.4.0
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE=0
+            - PID_DIRECTORY=/var/run
+            - UDM_NAME=OAI_UDM
+            - SBI_IF_NAME=eth0
+            - SBI_PORT=80
+            - SBI_HTTP2_PORT=8080
+            - UDM_VERSION_NB=v1
+            - USE_FQDN_DNS=yes
+            - UDR_IP_ADDRESS=192.168.70.136
+            - UDR_PORT=8080
+            - UDR_VERSION_NB=v1
+            - UDR_FQDN=oai-udr
+            - REGISTER_NRF=yes
+            - NRF_IPV4_ADDRESS=192.168.70.130
+            - NRF_PORT=8080
+            - NRF_API_VERSION=v1
+            - NRF_FQDN=oai-nrf
+            - USE_HTTP2=yes             #change for HTTP2
+        depends_on:
+            - oai-udr
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.137
+        volumes:
+            - ./healthscripts/udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    oai-ausf:
+        container_name: "oai-ausf"
+        image: oai-ausf:v1.4.0
+        environment:
+            - TZ=Europe/Paris
+            - INSTANCE_ID=0
+            - PID_DIR=/var/run
+            - AUSF_NAME=OAI_AUSF
+            - SBI_IF_NAME=eth0
+            - SBI_PORT=80
+            - SBI_HTTP2_PORT=8080
+            - USE_FQDN_DNS=yes
+            - UDM_IP_ADDRESS=192.168.70.137
+            - UDM_PORT=8080
+            - UDM_VERSION_NB=v1
+            - UDM_FQDN=oai-udm
+            - REGISTER_NRF=yes
+            - NRF_IPV4_ADDRESS=192.168.70.130
+            - NRF_PORT=8080
+            - NRF_API_VERSION=v1
+            - NRF_FQDN=oai-nrf
+            - USE_HTTP2=yes            #change for HTTP2
+        depends_on:
+            - oai-udm
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.138
+        volumes:
+            - ./healthscripts/ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
+    oai-nrf:
+        container_name: "oai-nrf"
+        image: oai-nrf:v1.4.0
+        environment:
+            - NRF_INTERFACE_NAME_FOR_SBI=eth0
+            - NRF_INTERFACE_PORT_FOR_SBI=80
+            - NRF_INTERFACE_HTTP2_PORT_FOR_SBI=8080
+            - NRF_API_VERSION=v1
+            - INSTANCE=0
+            - PID_DIRECTORY=/var/run
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.130
+        volumes:
+            - ./healthscripts/nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
+        healthcheck:
+            test: /bin/bash -c "/openair-nrf/bin/nrf-healthcheck.sh"
+            interval: 10s
+            timeout: 5s
+            retries: 5
     oai-amf:
         container_name: "oai-amf"
         image: oai-amf:v1.4.0
@@ -64,28 +190,31 @@ services:
             - MYSQL_USER=root
             - MYSQL_PASS=linux
             - MYSQL_DB=oai_db
-            - NRF_IPV4_ADDRESS=0.0.0.0
-            - NRF_PORT=80
+            - NRF_IPV4_ADDRESS=192.168.70.130
+            - NRF_PORT=8080
             - EXTERNAL_NRF=no
-            - NF_REGISTRATION=no
-            - SMF_SELECTION=no
+            - NF_REGISTRATION=yes
+            - SMF_SELECTION=yes
             - USE_FQDN_DNS=yes
-            - EXTERNAL_AUSF=no
+            - EXTERNAL_AUSF=yes
             - EXTERNAL_UDM=no
             - EXTERNAL_NSSF=no
-            - USE_HTTP2=no
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
-            - AUSF_IPV4_ADDRESS=0.0.0.0
-            - AUSF_PORT=80
+            - AUSF_IPV4_ADDRESS=192.168.70.138
+            - AUSF_PORT=8080
             - AUSF_API_VERSION=v1
-            - AUSF_FQDN=localhost
-            - UDM_IPV4_ADDRESS=0.0.0.0
-            - UDM_PORT=80
+            - AUSF_FQDN=oai-ausf
+            - UDM_IPV4_ADDRESS=192.168.70.137
+            - UDM_PORT=8080
             - UDM_API_VERSION=v2
-            - UDM_FQDN=localhost
+            - UDM_FQDN=oai-udm
+            - USE_HTTP2=yes           #change for HTTP2
+            - HTTP2_PORT=8080         #change for HTTP2
         depends_on:
             - mysql
+            - oai-nrf
+            - oai-ausf
         volumes:
             - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
         healthcheck:
@@ -111,25 +240,24 @@ services:
             - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
             - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
             - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_PORT=80
+            - AMF_PORT=8080
             - AMF_API_VERSION=v1
             - AMF_FQDN=oai-amf
-            - UDM_IPV4_ADDRESS=0.0.0.0
-            - UDM_PORT=80
+            - UDM_IPV4_ADDRESS=192.168.70.137
+            - UDM_PORT=8080
             - UDM_API_VERSION=v2
-            - UDM_FQDN=localhost
+            - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.134
             - UPF_FQDN_0=oai-spgwu
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=80
+            - NRF_PORT=8080
             - NRF_API_VERSION=v1
-            - USE_LOCAL_SUBSCRIPTION_INFO=yes  #Set to yes if SMF uses local subscription information instead of from an UDM
-            - USE_NETWORK_INSTANCE=no  #Set yes if network instance is to be used for given UPF
-            - NRF_FQDN=localhost
-            - REGISTER_NRF=no
-            - DISCOVER_UPF=no
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
+            - NRF_FQDN=oai-nrf
+            - REGISTER_NRF=yes
+            - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
-            - HTTP_VERSION=1        # Default: 1
+            - HTTP_VERSION=2         #use either 1 or 2, by default it is 1 change for HTTP2
             - UE_MTU=1500
             - DNN_NI0=oai
             - TYPE0=IPv4
@@ -156,13 +284,11 @@ services:
             - TYPE3=IPv4v6
             - DNN_RANGE3=14.1.1.2 - 14.1.1.253
             - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
-            - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
         depends_on:
+            - oai-nrf
             - oai-amf
         volumes:
             - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        extra_hosts:
-            - "oai-spgwu:192.168.70.134"
         healthcheck:
             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
             interval: 10s
@@ -201,9 +327,10 @@ services:
             - USE_FQDN_NRF=yes
             - UPF_FQDN_5G=oai-spgwu
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=80
+            - NRF_PORT=8080
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai-nrf
+            - HTTP_VERSION=2          #use either 1 or 2, by default it is 1 change for HTTP2
             - NSSAI_SST_0=1
             - NSSAI_SD_0=0xFFFFFF
             - DNN_0=oai
@@ -214,6 +341,7 @@ services:
             - NSSAI_SD_2=123
             - DNN_2=default
         depends_on:
+            - oai-nrf
             - oai-smf
         cap_add:
             - NET_ADMIN

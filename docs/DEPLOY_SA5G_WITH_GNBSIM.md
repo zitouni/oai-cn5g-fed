@@ -12,13 +12,11 @@
   </tr>
 </table>
 
-**CAUTION: 2021/10/29: This page may be obsolete and needs update.**
-
 ![SA dsTest Demo](./images/5gCN_gnbsim.jpg)
 
-**Reading time: ~ 30mins**
+**Reading time: ~ 20mins**
 
-**Tutorial replication time: ~ 1h30mins**
+**Tutorial replication time: ~ 40mins**
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
@@ -37,12 +35,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags.
 
-| CNF Name    | Branch Name             | Commit at time of writing                  | Ubuntu 18.04 | RHEL8          |
-| ----------- |:----------------------- | ------------------------------------------ | ------------ | ---------------|
-| AMF         | `master`                | `82ca64fe8d79dbadbb1a495124ee26352f81bd7a` | X            | X              |
-| SMF         | `master`                | `0dba68d6a01e1dad050f47437647f62d40acaec6` | X            | X              |
-| NRF         | `master`                | `0e877cb5b80a9c74fa6abca60b95e2d3d22f7a52` | X            | X              |
-| SPGW-U-TINY | `master`                | `b628036d2e6060da8ba77c5e4cdde35bf18a62a5` | X            | X              |
+| CNF Name    | Branch Name             | tag      | Ubuntu 18.04 | RHEL8          |
+| ----------- |:----------------------- | ---------| ------------ | ---------------|
+| AMF         | `master`                | `v1.4.0` | X            | X              |
+| SMF         | `master`                | `v1.4.0` | X            | X              |
+| NRF         | `master`                | `v1.4.0` | X            | X              |
+| SPGW-U-TINY | `master`                | `v1.4.0` | X            | X              |
 
 <br/>
 
@@ -84,7 +82,7 @@ docker-compose-host $: chmod 777 /tmp/oai/mini-gnbsim
 As a first timer, we recommend to first run without any PCAP capture.
 
 ``` console
-docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1
 ...
 [2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
@@ -94,7 +92,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-mini --fqdn no --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
 ```
 
 More details in [section 7 of the `minimalist` tutorial](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md#7-deploying-oai-5g-core-network).
@@ -320,7 +318,7 @@ docker-compose-host $: docker logs gnbsim5 2>&1 | grep "UE address:"
 ```
 So here basically, minimum configuration parameters that need to change is gnbid, imsi and container ip address in docker-compose-gnbsim.yaml.
 Please make sure status of instance is healthy before creating one more instance. Now here we have deployed all 5 gnbsim intances - 
-``` console
+``` shell
 $ docker ps -a
 CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
 a25174c51297   gnbsim:latest                   "/gnbsim/bin/entrypo…"   3 minutes ago    Up 3 minutes  (healthy)                                  gnbsim5
@@ -446,7 +444,7 @@ Service gnbsim is  stopped
 ### 10.2. Undeploy the core network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-mini --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type stop-mini --scenario 2
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```

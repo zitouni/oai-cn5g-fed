@@ -23,8 +23,41 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: oai-nrf
+   name: oai-ran-build
 spec:
   lookupPolicy:
     local: true
-
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: oai-ran-build
+spec:
+    runPolicy: "Serial"
+    source:
+        git:
+            uri: "https://gitlab.eurecom.fr/oai/openairinterface5g.git"
+            ref: "develop"
+        secrets:
+          - secret:
+              name: etc-pki-entitlement
+            destinationDir: etc-pki-entitlement
+        configMaps:
+          - configMap:
+              name: rhsm-conf
+            destinationDir: rhsm-conf
+          - configMap:
+              name: rhsm-ca
+            destinationDir: rhsm-ca
+    strategy:
+        type: Docker
+        dockerStrategy:
+            dockerfilePath: "docker/Dockerfile.build.rhel8.2"
+            from:
+               kind: ImageStreamTag          
+               namespace: oai5g              
+               name: oai-ran-base:develop        
+    output:
+        to:
+            kind: "ImageStreamTag"
+            name: "oai-ran-build:develop"

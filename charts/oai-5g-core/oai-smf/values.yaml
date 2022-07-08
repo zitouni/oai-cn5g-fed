@@ -6,7 +6,7 @@ replicaCount: 1
 nfimage:
   registry: local
   repository: docker.io/oaisoftwarealliance/oai-smf          # dockerhub oaisoftwarealliance/oai-smf
-  version: develop             # develop for experimental features
+  version: v1.4.0    #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -59,7 +59,7 @@ multus:
   n4IPadd: "172.21.10.101"
   n4Netmask: "22"
   n4Gateway: "172.21.11.254"
-  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
 config:
   instance: "0"
@@ -69,7 +69,7 @@ config:
   smfInterfacePortForSBI: "80"
   smfInterfaceHttp2PortForSBI: "9090"
   smfApiVersion: "v1"
-  httpVersion: "1"
+  httpVersion: "1"          #default is HTTP v1 you can make it 2 HTTP V2
   useNetworkInstance: "no"
   enableUsageReporting: "no"
   dnsIpv4Address: "172.21.3.100" # configure the dns for UE don't use Kubernetes DNS

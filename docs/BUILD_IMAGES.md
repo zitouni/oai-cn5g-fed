@@ -24,33 +24,34 @@ They are called as `git sub-modules` in the `component` folder.
 
 Before doing anything, you SHALL retrieve the code for each git sub-module.
 
-## 1.1. You are interested on a very stable version. ##
+## 1.1. You are interested on a stable version. ##
 
 We recommend to synchronize with the master branches on all git sub-modules.
 
 We also recommend that you synchronize this "tutorial" repository with a provided tag. By doing so, the `docker-compose` files will be aligned with feature sets of each cNF.
 
-**At the time of writing (2022/01/17), the release tag is `v1.3.0`.**
+**At the time of writing (30/06/2022), the release tag was `v1.4.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.3.0` |              |                 |
-| AMF         | `master`    | `v1.3.0` | X            | X               |
-| SMF         | `master`    | `v1.3.0` | X            | X               |
-| NRF         | `master`    | `v1.3.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.1.5` | X            | X               |
-| UDR         | `master`    | `v1.3.0` | X            | X               |
-| UDM         | `master`    | `v1.3.0` | X            | X               |
-| AUSF        | `master`    | `v1.3.0` | X            | X               |
-| UPF-VPP     | `master`    | `v1.3.0` | X            | X               |
-| NSSF        | `master`    | `v1.3.0` | X            | X               |
+| FED REPO    | N/A         | `v1.4.0` |              |                 |
+| AMF         | `master`    | `v1.4.0` | X            | X               |
+| SMF         | `master`    | `v1.4.0` | X            | X               |
+| NRF         | `master`    | `v1.4.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
+| UDR         | `master`    | `v1.4.0` | X            | X               |
+| UDM         | `master`    | `v1.4.0` | X            | X               |
+| AUSF        | `master`    | `v1.4.0` | X            | X               |
+| UPF-VPP     | `master`    | `v1.4.0` | X            | X               |
+| NSSF        | `master`    | `v1.4.0` | X            | X               |
+
 
 ```bash
-# Clone directly on the latest release tag
-$ git clone --branch v1.3.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+# Clone directly on the v1.4.0 release tag
+$ git clone --branch v1.4.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
-# If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.3.0
+# If you forgot to clone directly to the v1.4.0 release tag
+$ git checkout -f v1.4.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh 
@@ -73,21 +74,21 @@ git submodule update
 or a little bit more dangerous
 
 ```bash
-$ ./scripts/syncComponents.sh --nrf-branch v1.3.0 --amf-branch v1.3.0 \
-                              --smf-branch v1.3.0 --spgwu-tiny-branch v1.1.5 \
-                              --udr-branch v1.3.0 --udm-branch v1.3.0 \
-                              --ausf-branch v1.3.0 --upf-vpp-branch v1.3.0 \
-                              --nssf-branch v1.3.0
+$ ./scripts/syncComponents.sh --nrf-branch v1.4.0 --amf-branch v1.4.0 \
+                              --smf-branch v1.4.0 --spgwu-tiny-branch v1.4.0 \
+                              --udr-branch v1.4.0 --udm-branch v1.4.0 \
+                              --ausf-branch v1.4.0 --upf-vpp-branch v1.4.0 \
+                              --nssf-branch v1.4.0
 ---------------------------------------------------------
-OAI-NRF     component branch : v1.3.0
-OAI-AMF     component branch : v1.3.0
-OAI-SMF     component branch : v1.3.0
-OAI-SPGW-U  component branch : v1.1.5
-OAI-UDR     component branch : v1.3.0
-OAI-UDM     component branch : v1.3.0
-OAI-AUSF    component branch : v1.3.0
-OAI-UPF-VPP component branch : v1.3.0
-OAI-NSSF    component branch : v1.3.0
+OAI-NRF     component branch : v1.4.0
+OAI-AMF     component branch : v1.4.0
+OAI-SMF     component branch : v1.4.0
+OAI-SPGW-U  component branch : v1.4.0
+OAI-UDR     component branch : v1.4.0
+OAI-UDM     component branch : v1.4.0
+OAI-AUSF    component branch : v1.4.0
+OAI-UPF-VPP component branch : v1.4.0
+OAI-NSSF    component branch : v1.4.0
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -96,7 +97,7 @@ git submodule update
 
 ## 1.2. You are interested on the latest features. ##
 
-All the latest features are somehow pushed to the `develop` branches of each NF repository.
+All the latest features are pushed to the `develop` branches of each NF repository.
 
 It means that we/you are able to build and the Continuous Integration test suite makes sure it
 does NOT break any existing tested feature.
@@ -140,12 +141,7 @@ git submodule update
 
 # 2. Generic Parameters #
 
-Here in our network configuration, we need to pass the "GIT PROXY" configuration.
-
-*   If you do not need, remove the `--build-arg NEEDED_GIT_PROXY=".."` option.
-*   If you do need it, change with your proxy value.
-
-If you have re-building CN5G images, be careful that `docker` or `podman` may re-use `cached` blobs
+If you are re-building CN5G images, be careful that `docker` or `podman` may re-use `cached` blobs
 to construct the intermediate layers.
 
 We recommend to add the `--no-cache` option in that case.
@@ -155,13 +151,12 @@ We recommend to add the `--no-cache` option in that case.
 ## 3.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-amf --tag oai-amf:latest \
+$ docker build --target oai-amf --tag oai-amf:v1.4.0 \
                --file component/oai-amf/docker/Dockerfile.amf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-amf
 $ docker image prune --force
 $ docker image ls
-oai-amf                 latest             f478bafd7a06        1 minute ago          279MB
+oai-amf                 v1.4.0             f478bafd7a06        1 minute ago          279MB
 ...
 ```
 
@@ -170,12 +165,14 @@ oai-amf                 latest             f478bafd7a06        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-amf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-amf --tag oai-amf:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-amf --tag oai-amf:v1.4.0 \
                --file component/oai-amf/docker/Dockerfile.amf.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-amf
 ...
 ```
@@ -188,13 +185,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 4.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-smf --tag oai-smf:latest \
+$ docker build --target oai-smf --tag oai-smf:v1.4.0 \
                --file component/oai-smf/docker/Dockerfile.smf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-smf
 $ docker image prune --force
 $ docker image ls
-oai-smf                 latest             f478bafd7a06        1 minute ago          293MB
+oai-smf                 v1.4.0             f478bafd7a06        1 minute ago          293MB
 ...
 ```
 
@@ -203,12 +199,14 @@ oai-smf                 latest             f478bafd7a06        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-smf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-smf --tag oai-smf:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-smf --tag oai-smf:v1.4.0 \
                --file component/oai-smf/docker/Dockerfile.smf.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-smf
 ...
 ```
@@ -220,13 +218,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 5.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-nrf --tag oai-nrf:latest \
+$ docker build --target oai-nrf --tag oai-nrf:v1.4.0 \
                --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-nrf
 $ docker image prune --force
 $ docker image ls
-oai-nrf                 latest             04334b29e103        1 minute ago          247MB
+oai-nrf                 v1.4.0             04334b29e103        1 minute ago          247MB
 ...
 ```
 
@@ -235,12 +232,14 @@ oai-nrf                 latest             04334b29e103        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-nrf --tag oai-nrf:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-nrf --tag oai-nrf:v1.4.0 \
                --file component/oai-nrf/docker/Dockerfile.nrf.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-nrf
 ...
 ```
@@ -252,13 +251,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 6.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
+$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
                --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu18.04 \
-               --build-arg EURECOM_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
-oai-spgwu-tiny          latest             dec6311cef3b        1 minute ago          255MB
+oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago          255MB
 ...
 ```
 
@@ -267,12 +265,14 @@ oai-spgwu-tiny          latest             dec6311cef3b        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-spgwu repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:latest \
-               --file component/oai-spgwu-tiny/docker/Dockerfile.centos8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
+               --file component/oai-spgwu-tiny/docker/Dockerfile.rhel8 \
                component/oai-upf-equivalent
 ...
 ```
@@ -284,13 +284,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 7.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-ausf --tag oai-ausf:latest \
+$ docker build --target oai-ausf --tag oai-ausf:v1.4.0 \
                --file component/oai-ausf/docker/Dockerfile.ausf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-ausf
 $ docker image prune --force
 $ docker image ls
-oai-ausf          latest              77a96de94c23        1 minute ago        231MB
+oai-ausf          v1.4.0              77a96de94c23        1 minute ago        231MB
 ...
 ```
 
@@ -299,12 +298,14 @@ oai-ausf          latest              77a96de94c23        1 minute ago        23
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-ausf --tag oai-ausf:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-ausf --tag oai-ausf:v1.4.0 \
                --file component/oai-ausf/docker/Dockerfile.ausf.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-ausf
 ...
 ```
@@ -316,13 +317,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 8.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-udm --tag oai-udm:latest \
+$ docker build --target oai-udm --tag oai-udm:v1.4.0 \
                --file component/oai-udm/docker/Dockerfile.udm.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-udm
 $ docker image prune --force
 $ docker image ls
-oai-udm                 latest             10a4334e31be        1 minute ago          229MB
+oai-udm                 v1.4.0             10a4334e31be        1 minute ago          229MB
 ...
 ```
 
@@ -331,12 +331,14 @@ oai-udm                 latest             10a4334e31be        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-udm --tag oai-udm:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-udm --tag oai-udm:v1.4.0 \
                --file component/oai-udm/docker/Dockerfile.udm.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-udm
 ...
 ```
@@ -348,13 +350,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 9.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-udr --tag oai-udr:latest \
+$ docker build --target oai-udr --tag oai-udr:v1.4.0 \
                --file component/oai-udr/docker/Dockerfile.udr.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-udr
 $ docker image prune --force
 $ docker image ls
-oai-udr                 latest             581e07d59ec3        1 minute ago          234MB
+oai-udr                 v1.4.0             581e07d59ec3        1 minute ago          234MB
 ...
 ```
 
@@ -363,12 +364,14 @@ oai-udr                 latest             581e07d59ec3        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-udr --tag oai-udr:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-udr --tag oai-udr:v1.4.0 \
                --file component/oai-udr/docker/Dockerfile.udr.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-udr
 ...
 ```
@@ -381,13 +384,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 10.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-upf-vpp --tag oai-upf-vpp:latest \
+$ docker build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
                --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-upf-vpp
 $ docker image prune --force
 $ docker image ls
-oai-upf-vpp             latest             581e07d59ec3        1 minute ago          937MB
+oai-upf-vpp             v1.4.0             581e07d59ec3        1 minute ago          937MB
 ...
 ```
 
@@ -396,12 +398,14 @@ oai-upf-vpp             latest             581e07d59ec3        1 minute ago     
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
                --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.rhel7 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-upf-vpp
 ...
 ```
@@ -413,13 +417,12 @@ The above command is with podman, in case of docker it can be changed with its d
 ## 11.1 On a Ubuntu 18.04 Host ##
 
 ```bash
-$ docker build --target oai-nssf --tag oai-nssf:latest \
+$ docker build --target oai-nssf --tag oai-nssf:v1.4.0 \
                --file component/oai-nssf/docker/Dockerfile.nssf.ubuntu18 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-nssf
 $ docker image prune --force
 $ docker image ls
-oai-nssf          latest              77a96de94c23        1 minute ago        231MB
+oai-nssf          v1.4.0              77a96de94c23        1 minute ago        231MB
 ...
 ```
 
@@ -428,12 +431,14 @@ oai-nssf          latest              77a96de94c23        1 minute ago        23
 RHEL base images generally needs a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in the oai-nrf repository in a new folder named `tmp` before building the image.
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
 
 ```bash
-$ sudo podman build --target oai-nssf --tag oai-nssf:latest \
+$: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
+$: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
+$: cp /etc/rhsm/ca/*pem ./rhsm-ca
+$ sudo podman build --target oai-nssf --tag oai-nssf:v1.4.0 \
                --file component/oai-nssf/docker/Dockerfile.nssf.rhel8 \
-               --build-arg NEEDED_GIT_PROXY="http://proxy.eurecom.fr:8080" \
                component/oai-nssf
 ...
 ```

@@ -54,8 +54,8 @@ def _parse_args() -> argparse.Namespace:
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
-        python3 core-network.py --type start-mini --fqdn no --scenario 1
-        python3 core-network.py --type start-basic --fqdn no --scenario 1'''
+        python3 core-network.py --type start-mini --scenario 2
+        python3 core-network.py --type start-basic --scenario 2'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK DEPLOY',
                                     epilog=example_text,
@@ -68,14 +68,6 @@ def _parse_args() -> argparse.Namespace:
         required=True,
         choices=['start-mini', 'start-basic', 'start-basic-vpp', 'stop-mini', 'stop-basic', 'stop-basic-vpp'],
         help='Functional type of 5g core network ("start-mini"|"start-basic"|"start-basic-vpp"|"stop-mini"|"stop-basic"|"stop-basic-vpp")',
-    )
-    # Deployment scenario with FQDN/IP based
-    parser.add_argument(
-        '--fqdn', '-fq',
-        action='store',
-        choices=['yes', 'no'],
-        default='yes',
-        help='Deployment scenario with FQDN ("yes"|"no")',
     )
     # Deployment scenario with NRF/ without NRF
     parser.add_argument(
@@ -99,13 +91,6 @@ def deploy(file_name, ct, extra_interface=False):
     Returns:
         None
     """
-    # Before deploy adapting with fqdn/ip
-    if args.fqdn == 'no':
-        subprocess.run(f'sed -i -e "s#USE_FQDN_DNS=yes#USE_FQDN_DNS=no#g" {file_name}', shell=True)
-        subprocess.run(f'sed -i -e "s#USE_FQDN_NRF=yes#USE_FQDN_NRF=no#g" {file_name}', shell=True)
-    elif args.fqdn == 'yes':
-        subprocess.run(f'sed -i -e "s#USE_FQDN_DNS=no#USE_FQDN_DNS=yes#g" {file_name}', shell=True)
-        subprocess.run(f'sed -i -e "s#USE_FQDN_NRF=no#USE_FQDN_NRF=yes#g" {file_name}', shell=True)
     logging.debug('\033[0;34m Starting 5gcn components... Please wait\033[0m....')
 
     if args.capture is None:
@@ -174,7 +159,7 @@ def undeploy(file_name):
         None
     """
     logging.debug('\033[0;34m UnDeploying OAI 5G core components\033[0m....')
-    cmd = f'docker-compose -f {file_name} down'
+    cmd = f'docker-compose -f {file_name} down -t 0'
     res = run_cmd(cmd, False)
     if res is None:
         exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
@@ -339,9 +324,6 @@ if __name__ == '__main__':
         elif args.scenario == '2':
             deploy(BASIC_NO_NRF, 7)
     elif args.type == 'start-basic-vpp':
-        if args.fqdn == 'yes':
-            logging.error('Configuration not supported yet')
-            exit(-1)
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
             deploy(BASIC_VPP_W_NRF, 8, True)

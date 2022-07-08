@@ -23,8 +23,37 @@
 apiVersion: image.openshift.io/v1
 kind: ImageStream
 metadata:
-  name: oai-smf
+   name: oai-udm
 spec:
   lookupPolicy:
     local: true
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: "oai-udm"
+spec:
+    runPolicy: "Serial"
+    source:
+        git:
+            uri: "https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-udm.git"
+            ref: "v1.4.0"
+        secrets:
+          - secret:
+              name: etc-pki-entitlement
+            destinationDir: etc-pki-entitlement
+        configMaps:
+          - configMap:
+              name: rhsm-conf
+            destinationDir: rhsm-conf
+          - configMap:
+              name: rhsm-ca
+            destinationDir: rhsm-ca
+    strategy:
+        dockerStrategy:
+            dockerfilePath: "docker/Dockerfile.udm.rhel8"
+    output:
+        to:
+            kind: "ImageStreamTag"
+            name: "oai-udm:v1.4.0"
 

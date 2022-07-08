@@ -6,7 +6,7 @@ replicaCount: 1
 nfimage:  # image name either locally present or in a public/private repository
   registry: local
   repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-  version: develop                                    ## The branch to be used to pull from dockerhub
+  version: v1.4.0                                    #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -65,7 +65,9 @@ multus:
   n1IPadd: "172.21.10.6"
   n1Netmask: "22"
   n1Gateway: "172.21.11.254"
-  hostInterface: "ens2f0np0"      # Interface of the host machine on which this pod will be scheduled
+  hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
+
+## Incase the pod is not able to resolve the FQDN of other network functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
 
 config:
   instance: "0"
@@ -89,6 +91,8 @@ config:
   sd0: "1"
   sst1: "111"
   sd1: "124"
+  sst2: "2"
+  sd2: "2"
   amfInterfaceNameForNGAP: "eth0" # If multus creation is true then net1 else eth0
   amfInterfaceNameForN11: "eth0"  # Service based interface
   useFqdnDns: "yes"  # If yes then only network functions FQDN name will be used instead of their ip-address

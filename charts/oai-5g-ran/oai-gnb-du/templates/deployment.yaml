@@ -21,13 +21,10 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-net1",
-                 "default-route": ["{{ .Values.multus.n2Gateway }}"]
+                 "default-route": ["{{ .Values.multus.defaultGateway }}"]
           },
           {
                  "name": "{{ .Chart.Name }}-net2"
-          },
-          {
-                 "name": "{{ .Chart.Name }}-net3"
           }]
     {{- end }}
     spec:
@@ -225,7 +222,8 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
+      nodeSelector: 
+         {{- toYaml .Values.nodeSelector | nindent 12 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}

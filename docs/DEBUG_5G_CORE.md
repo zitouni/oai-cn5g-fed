@@ -14,7 +14,7 @@
 
 Currently there is no special tool for debugging the problems of core network components. Though there are certain methods which we are using in our team to diagnose an issue. 
 
-This page content expects you to have read the [deployment pre-requisites](./DEPLOY_PRE_REQUESITES.md) and try to deploy a [mini](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) normal deployment.
+This page content expects you to read [deployment pre-requisites](./DEPLOY_PRE_REQUESITES.md) and try to deploy a [mini](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) normal deployment.
 
 **TABLE OF CONTENTS**
 
@@ -25,7 +25,7 @@ This page content expects you to have read the [deployment pre-requisites](./DEP
 
 # 1. Building images in debug mode
 
-By default all the dockerfiles present in any network function repository (AMF, SMF, NRF, UPF) are built with `release` tag. In the `release` mode the logging information is limited. This is done to reduce the image size and have a better performance. In beginning when a user is trying to understand the functioning of core network it is recommended to build the images in `debug mode`. This way user will have more logs and can have better understanding. To build any core network image in debug mode follow the below steps **after cloning the network function repository**, the example is for AMF, 
+By default all the dockerfiles present in any network function repository (AMF, SMF, NRF, UPF, UDR, UDM, AUSF) are built with `release` tag. In the `release` mode the logging information is limited. This is done to reduce the image size and have a better performance. In beginning when a user is trying to understand the functioning of core network it is recommended to build the images in `debug mode`. This way user will have more logs and can have better understanding. To build any core network image in debug mode follow the below steps **after cloning the network function repository**, the example is for AMF, 
 
 ```bash
 # clone amf repository 
@@ -41,8 +41,44 @@ The same can be done for baremetal deployment of any core network function, just
 
 ## 1.1 Building the image with code inside (Only for development purpose)
 
-If you are interested in doing development you can leave the code inside the container. This is good for developers, they can code in docker-environment. They can even mount the code as a volumne so that they can use their prefered editor (though vim/nano/vi are the best). To do this the dockerfile has to be edited and only the `BUILDER IMAGE` of the file is required the rest `TARGET IMAGE`part including CMD and ENTERYPOINT should be removed. 
+If you are interested in doing development you can leave the code inside the container. This is good for developers, they can code in docker-environment. They can even mount the code as a volume so that they can use their prefered editor (though vim/nano/vi are the best).
 
+### 1.1.1 Building a Developer Image
+
+Below example is only for AMF you need to repeat it for all network functions
+
+``` bash
+$: git clone -b <prefered_branch or develop> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf.git
+$: docker build -f oai-cn5g-amf/docker/Dockerfile.amf.ubuntu18 --target oai-amf-builder --tag oai-amf-builder:develop --no-cache oai-cn5g-amf/
+```
+
+This will build your image and later you can use this image with below command, 
+
+``` bash
+$: docker run --privileged -d --name oai-amf-development oai-amf-builder:develop sleep infinity
+$: docker exec -it oai-amf-development bash
+# You will be inside the container
+```
+
+But in this approach you have to code inside the container using vi/vim/nano no graphical interface, but if you want a graphical interface then you can mount the code
+
+### 1.1.2 Mounting Code As Volume
+
+Below example is only for AMF you need to repeat it for all network functions
+
+``` bash
+$: git clone -b <prefered_branch or develop> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf.git /openair-amf
+$: docker run --privileged -d --name oai-amf-development --volume openair-amf:/openair-amf  ubuntu:bionic sleep infinity
+$: docker exec -it oai-amf-development bash
+# below command is same for all network functions 
+$: sudo apt update && apt install psmisc software-properties-common git vim nano vi gnupg 
+# now you can peform the build
+$: cd /openair-amf/build/scripts
+$: /build_amf --install-deps --force
+$: /build_amf --clean --Verbose --build-type Debug --jobs
+```
+
+Now you are ready, start developing and testing
 
 # 2. Debuggers deployment of core network functions
 
@@ -50,7 +86,7 @@ It is really important to safely keep the logs and configuration of core network
 
 # 2.1 Deploying as a process (baremetal deployment prefered by developers)
 
-1. In case of all in one sort of process deployment there can some conflicting dependencies between different components of core network. These conflicts have to be resolved on case by case bases by the user.
+1. In case of all in one sort of process deployment there can some conflicting dependencies between different components of core network. These conflicts have to be resolved on case by case bases by the user. You can follow the wiki of each network function for bare-metal installation for amf follow [this](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/Installation).
 2. Once all the core-network components are build in debug mode with there dependencies store the logs in a file rather than printing on the terminal. 
 3. All the configuration file should be stored in one place so that it is easy to reterive. 
 
@@ -63,7 +99,7 @@ The above command will launch the network function in background and all the log
 
 # 2.2 Docker environment (Recommeneded)
 
-Using docker environment for deployment and development is the prefered environment because there it is easy to have dedicated working environment for each network component. It is lightweight and easy to manage. The docker-compose provided in [earlier tutorials](./DEPLOY_SA5G_DS_TESTER.md) is good for learning how the OAI core network works and how to use it. But if the user wants to change some parameters which are not variable or not allowed using docker-compose then it is hard to use docker-compose approach. If the user wants to provide their own configuration file then it is better to change the docker-compose. Follow the below steps to create a new developer/debugger specific docker-compose, 
+Using docker environment for deployment and development is the prefered environment because there it is easy to have dedicated working environment for each network component. It is lightweight and easy to manage. The docker-compose provided in [tutorials](./DEPLOY_HOME.md) is good for learning how the OAI core network works and how to use it. But if the user wants to change some parameters which are not variable or not allowed using docker-compose then it is hard to use docker-compose approach. If the user wants to provide their own configuration file then it is better to change the docker-compose. Follow the below steps to create a new developer/debugger specific docker-compose, 
 
 ## 2.2.1 Prerequisites
 
@@ -104,7 +140,7 @@ $ cp ~/oai-cn5g-nrf/etc/nrf.conf ~/oai-docker-compose/confs/
 $ cp ~/openair-spgwu-tiny/etc/spgwu.conf ~/oai-docker-compose/confs/
 ```
 
-### 2.2.2 Creating entrypoint files 
+### 2.2.2 Creating entrypoint files
 
 The example of amf entrypoint.sh is below for other network functions it is analogus. 
 
@@ -255,17 +291,17 @@ networks:
 
 ```
 # start docker-compose
-docker-compose -p <project-name> -f <file-name> up -d
+$: docker-compose -p <project-name> -f <file-name> up -d
 # if made changes in the conf files located in ./confs/ restart the container/service
-docker-compose -p <project-name> -f <file-name> restart <service-name>
+$: docker-compose -p <project-name> -f <file-name> restart <service-name>
 # force recreate a service 
-docker-compose -p <project-name> -f <file-name> up -d <service-name> --force-create
+$: docker-compose -p <project-name> -f <file-name> up -d <service-name> --force-create
 # incase the code is present in side the container and some changes are made then just restart the container never remove
-docker-compose -p <project-name> -f <file-name> restart <service-name>
+$: docker-compose -p <project-name> -f <file-name> restart <service-name>
 # stop the containers/service
-docker-compose -p <project-name> -f <file-name> stop <service-name>
+$: docker-compose -p <project-name> -f <file-name> stop <service-name>
 # remove the deployment
-docker-compose -p <project-name> -f <file-name> down
+$: docker-compose -p <project-name> -f <file-name> down -t 0
 ```
 
 Network components configuration is present in `~/oai-docker-compose/confs/` the logs are present in `~/oai-docker-compose/logs/`. There will be only one log file and it will container huge amount of logs. If needed this can also be rotated to avoid having one bulky file. To make it rotating make changes in the entrypoint.sh script
@@ -285,4 +321,4 @@ To report an issue regarding any-component of CN5G or attach-detach procedure fo
 1. Share the testing scenario, what the test is trying to achieve
 2. Debug logs of the 5GCN components and packet capture/tcpdump of the 5GCN components. Depending on where the packets are captured take care of interface on which the packets are captured. Also it will be nice to capture packets using a filter `ngap || http || pfcp || gtp`
 3. If you have an issue with testing then you can send an email at openair5g-cn@lists.eurecom.fr with the configuration files, log files in debug mode and pcaps with appropriate filters. 
-4. In case you want to report a bug in the code of any network function then you can do it directly via gitlab.
+4. You can also report an issue or create bug directly on gitlab, to create an account on our gitlab please follow only create account part from [here](../CONTRIBUTING.md) 

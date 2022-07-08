@@ -11,7 +11,12 @@
     </td>
   </tr>
 </table>
+
+
 ![SA COTSUE Demo](./images/virtual-machine/cots-ue/bupt/overall-architecture.png)
+
+
+**Caution**: This is a very old tutorial and it is not maintained anymore. 
 
 **TABLE OF CONTENTS**
 

@@ -1,7 +1,7 @@
 # Reference:- TS 29.531 R16.0.0., Section- 6.1.6 Data Model 
 info:
-  version: 1.3.0
-  description: OAI-NSSF Release v1.3.0
+  version: 1.4.0
+  description: OAI-NSSF Release v1.4.0
 configuration:
   nsiInfoList:
     - snssai:

@@ -40,17 +40,17 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 You can also retrieve the images from `docker-hub`. See [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md).
 
-| CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8          |
-| ----------- |:-------------- | ----------------------------- | ------------ | ---------------|
-| NSSF        | `develop`      | `v1.3.0`                      | X            | X              |
-| AMF         | `develop`      | `v1.3.0`                      | X            | X              |
-| AUSF        | `develop`      | `v1.3.0`                      | X            | X              |
-| NRF         | `develop`      | `v1.3.0`                      | X            | X              |
-| SMF         | `develop`      | `v1.3.0`                      | X            | X              |
-| UDR         | `develop`      | `v1.3.0`                      | X            | X              |
-| UDM         | `develop`      | `v1.3.0`                      | X            | X              |
-| SPGWU       | `develop`      | `v1.1.5`                      | X            | X              |
-| UPF-VPP     | `develop`      | `v1.3.0`                      | X            | X              |
+| CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
+| ----------- |:-------------- | ----------------------------- | ------------ | --------------|
+| NSSF        | `master`      | `v1.4.0`                      | X            | X              |
+| AMF         | `master`      | `v1.4.0`                      | X            | X              |
+| AUSF        | `master`      | `v1.4.0`                      | X            | X              |
+| NRF         | `master`      | `v1.4.0`                      | X            | X              |
+| SMF         | `master`      | `v1.4.0`                      | X            | X              |
+| UDR         | `master`      | `v1.4.0`                      | X            | X              |
+| UDM         | `master`      | `v1.4.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.4.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
 
 <br/>
 

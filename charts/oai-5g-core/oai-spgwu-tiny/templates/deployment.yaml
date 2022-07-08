@@ -205,6 +205,51 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: dnn0
+          - name: NSSAI_SST_1
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSst1
+          - name: NSSAI_SD_1
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSd1
+          - name: DNN_1
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: dnn1
+          - name: NSSAI_SST_2
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSst2
+          - name: NSSAI_SD_2
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSd2
+          - name: DNN_2
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: dnn2
+          - name: NSSAI_SST_3
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSst3
+          - name: NSSAI_SD_3
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: nssaiSd3
+          - name: DNN_3
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: dnn3
           - name: UPF_FQDN_5G
             valueFrom:
               configMapKeyRef:
@@ -268,7 +313,8 @@ spec:
       serviceAccountName: {{ .Values.serviceAccount.name }}
       terminationGracePeriodSeconds: {{ .Values.terminationGracePeriodSeconds }}
       {{- if .Values.nodeSelector}}
-      nodeSelector: {{- toYaml .Values.nodeSelector | nindent 4 }}
+      nodeSelector: 
+         {{- toYaml .Values.nodeSelector | nindent 12 }}
       {{- end }}
       {{- if .Values.nodeName}}
       nodeName: {{ .Values.nodeName }}

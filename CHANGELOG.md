@@ -1,5 +1,61 @@
 # RELEASE NOTES: #
 
+## v1.4.0 -- July 2022 ##
+
+* All official images produced by CI are pushed to `oaisoftwarealliance` Docker-Hub Team account
+* New tutorial:
+  - My5gRAN Tester --> `docs/DEPLOY_SA5G_WITH_My5g-RANTester.md`
+* Update the helm charts and helm chart tutorial
+* Reduce image size for all network functions
+* New wiki page to know more about variable which can be configured for each network function
+* Fix HTTP/2 support for all network functions `docker-compose/docker-compose-basic-nrf-httpv2.yaml`
+* `AMF` Changes:
+  - Fix SCTP NG Shutdown issue
+  - Fix 100% CPU consumption issue
+  - Fix RAN UE ID display
+  - Fix issue for TMSI and GUTI value
+  - Fix for handling S-NSSAI 
+  - Remove OPC value from AMF configuration
+  - Support for Ubuntu 20.04 bare-metal installation
+* `AUSF` Changes:
+  - Remove unused packages
+  - HTTP/2 support for SBI interface
+  - NRF Registration and heartbeat exchange
+* `NRF` Changes:
+  - Remove unused packages
+  - Add NF profile handling for PCF
+  - HTTP/2 support for SBI interface
+* `NSSF` Changes:
+  - Network slice selection for UE registration 
+  - NS-AVAIBALITY API support to CREATE new slice
+  - Fix bare-metal setup configuration management
+  - HTTP/2 support for SBI interface
+* `SMF` Changes:
+  - Fix for handling S-NSSAI 
+  - Add support for IMS
+  - HTTP/2 support for SBI interface
+  - Add usage report feature
+  - Flexiable MTU
+  - Support for Ubuntu 20.04 bare-metal installation
+* `UDM` Changes:
+  - Fix HTTP/2 support
+  - NRF Registration and heartbeat exchange
+* `UDR` Changes:
+  - Fix sync failure issue
+  - Fix issue to support Slice Selection Subscription Data retrieval
+  - NRF Registration and heartbeat exchange
+* `SPGWU-TINY` Changes:
+  - Fix for handling S-NSSAI 
+  - Add support for multiple slices via config file
+  - Allowed reusing GTPv1-U socket
+  - Fix GTPU offset sequence number
+  - Fix configurable number of DL threads for data path
+* `UPF-VPP` Changes:
+  - Standalone support validated for traffic steering and redirection
+  - Added instructions for bare-metal installation
+  - Support for Ubuntu 20.04 bare-metal/docker installation
+* `NEF` It is ongoing so far it is not functional
+
 ## v1.3.0 -- January 2022 ##
 
 * Incorporation of new public network functions:

@@ -32,10 +32,22 @@ OAI 5G core network have different network functions which can be used invidiual
 6.  [Extra](#6-extra)
 
 
+### Pre-requisite
+
+The cluster on which these helm charts will be deployed should have RBAC and [Multus CNI](https://github.com/k8snetworkplumbingwg/multus-cni). Multus is necessary to provide multiple interfaces to AMF and UPF/SPGWU. In case you don't have multus CNI for seconary network interface inside the pod you can still use the ethernet interface provided by the primary CNI. This type of setting is only recommended for playing with rfsimulator. In case you are using minikube or any other Kubernetes deployer make sure have minimum 4 CPU and 16 GBi of ram. 
+
+The gNB simulator requires lot of resources. The configuration of the machine on which we tested the charts using minikube had 8 CPU (hyperthreaded) and 16 GBi of ram with intel core i5 8th generation.
+
+Clone the git repository 
+
+```console 
+$: git clone -b master https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed
+```
+
 ## 1. Description
 
 
-The helm charts can be used on any production grade kubernetes cluster or even vanilla kubernetes. We have also tested on a single node 4 CPU minikube cluster with docker virtualization environment. In our testing environment we deploy these charts on our inhouse Openshift cluster the cluster information can be found below.
+The helm charts can be used on any production grade kubernetes cluster or even vanilla kubernetes. We have also tested on a single node 4 CPU minikube cluster with docker virtualization environment. In our testing environment we deploy these charts on our inhouse Openshift clusters the cluster information can be found below.
 
 | Software                        | Version                             |
 |:--------------------------------|:----------------------------------- |
@@ -43,7 +55,8 @@ The helm charts can be used on any production grade kubernetes cluster or even v
 | Kubernetes Version              | Kubernetes Version: v1.22.5+5c84e52 |
 | helm                            | v3.6.2+5.el8                        |
 | helm-spray (plugin)             | v4.0.10                             |
-| Base images of Network functions| Ubuntu 18.04/UBI 8(RHEL)            |
+| Base images of Network functions| Ubuntu 18.04/UBI 8(RHEL8)           |
+
 
 We are deploying the helm charts using `helm spray` plugin of `helm` as the network functions have dependency and they are required to be deployed in a certain order. To get more information on helm spray you can follow this [link](https://github.com/ThalesGroup/helm-spray).
 
@@ -55,20 +68,16 @@ For the moment we provide helm chart of inidividual network functions, udr, udm,
 
 In this tutorial we will deploy a basic setting of OAI 5g core network and will deploy oai-gNB and oai-nr-ue in rf-simulator mode to perform some traffic testing. You can also deploy the core network in other two settings, it all depends on your use case and testbed. The configuration parameters of helm charts are the same as `docker-compose` so if you know how to configure `docker-compose` yaml file you can configure the helm charts `value.yaml`. 
 
-### Pre-requisite
-
-The cluster on which these helm charts will be deployed should have RBAC and [Multus CNI](https://github.com/k8snetworkplumbingwg/multus-cni). Multus is necessary to provide multiple interfaces to AMF and UPF/SPGWU. In case you don't have multus CNI for seconary network interface inside the pod you can still use the ethernet interface provided by the primary CNI. This type of setting is only recommended for playing with rfsimulator. In case you are using minikube or any other Kubernetes deployer make sure have minimum 4 CPU and 16 GBi of ram. The gNB simulator requires lot of resources. The configuration of the machine on which we tested the charts using minikube had 8 CPU and 16 GBi of ram with intel core i5 8th generation.
-
 ## 2. Building Images
 
-The base image used by network function is dependent on the operating system it will be running on. If it is a debian (ubuntu) based cluster then base image will be ubuntu. If it is a RPM (RHEL/core-os) based cluster then base images will UBI8. Follow the tutorial on [how to build images](./BUILD_IMAGES.md) depending on the cluster/worker-node operating system. In case of Ubuntu based worker nodes, the images can be pulled from [docker-hub](./RETRIEVE_OFFICIAL_IMAGES.md). We can not publish the UBI8 images because they need subscription entities, those images have to be built for the moment/ 
+The base image used by network function is dependent on the operating system it will be running on. If it is a debian (ubuntu) based cluster then base image will be ubuntu. If it is a RPM (RHEL/core-os) based cluster then base images will UBI8. Follow the tutorial on [how to build images](../openshift/README.md) depending on the cluster/worker-nodes operating system. In case of Ubuntu based worker nodes, the images can be pulled from [docker-hub](./RETRIEVE_OFFICIAL_IMAGES.md). For the moment we can not publish the UBI8 images because they need subscription entitlements.
+
+**Note**: The helm charts are using ubuntu18 base images as they are published on our [dockerhub](https://hub.docker.com/u/oaisoftwarealliance). Once you build the UBI base images you have to change the image names in the helm-chart of respective network function or the parent chart. In case you are using openshift you can change the image name with image stream name and tag.
+
 
 ## 3. Configuring Helm Charts
 
-Clone the helm chart repository from gitlab repository
-
 ```console
-$: git clone https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $: cd oai-cn5g-fed
 $: ls charts/
 oai-5g-core  oai-5g-ran  simulators  testing
@@ -102,7 +111,7 @@ oai-5g-basic/
 
 In the `values.yaml` file we have put only those configuration parameters which we think are really necessary and they should be changed based on PLMN, DNN and sim card information. In case you want to change some other parameters we suggest you go in the helm charts of the network function and do the change there. 
 
-Helm chart of every network function looks similar and has the below structure. Only the chart of mysql database is different and the AMF 
+Helm chart of every network function looks similar and has the below structure. Only the chart of mysql database and NRF is different.
 
 ```
 Network_function/
@@ -121,10 +130,9 @@ Network_function/
 1 directory, 10 files
 ```
 
-
 All the configurable parameters for a particular commit/release are mentioned in the `values.yaml` file. These parameters will keep on changing in the future depending on the nature of development and features. 
 
-**NOTE**: If there is a need to edit a specific configuration parameter that is not configurable via the helm-chart values.yaml file then it has to be changed at the time of building images.
+**NOTE**: If there is a need to edit a specific configuration parameter that is not configurable via the helm-chart `values.yaml` file then it has to be changed at the time of building images.
 
 All the network function related configurable parameters are in the sections `config` of the `values.yaml`. To understand the usage and description of each network function configuration parameter refer their [wiki page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home).
 
@@ -133,7 +141,7 @@ Create a namespace where the helm-charts will be deployed, in our environment we
 <!---
 For CI purposes please ignore this line
 ``` shell
-$: oc project oai-test
+$: oc project oai
 ```
 -->
 
@@ -189,7 +197,7 @@ $: kubectl create secret docker-registry regcred --docker-server=https://index.d
 $: oc create secret docker-registry regcred --docker-server=https://index.docker.io/v1/ --docker-username=<your-name> --docker-password=<your-pword> --docker-email=<your-email>
 ```
 
-There are more ways to make docker secrete you can follow this [link](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). After creating the secrete mention it in the `values.yaml` 
+There are more ways to make docker secrete you can follow this [link](https://kubernetes.io/docs/tasks/configure-pod-container/pull-image-private-registry/). After creating the secrete mention it in the `values.yaml`
 
 ```
 ## good to use when pulling images from docker-hub
@@ -198,6 +206,8 @@ imagePullSecrets:
 ```
 
 When pulling images from docker hub you have several choices either to use images with develop tag (based on latest develop branch somtimes might not be stable), latest (built from current master branch) and release tags. 
+
+At the time of writing this tutorial the latest image was tag v1.4.0. 
 
 ### 3.3 Configuring Helm Chart Parameters
 
@@ -506,8 +516,7 @@ spray   4.0.0   Helm plugin for upgrading sub-charts from umbrella chart with de
 We have specially provided a sperate container to capture pcap you can get inside this container and use tcpdump command 
 
 ```console
-$ kubectl exec -it -c amf $AMF_POD_NAME -- /bin/sh 
-#
+$ kubectl exec -it -c amf $AMF_POD_NAME -- /bin/sh
 ```
 
 

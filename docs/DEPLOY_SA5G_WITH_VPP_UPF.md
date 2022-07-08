@@ -30,6 +30,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 6.  [Stimuli with a RAN emulator](#6-stimuli-with-a-ran-emulator)
 7.  [Recover the logs](#7-recover-the-logs)
 8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
+9.  [Notes](#9-notes)
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
 
@@ -37,13 +38,13 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8          |
 | ----------- |:-------------- | ----------------------------- | ------------ | ---------------|
-| AMF         | `master`       | `v1.2.1`                      | X            | X              |
-| AUSF        | `master`       | `v1.2.1`                      | X            | X              |
-| NRF         | `master`       | `v1.2.1`                      | X            | X              |
-| SMF         | `master`       | `v1.2.1`                      | X            | X              |
-| UDR         | `master`       | `v1.2.1`                      | X            | X              |
-| UDM         | `master`       | `v1.2.1`                      | X            | X              |
-| UPF-VPP     | `master`       | `v1.2.1`                      | X            | X              |
+| AMF         | `master`       | `v1.4.0`                      | X            | X              |
+| AUSF        | `master`       | `v1.4.0`                      | X            | X              |
+| NRF         | `master`       | `v1.4.0`                      | X            | X              |
+| SMF         | `master`       | `v1.4.0`                      | X            | X              |
+| UDR         | `master`       | `v1.4.0`                      | X            | X              |
+| UDM         | `master`       | `v1.4.0`                      | X            | X              |
+| UPF-VPP     | `master`       | `v1.4.0`                      | X            | X              |
 
 <br/>
 
@@ -93,7 +94,7 @@ All the following commands shall be executed from the `oai-cn5g-fed/docker-compo
 oai-cn5g-fed/docker-compose$ $ python3 ./core-network.py --help
 usage: core-network.py [-h] --type
                        {start-mini,start-basic,start-basic-vpp,stop-mini,stop-basic,stop-basic-vpp}
-                       [--fqdn {yes,no}] [--scenario {1,2}]
+                      [--scenario {1,2}]
 
 OAI 5G CORE NETWORK DEPLOY
 
@@ -103,8 +104,6 @@ optional arguments:
                         Functional type of 5g core network ("start-
                         mini"|"start-basic"|"start-basic-vpp"|"stop-
                         mini"|"stop-basic"|"stop-basic-vpp")
-  --fqdn {yes,no}, -fq {yes,no}
-                        Deployment scenario with FQDN ("yes"|"no")
   --scenario {1,2}, -s {1,2}
                         Scenario with NRF ("1") and without NRF ("2")
   --capture CAPTURE, -c CAPTURE
@@ -115,8 +114,8 @@ example:
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
         python3 core-network.py --type stop-mini
-        python3 core-network.py --type start-mini --fqdn no --scenario 2
-        python3 core-network.py --type start-basic --fqdn no --scenario 2
+        python3 core-network.py --type start-mini --scenario 2
+        python3 core-network.py --type start-basic --scenario 2
 
 ```
 
@@ -124,12 +123,10 @@ Currently in this tutorial format, we support a `basic` deployment with the `UPF
 
 In that deployment configuration, you can deploy with and without `NRF` (ie scenarios `1` and `2`).
 
-For the moment, `FQDN` shall be set to `no`.
-
 As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
 
 ``` console
-docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --scenario 1
 ```
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker networks.
@@ -137,7 +134,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --fqdn no --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
+docker-compose-host $: python3 ./core-network.py --type start-basic-vpp  --scenario 1 --capture /tmp/oai/vpp-upf-gnbsim/vpp-upf-gnbsim.pcap
 [2022-02-08 16:18:19,328] root:DEBUG:  Starting 5gcn components... Please wait....
 [2022-02-08 16:18:19,328] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml up -d mysql
 Creating network "oai-public-cp" with the default driver
@@ -273,7 +270,7 @@ $ docker logs oai-smf
 ...
 ```
 
-## 6. Stimuli with a RAN emulator
+## 6. Simulate with a RAN emulator
 
 ### 6.1. Test with Gnbsim
 
@@ -453,7 +450,7 @@ Network oai-public-access is external, skipping
 ### 8.2. Undeploy the Core Network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --fqdn no --scenario 1
+docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenario 1
 [2022-02-08 16:21:39,317] root:DEBUG:  UnDeploying OAI 5G core components....
 [2022-02-08 16:21:39,317] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml down
 Stopping oai-smf    ... done
@@ -483,5 +480,19 @@ Removing network oai-public-core
 
 If you replicate then your log files and pcap file will be present in `/tmp/oai/vpp-upf-gnbsim/`.
 
-## 9. Reference logs
+## 9. Notes
+
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
+- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
+- In case you are interested to use HTTP V2 for SBI between the network functions instead of HTTP V1 then you have to use docker-compose [docker-compose-basic-vpp-nrf-http2.yaml](../docker-compose/docker-compose-basic-vpp-nrf-http2.yaml).
+``` console
+#To start the containers 
+docker-compose-host $: docker-compose -f <file-name> up -d
+#To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
+docker-compose-host $: watch docker-compose -f <file-name> ps -a
+#To stop the containers with zero graceful period
+docker-compose-host $: docker-compose -f <file-name> down -t 0
+```
+
 
