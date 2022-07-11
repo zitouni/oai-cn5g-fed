@@ -86,6 +86,8 @@ oai-amf:
     sd0: "10203"
     sst1: "1"
     sd1: "1"
+    sst2: "2"
+    sd2: "2"
     mcc: "208"
     mnc: "99"
     regionId: "128"
