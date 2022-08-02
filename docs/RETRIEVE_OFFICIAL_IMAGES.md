@@ -50,7 +50,7 @@ docker pull oaisoftwarealliance/oai-ausf:v1.4.0
 docker pull oaisoftwarealliance/oai-upf-vpp:v1.4.0
 docker pull oaisoftwarealliance/oai-nssf:v1.4.0
 # Utility image to generate traffic
-docker pull oaisoftwarealliance/trf-gen-cn5g:v1.4.0
+docker pull oaisoftwarealliance/trf-gen-cn5g:latest
 ```
 
 And **re-tag** them for tutorials' docker-compose file to work.
