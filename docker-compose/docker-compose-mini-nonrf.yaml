@@ -86,13 +86,6 @@ services:
             - UDM_FQDN=localhost
         depends_on:
             - mysql
-        volumes:
-            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.132

@@ -221,15 +221,9 @@ services:
         depends_on:
             - mysql
         volumes:
-            - ./healthchecks/amf-healthcheck.sh:/tmp/amf-healthcheck.sh
             - ./confs/amf.conf:/openair-amf/etc/amf.conf
             - ./entrypoints/amf-entrypoint.sh:/openair-amf/bin/amf-entrypoint.sh
             - ./logs/amf.log:/openair-amf/etc/amf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/amf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.132
