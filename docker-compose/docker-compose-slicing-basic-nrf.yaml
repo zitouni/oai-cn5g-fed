@@ -147,13 +147,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.136
-        volumes:
-            - ./healthscripts/nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-nrf/bin/nrf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai_nrf_slice3:
         container_name: oai-nrf-slice3
         image: oai-nrf:v1.4.0
@@ -167,13 +160,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.137
-        volumes:
-            - ./healthscripts/nrf-healthcheck.sh:/openair-nrf/bin/nrf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-nrf/bin/nrf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai_amf:
         container_name: oai-amf
         image: oai-amf:v1.4.0
