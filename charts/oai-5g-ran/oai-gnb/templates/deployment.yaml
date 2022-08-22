@@ -125,6 +125,16 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: amfIpAddress
+          - name: USE_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: useFqdn
+          - name: AMF_FQDN
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: amfFqdn
           - name: GNB_NGA_IF_NAME
             valueFrom:
               configMapKeyRef:
