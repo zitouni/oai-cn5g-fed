@@ -178,15 +178,9 @@ services:
         entrypoint: ["/openair-nrf/bin/nrf-entrypoint.sh"]
         restart: always
         volumes:
-            - ./healthchecks/nrf-healthcheck.sh:/tmp/nrf-healthcheck.sh
             - ./confs/nrf.conf:/openair-nrf/etc/nrf.conf
             - ./entrypoints/nrf-entrypoint.sh:/openair-nrf/bin/nrf-entrypoint.sh
             - ./logs/nrf.log:/openair-nrf/etc/nrf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/nrf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.130
