@@ -114,13 +114,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.138
-        volumes:
-            - ./healthscripts/ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai-nrf:
         container_name: "oai-nrf"
         image: oai-nrf:v1.4.0
