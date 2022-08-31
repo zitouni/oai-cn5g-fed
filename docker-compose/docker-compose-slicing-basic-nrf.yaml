@@ -95,13 +95,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.134
-        volumes:
-            - ./healthscripts/udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai_ausf:
         container_name: oai-ausf
         image: oai-ausf:v1.4.0
