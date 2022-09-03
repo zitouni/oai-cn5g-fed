@@ -76,6 +76,12 @@ CREATE TABLE `AccessAndMobilitySubscriptionData` (
   `wirelineServiceAreaRestriction` json DEFAULT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 
+INSERT INTO `AccessAndMobilitySubscriptionData` (`ueid`, `servingPlmnid`, `nssai`) VALUES
+('208950000000125', '20895','{\"defaultSingleNssais\": [{\"sst\": 1, \"sd\": \"1\"}]}'),
+('208950000000126', '20895','{\"defaultSingleNssais\": [{\"sst\": 1, \"sd\": \"1\"}]}'),
+('208950000000127', '20895','{\"defaultSingleNssais\": [{\"sst\": 1, \"sd\": \"1\"}]}'),
+('208950000000128', '20895','{\"defaultSingleNssais\": [{\"sst\": 1, \"sd\": \"1\"}]}'),
+('208950000000129', '20895','{\"defaultSingleNssais\": [{\"sst\": 1, \"sd\": \"1\"}]}');
 -- --------------------------------------------------------
 
 --
