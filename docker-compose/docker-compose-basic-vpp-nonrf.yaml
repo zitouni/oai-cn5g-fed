@@ -206,13 +206,6 @@ services:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         depends_on:
             - oai-amf
-        volumes:
-             - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-             interval: 10s
-             timeout: 5s
-             retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133

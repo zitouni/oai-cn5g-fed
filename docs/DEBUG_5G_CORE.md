@@ -229,15 +229,9 @@ services:
         depends_on:
             - oai-amf
         volumes:
-            - ./healthchecks/smf-healthcheck.sh:/tmp/smf-healthcheck.sh
             - ./entrypoints/smf-entrypoint.sh:/openair-smf/bin/smf-entrypoint.sh
             - ./confs/smf.conf:/openair-smf/etc/smf.conf
             - ./logs/smf.log:/openair-smf/etc/smf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/smf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133

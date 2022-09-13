@@ -249,13 +249,6 @@ services:
         depends_on:
             - oai_amf
             - oai_nrf_slice12
-        volumes:
-            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.139
@@ -295,13 +288,6 @@ services:
         depends_on:
             - oai_amf
             - oai_nrf_slice12
-        volumes:
-            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-             interval: 10s
-             timeout: 5s
-             retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.140
@@ -344,13 +330,6 @@ services:
             - oai_nrf_slice3
         extra_hosts:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
-        volumes:
-            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-             interval: 10s
-             timeout: 5s
-             retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.141

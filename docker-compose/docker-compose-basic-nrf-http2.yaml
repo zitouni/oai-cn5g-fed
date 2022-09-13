@@ -252,13 +252,6 @@ services:
         depends_on:
             - oai-nrf
             - oai-amf
-        volumes:
-            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133

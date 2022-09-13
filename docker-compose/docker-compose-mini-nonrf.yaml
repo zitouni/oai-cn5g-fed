@@ -152,15 +152,8 @@ services:
             - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
         depends_on:
             - oai-amf
-        volumes:
-            - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
         extra_hosts:
             - "oai-spgwu:192.168.70.134"
-        healthcheck:
-            test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
