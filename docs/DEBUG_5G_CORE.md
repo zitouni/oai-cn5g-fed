@@ -249,15 +249,9 @@ services:
             - ALL
         privileged: true
         volumes:
-            - ./healthchecks/spgwu-healthcheck.sh:/tmp/spgwu-healthcheck.sh
             - ./entrypoints/spgwu-entrypoint.sh:/openair-spgwu-tiny/bin/spgwu-entrypoint.sh
             - ./confs/spgw_u.conf:/openair-spgwu-tiny/etc/spgw_u.conf
             - ./logs/spgw_u.log:/openair-spgwu-tiny/etc/spgw_u.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/spgwu-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.134
