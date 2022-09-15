@@ -178,15 +178,9 @@ services:
         entrypoint: ["/openair-nrf/bin/nrf-entrypoint.sh"]
         restart: always
         volumes:
-            - ./healthchecks/nrf-healthcheck.sh:/tmp/nrf-healthcheck.sh
             - ./confs/nrf.conf:/openair-nrf/etc/nrf.conf
             - ./entrypoints/nrf-entrypoint.sh:/openair-nrf/bin/nrf-entrypoint.sh
             - ./logs/nrf.log:/openair-nrf/etc/nrf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/nrf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.130
@@ -221,15 +215,9 @@ services:
         depends_on:
             - mysql
         volumes:
-            - ./healthchecks/amf-healthcheck.sh:/tmp/amf-healthcheck.sh
             - ./confs/amf.conf:/openair-amf/etc/amf.conf
             - ./entrypoints/amf-entrypoint.sh:/openair-amf/bin/amf-entrypoint.sh
             - ./logs/amf.log:/openair-amf/etc/amf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/amf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.132
@@ -241,15 +229,9 @@ services:
         depends_on:
             - oai-amf
         volumes:
-            - ./healthchecks/smf-healthcheck.sh:/tmp/smf-healthcheck.sh
             - ./entrypoints/smf-entrypoint.sh:/openair-smf/bin/smf-entrypoint.sh
             - ./confs/smf.conf:/openair-smf/etc/smf.conf
             - ./logs/smf.log:/openair-smf/etc/smf.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/smf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
@@ -267,15 +249,9 @@ services:
             - ALL
         privileged: true
         volumes:
-            - ./healthchecks/spgwu-healthcheck.sh:/tmp/spgwu-healthcheck.sh
             - ./entrypoints/spgwu-entrypoint.sh:/openair-spgwu-tiny/bin/spgwu-entrypoint.sh
             - ./confs/spgw_u.conf:/openair-spgwu-tiny/etc/spgw_u.conf
             - ./logs/spgw_u.log:/openair-spgwu-tiny/etc/spgw_u.log:rw
-        healthcheck:
-            test: /bin/bash -c "/tmp/spgwu-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.134

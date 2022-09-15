@@ -46,13 +46,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.136
-        volumes:
-            - ./healthscripts/udr-healthcheck.sh:/openair-udr/bin/udr-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-udr/bin/udr-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai-udm:
         container_name: "oai-udm"
         image: oai-udm:v1.4.0
@@ -77,13 +70,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.137
-        volumes:
-            - ./healthscripts/udm-healthcheck.sh:/openair-udm/bin/udm-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-udm/bin/udm-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai-ausf:
         container_name: "oai-ausf"
         image: oai-ausf:v1.4.0
@@ -107,13 +93,6 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.138
-        volumes:
-            - ./healthscripts/ausf-healthcheck.sh:/openair-ausf/bin/ausf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-ausf/bin/ausf-healthcheck.sh"
-            interval: 10s
-            timeout: 5s
-            retries: 5
     oai-amf:
         container_name: "oai-amf"
         image: oai-amf:v1.4.0
@@ -184,13 +163,6 @@ services:
             - vpp-upf
             - oai-ext-dn
             - oai-ausf
-        volumes:
-            - ./healthscripts/amf-healthcheck.sh:/openair-amf/bin/amf-healthcheck.sh
-        healthcheck:
-            test: /bin/bash -c "/openair-amf/bin/amf-healthcheck.sh"
-            interval: 10s
-            timeout: 15s
-            retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.132
@@ -234,13 +206,6 @@ services:
             - "gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
         depends_on:
             - oai-amf
-        volumes:
-             - ./healthscripts/smf-healthcheck.sh:/openair-smf/bin/smf-healthcheck.sh
-        healthcheck:
-             test: /bin/bash -c "/openair-smf/bin/smf-healthcheck.sh"
-             interval: 10s
-             timeout: 5s
-             retries: 5
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
