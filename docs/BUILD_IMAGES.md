@@ -199,12 +199,12 @@ The above command is with podman, in case of docker it can be changed with its d
 
 ## 4.1 On a Ubuntu Host ##
 
-For example, I am building using `ubuntu:20.04` as base image:
+For example, I am building using `ubuntu:22.04` as base image:
 
 ```bash
 $ docker build --target oai-smf --tag oai-smf:v1.4.0 \
                --file component/oai-smf/docker/Dockerfile.smf.ubuntu \
-               --build-arg BASE_IMAGE=ubuntu:20.04 \
+               --build-arg BASE_IMAGE=ubuntu:22.04 \
                component/oai-smf
 $ docker image prune --force
 $ docker image ls
@@ -235,12 +235,12 @@ The above command is with podman, in case of docker it can be changed with its d
 
 ## 5.1 On a Ubuntu Host ##
 
-For example, I am building using `ubuntu:22.04` as base image:
+For example, I am building using `ubuntu:jammy` as base image:
 
 ```bash
 $ docker build --target oai-nrf --tag oai-nrf:v1.4.0 \
                --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu \
-               --build-arg BASE_IMAGE=ubuntu:22.04 \
+               --build-arg BASE_IMAGE=ubuntu:jammy \
                component/oai-nrf
 $ docker image prune --force
 $ docker image ls
@@ -271,12 +271,16 @@ The above command is with podman, in case of docker it can be changed with its d
 
 ## 6.1 On a Ubuntu Host ##
 
-For example, I am building using `ubuntu:jammy` as base image:
+**CAUTION: SPGWU cannot be built using a ubuntu:22.04 or ubuntu:jammy base image.**
+
+**It can only be `bionic` or `focal`.**
+
+For example, I am building using `ubuntu:20.04` as base image:
 
 ```bash
 $ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
                --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu \
-               --build-arg BASE_IMAGE=ubuntu:jammy \
+               --build-arg BASE_IMAGE=ubuntu:20.04 \
                component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
