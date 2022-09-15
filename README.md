@@ -22,15 +22,15 @@
 </p>
 
 <p align="center">
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-amf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-amf?label=AMF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-ausf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-ausf?label=AUSF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-nrf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nrf?label=NRF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-smf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-smf?label=SMF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-udm"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udm?label=UDM%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udr?label=UDR%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-upf-vpp?label=UPF-VPP%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-spgwu-tiny?label=SPGWU-TINY%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-nssf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nssf?label=NSSF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-amf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-amf?label=AMF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-ausf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-ausf?label=AUSF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-nrf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-nrf?label=NRF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-smf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-smf?label=SMF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-udm"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-udm?label=UDM%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-udr?label=UDR%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-upf-vpp?label=UPF-VPP%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-spgwu-tiny?label=SPGWU-TINY%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-nssf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-nssf?label=NSSF%20docker%20pulls"></a>
 </p>
 
 <h2 align="center">

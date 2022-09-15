@@ -183,15 +183,15 @@ You can pull docker images from official repositories as below -
 ``` console
 $ docker pull rohankharade/gnbsim:latest
 $ docker pull rohankharade/ueransim:latest
-$ docker pull rdefosseoai/oai-gnb:develop
-$ docker pull rdefosseoai/oai-nr-ue:develop
+$ docker pull oaisoftwarealliance/oai-gnb:develop
+$ docker pull oaisoftwarealliance/oai-nr-ue:develop
 ```
 And re-tag them for tutorials' docker-compose file to work.
 ``` console
 $ docker image tag rohankharade/gnbsim:latest gnbsim:latest
 $ docker image tag rohankharade/ueransim:latest ueransim:latest
-$ docker image tag rdefosseoai/oai-gnb:develop oai-gnb:develop
-$ docker image tag rdefosseoai/oai-nr-ue:develop oai-nr-ue:develop
+$ docker image tag oaisoftwarealliance/oai-gnb:develop oai-gnb:develop
+$ docker image tag oaisoftwarealliance/oai-nr-ue:develop oai-nr-ue:develop
 ```
 
 ## 7. Executing `ransim` Scenario
