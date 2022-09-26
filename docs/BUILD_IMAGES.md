@@ -146,17 +146,32 @@ to construct the intermediate layers.
 
 We recommend to add the `--no-cache` option in that case.
 
+## 2.1. On a Ubuntu Host ##
+
+We are supporting the following releases:
+
+* Ubuntu `18.04` or `bionic`
+* Ubuntu `20.04` or `focal`
+* Ubuntu `22.04` or `jammy`
+
+When building, you can specify which base image to work on (by default it will be `ubuntu:bionic`).
+
+You just add the `--build-arg BASE_IMAGE=ubuntu:xxxx` option.
+
 # 3. Build AMF Image #
 
-## 3.1 On a Ubuntu 18.04 Host ##
+## 3.1 On a Ubuntu Host ##
+
+For example, I am building using `ubuntu:focal` as base image:
 
 ```bash
 $ docker build --target oai-amf --tag oai-amf:v1.4.0 \
-               --file component/oai-amf/docker/Dockerfile.amf.ubuntu18 \
+               --file component/oai-amf/docker/Dockerfile.amf.ubuntu \
+               --build-arg BASE_IMAGE=ubuntu:focal \
                component/oai-amf
 $ docker image prune --force
 $ docker image ls
-oai-amf                 v1.4.0             f478bafd7a06        1 minute ago          279MB
+oai-amf                 v1.4.0             f478bafd7a06        1 minute ago          179MB
 ...
 ```
 
@@ -182,15 +197,18 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 4. Build SMF Image #
 
-## 4.1 On a Ubuntu 18.04 Host ##
+## 4.1 On a Ubuntu Host ##
+
+For example, I am building using `ubuntu:22.04` as base image:
 
 ```bash
 $ docker build --target oai-smf --tag oai-smf:v1.4.0 \
-               --file component/oai-smf/docker/Dockerfile.smf.ubuntu18 \
+               --file component/oai-smf/docker/Dockerfile.smf.ubuntu \
+               --build-arg BASE_IMAGE=ubuntu:22.04 \
                component/oai-smf
 $ docker image prune --force
 $ docker image ls
-oai-smf                 v1.4.0             f478bafd7a06        1 minute ago          293MB
+oai-smf                 v1.4.0             f478bafd7a06        1 minute ago          193MB
 ...
 ```
 
@@ -215,11 +233,14 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 5. Build NRF Image #
 
-## 5.1 On a Ubuntu 18.04 Host ##
+## 5.1 On a Ubuntu Host ##
+
+For example, I am building using `ubuntu:jammy` as base image:
 
 ```bash
 $ docker build --target oai-nrf --tag oai-nrf:v1.4.0 \
-               --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu18 \
+               --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu \
+               --build-arg BASE_IMAGE=ubuntu:jammy \
                component/oai-nrf
 $ docker image prune --force
 $ docker image ls
@@ -248,15 +269,22 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 6. Build SPGW-U Image #
 
-## 6.1 On a Ubuntu 18.04 Host ##
+## 6.1 On a Ubuntu Host ##
+
+**CAUTION: SPGWU cannot be built using a ubuntu:22.04 or ubuntu:jammy base image.**
+
+**It can only be `bionic` or `focal`.**
+
+For example, I am building using `ubuntu:20.04` as base image:
 
 ```bash
 $ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
-               --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu18.04 \
+               --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu \
+               --build-arg BASE_IMAGE=ubuntu:20.04 \
                component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
-oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago          255MB
+oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago          155MB
 ...
 ```
 
@@ -281,11 +309,11 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 7. Build AUSF Image #
 
-## 7.1 On a Ubuntu 18.04 Host ##
+## 7.1 On a Ubuntu Host ##
 
 ```bash
 $ docker build --target oai-ausf --tag oai-ausf:v1.4.0 \
-               --file component/oai-ausf/docker/Dockerfile.ausf.ubuntu18 \
+               --file component/oai-ausf/docker/Dockerfile.ausf.ubuntu \
                component/oai-ausf
 $ docker image prune --force
 $ docker image ls
@@ -314,11 +342,11 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 8. Build UDM Image #
 
-## 8.1 On a Ubuntu 18.04 Host ##
+## 8.1 On a Ubuntu Host ##
 
 ```bash
 $ docker build --target oai-udm --tag oai-udm:v1.4.0 \
-               --file component/oai-udm/docker/Dockerfile.udm.ubuntu18 \
+               --file component/oai-udm/docker/Dockerfile.udm.ubuntu \
                component/oai-udm
 $ docker image prune --force
 $ docker image ls
@@ -347,11 +375,11 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 9. Build UDR Image #
 
-## 9.1 On a Ubuntu 18.04 Host ##
+## 9.1 On a Ubuntu Host ##
 
 ```bash
 $ docker build --target oai-udr --tag oai-udr:v1.4.0 \
-               --file component/oai-udr/docker/Dockerfile.udr.ubuntu18 \
+               --file component/oai-udr/docker/Dockerfile.udr.ubuntu \
                component/oai-udr
 $ docker image prune --force
 $ docker image ls
@@ -381,11 +409,11 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 10. Build UPF-VPP Image #
 
-## 10.1 On a Ubuntu 18.04 Host ##
+## 10.1 On a Ubuntu Host ##
 
 ```bash
 $ docker build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
-               --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.ubuntu18 \
+               --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.ubuntu \
                component/oai-upf-vpp
 $ docker image prune --force
 $ docker image ls
@@ -414,11 +442,11 @@ The above command is with podman, in case of docker it can be changed with its d
 
 # 11. Build NSSF Image #
 
-## 11.1 On a Ubuntu 18.04 Host ##
+## 11.1 On a Ubuntu Host ##
 
 ```bash
 $ docker build --target oai-nssf --tag oai-nssf:v1.4.0 \
-               --file component/oai-nssf/docker/Dockerfile.nssf.ubuntu18 \
+               --file component/oai-nssf/docker/Dockerfile.nssf.ubuntu \
                component/oai-nssf
 $ docker image prune --force
 $ docker image ls
@@ -452,7 +480,7 @@ This is just an utility image.
 ```bash
 $ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
                --file ci-scripts/Dockerfile.traffic.generator.ubuntu18.04 \
-                .
+               .
 ```
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)

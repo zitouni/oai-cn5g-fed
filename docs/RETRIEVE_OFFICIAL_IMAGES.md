@@ -12,7 +12,7 @@
   </tr>
 </table>
 
-This page is only valid for an `Ubuntu18` host.
+# This page is only valid for an `Ubuntu` host.
 
 If you are using any other distributions, please refer to [Build your own images](./BUILD_IMAGES.md).
 
@@ -20,7 +20,11 @@ If you want to use a specific branch or commit, please refer to [Build your own 
 
 # Pulling the images from Docker Hub #
 
-The images are hosted under the oai account `oaisoftwarealliance`.
+The images are hosted under the oai account `oaisoftwarealliance`. 
+
+**All images that are currently pushed to Docker-Hub have an `Ubuntu-18.04` base image.**
+
+**But they should be working on any Ubuntu newer hosts (such as `20.04` or `22.04`).**
 
 Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has reached pulling limit as `anonymous`.
 

@@ -63,6 +63,9 @@ function usage {
     echo "    --nssf-branch ####"
     echo "    Specify the source branch for the OAI-UDR component"
     echo ""
+    echo "    --nef-branch ####"
+    echo "    Specify the source branch for the OAI-UDR component"
+    echo ""
     echo "    --help OR -h"
     echo "    Print this help message."
     echo ""
@@ -77,6 +80,7 @@ UDM_BRANCH='master'
 UDR_BRANCH='master'
 UPF_VPP_BRANCH='master'
 NSSF_BRANCH='master'
+NEF_BRANCH='master'
 
 doDefault=1
 
@@ -144,6 +148,12 @@ case $key in
     shift
     shift
     ;;
+    --nef-branch)
+    NEF_BRANCH="$2"
+    doDefault=0
+    shift
+    shift
+    ;;
     *)
     echo "Syntax Error: unknown option: $key"
     echo ""
@@ -163,6 +173,7 @@ echo "OAI-UDM     component branch : ${UDM_BRANCH}"
 echo "OAI-UDR     component branch : ${UDR_BRANCH}"
 echo "OAI-UPF-VPP component branch : ${UPF_VPP_BRANCH}"
 echo "OAI-NSSF    component branch : ${NSSF_BRANCH}"
+echo "OAI-NEF     component branch : ${NEF_BRANCH}"
 echo "---------------------------------------------------------"
 
 # First do a clean-up
@@ -257,6 +268,15 @@ else
         git checkout $NSSF_BRANCH > /dev/null 2>&1
     else
         git checkout -b $NSSF_BRANCH origin/$NSSF_BRANCH > /dev/null 2>&1
+    fi
+    popd
+    pushd component/oai-nef
+    git fetch --prune > /dev/null 2>&1
+    git branch -D $NEF_BRANCH > /dev/null 2>&1
+    if [[ $? -ne 0 ]]; then
+        git checkout $NEF_BRANCH > /dev/null 2>&1
+    else
+        git checkout -b $NEF_BRANCH origin/$NEF_BRANCH > /dev/null 2>&1
     fi
     popd
 fi

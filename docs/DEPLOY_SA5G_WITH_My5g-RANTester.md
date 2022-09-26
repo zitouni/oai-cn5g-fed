@@ -24,7 +24,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 **TABLE OF CONTENTS**
 
 1.  Pre-requisites
-2.  Building Container Images
+2.  [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
 3.  Configuring Host Machines
 4.  Configuring OAI 5G Core Network Functions
 5.  Deploying OAI 5G Core Network

@@ -19,18 +19,20 @@
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UDR/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UDR%2F&label=build%20UDR"></a>
     <a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-UPF-VPP/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-UPF-VPP%2F&label=build%20UPF-VPP"></a>
 	<a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NSSF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-NSSF%2F&label=build%20NSSF"></a>
+	<a href="https://jenkins-oai.eurecom.fr/job/OAI-CN5G-NEF/"><img src="https://img.shields.io/jenkins/build?jobUrl=https%3A%2F%2Fjenkins-oai.eurecom.fr%2Fjob%2FOAI-CN5G-NEF%2F&label=build%20NEF"></a>
 </p>
 
 <p align="center">
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-amf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-amf?label=AMF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-ausf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-ausf?label=AUSF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-nrf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nrf?label=NRF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-smf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-smf?label=SMF%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-udm"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udm?label=UDM%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-udr?label=UDR%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-upf-vpp?label=UPF-VPP%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-spgwu-tiny?label=SPGWU-TINY%20docker%20pulls"></a>
-  <a href="https://hub.docker.com/r/rdefosseoai/oai-nssf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/rdefosseoai/oai-nssf?label=NSSF%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-amf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-amf?label=amf%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-ausf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-ausf?label=ausf%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-nrf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-nrf?label=nrf%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-smf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-smf?label=smf%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-udm"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-udm?label=udm%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-udr"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-udr?label=udr%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-upf-vpp"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-upf-vpp?label=upf-vpp%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-spgwu-tiny"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-spgwu-tiny?label=spgwu-tiny%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-nssf"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-nssf?label=nssf%20docker%20pulls"></a>
+  <a href="https://hub.docker.com/r/oaisoftwarealliance/oai-nef"><img alt="Docker Pulls" src="https://img.shields.io/docker/pulls/oaisoftwarealliance/oai-nef?label=nef%20docker%20pulls"></a>
 </p>
 
 <h2 align="center">
@@ -52,6 +54,7 @@ At the moment, it contains the following network elements:
 * Network Slicing Selection Function (**[NSSF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nssf)**)
 * Network Data Analytics Function (**NWDAF**)
 * Unstructured Data Storage Function (**UDSF**)
+* Network Exposure Function (**[NEF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nef)**)
 
 Each has its own repository. Some of these repositories are still private, soon to be released.
 
