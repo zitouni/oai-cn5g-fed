@@ -29,6 +29,8 @@ services:
             - GNB_IP_ADDRESS=192.168.70.141
             - PDU_TYPE=IPv4
             - APN=default
+            - SST_0=222
+            - SD_0=123
             - SST_C=222
             - SD_C=123
             - SST_D=222
