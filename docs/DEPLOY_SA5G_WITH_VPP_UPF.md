@@ -421,6 +421,15 @@ root       174  0.0  0.0  18516  3480 pts/0    Ss   11:54   0:00 /bin/bash
 root       208  0.0  0.0  34412  2900 pts/0    R+   11:54   0:00 ps aux
 ```
 
+<!---
+For CI purposes please ignore this line
+In our network env, we cannot ping google.com
+We replaced that with a wget (that we've installed in the gnbsim image)
+``` shell
+docker-compose-host $: docker exec gnbsim-vpp wget --bind-address=12.1.1.2 https://openairinterface.org/wp-content/uploads/2015/06/cropped-oai_final_logo.png
+```
+-->
+
 ## 7. Recover the logs
 
 ``` shell
