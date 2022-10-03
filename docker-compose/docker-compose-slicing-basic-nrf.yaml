@@ -465,7 +465,7 @@ services:
               "ip route add 12.1.1.129/32 via 192.168.70.143 dev eth0;"\
               "ip route add 12.1.1.2/32 via 192.168.73.202 dev eth1; sleep infinity"
         healthcheck:
-            test: /bin/bash -c "ip route"
+            test: /bin/bash -c "iptables -L -t nat | grep MASQUERADE"
             interval: 10s
             timeout: 5s
             retries: 10
