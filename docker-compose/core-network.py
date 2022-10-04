@@ -312,24 +312,24 @@ if __name__ == '__main__':
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(MINI_W_NRF, 5)
+            deploy(MINI_W_NRF, 6)
         # Mini function without NRF
         elif args.scenario == '2':
-            deploy(MINI_NO_NRF, 4)
+            deploy(MINI_NO_NRF, 5)
     elif args.type == 'start-basic':
         # Basic function with NRF
         if args.scenario == '1':
-            deploy(BASIC_W_NRF, 8)
+            deploy(BASIC_W_NRF, 9)
         # Basic function without NRF
         elif args.scenario == '2':
-            deploy(BASIC_NO_NRF, 7)
+            deploy(BASIC_NO_NRF, 8)
     elif args.type == 'start-basic-vpp':
         # Basic function with NRF and VPP-UPF
         if args.scenario == '1':
-            deploy(BASIC_VPP_W_NRF, 8, True)
+            deploy(BASIC_VPP_W_NRF, 9, True)
         # Basic function without NRF but with VPP-UPF
         elif args.scenario == '2':
-            deploy(BASIC_VPP_NO_NRF, 7, True)
+            deploy(BASIC_VPP_NO_NRF, 8, True)
     elif args.type == 'stop-mini':
         if args.scenario == '1':
             undeploy(MINI_W_NRF)
