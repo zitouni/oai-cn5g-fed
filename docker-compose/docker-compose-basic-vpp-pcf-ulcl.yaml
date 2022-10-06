@@ -176,8 +176,8 @@ services:
         depends_on:
             - mysql
             - vpp-upf-ulcl
-            - vpp-upf-iupf1
-            - vpp-upf-iupf2
+            - vpp-upf-aupf1
+            - vpp-upf-aupf2
             - oai-ext-dn-internet
             - oai-ext-dn-edge
             - oai-ausf
@@ -228,8 +228,8 @@ services:
             - DISCOVER_PCF=no
         extra_hosts:
             - "ulcl.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.201"
-            - "iupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
-            - "iupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.203"
+            - "aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
+            - "aupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.203"
         depends_on:
             - oai-amf
             - oai-pcf
@@ -282,12 +282,12 @@ services:
             - IF_2_DNAI=access
             - IF_3_IP=192.168.73.201
             - IF_3_TYPE=N9
-            - IF_3_NWI=iupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org
-            - IF_3_DNAI=iupf1
+            - IF_3_NWI=aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org
+            - IF_3_DNAI=aupf1
             - IF_4_IP=192.168.74.201
             - IF_4_TYPE=N9
-            - IF_4_NWI=iupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org
-            - IF_4_DNAI=iupf2
+            - IF_4_NWI=aupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org
+            - IF_4_DNAI=aupf2
             - NAME=ULCL
             - MNC=95
             - MCC=208
@@ -320,10 +320,10 @@ services:
             public_net_core21:
                 ipv4_address: 192.168.74.151
 
-    vpp-upf-iupf1:
+    vpp-upf-aupf1:
         image: oai-upf-vpp:edge_computing
         privileged: true
-        container_name: "vpp-upf-iupf1"
+        container_name: "vpp-upf-aupf1"
         environment:
             - IF_1_IP=192.168.70.202
             - IF_1_TYPE=N4
@@ -336,7 +336,7 @@ services:
             - IF_3_NWI=internet.5gcn.mnc95.mcc208.3gppnetwork.org
             - IF_3_DNAI=internet
             - IF_3_IP_REMOTE=192.168.75.160 #ext-dn for NAT and routing
-            - NAME=IUPF1
+            - NAME=AUPF1
             - MNC=95
             - MCC=208
             - REALM=3gppnetwork.org
@@ -366,10 +366,10 @@ services:
             public_net_core12:
                 ipv4_address: 192.168.75.152
 
-    vpp-upf-iupf2:
+    vpp-upf-aupf2:
         image: oai-upf-vpp:edge_computing
         privileged: true
-        container_name: "vpp-upf-iupf2"
+        container_name: "vpp-upf-aupf2"
         environment:
             - IF_1_IP=192.168.70.203
             - IF_1_TYPE=N4
@@ -382,7 +382,7 @@ services:
             - IF_3_NWI=edge.5gcn.mnc95.mcc208.3gppnetwork.org
             - IF_3_DNAI=edge
             - IF_3_IP_REMOTE=192.168.76.160 #ext-dn for NAT and routing
-            - NAME=IUPF2
+            - NAME=AUPF2
             - MNC=95
             - MCC=208
             - REALM=3gppnetwork.org
@@ -427,7 +427,7 @@ services:
             timeout: 5s
             retries: 5
         depends_on:
-            - vpp-upf-iupf1
+            - vpp-upf-aupf1
         networks:
             public_net_core12:
                 ipv4_address: 192.168.75.160
@@ -447,7 +447,7 @@ services:
             timeout: 5s
             retries: 5
         depends_on:
-            - vpp-upf-iupf2
+            - vpp-upf-aupf2
         networks:
             public_net_core22:
                 ipv4_address: 192.168.76.160

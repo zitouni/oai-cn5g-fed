@@ -7,12 +7,12 @@ decision_supi1:
 decision_supi2:
   supi_imsi: "208950000000032"
   pcc_rules:
-    - internet-rule
+    - edge-rule-all
 
 decision_supi3:
   supi_imsi: "208950000000033"
   pcc_rules:
-    - edge-rule
+    - internet-rule
 
 decision_dnn:
   dnn: default
