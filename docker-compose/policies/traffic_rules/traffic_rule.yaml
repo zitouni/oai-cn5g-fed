@@ -1,0 +1,13 @@
+edge-scenario:
+  routeToLocs:
+  - dnai: access 
+  - dnai: ulcl
+  - dnai: iupf2
+  - dnai: edge
+
+internet-scenario:
+  routeToLocs:
+    - dnai: access
+    - dnai: ulcl
+    - dnai: iupf1
+    - dnai: internet
