@@ -36,7 +36,9 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 6.  [Traffic Test for UL CL Scenario](#6-traffic-test-for-ul-cl-scenario)
 7.  [Traffic Test for Edge-Only Scenario](#7-traffic-test-for-edge-only-scenario)
 8.  [Traffic Test for Internet-Only Scenario](#8-traffic-test-for-internet-only-scenario)
-9.  [Undeploy network functions](#9-undeploy-network-functions)
+9.  [Trace Analysis](#9-trace-analysis)
+10.  [Undeploy Network Functions](#10-undeploy-network-functions)
+11.  [Conclusion](#11-conclusion)
 
 For this demo, all the images which use the `v1.4.0` have been retrieved from the official `docker-hub` (see also
 [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md)).
@@ -447,39 +449,6 @@ We open the `user_plane_internet_only.pcap` file and apply the same filter and s
 This scenario is the opposite of the edge-only scenario. We can see that all the traffic is routed to A-UPF1 and the
 EXT-DN-Internet. 
 
-
-
-### Conclusion
-We showed in this tutorial how the UL CL can be configured in the OAI. The UL CL UPF is acting as an UL CL for the first scenario,
-but is acting as an I-UPF for the edge-only and internet-only scenario. 
-
-You can see in the `docker-compose-basic-vpp-pcf-ulcl.yaml`
-file and the policy configuration that the DNAI and NW instances have to be configured correctly in UPF and PCF. 
-
-As an example, the `internet-scenario` traffic rule has the following DNAIs configured:
-* access
-* ulcl
-* aupf1
-* internet
-
-This means that each of these components should be present in the path, i.e. gNB (access), ULCL UPF (ulcl), AUPF1(aupf1) 
-and EXT-DN-Internet (internet).
-
-We can see in the configuration of the UL CL UPF that the N3 interface configures the `access` DNAI and the N9 interface to the
-AUPF1 configures the `aupf1` DNAI. The N9 interface of the A-UPF1 configures the `ulcl` DNAI and the N6 interface the `internet` DNAI.
-
-The naming of the DNAIs is up to the user, but we recommend that it should correspond to the name of the NF.
-
-When the SMF is creating the UPF graph, the edges are created based on the NWI of a UPF interface and the UPF FQDN.
-
-For example, the ULCL UPF configures the NWI `aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org` for its N9 interface to the 
-A-UPF1. An edge exists when the FQDN of the A-UPF matches this string. The FQDN is not directly configured, but is composed
-of different environment variables:
-
-`<NAME>.node.5gcn.mnc<MNC>.mcc<MCC>.<REALM>`
-
-Keep that in mind when creating your own scenarios and always verify in the SMF logs that the graph is built correctly.
-
 ## 10 Undeploy Network Functions
 
 When you are done, you can undeploy the gnbsim instances and all the NFs.
@@ -514,3 +483,34 @@ Finally, we can undeploy the 5GCN NFs:
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-ulcl.yaml down
 ```
+
+## 11 Conclusion
+We showed in this tutorial how the UL CL can be configured in the OAI. The UL CL UPF is acting as an UL CL for the first scenario,
+but is acting as an I-UPF for the edge-only and internet-only scenario.
+
+You can see in the `docker-compose-basic-vpp-pcf-ulcl.yaml`
+file and the policy configuration that the DNAI and NW instances have to be configured correctly in UPF and PCF.
+
+As an example, the `internet-scenario` traffic rule has the following DNAIs configured:
+* access
+* ulcl
+* aupf1
+* internet
+
+This means that each of these components should be present in the path, i.e. gNB (access), ULCL UPF (ulcl), AUPF1(aupf1)
+and EXT-DN-Internet (internet).
+
+We can see in the configuration of the UL CL UPF that the N3 interface configures the `access` DNAI and the N9 interface to the
+AUPF1 configures the `aupf1` DNAI. The N9 interface of the A-UPF1 configures the `ulcl` DNAI and the N6 interface the `internet` DNAI.
+
+The naming of the DNAIs is up to the user, but we recommend that it should correspond to the name of the NF.
+
+When the SMF is creating the UPF graph, the edges are created based on the NWI of a UPF interface and the UPF FQDN.
+
+For example, the ULCL UPF configures the NWI `aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org` for its N9 interface to the
+A-UPF1. An edge exists when the FQDN of the A-UPF matches this string. The FQDN is not directly configured, but is composed
+of different environment variables:
+
+`<NAME>.node.5gcn.mnc<MNC>.mcc<MCC>.<REALM>`
+
+Keep that in mind when creating your own scenarios and always verify in the SMF logs that the graph is built correctly.
