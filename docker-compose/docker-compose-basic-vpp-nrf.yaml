@@ -253,8 +253,8 @@ services:
             - DNN=default
             - REGISTER_NRF=yes
             - NRF_IP_ADDR=192.168.70.130
-            - NRF_PORT=9090
-            - HTTP_VERSION=2
+            - NRF_PORT=80
+            - HTTP_VERSION=1
         depends_on:
             - oai-nrf
         healthcheck:
