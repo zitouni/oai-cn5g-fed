@@ -264,6 +264,8 @@ docker-compose-host $: docker logs oai-amf
 In this section we perform traffic test between oai-ext-dn node and Ues <br/>
 
 ``` shell
+docker-compose-host $: docker logs gnbsim 2>&1 | tail -10
+docker-compose-host $: docker logs oai-amf 2>&1 | tail -20
 docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.2
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.346 ms
