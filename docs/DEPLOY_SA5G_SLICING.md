@@ -369,7 +369,7 @@ Use docker-compose down to undeploy network <br/>
 ### 11.1. Undeploy RAN
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml down
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml down -t 0
 Stopping ueransim           ... done
 Stopping rfsim5g-oai-nr-ue1 ... done
 Stopping rfsim5g-oai-gnb    ... done
@@ -384,7 +384,7 @@ Network oai-public-access is external, skipping
 ### 11.2. Undeploy 5GCN
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml down
+docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml down -t 0
 Stopping oai-spgwu-slice1 ... done
 Stopping oai-smf-slice3   ... done
 Stopping oai-smf-slice1   ... done

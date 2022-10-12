@@ -252,7 +252,7 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&
 ### 7.1. Undeploy the ran emulator
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down -t 0
 Stopping gnbsim ... done
 Found orphan containers (oai-nrf, oai-ausf, oai-smf, oai-udr, oai-spgwu, mysql, oai-amf, oai-udm, oai-ext-dn) for this project.
 Removing gnbsim ... done
