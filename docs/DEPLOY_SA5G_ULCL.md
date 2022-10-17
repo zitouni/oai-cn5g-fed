@@ -46,21 +46,21 @@ The other images (NRF, SMF, PCF and UPF-VPP) have been built according to the [B
 
 | CNF Name | Branch Name              | Tag used at time of writing | Ubuntu 18.04 | RHEL8 |
 |----------|:-------------------------|-----------------------------|--------------|-------|
-| NSSF     | `master`                 | `v1.4.0`                    | X            | -     |
-| AMF      | `master`                 | `v1.4.0`                    | X            | -     |
-| AUSF     | `master`                 | `v1.4.0`                    | X            | -     |
-| NRF      | -                        | `2fc1fc12` (commit)         | X            | -     |
-| SMF      | `feature_edge_computing` | -                           | X            | -     |
-| UDR      | `master`                 | `v1.4.0`                    | X            | -     |
-| UDM      | `master`                 | `v1.4.0`                    | X            | -     |
-| PCF      | `develop`                | -                           | X            | -     |
-| UPF-VPP  | `edge_computing`         | -                           | X            | -     |
+| NSSF     | `master`                 | `v1.5.0`                    | X            | -     |
+| AMF      | `master`                 | `v1.5.0`                    | X            | -     |
+| AUSF     | `master`                 | `v1.5.0`                    | X            | -     |
+| NRF      | `master`                 | `v1.5.0`                    | X            | -     |
+| SMF      | `feature_edge_computing` |                             | X            | -     |
+| UDR      | `master`                 | `v1.5.0`                    | X            | -     |
+| UDM      | `master`                 | `v1.5.0`                    | X            | -     |
+| PCF      | `master`                 | `v1.5.0`                    | X            | -     |
+| UPF-VPP  | `edge_computing`         |                             | X            | -     |
 
 <br/>
 
 This tutorial shows how to configure the UL CL feature at SMF and UPF, based on policies from the PCF.
 
-This requires enabling experimental features on SMF, NRF and UPF-VPP. Also, the PCF is required, which is not released 
+This requires enabling experimental features on SMF and UPF. Also, the PCF is required, which is not released 
 yet. Therefore, the images for these NFs have to be built manually (see pre-requisites).
 
 To simplify the deployment, these images have been pushed to the unofficial `docker-hub` repository `stespe`. 
@@ -92,8 +92,6 @@ The images have to be retrieved and then tagged with the `edge-computing` tag fo
 If you want to build the images by yourself, you need to check out the branches/commits from the table above.
 
 ``` shell
-docker-compose-host $: docker pull stespe/oai-nrf:edge_computing
-docker-compose-host $: docker tag stespe/oai-nrf:edge_computing oai-nrf:edge_computing
 docker-compose-host $: docker pull stespe/oai-smf:edge_computing
 docker-compose-host $: docker tag stespe/oai-smf:edge_computing oai-smf:edge_computing
 docker-compose-host $: docker pull stespe/oai-pcf:develop
