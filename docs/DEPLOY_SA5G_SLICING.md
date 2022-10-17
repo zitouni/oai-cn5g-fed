@@ -264,6 +264,8 @@ docker-compose-host $: docker logs oai-amf
 In this section we perform traffic test between oai-ext-dn node and Ues <br/>
 
 ``` shell
+docker-compose-host $: docker logs gnbsim 2>&1 | tail -10
+docker-compose-host $: docker logs oai-amf 2>&1 | tail -20
 docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.2
 PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 64 bytes from 12.1.1.2: icmp_seq=2 ttl=63 time=0.346 ms
@@ -367,7 +369,7 @@ Use docker-compose down to undeploy network <br/>
 ### 11.1. Undeploy RAN
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml down
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml down -t 0
 Stopping ueransim           ... done
 Stopping rfsim5g-oai-nr-ue1 ... done
 Stopping rfsim5g-oai-gnb    ... done
@@ -382,7 +384,7 @@ Network oai-public-access is external, skipping
 ### 11.2. Undeploy 5GCN
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml down
+docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml down -t 0
 Stopping oai-spgwu-slice1 ... done
 Stopping oai-smf-slice3   ... done
 Stopping oai-smf-slice1   ... done

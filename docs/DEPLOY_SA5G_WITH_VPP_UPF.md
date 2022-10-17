@@ -448,7 +448,7 @@ docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/vpp-upf-gnbsim/gnbsim-v
 ### 8.1. Undeploy the RAN emulator
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down -t 0
 Stopping gnbsim-vpp ... done
 WARNING: Found orphan containers (vpp-upf, oai-nrf, oai-smf, oai-udm, oai-amf, mysql, oai-ext-dn, oai-udr, oai-ausf) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
 Removing gnbsim-vpp ... done

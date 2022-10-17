@@ -187,7 +187,7 @@ def check_config(file_name):
         if smf_registration_nrf is not None:
             print(smf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF:
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.202"'
+            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.201"'
         else:
             cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd, False)
@@ -222,7 +222,7 @@ def check_config(file_name):
         if file_name == BASIC_VPP_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: gw1"'
+            cmd2 = 'docker logs oai-smf | grep "Node ID Type FQDN: vpp-upf"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:

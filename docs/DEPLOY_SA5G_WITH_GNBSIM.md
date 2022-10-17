@@ -425,7 +425,7 @@ Last thing is to remove all services - <br/>
 ### 10.1. Undeploy the gnbsim container(s)
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down -t 0
 Stopping service gnbsim ...
 Stopping gnbsim5 ... done
 Stopping gnbsim4 ... done
