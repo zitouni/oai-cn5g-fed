@@ -15,13 +15,13 @@
 
 ![SA Demo](./images/docker-compose/5gCN-mini.jpg)
 
-**Caution:** This is an old tutorial so artifacts like logs and pcap will not be from the new version of the core network but the docker-compose files are up to date. 
+**Caution:** This is an old tutorial so artifacts like logs and pcap will not be from the new version of the core network but the docker-compose files are up to date.
 
 **OVERVIEW**
 
 This tutorial will help in understanding how to deploy a `minimalist` OAI core network using docker-compose.
 
-Please follow the tutorial step by step to create a stable working testbed. 
+Please follow the tutorial step by step to create a stable working testbed.
 
 **Reading time: ~20mins**
 
@@ -50,10 +50,10 @@ The `Minimalist` functional 5g core network can be deployed into 2 scenarios:
     - Scenario II:  AMF, SMF, UPF (SPGWU), MYSQL
 
 ## 2. Pre-requisites ##
-v 
-The container images are built using `docker build` command on Ubuntu 18.04 host machine. The base image for all the containers is Ubuntu 18.04. 
 
-The requried softwares and their respected versions are listed below. To replicate the testbed use these versions. 
+The container images are built using the command `docker build` on a Ubuntu 18.04 host machine. The base image for all the containers is Ubuntu 18.04.
+
+The required software and their respective versions are listed below. To replicate the testbed use these versions.
 
 
 | Software                   | Version                         |
@@ -67,7 +67,7 @@ The requried softwares and their respected versions are listed below. To replica
 
 ### 2.1. Wireshark ###
 
-The new version of `wireshark` may not be available in the ubuntu repository. 
+The new version of `wireshark` may not be available in the ubuntu repository.
 
 - So it is better to build it from source.
 
@@ -84,7 +84,7 @@ Wireshark 3.4.7 (Git v3.4.7 packaged as 3.4.7-1~ubuntu18.04.0+wiresharkdevstable
 
 ### 2.2. Networking considerations ###
 
-Most of the times the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (if you have already done it in any other section then don't repeat).
+Most of the times the `docker-compose-host` machine is not configured with packet forwarding. It can be done using the command below (if you have already done it in any other section then don't repeat).
 
 **This is the most important step towards end-to-end connectivity.**
 
@@ -93,11 +93,11 @@ Most of the times the `docker-compose-host` machine is not configured with packe
 (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
 ```
 
-To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUESITES.md) page.
+To know how to configure the machine with the above requirements vist [pre-requisites](./DEPLOY_PRE_REQUISITES.md) page.
 
 ## 3. Network Function Container Images ##
 
-- In this demo the network function branch and tags which were used are listed below, follow the [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md) or the [Building images](./BUILD_IMAGES.md) to build images with below tags.
+- In this demo the network function branch and tags which were used are listed below, follow the [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md) or [Building images](./BUILD_IMAGES.md) to build images with the tags below.
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
@@ -106,20 +106,20 @@ To know how to configure the machine with the above requirements vist [pre-requi
 | NRF         | `master`    | `v1.4.0` | X            | X               |
 | SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
 
-- In case readers are interested in using different branch then develop or releases (example v1.4.0) **they have to build images from scratch they can't use the docker-hub images**.
+- In case readers are interested in using different branches than develop or releases (example v1.4.0) **they have to build images from scratch, they can't use the docker-hub images**.
 
 ## 4. Configuring Host Machines ##
 
 All the network functions are connected using `demo-oai` bridge.
 
-There are two ways to create this bridge either manually or automatically using docker-compose.
+There are two ways to create this bridge, either manually or automatically using docker-compose.
 
-* The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to NRF. 
+* The manual version will allow packet capturing while network functions are getting deployed. So the initial tested setup packets can be captured for debugging purposes or checking if network functions registered properly to NRF.
 * The second option of automatic deployment is good when initial packet capture is not important.
 
-**NOTE** This tutorial needs that the bridge is created manually to analyse NRF packet exchange. 
+**NOTE** This tutorial needs the bridge to be created manually to analyse NRF packet exchange.
 
-### 4.1 Creating bridge manually ###
+### 4.1 Creating the bridge manually ###
 
 Since this is not the `default` behavior, you **SHALL** edit the docker-compose file.
 
@@ -140,7 +140,7 @@ Since this is not the `default` behavior, you **SHALL** edit the docker-compose 
         #         com.docker.network.bridge.name: "demo-oai"
 ```
 
-- The `docker-compose-host` machine needs to be configured with `demo-oai` bridge before deploying core network components. To capture initial message exchange between smf<-->nrf<-->upf.
+- The `docker-compose-host` machine needs to be configured with `demo-oai` bridge before deploying core network components to capture initial message exchange between smf<-->nrf<-->upf.
 
     ```bash
     (docker-compose-host)$ docker network create \
@@ -162,7 +162,7 @@ Since this is not the `default` behavior, you **SHALL** edit the docker-compose 
     455631b3749c        demo-oai-public-net   bridge              local
     ```
 
-### 4.2 Create bridge automatically ###
+### 4.2 Creating the bridge automatically ###
 
 - Though the bridge can be automatically created using docker-compose file if there is no need to capture initial packets.
 
@@ -187,22 +187,22 @@ The bottom section SHALL look like this:
 
 ### 4.3 In case you forgot. True for manual or automatic network creation. ###
 
-- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using below command (**important step**), 
+- If the `docker-compose-host` machine is not configured with packet forwarding then it can be done using the command below (**important step**),
 
     ```bash
     (docker-compose-host)$ sudo sysctl net.ipv4.conf.all.forwarding=1
     (docker-compose-host)$ sudo iptables -P FORWARD ACCEPT
     ```
 
-- The `dsTest-host` needs to configured with a route to reach `docker-compose-host`. Assuming `dsTest-host` physical interface which is connected with `docker-compose-host` is NIC1 and the ip-address of this interface is IP_ADDR_NIC1 then,
+- The `dsTest-host` needs to be configured with a route to reach `docker-compose-host`. Assuming the `dsTest-host` physical interface which is connected with `docker-compose-host` is NIC1 and the ip-address of this interface is IP_ADDR_NIC1 then,
 
     ```bash
-    (dsTest-host)$ sudo ip route add route 192.168.70.128/26 \
+    (dsTest-host)$ sudo ip route add 192.168.70.128/26 \
                            via IP_ADDR_NIC1\
                            dev NIC1_NAME
     ```
 
-- To verify ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the dsTest-host machine.
+- To verify, ping the ip-address of the `docker-compose-host` interface connected to demo-oai bridge, if possible also ping amf from the dsTest-host machine.
 
     ```bash
     (dsTest-host)$ ping 192.168.70.129
@@ -215,14 +215,14 @@ The bottom section SHALL look like this:
     ^C
     --- 192.168.70.129 ping statistics ---
     5 packets transmitted, 5 received, 0% packet loss, time 108ms
-    rtt min/avg/max/mdev = 0.147/0.192/0.260/0.038 ms    
+    rtt min/avg/max/mdev = 0.147/0.192/0.260/0.038 ms
     ```
-    
+
 ## 5. Configuring the OAI-5G Core Network Functions ##
 
 ### 5.1. Core Network Configuration ###
 
-The docker-compose file has configuration parameters of each core network component. The file is pre-configured with parameters related to this scenario. The table contains the location of the configuration files. These files contains allowed configurable parameters. **Keep checking this file it is possible that we will add new parameters for new features.**  
+The docker-compose file has configuration parameters for each core network component. The file is pre-configured with parameters related to this scenario. The following table contains the location of the configuration files. These files contain the allowed configurable parameters. **Keep this file up to date as it is possible that we will add new parameters for new features.**
 
 | File Name   | Repository                                   | Location        |
 | ----------- | -------------------------------------------- | --------------- |
@@ -231,18 +231,18 @@ The docker-compose file has configuration parameters of each core network compon
 | nrf.conf    | (Gilab) cn5g/oai-cn5g-nrf                    | [etc/nrf.conf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nrf/-/blob/master/etc/nrf.conf)   |
 | spgw_u.conf | (Github) OPENAIRINTERFACE/openair-spgwu-tiny | [etc/spgw_u.conf](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny/blob/master/etc/spgw_u.conf) |
 
-### 5.2. User Subscprition Profile ###
+### 5.2. User Subscription Profile ###
 
-The dsTest UE which will request for a PDU session will have this user profile. Verify that this entry is present in the oai_db1.sql file located in [docker-compose/oai-db1.sql](../docker-compose/oai_db1.sql).  
+The dsTest UE which will request a PDU session will have this user profile. Verify that this entry is present in the oai_db1.sql file located in [docker-compose/database/oai-db1.sql](../docker-compose/database/oai_db1.sql).
 
     ```
     IMSI - 208950000000031
     IMEI - 55000000000001
     Secret Key (K) - 0x0C0A34601D4F07677303652C0462535B
     OPc - 0x63bfa50ee6523365ff14c1f45f88737d
-    ``` 
+    ```
 
-- **Optional**: Incase, the user subscription entry is missing from oai_db.sql file then it can be added using below commands,
+- **Optional**: In case the user subscription entry is missing from the oai_db1.sql file, then it can be added using the following commands,
 
     ```bash
     #Login to mysql container once the container is running
@@ -254,7 +254,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
 
 ## 6. Configuring DsTester Scenario ##
 
-- **User Subscription Profile**: The user profile used for dsTest scenario is below. Verify that this entry is present in the oai_db1.sql file located in docker-compose/oai_db1.sql.  
+- **User Subscription Profile**: The user profile used for the dsTest scenario is below. Verify that this entry is present in the oai_db1.sql file located in docker-compose/database/oai_db1.sql.
 
     ```
     IMSI - 208950000000031
@@ -263,7 +263,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
     OPc - 0x63bfa50ee6523365ff14c1f45f88737d
     ```
 
-- **gNB Parameters for dsTest**: 
+- **gNB Parameters for dsTest**:
 
     ```
     TAC - 0xa000
@@ -273,7 +273,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
     NSSAI SD - 123
     ```
 
-- [SmartEvents State Machine](https://www.developingsolutions.com/Help/Topics/SmartFlow-SmartEvents-State-Machines.htm) used for this dsTest scenario is below, the number on each arrow between different states depicts transition interval in milli seconds. 
+- [The SmartEvents State Machine](https://www.developingsolutions.com/Help/Topics/SmartFlow-SmartEvents-State-Machines.htm) used for this dsTest scenario is below, the number on each arrow between different states depicts transition interval in milliseconds.
 
 ![SmartEvent State Machine](./images/docker-compose/smartevent.png)
 
@@ -281,10 +281,10 @@ The dsTest UE which will request for a PDU session will have this user profile. 
 
 ## 7. Deploying OAI 5g Core Network ##
 
-- The core network is deployed using a [python script](../docker-compose/core-network.py) which is a wrapper around `docker-compose` and `docker` command. 
-- The script informs the user when the core-network is correctly configured by checking health status of containers and connectivity between different core network components.
-- In case if there is a problem in using the script then use docker-compose manually read the [notes section](#11-notes)
-- If the script is executed without any arguments then the helper menu is visible 
+- The core network is deployed using a [python script](../docker-compose/core-network.py) which is a wrapper around the `docker-compose` and `docker` commands.
+- The script informs the user when the core-network is correctly configured by checking the health status of the containers and connectivity between different core network components.
+- In case there is a problem using the script, then use docker-compose manually, read the [notes section](#11-notes)
+- If the script is executed without any arguments then the help menu is shown
 
     ```bash
     docker-compose-host $: pwd
@@ -312,7 +312,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
             python3 core-network.py --type start-mini --scenario 2
             python3 core-network.py --type start-basic --scenario 2
     ```
-- Before executing the script it is better to start capturing packets to see the message flow between smf <--> nrf <--> upf. The packets will be captured on **demo-oai** bridge which should be configured on the `docker-compose-host` machine. 
+- Before executing the script, it is better to start capturing packets to see the message flow between smf <--> nrf <--> upf. The packets will be captured on **demo-oai** bridge which should be configured on the `docker-compose-host` machine.
 
     ```bash
     (docker-compose-host)$ sudo tshark -i demo-oai \
@@ -324,7 +324,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
    *  `not arp` : Not capturing ARP traffic
    *  `not port 53` : Not capturing DNS traffic
    *  `not host archive.ubuntu.com and not host security.ubuntu.com` : Not capturing traffic from `oai-ext-dn` container when installing tools
-- Starting the core network components, 
+- Starting the core network components,
 
     ```bash
     (docker-compose-host)$ $ python3 ./core-network.py --type start-mini --fqdn no --scenario 1
@@ -335,16 +335,16 @@ The dsTest UE which will request for a PDU session will have this user profile. 
     Creating oai-smf ... done
     Creating oai-spgwu ... done
     Creating oai-ext-dn ... done
-    
+
     [2021-09-14 16:44:10,098] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
     [2021-09-14 16:44:47,025] root:DEBUG:  All components are healthy, please see below for more details....
-    Name                 Command                  State                  Ports            
+    Name                 Command                  State                  Ports
     -----------------------------------------------------------------------------------------
-    mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp         
+    mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
     oai-amf      /bin/bash /openair-amf/bin ...   Up (healthy)   38412/sctp, 80/tcp, 9090/tcp
-    oai-ext-dn   /bin/bash -c  apt update;  ...   Up                                         
-    oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp            
-    oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp  
+    oai-ext-dn   /bin/bash -c  apt update;  ...   Up
+    oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp
+    oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
     oai-spgwu    /openair-spgwu-tiny/bin/en ...   Up (healthy)   2152/udp, 8805/udp
     [2021-09-14 16:44:47,025] root:DEBUG:  Checking if the containers are configured....
     [2021-09-14 16:44:47,025] root:DEBUG:  Checking if SMF and UPF registered with nrf core network....
@@ -362,7 +362,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
     ```bash
     (dsTest-host)$ dsClient -d 127.0.0.1 -c "source dsTestScenario.xml"
     ```
-- **Verify PDN session establishment**: To check if a PDN session is properly estabilished there is an extra external data network container only for this demo purpose. The dsTest UE can be reached using this container to validate the PDN session establishment. To understand the packet flow read the next analysis section. In our settings the UE network is 12.1.1.0/24 the configuration can be seen in smf.conf and spgw_u.conf. The allocated IP address to dsTest UE can be seen in smf logs. Generally, if there is a single UE then the allocated ip address will be 12.1.1.2.
+- **Verify PDN session establishment**: To check if a PDN session is properly established, there is an extra external data network container only for this demo purpose. The dsTest UE can be reached using this container to validate the PDN session establishment. To understand the packet flow, read the next analysis section. In our settings the UE network is 12.1.1.0/24. The configuration can be seen in smf.conf and spgw_u.conf. The allocated IP address to dsTest UE can be seen in smf logs. Generally, if there is a single UE then the allocated ip address will be 12.1.1.2.
 
     ```bash
     (docker-compose-host)$ docker exec -it oai-ext-dn ping 12.1.1.2
@@ -375,13 +375,13 @@ The dsTest UE which will request for a PDU session will have this user profile. 
 
 - **Stop PCAP collection**: Stop the wireshark or tshark process on the docker-compose-host.
 
-- **Undeploy the core network**: Before undeploying collect all the logs from each component for analysis. 
+- **Undeploy the core network**: Before undeploying collect all the logs from each component for analysis.
 
     ```bash
     (docker-compose-host)$ docker logs oai-amf > amf.log
     (docker-compose-host)$ docker logs oai-smf > smf.log
     (docker-compose-host)$ docker logs oai-nrf > nrf.log
-    (docker-compose-host)$ docker logs oai-spgwu > spgwu.log  
+    (docker-compose-host)$ docker logs oai-spgwu > spgwu.log
     (docker-compose-host)$ python3 ./core-network.py --type stop-mini
     [2021-09-14 16:46:45,137] root:DEBUG:  UnDeploying OAI 5G core components....
     Stopping oai-ext-dn ... done
@@ -397,14 +397,14 @@ The dsTest UE which will request for a PDU session will have this user profile. 
     Removing mysql      ... done
     Removing oai-nrf    ... done
     Network demo-oai-public-net is external, skipping
-    
+
     [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
     ```
 
-- If you have chosen the `manual` networking option, do not forget to remove the network as well:
+- If you chose the `manual` networking option, do not forget to remove the network as well:
 
     ```bash
-    (docker-compose-host)$ docker network rm demo-oai-public-net 
+    (docker-compose-host)$ docker network rm demo-oai-public-net
     demo-oai-public-net
     ```
 
@@ -413,7 +413,7 @@ The dsTest UE which will request for a PDU session will have this user profile. 
 This section is subdivided in two parts:
 
 - the first part for analysing the message exchange between core network components at the time of deployment.
-- the second part, for analysing the dsTest stimuli (ie gNB and UE connections).
+- the second part for analysing the dsTest stimuli (ie gNB and UE connections).
 
 | Container     | Ip-address     |
 | ------------- |:-------------- |
@@ -426,7 +426,7 @@ This section is subdivided in two parts:
 | Host Machine  | 192.168.70.129 |
 | dsTest gNB/UE | 192.168.18.184 |
 
-We are provided both scenarios (with and without `NRF`) as reference but we will analyze only the with `NRF` scenario.
+We are providing both scenarios (with and without `NRF`) as reference but we will only analyze the scenario with `NRF`.
 
 | PCAP/LOG files for Mini w/ NRF                                                            | PCAP/LOG files for Mini w/o NRF |
 | ----------------------------------------------------------------------------------------- | ------------------------------- |
@@ -441,12 +441,12 @@ We are provided both scenarios (with and without `NRF`) as reference but we will
 
 Using wireshark, open `5gcn-mini-deployment-nrf.pcap` and use the filter `http || pfcp`
 
-- SMF request to NRF for subscribing UPF registration/de-registration events: Packet `37`, `POST` request 
+- SMF request to NRF for subscribing to UPF registration/de-registration events: Packet `37`, `POST` request
 - SMF registration with NRF: Packet `47`, `PUT` request
 - UPF(SPGWU) registration with NRF: Packet `60`, `PUT` request
 - NRF notification to SMF for UPF registration: Packet `65`, `POST` request
 - SMF <--> UPF PFCP Association Setup request and response: Packets `67`, `73`
-- Message exchange between SMF, NRF and UPF can be seen in nrf.log but the name of the network function is replaced with a unique identifier (UUID). 
+- Message exchange between SMF, NRF and UPF can be seen in nrf.log but the name of the network function is replaced with a unique identifier (UUID).
 
 ![Analysing initial message exchange](./images/docker-compose/start.png)
 
@@ -476,22 +476,21 @@ Using wireshark, open `5gcn-mini-deployment-nrf.pcap` and use the filter `ngap |
 
 ## 10. Demo Video ##
 
-- Here is the link to the [youtube video](https://www.youtube.com/watch?v=ENQiwl2EYl8) 
+- Here is the link to the [youtube video](https://www.youtube.com/watch?v=ENQiwl2EYl8)
 
 ## 11. Notes ##
 
-- The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes. 
-- This tutorial can be taken as reference to test the OAI 5G core with a COTS UE. The configuration files has to be changed according to the gNB and COTS UE information should be present in the mysql database. 
-- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
-- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
-- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
+- The `oai-ext-dn` container is optional and is only required if the user wants to ping the dsTest UE. In general this container is not required except for testing purposes.
+- This tutorial can be taken as a reference to test the OAI 5G core with a COTS UE. The configuration file has to be changed according to the gNB and COTS UE information should be present in the mysql database.
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly.
+- In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md).
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) Python script, it is possible to directly deploy using `docker-compose` command.
 
     ``` console
-    #To start the containers 
+    #To start the containers
     docker-compose-host $: docker-compose -f <file-name> up -d
     #To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
     docker-compose-host $: watch docker-compose -f <file-name> ps -a
     #To stop the containers with zero graceful period
     docker-compose-host $: docker-compose -f <file-name> down -t 0
     ```
-    

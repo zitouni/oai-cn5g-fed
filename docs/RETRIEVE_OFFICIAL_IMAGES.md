@@ -12,7 +12,7 @@
   </tr>
 </table>
 
-# This page is only valid for an `Ubuntu` host.
+# This page is only valid for a `Ubuntu` host.
 
 If you are using any other distributions, please refer to [Build your own images](./BUILD_IMAGES.md).
 
@@ -20,13 +20,13 @@ If you want to use a specific branch or commit, please refer to [Build your own 
 
 # Pulling the images from Docker Hub #
 
-The images are hosted under the oai account `oaisoftwarealliance`. 
+The images are hosted under the oai account `oaisoftwarealliance`.
 
 **All images that are currently pushed to Docker-Hub have an `Ubuntu-18.04` base image.**
 
-**But they should be working on any Ubuntu newer hosts (such as `20.04` or `22.04`).**
+**But they should be working on any newer Ubuntu host (such as `20.04` or `22.04`).**
 
-Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has reached pulling limit as `anonymous`.
+Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has the reached pulling limit as `anonymous`.
 
 ```bash
 $ docker login
@@ -36,7 +36,7 @@ Password:
 ```
 
 The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `oaisoftwarealliance` account. Two important things to be noted:
-  - We will keep pushing to the `latest` tag when a milestone is reached current `latest` tag correspond to v1.4.0 release.
+  - We will keep pushing to the `latest` tag when a milestone is reached. Currently, the `latest` tag corresponds to v1.4.0 release.
   - We are making pushes on the `develop` tag whenever a contribution has been accepted. These images are **EXPERIMENTAL**.
   - Release tag `vx.x.x` contains the release code
 
@@ -110,7 +110,7 @@ $ cd oai-cn5g-fed
 $ git checkout -f v1.4.0
 
 # Synchronize all git submodules
-$ ./scripts/syncComponents.sh 
+$ ./scripts/syncComponents.sh
 ---------------------------------------------------------
 OAI-NRF     component branch : master
 OAI-AMF     component branch : master

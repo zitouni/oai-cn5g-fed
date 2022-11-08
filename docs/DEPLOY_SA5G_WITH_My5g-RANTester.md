@@ -33,7 +33,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 8.  [Analysing Scenario Results](#8-analysing-the-scenario-results)
 9.  [Trying some advanced stuff](#9-trying-some-advanced-stuff)
 
-* In this demo the image tags which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. When pulling images of network functions from dockerhub pull images for `develop` tag
+* In this demo the image tags which were used are listed below, follow [Building images](./BUILD_IMAGES.md) to build images with the tags below. When pulling images of network functions from dockerhub pull images for `develop` tag
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
 | ----------- |:-------------- | ----------------------------- | ------------ | --------------|
@@ -49,18 +49,18 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 <br/>
 
-This tutorial is an extension of a previous tutorial: [testing a `basic` deployment with dsTester](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md). In previous tutorial, we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
+This tutorial is an extension of a previous tutorial: [testing a `basic` deployment with dsTester](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md). In previous tutorial, we have seen the advanced testing tool dsTester, which is useful for validating even more complex scenarios.
 
 Moreover, there are various other opensource gnb/ue simulator tools that are available for SA5G test. In this tutorial, we use an opensource simulator tool called `My5g-RANTester`. With the help of `My5g-RANTester` tool, we can perform very basic SA5G test by simulating one gnb and multiple ues.
 
 ##### About My5g-RANTester -
 
-[My5g-RANTester](https://github.com/my5G/my5G-RANTester) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. my5G-RANTester follows the 3GPP Release 15 standard for NG-RAN. Using my5G-RANTester, it is possible to generate different workloads and test several functionalities of a 5G core, including its complaince to the 3GPP standards. Scalability is also a relevant feature of the my5G-RANTester, which is able mimic the behaviour of a large number of UEs and gNBs accessing simultaneously a 5G core.
+[My5g-RANTester](https://github.com/my5G/my5G-RANTester) is the open-source state-of-the-art 5G UE and RAN (gNodeB) implementation. my5G-RANTester follows the 3GPP Release 15 standard for NG-RAN. Using my5G-RANTester, it is possible to generate different workloads and test several functionalities of a 5G core, including its compliance to the 3GPP standards. Scalability is also a relevant feature of the my5G-RANTester, which is able to mimic the behaviour of a large number of UEs and gNBs accessing simultaneously a 5G core.
 
 Let's begin !!
 
-* Steps 1 to 5 are similar as previous [tutorial on vpp-upf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network). Please follow these steps to deploy OAI 5G core network components.
-* We deploy my5G-RANTester docker service on same host as of core network, so there is no need to create additional route as
+* Steps 1 to 5 are similar to this previous [tutorial on vpp-upf](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network). Please follow these steps to deploy OAI 5G core network components.
+* We deploy my5G-RANTester docker service on the same host as of core network, so there is no need to create additional route as
 we did for dsTest-host.
 * Before we proceed further for end-to-end SA5G test, make sure you have healthy docker services for OAI cn5g
 
@@ -81,7 +81,7 @@ docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-my5g
 ```
 
 ## 5. Deploying OAI 5g Core Network
-* We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
+* We will use the same wrapper script for docker-compose that was used for previous tutorials to set up 5gcn with `UPF-VPP`. Use the --help option to check how to use this wrapper script.
 
 ``` shell
 docker-compose-host $: python3 ./core-network.py --type start-basic-vpp --scenario 1 --capture /tmp/oai/vpp-upf-my5g/vpp-upf-my5g.pcap
@@ -139,16 +139,16 @@ vpp-upf      /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
 [2022-02-08 16:20:11,928] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
-More details in [section 5 of the `basic` vpp tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
+More details in [section 5 of the `basic` vpp tutorial](./DEPLOY_SA5G_WITH_VPP_UPF.md#5-deploying-oai-5g-core-network).
 
 ## 6. Building a `My5g-RANTester` docker image
-* Pull pre-built docker image 
+* Pull pre-built docker image
 ``` console
 docker-compose-host $: docker pull rohankharade/my5grantester:latest
 docker-compose-host $: docker tag rohankharade/my5grantester:latest my5grantester:latest
 ```
 
-OR 
+OR
 
 * Build `My5g-RANTester` docker image
 ``` console
@@ -187,7 +187,7 @@ docker-compose-host $: sleep 15
 docker-compose-host $: docker-compose -f docker-compose-my5grantester-vpp.yaml ps -a
     Name        Command       State       Ports
 -----------------------------------------------
-my5grantester   ./app ue   Up (healthy)        
+my5grantester   ./app ue   Up (healthy)
 ```
 
 We can verify it using my5grantester container logs as below -
@@ -295,7 +295,7 @@ PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.467/0.670/1.013/0.244 ms
 ```
 ## Multiple UEs registration test
-Load-test with UEs in queue*: 
+Load-test with UEs in queue*:
 * Update value in the [docker-compose-my5grantester-vpp.yaml](../docker-compose/docker-compose-my5grantester-vpp.yaml)
 ``` console
      NUM_UE: 10
@@ -307,9 +307,9 @@ docker-compose-host $: docker logs oai-amf
 [2022-05-11T21:53:21.866098] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2022-05-11T21:53:21.866102] [AMF] [amf_app] [info ] |----------------------------------------------------gNBs' information-------------------------------------------|
 [2022-05-11T21:53:21.866105] [AMF] [amf_app] [info ] |    Index    |      Status      |       Global ID       |       gNB Name       |               PLMN             |
-[2022-05-11T21:53:21.866110] [AMF] [amf_app] [info ] |      1      |    Connected     |         0x300       |         my5gRANTester        |            208, 95             | 
+[2022-05-11T21:53:21.866110] [AMF] [amf_app] [info ] |      1      |    Connected     |         0x300       |         my5gRANTester        |            208, 95             |
 [2022-05-11T21:53:21.866113] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
-[2022-05-11T21:53:21.866115] [AMF] [amf_app] [info ] 
+[2022-05-11T21:53:21.866115] [AMF] [amf_app] [info ]
 [2022-05-11T21:53:21.866117] [AMF] [amf_app] [info ] |----------------------------------------------------------------------------------------------------------------|
 [2022-05-11T21:53:21.866120] [AMF] [amf_app] [info ] |----------------------------------------------------UEs' information--------------------------------------------|
 [2022-05-11T21:53:21.866122] [AMF] [amf_app] [info ] | Index |      5GMM state      |      IMSI        |     GUTI      | RAN UE NGAP ID | AMF UE ID |  PLMN   |Cell ID|
@@ -356,6 +356,4 @@ docker-compose-host $: python3 ./core-network.py --type stop-basic-vpp --scenari
 | [5gcn-deployment-my5G-RANTester.pcap](./results/My5g-RANTester/5gcn-deployment-my5grantester.pcap)                  |
 
 
-* For detailed analysis of messages, please refer previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
-
-
+* For detailed analysis of messages, please refer to this previous tutorial of [testing with dsTester](./docs/DEPLOY_SA5G_WITH_DS_TESTER.md).
