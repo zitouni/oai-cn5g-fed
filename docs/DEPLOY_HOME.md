@@ -16,7 +16,8 @@ Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot 
 - 5G Core Network Deployment
     - [Using Docker-Compose, perform a `minimalist` deployment](./DEPLOY_SA5G_MINI_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic` deployment](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md)
-    - [Using Docker-Compose, perform a `basic-vpp` deployment with VPP implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)
+    - [Using Docker-Compose, perform a `basic-vpp` deployment with `VPP` implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)
+    - [Using Docker-Compose, perform a `basic` deployment with `SD-Fabric` implementation of UPF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-sdfabric/-/wikis/Deployment-using-Docker)
     - [Using Docker-Compose, perform a `basic` deployment with Static UE IP address allocation](./DEPLOY_SA5G_BASIC_STATIC_UE_IP.md)
     - [Using Helm Chart, perform a `basic` deployment](./DEPLOY_SA5G_HC.md)
     - [Using Docker-Compose, doing network slicing](./DEPLOY_SA5G_SLICING.md)
