@@ -56,7 +56,7 @@ Go to [docker-hub](https://hub.docker.com/) and create an account.
 
 Currently we are working to support `CentOS8` and `RHEL8` distributions.
 
-First log with your Docker Hub credentials. This is required if your organization has reached pulling limit as `anonymous`.
+First, log in with your Docker Hub credentials. This is required if your organization has reached pulling limit as `anonymous`.
 
 ```bash
 $ docker login

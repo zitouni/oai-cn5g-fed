@@ -4,11 +4,11 @@
 
 # OpenAirInterface 5G Core Network Deployment
 
-Welcome to the tutorial home page of OAI 5g Core project. Here you can find lot of tutorials and help manuals. We regularly update these documents depending on the new feature set. 
+Welcome to the tutorial home page of the OAI 5g Core project. Here you can find lots of tutorials and help manuals. We regularly update these documents depending on the new feature set.
 
-## Table of content
+## Table of contents
 
-- [Pre-requisites](./DEPLOY_PRE_REQUESITES.md)
+- [Pre-requisites](./DEPLOY_PRE_REQUISITES.md)
 - How to get the container images
     - [Pull the container images](./RETRIEVE_OFFICIAL_IMAGES.md)
     - [Build the container images](./BUILD_IMAGES.md)

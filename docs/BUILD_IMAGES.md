@@ -20,11 +20,11 @@ This repository only has tutorials and Continuous Integration scripts.
 
 Each 5G Network Function source code is managed in its own repository.
 
-They are called as `git sub-modules` in the `component` folder.
+They are named as `git sub-modules` in the `component` folder.
 
 Before doing anything, you SHALL retrieve the code for each git sub-module.
 
-## 1.1. You are interested on a stable version. ##
+## 1.1. You are interested in a stable version. ##
 
 We recommend to synchronize with the master branches on all git sub-modules.
 
@@ -54,7 +54,7 @@ $ cd oai-cn5g-fed
 $ git checkout -f v1.4.0
 
 # Synchronize all git submodules
-$ ./scripts/syncComponents.sh 
+$ ./scripts/syncComponents.sh
 ---------------------------------------------------------
 OAI-NRF     component branch : master
 OAI-AMF     component branch : master
@@ -95,7 +95,7 @@ git submodule init
 git submodule update
 ```
 
-## 1.2. You are interested on the latest features. ##
+## 1.2. You are interested in the latest features. ##
 
 All the latest features are pushed to the `develop` branches of each NF repository.
 
@@ -103,7 +103,7 @@ It means that we/you are able to build and the Continuous Integration test suite
 does NOT break any existing tested feature.
 
 So for example, at time of writing, N2 Handover support code is included in `v1.1.0` release.
-But it is not tested yet. So it is not advertized in the `CHANGELOG.md` and the Release Notes.
+But it is not tested yet. So it is not advertised in the `CHANGELOG.md` and the Release Notes.
 
 Anyhow, the tutorials' docker-compose files on the latest commit of the `master` branch of
 `oai-cn5g-fed` repository SHALL support any additional un-tested feature.
@@ -177,10 +177,10 @@ oai-amf                 v1.4.0             f478bafd7a06        1 minute ago     
 
 ## 3.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -192,7 +192,7 @@ $ sudo podman build --target oai-amf --tag oai-amf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker, it can be changed with its docker equivalent.
 
 
 # 4. Build SMF Image #
@@ -214,10 +214,10 @@ oai-smf                 v1.4.0             f478bafd7a06        1 minute ago     
 
 ## 4.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -229,7 +229,7 @@ $ sudo podman build --target oai-smf --tag oai-smf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 5. Build NRF Image #
 
@@ -250,10 +250,10 @@ oai-nrf                 v1.4.0             04334b29e103        1 minute ago     
 
 ## 5.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -265,7 +265,7 @@ $ sudo podman build --target oai-nrf --tag oai-nrf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 6. Build SPGW-U Image #
 
@@ -290,10 +290,10 @@ oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago     
 
 ## 6.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -305,7 +305,7 @@ $ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 7. Build AUSF Image #
 
@@ -323,10 +323,10 @@ oai-ausf          v1.4.0              77a96de94c23        1 minute ago        23
 
 ## 7.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -338,7 +338,7 @@ $ sudo podman build --target oai-ausf --tag oai-ausf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 8. Build UDM Image #
 
@@ -356,10 +356,10 @@ oai-udm                 v1.4.0             10a4334e31be        1 minute ago     
 
 ## 8.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -371,7 +371,7 @@ $ sudo podman build --target oai-udm --tag oai-udm:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 9. Build UDR Image #
 
@@ -389,10 +389,10 @@ oai-udr                 v1.4.0             581e07d59ec3        1 minute ago     
 
 ## 9.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -404,7 +404,7 @@ $ sudo podman build --target oai-udr --tag oai-udr:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 
 # 10. Build UPF-VPP Image #
@@ -423,10 +423,10 @@ oai-upf-vpp             v1.4.0             581e07d59ec3        1 minute ago     
 
 ## 10.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -438,7 +438,7 @@ $ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 11. Build NSSF Image #
 
@@ -456,10 +456,10 @@ oai-nssf          v1.4.0              77a96de94c23        1 minute ago        23
 
 ## 11.2 On a RHEL8 Host ##
 
-RHEL base images generally needs a subscription to access the package repository.
+RHEL base images generally need a subscription to access the package repository.
 For that the base image needs ca and entitlement .pem files.
 
-Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like below
+Copy the ca and entitlement .pem files in your present working directory `pwd` before building the image, you can do it like this:
 
 ```bash
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
@@ -471,11 +471,11 @@ $ sudo podman build --target oai-nssf --tag oai-nssf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case of docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
 # 12. Build Traffic-Generator Image #
 
-This is just an utility image.
+This is just a utility image.
 
 ```bash
 $ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
@@ -483,6 +483,6 @@ $ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
                .
 ```
 
-You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or deploying the images using [helm-charts](./DEPLOY_SA5G_HC.md)
+You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or to deploy the images using [helm-charts](./DEPLOY_SA5G_HC.md)
 
 You can also go [back](./DEPLOY_HOME.md) to the list of tutorials.

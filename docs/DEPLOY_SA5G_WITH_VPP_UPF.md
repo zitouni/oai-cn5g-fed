@@ -32,7 +32,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
 9.  [Notes](#9-notes)
 
-* In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with below tags. 
+* In this demo the image tags and commits which were used are listed below, follow [Building images](./BUILD_IMAGES.md) to build images with the tags below.
 
 You can also retrieve the images from `docker-hub`. See [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md).
 
@@ -50,7 +50,7 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 In previous tutorials, we were using the `oai-spgwu-tiny` implementation UPF. That implementation has limited throughput capacity and is a pure SW solution.
 
-Moreover in this tutorial, we are going to integrate OAI 5G core with opensource `VPP-UPF` by [Travelping](https://www.travelping.com/). VPP-based UPF uses vector packet processing and it is has proven very good performance in the user plane. Motivation for this integration to test and validate high performance VPP-UPF in with OAI 5G core.
+Moreover in this tutorial, we are going to integrate OAI 5G core with opensource `VPP-UPF` by [Travelping](https://www.travelping.com/). VPP-based UPF uses vector packet processing and it is has proven to have very good performance in the user plane. Motivation for this integration is to test and validate high performance VPP-UPF with OAI 5G core.
 
 **About VPP-UPG**
 
@@ -64,7 +64,7 @@ Project is available on github as VPP-UPG which follows release `16` of 3GPP spe
 
 Let's begin !!
 
-* Steps 1 to 4 are similar as previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DS_TESTER_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DS_TESTER_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
+* Steps 1 to 4 are similar to previous tutorials such as [minimalist](./DEPLOY_SA5G_MINI_DEPLOYMENT.md) or [basic](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md) deployments. Please follow these steps to deploy OAI 5G core network components.
 
 ## 1. Pre-requisites
 
@@ -84,7 +84,7 @@ docker-compose-host $: chmod 777 /tmp/oai/vpp-upf-gnbsim
 
 ## 5. Deploying OAI 5g Core Network
 
-* We will use same wrapper script for docker-compose that used for previous tutorials to set up 5gcn with `UPF-VPP`. Use help option to check how to use this wrapper script.
+* We will use the same wrapper script for docker-compose that was used for previous tutorials to set up 5gcn with `UPF-VPP`. Use the --help option to check how to use this wrapper script.
 
 **Note: - To use vpp-upf on bare metal, follow [these instructions.](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/develop/docs/INSTALL_ON_HOST.md)**
 
@@ -156,16 +156,16 @@ Creating oai-smf    ... done
 [2022-02-08 16:19:47,977] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
 [2022-02-08 16:19:47,977] root:DEBUG: docker-compose -f docker-compose-basic-vpp-nrf.yaml ps -a
 [2022-02-08 16:20:11,681] root:DEBUG:  All components are healthy, please see below for more details....
-Name                 Command                  State                  Ports            
+Name                 Command                  State                  Ports
 -----------------------------------------------------------------------------------------
-mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp         
+mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
 oai-amf      /bin/bash /openair-amf/bin ...   Up (healthy)   38412/sctp, 80/tcp, 9090/tcp
-oai-ausf     /bin/bash /openair-ausf/bi ...   Up (healthy)   80/tcp                      
-oai-ext-dn   /bin/bash -c  apt update;  ...   Up                                         
-oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp            
-oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp  
-oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp                      
-oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp                      
+oai-ausf     /bin/bash /openair-ausf/bi ...   Up (healthy)   80/tcp
+oai-ext-dn   /bin/bash -c  apt update;  ...   Up
+oai-nrf      /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp
+oai-smf      /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
+oai-udm      /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp
+oai-udr      /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
 vpp-upf      /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
 [2022-02-08 16:20:11,681] root:DEBUG:  Checking if the containers are configured....
 [2022-02-08 16:20:11,681] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
@@ -206,15 +206,15 @@ $ docker logs oai-nrf
 [2022-02-08T16:20:10.996442] [nrf] [nrf_app] [info ] NF profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) not found
 [2022-02-08T16:20:10.996446] [nrf] [nrf_app] [info ] Added/Updated NF Profile (ID cdf2e275-ff1d-49e0-aa48-df2027af101f) to the DB
 [2022-02-08T16:20:10.996457] [nrf] [nrf_app] [info ] Handle NF status registered event, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2022-02-08T16:20:10.996460] [nrf] [nrf_app] [info ] 	Find a NF profile with ID cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2022-02-08T16:20:10.996464] [nrf] [nrf_app] [info ] 	Get the list of subscriptions related to this profile, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.996460] [nrf] [nrf_app] [info ]    Find a NF profile with ID cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:10.996464] [nrf] [nrf_app] [info ]    Get the list of subscriptions related to this profile, profile id cdf2e275-ff1d-49e0-aa48-df2027af101f
 [2022-02-08T16:20:10.996526] [nrf] [nrf_app] [info ] Added/Updated NF Instance, NF info: {"capacity":100,"fqdn":"gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org","heartBeatTimer":10,"ipv4Addresses":["192.168.70.202"],"json_data":null,"nfInstanceId":"cdf2e275-ff1d-49e0-aa48-df2027af101f","nfInstanceName":"OAI-UPF-VPP","nfServices":[],"nfStatus":"REGISTERED","nfType":"UPF","priority":1,"sNssais":[{"sd":"222","sst":123}],"upfInfo":{"interfaceUpfInfoList":[{"endpointFqdn":"access.oai.org","interfaceType":"N3","ipv4EndpointAddresses":["192.168.72.134"],"networkInstance":"access.oai.org"},{"endpointFqdn":"core.oai.org","interfaceType":"N6","ipv4EndpointAddresses":["192.168.70.134"],"networkInstance":"core.oai.org"}],"sNssaiUpfInfoList":[{"dnnUpfInfoList":[{"dnn":"default"}],"sNssai":{"sd":"222","sst":123}}]}}
-[2022-02-08T16:20:16.002236] [nrf] [sbi_srv] [info ] 
+[2022-02-08T16:20:16.002236] [nrf] [sbi_srv] [info ]
 [2022-02-08T16:20:16.002261] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
 [2022-02-08T16:20:16.002268] [nrf] [nrf_app] [info ] Handle Update NF Instance request (HTTP version 2)
 [2022-02-08T16:20:16.002277] [nrf] [nrf_app] [info ] NF Heart-Beat procedure!
 [2022-02-08T16:20:16.002282] [nrf] [nrf_app] [info ] Updated the NF profile (profile ID cdf2e275-ff1d-49e0-aa48-df2027af101f)
-[2022-02-08T16:20:11.057964] [nrf] [sbi_srv] [info ] 
+[2022-02-08T16:20:11.057964] [nrf] [sbi_srv] [info ]
 [2022-02-08T16:20:11.057985] [nrf] [sbi_srv] [info ] Got a request to update an NF instance, Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
 ...
 ```
@@ -229,28 +229,28 @@ $ docker logs oai-smf
 [2022-02-08T16:20:17.499881] [smf] [sbi_srv] [info ] NFStatusNotifyApiImpl, received a NF status notification...
 [2022-02-08T16:20:17.499897] [smf] [smf_app] [debug] Convert NotificationData (OpenAPI) to Data Notification Msg
 [2022-02-08T16:20:17.500400] [smf] [smf_app] [debug] NF instance info
-[2022-02-08T16:20:17.500411] [smf] [smf_app] [debug] 	Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
-[2022-02-08T16:20:17.500415] [smf] [smf_app] [debug] 	Instance name: OAI-UPF-VPP
-[2022-02-08T16:20:17.500418] [smf] [smf_app] [debug] 	Instance type: UPF
-[2022-02-08T16:20:17.500422] [smf] [smf_app] [debug] 	Status: REGISTERED
-[2022-02-08T16:20:17.500425] [smf] [smf_app] [debug] 	HeartBeat timer: 10
-[2022-02-08T16:20:17.500429] [smf] [smf_app] [debug] 	Priority: 1
-[2022-02-08T16:20:17.500432] [smf] [smf_app] [debug] 	Capacity: 100
-[2022-02-08T16:20:17.500436] [smf] [smf_app] [debug] 	SNSSAI:
-[2022-02-08T16:20:17.500439] [smf] [smf_app] [debug] 		 SST 123, SD 222
-[2022-02-08T16:20:17.500443] [smf] [smf_app] [debug] 	FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
-[2022-02-08T16:20:17.500446] [smf] [smf_app] [debug] 	IPv4 Addr:
-[2022-02-08T16:20:17.500451] [smf] [smf_app] [debug] 		 192.168.70.202
-[2022-02-08T16:20:17.500454] [smf] [smf_app] [debug] 	UPF Info:
-[2022-02-08T16:20:17.500459] [smf] [smf_app] [debug] 		Parameters supported by the UPF:
-[2022-02-08T16:20:17.500463] [smf] [smf_app] [debug] 			SNSSAI (SST 123, SD 222)
-[2022-02-08T16:20:17.500468] [smf] [smf_app] [debug] 			DNN default
-[2022-02-08T16:20:17.500474] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N3, Network Instance access.oai.org, EndpointFqdn: access.oai.org
-[2022-02-08T16:20:17.500480] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
-[2022-02-08T16:20:17.500484] [smf] [smf_app] [debug] 						 192.168.72.134
-[2022-02-08T16:20:17.500489] [smf] [smf_app] [debug] 		INTERFACE UPF Info List, Interface Type : N6, Network Instance core.oai.org, EndpointFqdn: core.oai.org
-[2022-02-08T16:20:17.500494] [smf] [smf_app] [debug] 			INTERFACE UPF Info List, IPv4 Addr:
-[2022-02-08T16:20:17.500498] [smf] [smf_app] [debug] 						 192.168.70.134
+[2022-02-08T16:20:17.500411] [smf] [smf_app] [debug]    Instance ID: cdf2e275-ff1d-49e0-aa48-df2027af101f
+[2022-02-08T16:20:17.500415] [smf] [smf_app] [debug]    Instance name: OAI-UPF-VPP
+[2022-02-08T16:20:17.500418] [smf] [smf_app] [debug]    Instance type: UPF
+[2022-02-08T16:20:17.500422] [smf] [smf_app] [debug]    Status: REGISTERED
+[2022-02-08T16:20:17.500425] [smf] [smf_app] [debug]    HeartBeat timer: 10
+[2022-02-08T16:20:17.500429] [smf] [smf_app] [debug]    Priority: 1
+[2022-02-08T16:20:17.500432] [smf] [smf_app] [debug]    Capacity: 100
+[2022-02-08T16:20:17.500436] [smf] [smf_app] [debug]    SNSSAI:
+[2022-02-08T16:20:17.500439] [smf] [smf_app] [debug]         SST 123, SD 222
+[2022-02-08T16:20:17.500443] [smf] [smf_app] [debug]    FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
+[2022-02-08T16:20:17.500446] [smf] [smf_app] [debug]    IPv4 Addr:
+[2022-02-08T16:20:17.500451] [smf] [smf_app] [debug]         192.168.70.202
+[2022-02-08T16:20:17.500454] [smf] [smf_app] [debug]    UPF Info:
+[2022-02-08T16:20:17.500459] [smf] [smf_app] [debug]        Parameters supported by the UPF:
+[2022-02-08T16:20:17.500463] [smf] [smf_app] [debug]            SNSSAI (SST 123, SD 222)
+[2022-02-08T16:20:17.500468] [smf] [smf_app] [debug]            DNN default
+[2022-02-08T16:20:17.500474] [smf] [smf_app] [debug]        INTERFACE UPF Info List, Interface Type : N3, Network Instance access.oai.org, EndpointFqdn: access.oai.org
+[2022-02-08T16:20:17.500480] [smf] [smf_app] [debug]            INTERFACE UPF Info List, IPv4 Addr:
+[2022-02-08T16:20:17.500484] [smf] [smf_app] [debug]                         192.168.72.134
+[2022-02-08T16:20:17.500489] [smf] [smf_app] [debug]        INTERFACE UPF Info List, Interface Type : N6, Network Instance core.oai.org, EndpointFqdn: core.oai.org
+[2022-02-08T16:20:17.500494] [smf] [smf_app] [debug]            INTERFACE UPF Info List, IPv4 Addr:
+[2022-02-08T16:20:17.500498] [smf] [smf_app] [debug]                         192.168.70.134
 [2022-02-08T16:20:17.500559] [smf] [smf_app] [info ] Handle a NF status notification from NRF (HTTP version 1)
 [2022-02-08T16:20:17.500587] [smf] [smf_app] [debug] Add a new UPF node, Ipv4 Addr 192.168.70.202
 [2022-02-08T16:20:17.501350] [smf] [smf_app] [debug] Got response with HTTP code  201!
@@ -260,13 +260,13 @@ $ docker logs oai-smf
 [2022-02-08T16:20:17.510649] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org
 [2022-02-08T16:20:17.511111] [smf] [smf_app] [info ] Node ID Type FQDN: gw1.vppupf.node.5gcn.mnc95.mcc208.3gppnetwork.org, IPv4 Addr: 192.168.70.202
 [2022-02-08T16:20:17.511213] [smf] [smf_app] [debug] NF instance info
-[2022-02-08T16:20:17.511221] [smf] [smf_app] [debug] 	Instance ID: 
-[2022-02-08T16:20:17.511225] [smf] [smf_app] [debug] 	Instance name: 
-[2022-02-08T16:20:17.511228] [smf] [smf_app] [debug] 	Instance type: UPF
-[2022-02-08T16:20:17.511231] [smf] [smf_app] [debug] 	Status: 
-[2022-02-08T16:20:17.511235] [smf] [smf_app] [debug] 	HeartBeat timer: 0
-[2022-02-08T16:20:17.511238] [smf] [smf_app] [debug] 	Priority: 0
-[2022-02-08T16:20:17.511241] [smf] [smf_app] [debug] 	Capacity: 0
+[2022-02-08T16:20:17.511221] [smf] [smf_app] [debug]    Instance ID:
+[2022-02-08T16:20:17.511225] [smf] [smf_app] [debug]    Instance name:
+[2022-02-08T16:20:17.511228] [smf] [smf_app] [debug]    Instance type: UPF
+[2022-02-08T16:20:17.511231] [smf] [smf_app] [debug]    Status:
+[2022-02-08T16:20:17.511235] [smf] [smf_app] [debug]    HeartBeat timer: 0
+[2022-02-08T16:20:17.511238] [smf] [smf_app] [debug]    Priority: 0
+[2022-02-08T16:20:17.511241] [smf] [smf_app] [debug]    Capacity: 0
 ...
 ```
 
@@ -274,7 +274,7 @@ $ docker logs oai-smf
 
 ### 6.1. Test with Gnbsim
 
-In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/master/docs/DEPLOY_SA5G_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
+In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](./DEPLOY_SA5G_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
 Launch gnbsim instance:
 
 ``` shell
@@ -294,10 +294,10 @@ Make sure Gnbsim service is healthy:
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml ps -a
    Name                 Command                  State       Ports
 ------------------------------------------------------------------
-gnbsim-vpp   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)        
+gnbsim-vpp   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)
 ```
 
-After successfull registration of UE, we can perform traffic test
+After successful registration of UE, we can perform traffic test
 ``` console
 docker-compose-host $: docker exec gnbsim-vpp ping -c 3 -I 12.1.1.2 google.com
 PING google.com (172.217.18.238) from 12.1.1.2 : 56(84) bytes of data.
@@ -353,18 +353,18 @@ The SMF receives regularly N4 messages like this one:
 
 ``` console
 [2022-04-08T11:27:46.540271] [smf] [smf_n4 ] [info ] Received N4 SESSION REPORT REQUEST from an UPF
-[2022-04-08T11:27:46.540357] [smf] [smf_app] [info ] 		 SEID            -> 1
-[2022-04-08T11:27:46.540378] [smf] [smf_app] [info ] 		 UR-SEQN         -> 4
-[2022-04-08T11:27:46.540384] [smf] [smf_app] [info ] 		 Duration        -> 10
-[2022-04-08T11:27:46.540389] [smf] [smf_app] [info ] 		 NoP    Total    -> 2
-[2022-04-08T11:27:46.540394] [smf] [smf_app] [info ] 		        Uplink   -> 1
-[2022-04-08T11:27:46.540399] [smf] [smf_app] [info ] 		        Downlink -> 1
-[2022-04-08T11:27:46.540404] [smf] [smf_app] [info ] 		 Volume Total    -> 168
-[2022-04-08T11:27:46.540409] [smf] [smf_app] [info ] 		        Uplink   -> 84
-[2022-04-08T11:27:46.540423] [smf] [smf_app] [info ] 		        Downlink -> 84
+[2022-04-08T11:27:46.540357] [smf] [smf_app] [info ]         SEID            -> 1
+[2022-04-08T11:27:46.540378] [smf] [smf_app] [info ]         UR-SEQN         -> 4
+[2022-04-08T11:27:46.540384] [smf] [smf_app] [info ]         Duration        -> 10
+[2022-04-08T11:27:46.540389] [smf] [smf_app] [info ]         NoP    Total    -> 2
+[2022-04-08T11:27:46.540394] [smf] [smf_app] [info ]                Uplink   -> 1
+[2022-04-08T11:27:46.540399] [smf] [smf_app] [info ]                Downlink -> 1
+[2022-04-08T11:27:46.540404] [smf] [smf_app] [info ]         Volume Total    -> 168
+[2022-04-08T11:27:46.540409] [smf] [smf_app] [info ]                Uplink   -> 84
+[2022-04-08T11:27:46.540423] [smf] [smf_app] [info ]                Downlink -> 84
 ```
 
-Let's create a bigger traffic:
+Let's create bigger traffic:
 
 ``` shell
 docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.2 -c40 -i0.1 -s500
@@ -381,7 +381,7 @@ Received 9 N4 SESSION REPORT REQUESTS from an UPF
 -     UL Volume            : 21792 bytes
 ```
 
-Now create an asymmetrical traffic with iperf3 in Downlink:
+Now create asymmetrical traffic with iperf3 in Downlink:
 
 ``` shell
 docker-compose-host $: docker exec -d gnbsim-vpp /bin/bash -c "nohup iperf3 -B 12.1.1.2 -s -i 1 > /tmp/iperf-server-dl.log 2>&1"
@@ -491,17 +491,15 @@ If you replicate then your log files and pcap file will be present in `/tmp/oai/
 
 ## 9. Notes
 
-- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly. 
+- Generally, in a COTS UE two PDN sessions are created by default so configure the IMS in SMF properly.
 - In case you want to deploy debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
-- It is not necessary to use [core-network.py](../docker-compose/core-network.py) bash script, it is possible to directly deploy using `docker-compose` command
-- In case you are interested to use HTTP V2 for SBI between the network functions instead of HTTP V1 then you have to use docker-compose [docker-compose-basic-vpp-nrf-http2.yaml](../docker-compose/docker-compose-basic-vpp-nrf-http2.yaml).
+- It is not necessary to use [core-network.py](../docker-compose/core-network.py) Python script, it is possible to directly deploy using `docker-compose` command
+- In case you are interested in using HTTP V2 for SBI between the network functions instead of HTTP V1, then you have to use docker-compose [docker-compose-basic-vpp-nrf-http2.yaml](../docker-compose/docker-compose-basic-vpp-nrf-http2.yaml).
 ``` console
-#To start the containers 
+#To start the containers
 docker-compose-host $: docker-compose -f <file-name> up -d
 #To check their health status and wait till the time they are healthy, you ctrl + c to exit watch command
 docker-compose-host $: watch docker-compose -f <file-name> ps -a
 #To stop the containers with zero graceful period
 docker-compose-host $: docker-compose -f <file-name> down -t 0
 ```
-
-
