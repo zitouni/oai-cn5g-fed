@@ -192,7 +192,7 @@ $ sudo podman build --target oai-amf --tag oai-amf:v1.4.0 \
 ...
 ```
 
-The above command is with podman, in case you use docker it can be changed with its docker equivalent.
+The above command is with podman, in case you use docker, it can be changed with its docker equivalent.
 
 
 # 4. Build SMF Image #
