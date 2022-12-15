@@ -12,7 +12,7 @@ Please refer to the steps described on our website: [How to contribute to OAI](h
 4. The policies are described in these wiki pages: [OAI Policies](https://gitlab.eurecom.fr/oai/openairinterface5g/wikis/oai-policies-home)
    - You can fork onto another hosting system. But we will **NOT** accept a pull request from a forked repository.
       * This decision was made for licensing reasons.
-      * The Continuous Integration team will reject your pull request.
+      * The Continuous Integration automatic process will reject your pull request.
    - All pull requests SHALL have **`develop`** branch as target branch.
 
 ## Coding Styles ##
