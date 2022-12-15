@@ -283,8 +283,6 @@ services:
             interval: 10s
             timeout: 5s
             retries: 5
-        depends_on:
-            - vpp-upf
         networks:
             public_net_core:
                 ipv4_address: 192.168.73.135
