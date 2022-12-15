@@ -432,6 +432,14 @@ docker-compose-host $: docker exec gnbsim-vpp wget --bind-address=12.1.1.2 https
 
 ## 7. Recover the logs
 
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-nrf.yaml stop -t 2
+```
+-->
+
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/vpp-upf-gnbsim/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/vpp-upf-gnbsim/smf.log 2>&1

@@ -301,6 +301,14 @@ rtt min/avg/max/mdev = 11.206/25.511/40.071/14.292 ms
 
 ## 9. Analyzing Scenario Results
 
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-slicing-ransim.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml stop -t 2
+```
+-->
+
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/slicing-with-nssf/amf.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/slicing-with-nssf/ausf.log 2>&1

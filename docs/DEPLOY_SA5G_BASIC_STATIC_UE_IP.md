@@ -227,6 +227,14 @@ rtt min/avg/max/mdev = 0.297/0.673/0.849/0.223 ms
 
 ## 6. Log Collection
 
+<!---
+For CI purposes please ignore these lines
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-basic-nrf.yaml stop -t 2
+```
+-->
+
 - **Stop PCAP collection**: Stop the wireshark or tshark process on the docker-compose-host.
 
 ``` console
