@@ -209,9 +209,6 @@ pipeline {
             run_slicing_w_nssf = false
           }
 
-          // Prepare workspace
-          sh './scripts/syncComponents.sh --spgwu-tiny-branch ' + spgwuBranch
-
           // On Ubuntu servers, we shall pull from private local registry
           if ((cn_ci_host == 'selfix') || (cn_ci_host == 'orion')) {
             // Login
@@ -219,7 +216,7 @@ pipeline {
             // SPGWU
             if ((spgwuTag == 'develop') && (spgwuBranch == 'develop')) {
               spgwuTag = sh returnStdout: true, script: './ci-scripts/retrieveLatestTagOnPrivateRepo.py --repo-name oai-spgwu-tiny'
-              spgwuTag.trim()
+              spgwuTag = spgwuTag.trim()
               echo "SPGWU_TAG will be ${spgwuTag}"
             }
             sh 'docker pull selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
