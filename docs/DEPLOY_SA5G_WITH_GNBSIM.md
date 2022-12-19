@@ -404,7 +404,17 @@ PING 12.1.1.6 (12.1.1.6) 56(84) bytes of data.
 rtt min/avg/max/mdev = 0.346/0.461/0.577/0.117 ms
 ```
 
+### 9.1. Recover the logs
+
 Let recover one last time the logs:
+
+<!---
+For CI purposes please ignore these lines
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-mini-nrf.yaml stop -t 2
+```
+-->
 
 ``` shell
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/mini-gnbsim/nrf.log 2>&1

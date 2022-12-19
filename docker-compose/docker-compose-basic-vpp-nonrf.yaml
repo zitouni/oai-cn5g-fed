@@ -252,13 +252,12 @@ services:
     oai-ext-dn:
         image: trf-gen-cn5g:latest
         privileged: true
+        init: true
         container_name: "oai-ext-dn"
         entrypoint: /bin/bash -c \
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
-              "ip route add 12.1.1.0/24 via 192.168.73.201 dev eth0; sleep infinity"
-        command: ["/bin/bash", "-c", "trap : TERM INT; sleep infinity & wait"]
-        depends_on:
-            - vpp-upf
+              "ip route add 12.1.1.0/24 via 192.168.73.201 dev eth0; ip route; sleep infinity"
+        command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]
         healthcheck:
             test: /bin/bash -c "iptables -L -t nat | grep MASQUERADE"
             interval: 10s
