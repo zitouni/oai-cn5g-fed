@@ -25,15 +25,17 @@ This page content expects you to read [deployment pre-requisites](./DEPLOY_PRE_R
 
 # 1. Building images in debug mode
 
-By default all the dockerfiles present in any network function repository (AMF, SMF, NRF, UPF, UDR, UDM, AUSF) are built in the `release` mode. In the `release` mode the logging information is limited. This is done to reduce the image size and have better performance. In the beginning, when a user is trying to understand the functioning of core network it is recommended to build the images in `debug mode`. This way user will have more logs and can have better understanding. To build any core network image in debug mode, follow the steps below **after cloning the network function repository**, the example is for AMF,
+By default all the dockerfiles present in any network function repository (AMF, SMF, NRF, UPF, UDR, UDM, AUSF) produce `info` level logs. This is done to reduce the image size and have a better performance. If a user wants debug information to get more logs then make below changes in `dockerfile` of any network function.
+
+This way user will have more logs and can have better understanding. To build any core network image in debug mode follow the below steps **after cloning the network function repository**, the example is for AMF, 
 
 ```bash
-# clone amf repository
+# clone amf repository 
 $ git clone -b <prefered_branch or develop> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf.git
 $ cd oai-cn5g-amf/docker/
 # Depending on the environment where the image will be used choose the correct dockerfile
-$ vi/vim/nano/subl Dockerfile.amf.ubuntu18
-# replace the line RUN ./build_amf --clean --Verbose --build-type Release --jobs with
+$ vi/vim/nano/subl Dockerfile.amf.ubuntu
+# replace the line RUN ./build_amf --clean --Verbose --build-type Release --jobs with below 
 # RUN ./build_amf --clean --Verbose --build-type Debug --jobs
 ```
 
@@ -49,7 +51,7 @@ The example below is only for AMF, you need to repeat it for all network functio
 
 ``` bash
 $: git clone -b <prefered_branch or develop> https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf.git
-$: docker build -f oai-cn5g-amf/docker/Dockerfile.amf.ubuntu18 --target oai-amf-builder --tag oai-amf-builder:develop --no-cache oai-cn5g-amf/
+$: docker build -f oai-cn5g-amf/docker/Dockerfile.amf.ubuntu --target oai-amf-builder --tag oai-amf-builder:develop --no-cache oai-cn5g-amf/
 ```
 
 This will build your image and later you can use this image with the command below,
