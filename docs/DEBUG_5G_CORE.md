@@ -188,7 +188,7 @@ services:
                 ipv4_address: 192.168.70.130
     mysql:
         container_name: mysql
-        image: mysql:5.7
+        image: mysql:8.0
         restart: always
         volumes:
             - ./oai_db.sql:/docker-entrypoint-initdb.d/oai_db.sql

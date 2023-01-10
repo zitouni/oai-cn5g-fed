@@ -44,7 +44,7 @@ OAI [official docker-hub repository](https://hub.docker.com/u/oaisoftwareallianc
 You can copy the below lines in a shell script and use it to pull the images or just pull it the way you want and re-tag if you want. By default, we are pulling develop images.
 
 ```shell
-docker pull mysql:5.7
+docker pull mysql:8.0
 docker pull oaisoftwarealliance/oai-amf:develop
 docker pull oaisoftwarealliance/oai-smf:develop
 docker pull oaisoftwarealliance/oai-nrf:develop
