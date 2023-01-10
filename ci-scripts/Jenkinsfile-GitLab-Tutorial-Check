@@ -203,14 +203,11 @@ pipeline {
             sh "git clean -x -d -f > /dev/null 2>&1"
             sh "mkdir -p archives"
             // For dev purpose, make it fast
-            //run_mini_gnbsim = true
-            //run_static_ue_ip = false
-            //run_vpp_upf = false
-            //run_slicing_w_nssf = false
+            run_mini_gnbsim = true
+            run_static_ue_ip = false
+            run_vpp_upf = false
+            run_slicing_w_nssf = false
           }
-
-          // Prepare workspace
-          sh './scripts/syncComponents.sh --spgwu-tiny-branch ' + spgwuBranch
 
           // On Ubuntu servers, we shall pull from private local registry
           if ((cn_ci_host == 'selfix') || (cn_ci_host == 'orion')) {
@@ -218,12 +215,9 @@ pipeline {
             sh 'docker login -u oaicicd -p oaicicd selfix.sboai.cs.eurecom.fr > /dev/null 2>&1'
             // SPGWU
             if ((spgwuTag == 'develop') && (spgwuBranch == 'develop')) {
-              dir ('component/oai-upf-equivalent') {
-                shortenShaOne = sh returnStdout: true, script: 'git log -1 --pretty=format:"%h"'
-                shortenShaOne.trim()
-                spgwuTag = 'develop-' + shortenShaOne
-                echo "SPGWU_TAG will be ${spgwuTag}"
-              }
+              spgwuTag = sh returnStdout: true, script: './ci-scripts/retrieveLatestTagOnPrivateRepo.py --repo-name oai-spgwu-tiny'
+              spgwuTag = spgwuTag.trim()
+              echo "SPGWU_TAG will be ${spgwuTag}"
             }
             sh 'docker pull selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag
             sh 'docker image tag selfix.sboai.cs.eurecom.fr/oai-spgwu-tiny:' + spgwuTag + ' oai-spgwu-tiny:' + spgwuTag
