@@ -172,7 +172,7 @@ OR
 * Build `omec-gnbsim` docker image
 ``` console
 docker-compose-host $: git clone https://github.com/omec-project/gnbsim.git
-docker-compose-host $: cd gnbsim/
+docker-compose-host $: cd gnbsim/ && git checkout 1caccfcaac9b718d987aff378212614e4fe634fb
 docker-compose-host $: go build
 docker-compose-host $: make docker-build
 ```
