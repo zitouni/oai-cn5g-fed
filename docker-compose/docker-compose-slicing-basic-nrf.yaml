@@ -298,7 +298,7 @@ services:
             - TYPE0=IPv4
             - DNN_RANGE0=12.1.1.129 - 12.1.1.224
             - NSSAI_SST0=1
-            - NSSAI_SD0=0
+            - NSSAI_SD0=12
             - SESSION_AMBR_UL0=200Mbps
             - SESSION_AMBR_DL0=400Mbps
         depends_on:
@@ -425,7 +425,7 @@ services:
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai_nrf_slice12
             - NSSAI_SST_0=1
-            - NSSAI_SD_0=0
+            - NSSAI_SD_0=12
             - DNN_0=oai
         depends_on:
             - oai_nrf_slice12
