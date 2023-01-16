@@ -49,6 +49,8 @@ def nssfBranch = params.nssfBranch
 def upfVppTag = params.upfVppTag
 def upfVppBranch = params.upfVppTag
 
+def ranTag = params.ranTag
+
 // means to shorten the pipeline
 def run_mini_gnbsim = true
 def run_static_ue_ip = true
@@ -297,7 +299,7 @@ pipeline {
       when { expression {run_mini_gnbsim} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -320,7 +322,7 @@ pipeline {
       when { expression {run_static_ue_ip} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -343,7 +345,7 @@ pipeline {
       when { expression {run_vpp_upf} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -366,7 +368,7 @@ pipeline {
       when { expression {run_slicing_w_nssf} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-slicing-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag)
+          updateDockerCompose('docker-compose/docker-compose-slicing-basic-nrf.yaml', amfTag, nrfTag, smfTag, spgwuTag, ausfTag, udmTag, udrTag, nssfTag, upfVppTag, ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -403,7 +405,7 @@ pipeline {
   }
 }
 
-def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag) {
+def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag, lRanTag) {
   sh 'sed -i -e "s@oai-amf:v1.4.0@oai-amf:' + lAmfTag + '@" ' + filename
   sh 'sed -i -e "s@oai-nrf:v1.4.0@oai-nrf:' + lNrfTag + '@" ' + filename
   sh 'sed -i -e "s@oai-smf:v1.4.0@oai-smf:' + lSmfTag + '@" ' + filename
@@ -415,6 +417,9 @@ def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag
   sh 'sed -i -e "s@oai-upf-vpp:v1.4.0@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
   // Using the develop variant of gnbsim
   sh 'sed -i -e "s@gnbsim:latest@gnbsim:develop@" docker-compose/docker-compose-gnbsim*.y*ml docker-compose/docker-compose*ransim.y*ml'
+  // Using a dedicated version of the OAI RAN images
+  sh 'sed -i -e "s@oai-gnb:develop@oai-gnb:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
+  sh 'sed -i -e "s@oai-nr-ue:develop@oai-nr-ue:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
 }
 
 def archivesArtifacts(filename,folder) {
