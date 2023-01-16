@@ -26,6 +26,7 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
     - [Using Docker-Compose, perform a `minimalist` deployment and test with `gnbsim`](./DEPLOY_SA5G_WITH_GNBSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `UERANSIM`](./DEPLOY_SA5G_WITH_UERANSIM.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `My5g-RANTester`](./DEPLOY_SA5G_WITH_My5g-RANTester.md)
+    - [Using Docker-Compose, perform a `basic` deployment and test with `omec-gnbsim`](./DEPLOY_SA5G_WITH_OMEC_GNBSIM.md)
     - [Using Docker-Compose, when testing with Commercial UE, troubleshoot traffic issues](./TROUBLESHOOT_COTS_UE_TRAFFIC.md)
 - The Developers Corner
     - [How to Deploy Developers Core Network and Basic Debugging](./DEBUG_5G_CORE.md)
