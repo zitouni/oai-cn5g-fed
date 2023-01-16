@@ -243,9 +243,17 @@ services:
             - NRF_FQDN=oai_nrf_slice12
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
+            - DISCOVER_PCF=no
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
+            - USE_LOCAL_PCC_RULES=yes
             - USE_FQDN_DNS=yes
+            - DNN_NI0=default
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.2.1.2 - 12.2.1.128
             - NSSAI_SST0=128
             - NSSAI_SD0=128
+            - SESSION_AMBR_UL0=50Mbps
+            - SESSION_AMBR_DL0=100Mbps
         depends_on:
             - oai_amf
             - oai_nrf_slice12
@@ -282,9 +290,17 @@ services:
             - NRF_FQDN=oai_nrf_slice12
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
+            - DISCOVER_PCF=no
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
+            - USE_LOCAL_PCC_RULES=yes
             - USE_FQDN_DNS=yes
-            - NSSAI_SST1=1
-            - NSSAI_SD1=0
+            - DNN_NI0=oai
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.1.1.129 - 12.1.1.224
+            - NSSAI_SST0=1
+            - NSSAI_SD0=12
+            - SESSION_AMBR_UL0=200Mbps
+            - SESSION_AMBR_DL0=400Mbps
         depends_on:
             - oai_amf
             - oai_nrf_slice12
@@ -322,9 +338,17 @@ services:
             - USE_NETWORK_INSTANCE=yes
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
+            - DISCOVER_PCF=no
+            - USE_LOCAL_SUBSCRIPTION_INFO=yes
+            - USE_LOCAL_PCC_RULES=yes
             - USE_FQDN_DNS=yes
-            - NSSAI_SST1=130
-            - NSSAI_SD1=130
+            - DNN_NI0=oai.ipv4
+            - TYPE0=IPv4
+            - DNN_RANGE0=12.1.1.2 - 12.1.1.128
+            - NSSAI_SST0=130
+            - NSSAI_SD0=130
+            - SESSION_AMBR_UL0=100Mbps
+            - SESSION_AMBR_DL0=200Mbps
         depends_on:
             - oai_amf
             - oai_nrf_slice3
@@ -401,7 +425,7 @@ services:
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai_nrf_slice12
             - NSSAI_SST_0=1
-            - NSSAI_SD_0=0
+            - NSSAI_SD_0=12
             - DNN_0=oai
         depends_on:
             - oai_nrf_slice12
