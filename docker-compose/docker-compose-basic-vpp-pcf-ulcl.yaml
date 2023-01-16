@@ -186,7 +186,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:edge_computing
+        image: oai-smf:v1.5.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -270,7 +270,7 @@ services:
                 ipv4_address: 192.168.70.139
 
     vpp-upf-ulcl:
-        image: oai-upf-vpp:edge_computing
+        image: oai-upf-vpp:v1.5.0
         privileged: true
         container_name: "vpp-upf-ulcl"
         environment:
@@ -321,7 +321,7 @@ services:
                 ipv4_address: 192.168.74.151
 
     vpp-upf-aupf1:
-        image: oai-upf-vpp:edge_computing
+        image: oai-upf-vpp:v1.5.0
         privileged: true
         container_name: "vpp-upf-aupf1"
         environment:
@@ -367,7 +367,7 @@ services:
                 ipv4_address: 192.168.75.152
 
     vpp-upf-aupf2:
-        image: oai-upf-vpp:edge_computing
+        image: oai-upf-vpp:v1.5.0
         privileged: true
         container_name: "vpp-upf-aupf2"
         environment:
