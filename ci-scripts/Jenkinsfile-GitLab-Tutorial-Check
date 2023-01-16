@@ -204,9 +204,9 @@ pipeline {
             sh "mkdir -p archives"
             // For dev purpose, make it fast
             run_mini_gnbsim = true
-            run_static_ue_ip = false
-            run_vpp_upf = false
-            run_slicing_w_nssf = false
+            run_static_ue_ip = true
+            run_vpp_upf = true
+            run_slicing_w_nssf = true
           }
 
           // On Ubuntu servers, we shall pull from private local registry
