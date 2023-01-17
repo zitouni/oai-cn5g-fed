@@ -62,14 +62,13 @@ services:
             MNC: '95'
             MNC_LENGTH: 2
             NSSAI_SST: 1
-            NSSAI_SD0: 0
-            NSSAI_SD1: 112233
             AMF_IP_ADDRESS: 192.168.70.138
             GNB_NGA_IF_NAME: eth0
             GNB_NGA_IP_ADDRESS: 192.168.70.153
             GNB_NGU_IF_NAME: eth0
             GNB_NGU_IP_ADDRESS: 192.168.70.153
-            USE_ADDITIONAL_OPTIONS: --sa -E --rfsim
+            SDR_ADDRS: serial=XXXXXXX
+            USE_ADDITIONAL_OPTIONS: --sa -E --rfsim --log_config.global_log_options level,nocolor,time
         networks:
             public_net:
                 ipv4_address: 192.168.70.153
@@ -89,8 +88,7 @@ services:
             OPC: '63bfa50ee6523365ff14c1f45f88737d'
             DNN: oai
             NSSAI_SST: 1
-            NSSAI_SD: 12
-            USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod
+            USE_ADDITIONAL_OPTIONS: -E --sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time
         depends_on:
             - oai-gnb
         networks:
