@@ -52,7 +52,9 @@ Go to [docker-hub](https://hub.docker.com/) and create an account.
 
 # 3. Pull base images #
 
-* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql:5.7`
+* Ubuntu  version: We need 2 base images: `ubuntu:bionic` and `mysql/mysql:8.0`
+
+At the time of writing, the tested mysql version was 8.0.31
 
 Currently we are working to support `CentOS8` and `RHEL8` distributions.
 
@@ -69,7 +71,7 @@ On a Ubuntu18.04 host:
 
 ```bash
 $ docker pull ubuntu:bionic
-$ docker pull mysql:5.7
+$ docker pull mysql:8.0
 ```
 
 Finally you may logoff --> your token is stored in plain text..
