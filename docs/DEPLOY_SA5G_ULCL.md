@@ -462,40 +462,55 @@ column.
 
 The results of this tutorial are located in [results/ulcl](results/ulcl). 
 
-First, we open the [user_plane_ulcl.pcap](results/ulcl/user_plane_ulcl.pcap) file and sort based on time. 
+First, we open the [user_plane_ulcl.pcapng](results/ulcl/user_plane_ulcl.pcapng) file and sort based on time. 
 
-We see that each ICMP request to 1.1.1.2 has four packets. The first is from the gNB to the UL CL, the second is from the
-ULCL to the A-UPF2, the third is from A-UPF2 to EXT-DN-Edge. The last packet is from the EXT-DN-Edge to the Internet.
+We see that each ICMP request to `1.1.1.2` has four packets. The first packet #7 is from the gNB to the UL CL, the second (#1) is from the
+ULCL to the A-UPF2, the third (#2) is from A-UPF2 to EXT-DN-Edge. The last packet (#4) is from the EXT-DN-Edge to the Internet.
 We see that here NAT is applied and the UE source IP `12.1.1.2` is replaced with `192.168.76.160`, the IP address of the 
 EXT-DN-Edge. The same happens for the ICMP reply, but in the other direction.
 
-It is interesting to check the first IP layer and the GTP layer. Here, we see based on the source and destination IP addresses
-that the packet is indeed following the expected route.
+It is interesting to check the first IP layer and the GTP layer in packets #1 and #2. In number #1 we see that the source IP is `192.168.70.201` (UL CL) and the destination IP is 
+`192.168.74.203`, which is the A-UPF2 or edge UPF. We see that the configured policies route traffic to `1.1.1.2` to the edge DN.
 
-When we analyze the ICMP request to 1.1.1.1., we can see that the path from the gNB to the UL CL is the same. After that, 
+When we analyze the ICMP request to `1.1.1.1` (starting at packet #39), we can see that the path from the gNB to the UL CL is the same in packet #39. After that in packet #37, 
 however, the packets are routed via the A-UPF1 (`192.168.73.202`). Therefore, the EXT-DN-Internet is used and NAT is done 
-with the IP address `192.168.75.160`.
+with the IP address `192.168.75.160` in packet #35.
+
+Please note that the packets are out of order in these examples and you have to sort based on time to follow the flow correctly.
 
 ### Edge Only Scenario
 
-We open the `user_plane_edge_only.pcap` file and apply the same filter and sorting.
+We open the [user_plane_edge_only.pcapng](results/ulcl/user_plane_edge_only.pcapng) file and sort again based on time.
 
-We see that the ICMP traffic to 1.1.1.2 follows the edge route, as in the previous example. The difference is that
-other ICMP traffic is routed over the edge as well. In fact, all traffic is routed there, as it is defined in the
-PCC rules.
+We see that the ICMP traffic to `1.1.1.2` follows the edge route, as in the previous example (Packets #1, #7, #3, #4). The difference is that the ICMP traffic to `1.1.1.1` also follows the edge route.
+You can see this in packets #33, #35, #37 and #38. In fact, all traffic is routed there, as it is defined in the PCC rules.
 
 ### Internet Only Scenario
 
 We open the `user_plane_internet_only.pcap` file and apply the same filter and sorting.
 
 This scenario is the opposite of the edge-only scenario. We can see that all the traffic is routed to A-UPF1 and the
-EXT-DN-Internet. 
+EXT-DN-Internet. You can check the packets #1, #4, #3# and #6 to see that the A-UPF1's IP address `192.168.73.202` is used for the GTP tunnel in packet #4.
+It is also used for the ping to `1.1.1.1` in packet #33. 
 
 ## 10 Undeploy Network Functions
 
-When you are done, you can undeploy the gnbsim instances and all the NFs.
+When you are done, you can undeploy the gnbsim instances and stop the NFs. 
 
-Before doing that, we collect the logs:
+First, we stop the gnbsim instances:
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml stop -t 2
+```
+
+Then, we stop the NFs. 
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-ulcl.yaml stop -t 2
+```
+
+Now we are able to collect the logs.
 
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/ulcl-scenario/amf.log 2>&1
@@ -512,18 +527,12 @@ docker-compose-host $: docker logs gnbsim-vpp2 > /tmp/oai/ulcl-scenario/gnbsim-v
 docker-compose-host $: docker logs gnbsim-vpp3 > /tmp/oai/ulcl-scenario/gnbsim-vpp3.log 2>&1
 ```
 
-
-
-First, we shut down the gnbsims:
-``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml down
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down
-```
-
-Finally, we can undeploy the 5GCN NFs:
+Finally, we undeploy the gnbsims and NFs to clean up the Docker networks.
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-ulcl.yaml down
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml down -t 2
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down -t 2
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-ulcl.yaml down -t 2
 ```
 
 ## 11 Conclusion
