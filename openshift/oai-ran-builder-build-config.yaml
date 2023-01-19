@@ -55,7 +55,7 @@ spec:
             dockerfilePath: "docker/Dockerfile.build.rhel8.2"
             from:
                kind: ImageStreamTag          
-               namespace: oai5g              
+               namespace: oai-tutorial
                name: oai-ran-base:develop        
     output:
         to:
