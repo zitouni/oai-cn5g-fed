@@ -20,6 +20,7 @@ For more information about the OpenAirInterface (OAI) Software Alliance:
 
 ------------------------------------------------------------------------------
 """
+#/usr/bin/python3
 
 from subprocess import PIPE,STDOUT
 import time
@@ -107,8 +108,9 @@ def execute_shell_command(h2_blocks):
             commands = re.findall(r"\$: (.*)",block)
             for command in commands:
                 logging.info('\033[0;31m Executing command "{}"\033[0m'.format(command))
-                for output in subprocess_call(command=command, cwd=DOCKER_COMPOSE_DIRECTORY):
-                    print(output)
+                print(command)
+                # for output in subprocess_call(command=command, cwd=DOCKER_COMPOSE_DIRECTORY):
+                #     print(output)
                 time.sleep(SLEEP_BETWEEN_COMMANDS)
             time.sleep(SLEEP_BETWEEN_HEADERS)
 

@@ -21,7 +21,7 @@
 
 ## 0. Pre-requisites
 
-We assume that there is already a project name `oai5g` in case there is no project like that then create a new project `oc new-project oai5g`. 
+We assume that there is already a project name `oai-tutorial` in case there is no project like that then create a new project `oc new-project oai-tutorial`. 
 
 Also you need to create configmaps and secrets because that is needed for creating the images of the network functions. In the future we will try to avoid using the entitlements. Run below commands from a RHEL8 host machine which have access to openshift cluster,
 
@@ -93,6 +93,14 @@ $: oc start-build ran-build
 
 #### 2.3 Creating target gNB image
 
+NOTE: If you are using another project than `oai-tutorial` then you need to make a small change in the [build config file](./oai-gnb-build-config.yaml). Change the YOUR_PROJECT_NAME variable with your project name (oc project) 
+
+```
+$: sed -i 's/oai-tutorial/$YOUR_PROJECT_NAME/g' oai-gnb-build-config.yaml
+```
+
+If you are using the project name as `oai-tutorial` then please avoid the note. 
+
 ```
 $: oc create -f oai-gnb-build-config.yaml
 $: oc start-build oai-gnb
@@ -100,9 +108,18 @@ $: oc start-build oai-gnb
 
 #### 2.4 Creating NR-UE image
 
+**NOTE**: If you are using another project than `oai-tutorial` then you need to make a small change in the [build config file](./oai-nr-ue-build-config.yaml). Change the YOUR_PROJECT_NAME variable with your project name (oc project)
+
+```
+$: sed -i 's/oai-tutorial/$YOUR_PROJECT_NAME/g' oai-nr-ue-build-config.yaml
+```
+
+If you are using the project name as `oai-tutorial` then please avoid the note.
+
+
 ``` bash
 $: oc create -f oai-nr-ue-build-config.yaml
 $: oc start-build oai-nr-ue 
 ```
 
-You can follow [our tutorial](../docs/DEPLOY_SA5G_HC.md) on how to deploy OAI5g Core, gNB and NR-UE via [helm-charts](../charts) and helm-spray.  
+You can follow [our tutorial](../docs/DEPLOY_SA5G_HC.md) on how to deploy OAI5g Core, gNB and NR-UE via [helm-charts](../charts) and helm-spray.
