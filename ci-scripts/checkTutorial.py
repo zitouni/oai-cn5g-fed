@@ -109,8 +109,8 @@ def execute_shell_command(h2_blocks):
             for command in commands:
                 logging.info('\033[0;31m Executing command "{}"\033[0m'.format(command))
                 print(command)
-                # for output in subprocess_call(command=command, cwd=DOCKER_COMPOSE_DIRECTORY):
-                #     print(output)
+                for output in subprocess_call(command=command, cwd=DOCKER_COMPOSE_DIRECTORY):
+                    print(output)
                 time.sleep(SLEEP_BETWEEN_COMMANDS)
             time.sleep(SLEEP_BETWEEN_HEADERS)
 
