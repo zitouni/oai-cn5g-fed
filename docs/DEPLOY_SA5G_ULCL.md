@@ -278,8 +278,8 @@ For CI purposes please ignore this line
 we use 1.1.1.1 and 1.1.1.2 as it serves HTTP, so we can verify if the UL CL works properly in the generated traces 
 
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp wget --bind-address=12.1.1.2 1.1.1.1
-docker-compose-host $: docker exec gnbsim-vpp wget --bind-address=12.1.1.2 1.1.1.2
+docker-compose-host $: docker exec gnbsim-vpp wget -tries=2 --timeout=30 --bind-address=12.1.1.2 1.1.1.1
+docker-compose-host $: docker exec gnbsim-vpp wget -tries=2 --timeout=30 --bind-address=12.1.1.2 1.1.1.2
 ```
 -->
 
@@ -361,8 +361,8 @@ For CI purposes please ignore this line
 we use 1.1.1.1 and 1.1.1.2 as it serves HTTP, so we can verify if the UL CL works properly in the generated traces 
 
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp2 wget --bind-address=12.1.1.3 1.1.1.1
-docker-compose-host $: docker exec gnbsim-vpp2 wget --bind-address=12.1.1.3 1.1.1.2
+docker-compose-host $: docker exec gnbsim-vpp2 wget -tries=2 --timeout=30 --bind-address=12.1.1.3 1.1.1.1
+docker-compose-host $: docker exec gnbsim-vpp2 wget -tries=2 --timeout=30 --bind-address=12.1.1.3 1.1.1.2
 ```
 -->
 
@@ -435,8 +435,8 @@ For CI purposes please ignore this line
 we use 1.1.1.1 and 1.1.1.2 as it serves HTTP, so we can verify if the UL CL works properly in the generated traces 
 
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp3 wget --bind-address=12.1.1.4 1.1.1.1
-docker-compose-host $: docker exec gnbsim-vpp3 wget --bind-address=12.1.1.4 1.1.1.2
+docker-compose-host $: docker exec gnbsim-vpp3 wget -tries=2 --timeout=30 --bind-address=12.1.1.4 1.1.1.1
+docker-compose-host $: docker exec gnbsim-vpp3 wget -tries=2 --timeout=30 --bind-address=12.1.1.4 1.1.1.2
 ```
 -->
 

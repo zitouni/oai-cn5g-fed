@@ -37,14 +37,14 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
 | ----------- |:-------------- | ----------------------------- | ------------ | --------------|
-| AMF         | `master`      | `v1.4.0`                      | X            | X              |
-| AUSF        | `master`      | `v1.4.0`                      | X            | X              |
-| NRF         | `master`      | `v1.4.0`                      | X            | X              |
-| SMF         | `master`      | `v1.4.0`                      | X            | X              |
-| UDR         | `master`      | `v1.4.0`                      | X            | X              |
-| UDM         | `master`      | `v1.4.0`                      | X            | X              |
-| SPGWU       | `master`      | `v1.4.0`                      | X            | X              |
-| UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
+| AMF         | `master`      | `v1.5.0`                      | X            | X              |
+| AUSF        | `master`      | `v1.5.0`                      | X            | X              |
+| NRF         | `master`      | `v1.5.0`                      | X            | X              |
+| SMF         | `master`      | `v1.5.0`                      | X            | X              |
+| UDR         | `master`      | `v1.5.0`                      | X            | X              |
+| UDM         | `master`      | `v1.5.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.5.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v1.5.0`                      | X            | X              |
 
 
 <br/>

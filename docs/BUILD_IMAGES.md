@@ -30,28 +30,28 @@ We recommend to synchronize with the master branches on all git sub-modules.
 
 We also recommend that you synchronize this "tutorial" repository with a provided tag. By doing so, the `docker-compose` files will be aligned with feature sets of each cNF.
 
-**At the time of writing (30/06/2022), the release tag was `v1.4.0`.**
+**At the time of writing (19/01/2023), the release tag was `v1.5.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.4.0` |              |                 |
-| AMF         | `master`    | `v1.4.0` | X            | X               |
-| SMF         | `master`    | `v1.4.0` | X            | X               |
-| NRF         | `master`    | `v1.4.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
-| UDR         | `master`    | `v1.4.0` | X            | X               |
-| UDM         | `master`    | `v1.4.0` | X            | X               |
-| AUSF        | `master`    | `v1.4.0` | X            | X               |
-| UPF-VPP     | `master`    | `v1.4.0` | X            | X               |
-| NSSF        | `master`    | `v1.4.0` | X            | X               |
+| FED REPO    | N/A         | `v1.5.0` |              |                 |
+| AMF         | `master`    | `v1.5.0` | X            | X               |
+| SMF         | `master`    | `v1.5.0` | X            | X               |
+| NRF         | `master`    | `v1.5.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.5.0` | X            | X               |
+| UDR         | `master`    | `v1.5.0` | X            | X               |
+| UDM         | `master`    | `v1.5.0` | X            | X               |
+| AUSF        | `master`    | `v1.5.0` | X            | X               |
+| UPF-VPP     | `master`    | `v1.5.0` | X            | X               |
+| NSSF        | `master`    | `v1.5.0` | X            | X               |
 
 
 ```bash
-# Clone directly on the v1.4.0 release tag
-$ git clone --branch v1.4.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+# Clone directly on the v1.5.0 release tag
+$ git clone --branch v1.5.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
-# If you forgot to clone directly to the v1.4.0 release tag
-$ git checkout -f v1.4.0
+# If you forgot to clone directly to the v1.5.0 release tag
+$ git checkout -f v1.5.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
@@ -65,30 +65,8 @@ OAI-UDM     component branch : master
 OAI-UDR     component branch : master
 OAI-UPF-VPP component branch : master
 OAI-NSSF    component branch : master
----------------------------------------------------------
-git submodule deinit --all --force
-git submodule init
-git submodule update
-```
-
-or a little bit more dangerous
-
-```bash
-$ ./scripts/syncComponents.sh --nrf-branch v1.4.0 --amf-branch v1.4.0 \
-                              --smf-branch v1.4.0 --spgwu-tiny-branch v1.4.0 \
-                              --udr-branch v1.4.0 --udm-branch v1.4.0 \
-                              --ausf-branch v1.4.0 --upf-vpp-branch v1.4.0 \
-                              --nssf-branch v1.4.0
----------------------------------------------------------
-OAI-NRF     component branch : v1.4.0
-OAI-AMF     component branch : v1.4.0
-OAI-SMF     component branch : v1.4.0
-OAI-SPGW-U  component branch : v1.4.0
-OAI-UDR     component branch : v1.4.0
-OAI-UDM     component branch : v1.4.0
-OAI-AUSF    component branch : v1.4.0
-OAI-UPF-VPP component branch : v1.4.0
-OAI-NSSF    component branch : v1.4.0
+OAI-NEF     component branch : master
+OAI-PCF     component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -122,7 +100,8 @@ $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
                               --smf-branch develop --spgwu-tiny-branch develop \
                               --ausf-branch develop --udm-branch develop \
                               --udr-branch develop --upf-vpp-branch develop \
-                              --nssf-branch develop
+                              --nssf-branch develop --nef-branch develop \
+                              --pcf-branch develop
 ---------------------------------------------------------
 OAI-NRF     component branch : develop
 OAI-AMF     component branch : develop
@@ -133,6 +112,8 @@ OAI-UDM     component branch : develop
 OAI-UDR     component branch : develop
 OAI-UPF-VPP component branch : develop
 OAI-NSSF    component branch : develop
+OAI-NEF     component branch : develop
+OAI-PCF     component branch : develop
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
@@ -165,13 +146,13 @@ You just add the `--build-arg BASE_IMAGE=ubuntu:xxxx` option.
 For example, I am building using `ubuntu:focal` as base image:
 
 ```bash
-$ docker build --target oai-amf --tag oai-amf:v1.4.0 \
+$ docker build --target oai-amf --tag oai-amf:v1.5.0 \
                --file component/oai-amf/docker/Dockerfile.amf.ubuntu \
                --build-arg BASE_IMAGE=ubuntu:focal \
                component/oai-amf
 $ docker image prune --force
 $ docker image ls
-oai-amf                 v1.4.0             f478bafd7a06        1 minute ago          179MB
+oai-amf                 v1.5.0             f478bafd7a06        1 minute ago          179MB
 ...
 ```
 
@@ -186,7 +167,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-amf --tag oai-amf:v1.4.0 \
+$ sudo podman build --target oai-amf --tag oai-amf:v1.5.0 \
                --file component/oai-amf/docker/Dockerfile.amf.rhel8 \
                component/oai-amf
 ...
@@ -202,13 +183,13 @@ The above command is with podman, in case you use docker, it can be changed with
 For example, I am building using `ubuntu:22.04` as base image:
 
 ```bash
-$ docker build --target oai-smf --tag oai-smf:v1.4.0 \
+$ docker build --target oai-smf --tag oai-smf:v1.5.0 \
                --file component/oai-smf/docker/Dockerfile.smf.ubuntu \
                --build-arg BASE_IMAGE=ubuntu:22.04 \
                component/oai-smf
 $ docker image prune --force
 $ docker image ls
-oai-smf                 v1.4.0             f478bafd7a06        1 minute ago          193MB
+oai-smf                 v1.5.0             f478bafd7a06        1 minute ago          193MB
 ...
 ```
 
@@ -223,7 +204,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-smf --tag oai-smf:v1.4.0 \
+$ sudo podman build --target oai-smf --tag oai-smf:v1.5.0 \
                --file component/oai-smf/docker/Dockerfile.smf.rhel8 \
                component/oai-smf
 ...
@@ -238,13 +219,13 @@ The above command is with podman, in case you use docker it can be changed with 
 For example, I am building using `ubuntu:jammy` as base image:
 
 ```bash
-$ docker build --target oai-nrf --tag oai-nrf:v1.4.0 \
+$ docker build --target oai-nrf --tag oai-nrf:v1.5.0 \
                --file component/oai-nrf/docker/Dockerfile.nrf.ubuntu \
                --build-arg BASE_IMAGE=ubuntu:jammy \
                component/oai-nrf
 $ docker image prune --force
 $ docker image ls
-oai-nrf                 v1.4.0             04334b29e103        1 minute ago          247MB
+oai-nrf                 v1.5.0             04334b29e103        1 minute ago          247MB
 ...
 ```
 
@@ -259,7 +240,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-nrf --tag oai-nrf:v1.4.0 \
+$ sudo podman build --target oai-nrf --tag oai-nrf:v1.5.0 \
                --file component/oai-nrf/docker/Dockerfile.nrf.rhel8 \
                component/oai-nrf
 ...
@@ -278,13 +259,13 @@ The above command is with podman, in case you use docker it can be changed with 
 For example, I am building using `ubuntu:20.04` as base image:
 
 ```bash
-$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
+$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.5.0 \
                --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu \
                --build-arg BASE_IMAGE=ubuntu:20.04 \
                component/oai-upf-equivalent
 $ docker image prune --force
 $ docker image ls
-oai-spgwu-tiny          v1.4.0             dec6311cef3b        1 minute ago          155MB
+oai-spgwu-tiny          v1.5.0             dec6311cef3b        1 minute ago          155MB
 ...
 ```
 
@@ -299,7 +280,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.4.0 \
+$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.5.0 \
                --file component/oai-spgwu-tiny/docker/Dockerfile.rhel8 \
                component/oai-upf-equivalent
 ...
@@ -312,12 +293,12 @@ The above command is with podman, in case you use docker it can be changed with 
 ## 7.1 On a Ubuntu Host ##
 
 ```bash
-$ docker build --target oai-ausf --tag oai-ausf:v1.4.0 \
+$ docker build --target oai-ausf --tag oai-ausf:v1.5.0 \
                --file component/oai-ausf/docker/Dockerfile.ausf.ubuntu \
                component/oai-ausf
 $ docker image prune --force
 $ docker image ls
-oai-ausf          v1.4.0              77a96de94c23        1 minute ago        231MB
+oai-ausf          v1.5.0              77a96de94c23        1 minute ago        231MB
 ...
 ```
 
@@ -332,7 +313,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-ausf --tag oai-ausf:v1.4.0 \
+$ sudo podman build --target oai-ausf --tag oai-ausf:v1.5.0 \
                --file component/oai-ausf/docker/Dockerfile.ausf.rhel8 \
                component/oai-ausf
 ...
@@ -345,12 +326,12 @@ The above command is with podman, in case you use docker it can be changed with 
 ## 8.1 On a Ubuntu Host ##
 
 ```bash
-$ docker build --target oai-udm --tag oai-udm:v1.4.0 \
+$ docker build --target oai-udm --tag oai-udm:v1.5.0 \
                --file component/oai-udm/docker/Dockerfile.udm.ubuntu \
                component/oai-udm
 $ docker image prune --force
 $ docker image ls
-oai-udm                 v1.4.0             10a4334e31be        1 minute ago          229MB
+oai-udm                 v1.5.0             10a4334e31be        1 minute ago          229MB
 ...
 ```
 
@@ -365,7 +346,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-udm --tag oai-udm:v1.4.0 \
+$ sudo podman build --target oai-udm --tag oai-udm:v1.5.0 \
                --file component/oai-udm/docker/Dockerfile.udm.rhel8 \
                component/oai-udm
 ...
@@ -378,12 +359,12 @@ The above command is with podman, in case you use docker it can be changed with 
 ## 9.1 On a Ubuntu Host ##
 
 ```bash
-$ docker build --target oai-udr --tag oai-udr:v1.4.0 \
+$ docker build --target oai-udr --tag oai-udr:v1.5.0 \
                --file component/oai-udr/docker/Dockerfile.udr.ubuntu \
                component/oai-udr
 $ docker image prune --force
 $ docker image ls
-oai-udr                 v1.4.0             581e07d59ec3        1 minute ago          234MB
+oai-udr                 v1.5.0             581e07d59ec3        1 minute ago          234MB
 ...
 ```
 
@@ -398,7 +379,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-udr --tag oai-udr:v1.4.0 \
+$ sudo podman build --target oai-udr --tag oai-udr:v1.5.0 \
                --file component/oai-udr/docker/Dockerfile.udr.rhel8 \
                component/oai-udr
 ...
@@ -412,12 +393,12 @@ The above command is with podman, in case you use docker it can be changed with 
 ## 10.1 On a Ubuntu Host ##
 
 ```bash
-$ docker build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
+$ docker build --target oai-upf-vpp --tag oai-upf-vpp:v1.5.0 \
                --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.ubuntu \
                component/oai-upf-vpp
 $ docker image prune --force
 $ docker image ls
-oai-upf-vpp             v1.4.0             581e07d59ec3        1 minute ago          937MB
+oai-upf-vpp             v1.5.0             581e07d59ec3        1 minute ago          937MB
 ...
 ```
 
@@ -432,7 +413,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:v1.4.0 \
+$ sudo podman build --target oai-upf-vpp --tag oai-upf-vpp:v1.5.0 \
                --file component/oai-upf-vpp/docker/Dockerfile.upf-vpp.rhel7 \
                component/oai-upf-vpp
 ...
@@ -445,12 +426,12 @@ The above command is with podman, in case you use docker it can be changed with 
 ## 11.1 On a Ubuntu Host ##
 
 ```bash
-$ docker build --target oai-nssf --tag oai-nssf:v1.4.0 \
+$ docker build --target oai-nssf --tag oai-nssf:v1.5.0 \
                --file component/oai-nssf/docker/Dockerfile.nssf.ubuntu \
                component/oai-nssf
 $ docker image prune --force
 $ docker image ls
-oai-nssf          v1.4.0              77a96de94c23        1 minute ago        231MB
+oai-nssf          v1.5.0              77a96de94c23        1 minute ago        231MB
 ...
 ```
 
@@ -465,7 +446,7 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-nssf --tag oai-nssf:v1.4.0 \
+$ sudo podman build --target oai-nssf --tag oai-nssf:v1.5.0 \
                --file component/oai-nssf/docker/Dockerfile.nssf.rhel8 \
                component/oai-nssf
 ...
