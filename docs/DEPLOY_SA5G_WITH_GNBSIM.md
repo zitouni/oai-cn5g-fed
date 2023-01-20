@@ -37,10 +37,10 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 | CNF Name    | Branch Name             | tag      | Ubuntu 18.04 | RHEL8          |
 | ----------- |:----------------------- | ---------| ------------ | ---------------|
-| AMF         | `master`                | `v1.4.0` | X            | X              |
-| SMF         | `master`                | `v1.4.0` | X            | X              |
-| NRF         | `master`                | `v1.4.0` | X            | X              |
-| SPGW-U-TINY | `master`                | `v1.4.0` | X            | X              |
+| AMF         | `master`                | `v1.5.0` | X            | X              |
+| SMF         | `master`                | `v1.5.0` | X            | X              |
+| NRF         | `master`                | `v1.5.0` | X            | X              |
+| SPGW-U-TINY | `master`                | `v1.5.0` | X            | X              |
 
 <br/>
 

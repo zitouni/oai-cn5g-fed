@@ -38,13 +38,13 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8          |
 | ----------- |:-------------- | ----------------------------- | ------------ | ---------------|
-| AMF         | `master`       | `v1.4.0`                      | X            | X              |
-| AUSF        | `master`       | `v1.4.0`                      | X            | X              |
-| NRF         | `master`       | `v1.4.0`                      | X            | X              |
-| SMF         | `master`       | `v1.4.0`                      | X            | X              |
-| UDR         | `master`       | `v1.4.0`                      | X            | X              |
-| UDM         | `master`       | `v1.4.0`                      | X            | X              |
-| UPF-VPP     | `master`       | `v1.4.0`                      | X            | X              |
+| AMF         | `master`       | `v1.5.0`                      | X            | X              |
+| AUSF        | `master`       | `v1.5.0`                      | X            | X              |
+| NRF         | `master`       | `v1.5.0`                      | X            | X              |
+| SMF         | `master`       | `v1.5.0`                      | X            | X              |
+| UDR         | `master`       | `v1.5.0`                      | X            | X              |
+| UDM         | `master`       | `v1.5.0`                      | X            | X              |
+| UPF-VPP     | `master`       | `v1.5.0`                      | X            | X              |
 
 <br/>
 
@@ -426,7 +426,7 @@ For CI purposes please ignore this line
 In our network env, we cannot ping google.com
 We replaced that with a wget (that we've installed in the gnbsim image)
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp wget --bind-address=12.1.1.2 https://openairinterface.org/wp-content/uploads/2015/06/cropped-oai_final_logo.png
+docker-compose-host $: docker exec gnbsim-vpp wget --tries=2 --timeout=30 --bind-address=12.1.1.2 https://openairinterface.org/wp-content/uploads/2015/06/cropped-oai_final_logo.png
 ```
 -->
 

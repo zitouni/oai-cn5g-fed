@@ -36,7 +36,7 @@ Password:
 ```
 
 The OAI CI/CD team has automated more frequent pushes to Docker-Hub on `oaisoftwarealliance` account. Two important things to be noted:
-  - We will keep pushing to the `latest` tag when a milestone is reached. Currently, the `latest` tag corresponds to v1.4.0 release.
+  - We will keep pushing to the `latest` tag when a milestone is reached. Currently, the `latest` tag corresponds to v1.5.0 release.
   - We are making pushes on the `develop` tag whenever a contribution has been accepted. These images are **EXPERIMENTAL**.
   - Release tag `vx.x.x` contains the release code
 
@@ -44,33 +44,19 @@ Now pull images according to your requirement,
 
 ```bash
 #!/bin/bash
-docker pull oaisoftwarealliance/oai-amf:v1.4.0
-docker pull oaisoftwarealliance/oai-nrf:v1.4.0
-docker pull oaisoftwarealliance/oai-spgwu-tiny:v1.4.0
-docker pull oaisoftwarealliance/oai-smf:v1.4.0
-docker pull oaisoftwarealliance/oai-udr:v1.4.0
-docker pull oaisoftwarealliance/oai-udm:v1.4.0
-docker pull oaisoftwarealliance/oai-ausf:v1.4.0
-docker pull oaisoftwarealliance/oai-upf-vpp:v1.4.0
-docker pull oaisoftwarealliance/oai-nssf:v1.4.0
+docker pull oaisoftwarealliance/oai-amf:v1.5.0
+docker pull oaisoftwarealliance/oai-nrf:v1.5.0
+docker pull oaisoftwarealliance/oai-spgwu-tiny:v1.5.0
+docker pull oaisoftwarealliance/oai-smf:v1.5.0
+docker pull oaisoftwarealliance/oai-udr:v1.5.0
+docker pull oaisoftwarealliance/oai-udm:v1.5.0
+docker pull oaisoftwarealliance/oai-ausf:v1.5.0
+docker pull oaisoftwarealliance/oai-upf-vpp:v1.5.0
+docker pull oaisoftwarealliance/oai-nssf:v1.5.0
+docker pull oaisoftwarealliance/oai-pcf:v1.5.0
+docker pull oaisoftwarealliance/oai-nef:v1.5.0
 # Utility image to generate traffic
 docker pull oaisoftwarealliance/trf-gen-cn5g:latest
-```
-
-And **re-tag** them for tutorials' docker-compose file to work.
-
-```bash
-#!/bin/bash
-docker image tag oaisoftwarealliance/oai-amf:v1.4.0 oai-amf:v1.4.0
-docker image tag oaisoftwarealliance/oai-nrf:v1.4.0 oai-nrf:v1.4.0
-docker image tag oaisoftwarealliance/oai-smf:v1.4.0 oai-smf:v1.4.0
-docker image tag oaisoftwarealliance/oai-spgwu-tiny:v1.4.0 oai-spgwu-tiny:v1.4.0
-docker image tag oaisoftwarealliance/oai-udr:v1.4.0 oai-udr:v1.4.0
-docker image tag oaisoftwarealliance/oai-udm:v1.4.0 oai-udm:v1.4.0
-docker image tag oaisoftwarealliance/oai-ausf:v1.4.0 oai-ausf:v1.4.0
-docker image tag oaisoftwarealliance/oai-upf-vpp:v1.4.0 oai-upf-vpp:v1.4.0
-docker image tag oaisoftwarealliance/oai-nssf:v1.4.0 oai-nssf:v1.4.0
-docker image tag oaisoftwarealliance/trf-gen-cn5g:latest trf-gen-cn5g:latest
 ```
 
 Finally you may logoff --> your token is stored in plain text..
@@ -87,27 +73,29 @@ We will push new versions when new features are validated.
 
 This repository only has tutorials and Continuous Integration scripts.
 
-**At the time of writing (2022/07), the release tag is `v1.4.0`.**
+**At the time of writing (2023/01), the release tag is `v1.5.0`.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.4.0` |              |                 |
-| AMF         | `master`    | `v1.4.0` | X            | X               |
-| SMF         | `master`    | `v1.4.0` | X            | X               |
-| NRF         | `master`    | `v1.4.0` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.4.0` | X            | X               |
-| UDR         | `master`    | `v1.4.0` | X            | X               |
-| UDM         | `master`    | `v1.4.0` | X            | X               |
-| AUSF        | `master`    | `v1.4.0` | X            | X               |
-| UPF-VPP     | `master`    | `v1.4.0` | X            | X               |
-| NSSF        | `master`    | `v1.4.0` | X            | X               |
+| FED REPO    | N/A         | `v1.5.0` |              |                 |
+| AMF         | `master`    | `v1.5.0` | X            | X               |
+| SMF         | `master`    | `v1.5.0` | X            | X               |
+| NRF         | `master`    | `v1.5.0` | X            | X               |
+| SPGW-U-TINY | `master`    | `v1.5.0` | X            | X               |
+| UDR         | `master`    | `v1.5.0` | X            | X               |
+| UDM         | `master`    | `v1.5.0` | X            | X               |
+| AUSF        | `master`    | `v1.5.0` | X            | X               |
+| UPF-VPP     | `master`    | `v1.5.0` | X            | X               |
+| NSSF        | `master`    | `v1.5.0` | X            | X               |
+| NEF         | `master`    | `v1.5.0` | X            | X               |
+| PCF         | `master`    | `v1.5.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.4.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v1.5.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.4.0
+$ git checkout -f v1.5.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
@@ -121,6 +109,8 @@ OAI-UDM     component branch : master
 OAI-UDR     component branch : master
 OAI-UPF-VPP component branch : master
 OAI-NSSF    component branch : master
+OAI-NEF     component branch : master
+OAI-PCF     component branch : master
 ---------------------------------------------------------
 git submodule deinit --all --force
 git submodule init
