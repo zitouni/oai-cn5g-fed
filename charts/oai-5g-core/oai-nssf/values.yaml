@@ -1,4 +1,4 @@
-kubernetesType: Vanila  #Vanila for community kubernetes distribution
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-nssf # image name either locally present or in a public/private repository

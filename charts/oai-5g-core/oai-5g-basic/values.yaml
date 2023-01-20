@@ -10,7 +10,7 @@ mysql:
 oai-nrf:
   enabled: true
   weight: 0
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -22,7 +22,7 @@ oai-nrf:
 oai-udr:
   enabled: true
   weight: 1
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udr           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -34,7 +34,7 @@ oai-udr:
 oai-udm:
   enabled: true
   weight: 2
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-udm           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -46,7 +46,7 @@ oai-udm:
 oai-ausf:
   enabled: true
   weight: 3
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-ausf           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -58,7 +58,7 @@ oai-ausf:
 oai-amf:
   enabled: true
   weight: 4
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -94,7 +94,7 @@ oai-amf:
 oai-spgwu-tiny:
   enabled: true
   weight: 5
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny    ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
@@ -132,7 +132,7 @@ oai-spgwu-tiny:
 oai-smf:
   enabled: true
   weight: 6
-  kubernetesType: Vanila #Openshift/Vanila Vanila for Upstream Kubernetes
+  kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
     version: v1.5.0                                    ## The branch to be used to pull from dockerhub
