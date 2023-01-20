@@ -1,4 +1,4 @@
-kubernetesType: Vanila  #Vanila for community kubernetes distribution
+kubernetesType: Vanilla  #Vanilla for community kubernetes distribution
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-nr-ue           # dockehub oaisoftwarealliance/oai-nr-ue
