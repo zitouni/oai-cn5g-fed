@@ -5,7 +5,7 @@ metadata:
   labels:
     {{- include "oai-gnb.labels" . | nindent 4 }}
 spec:
-  replicas: {{ .Values.replicaCount }}
+  replicas: 1
   selector:
     matchLabels:
       {{- include "oai-gnb.selectorLabels" . | nindent 6 }}
@@ -22,9 +22,6 @@ spec:
           [{
                  "name": "{{ .Chart.Name }}-net1",
                  "default-route": ["{{ .Values.multus.defaultGateway }}"]
-          },
-          {
-                 "name": "{{ .Chart.Name }}-net2"
           }]
     {{- end }}
     spec:
@@ -37,6 +34,11 @@ spec:
       containers:
       - name: gnb
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        {{- if .Values.config.mountConfig}}
+        volumeMounts:
+          - mountPath: /opt/oai-gnb/etc
+            name: configuration
+        {{- end}}
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -49,15 +51,12 @@ spec:
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         ports:
-        - containerPort: {{ .Values.service.s1uPort }}
-          name: s1u
+        - containerPort: 2152
+          name: n3
           protocol: UDP
-        - containerPort: {{ .Values.service.s1cPort }}
-          name: s1c
-          protocol: UDP
-        - containerPort: {{ .Values.service.x2cPort }}
-          name: x2c
-          protocol: UDP
+        - containerPort: 36412
+          name: n2
+          protocol: SCTP
         {{- if .Values.start.gnb}}
         {{- else}}
         command:
@@ -70,6 +69,13 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: timeZone
+          {{- if .Values.config.mountConfig}}
+          - name: USE_VOLUMED_CONF
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: mountConfig
+          {{- end}}
           - name: RFSIMULATOR
             valueFrom:
               configMapKeyRef:
@@ -115,26 +121,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: nssaiSd0
-          - name: NSSAI_SD1
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nssaiSd1
           - name: AMF_IP_ADDRESS
             valueFrom:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: amfIpAddress
-          - name: USE_FQDN
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useFqdn
-          - name: AMF_FQDN
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: amfFqdn
           - name: GNB_NGA_IF_NAME
             valueFrom:
               configMapKeyRef:
@@ -172,8 +163,20 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: useAdditionalOptions
+          - name: THREAD_PARALLEL_CONFIG
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: threadParallelConfig
+          - name: SDR_ADDRS
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: sdrAddrs
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        securityContext:
+          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
@@ -184,17 +187,12 @@ spec:
           - /bin/sleep
           - infinity
         {{- end}}
-        volumeMounts:
-        {{- if .Values.persistence.sharedvolume}}
-        - mountPath: "/pcap"
-          name: cn5g-pv
-        {{- end}}
+      {{- if .Values.config.mountConfig}}
       volumes:
-      {{- if .Values.persistence.sharedvolume}}
-      - name: cn5g-pv
-        persistenceVolumeClaim:
-          claimName: cn5g-pvc
-      {{- end }}
+      - configMap:
+          name: {{ .Chart.Name }}-configmap
+        name: configuration
+      {{- end}}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

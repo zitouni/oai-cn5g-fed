@@ -30,21 +30,21 @@ spec:
 ---
 apiVersion: build.openshift.io/v1
 kind: BuildConfig
-metadata: 
+metadata:
   name: oai-gnb
-spec: 
-  output: 
-    to: 
+spec:
+  output:
+    to:
       kind: ImageStreamTag
       name: "oai-gnb:develop"
   runPolicy: Serial
   strategy:
     type: Docker
-  source: 
+  source:
     dockerfile: |
-        FROM image-registry.openshift-image-registry.svc:5000/oai/oai-ran-base:develop AS gnb-base
+        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-base:develop AS gnb-base
 
-        FROM image-registry.openshift-image-registry.svc:5000/oai/oai-ran-build:develop AS gnb-build
+        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-build:develop AS gnb-build
 
         RUN python3 ./docker/scripts/generateTemplate.py ./docker/scripts/gnb_parameters.yaml && \
             cp /oai-ran/docker/scripts/gnb_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
@@ -63,6 +63,7 @@ spec:
                 lksctp-tools \
                 nettle \
                 tzdata \
+                gdb \
                 python3 \
                 python3-pip \
                 net-tools \
@@ -75,7 +76,7 @@ spec:
 
         WORKDIR /opt/oai-gnb/bin
         COPY --from=gnb-build \
-            /oai-ran/targets/bin/nr-softmodem.Rel15 \
+            /oai-ran/cmake_targets/ran_build/build/nr-softmodem \
             /oai-ran/docker/scripts/entrypoint.sh \
             ./
 
@@ -140,5 +141,4 @@ spec:
         #EXPOSE 50001/udp # IF5 / ECPRI (data)
 
         ENTRYPOINT ["/opt/oai-gnb/bin/entrypoint.sh"]
-        CMD ["/opt/oai-gnb/bin/nr-softmodem.Rel15", "-O", "/opt/oai-gnb/etc/gnb.conf"]
-
+        CMD ["/opt/oai-gnb/bin/nr-softmodem", "-O", "/opt/oai-gnb/etc/gnb.conf"]

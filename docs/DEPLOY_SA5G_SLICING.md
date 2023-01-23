@@ -42,15 +42,15 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
 | ----------- |:-------------- | ----------------------------- | ------------ | --------------|
-| NSSF        | `master`      | `v1.4.0`                      | X            | X              |
-| AMF         | `master`      | `v1.4.0`                      | X            | X              |
-| AUSF        | `master`      | `v1.4.0`                      | X            | X              |
-| NRF         | `master`      | `v1.4.0`                      | X            | X              |
-| SMF         | `master`      | `v1.4.0`                      | X            | X              |
-| UDR         | `master`      | `v1.4.0`                      | X            | X              |
-| UDM         | `master`      | `v1.4.0`                      | X            | X              |
-| SPGWU       | `master`      | `v1.4.0`                      | X            | X              |
-| UPF-VPP     | `master`      | `v1.4.0`                      | X            | X              |
+| NSSF        | `master`      | `v1.5.0`                      | X            | X              |
+| AMF         | `master`      | `v1.5.0`                      | X            | X              |
+| AUSF        | `master`      | `v1.5.0`                      | X            | X              |
+| NRF         | `master`      | `v1.5.0`                      | X            | X              |
+| SMF         | `master`      | `v1.5.0`                      | X            | X              |
+| UDR         | `master`      | `v1.5.0`                      | X            | X              |
+| UDM         | `master`      | `v1.5.0`                      | X            | X              |
+| SPGWU       | `master`      | `v1.5.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v1.5.0`                      | X            | X              |
 
 <br/>
 
@@ -190,8 +190,6 @@ And re-tag them for tutorials' docker-compose file to work.
 ``` console
 $ docker image tag rohankharade/gnbsim:latest gnbsim:latest
 $ docker image tag rohankharade/ueransim:latest ueransim:latest
-$ docker image tag oaisoftwarealliance/oai-gnb:develop oai-gnb:develop
-$ docker image tag oaisoftwarealliance/oai-nr-ue:develop oai-nr-ue:develop
 ```
 
 ## 7. Executing `ransim` Scenario

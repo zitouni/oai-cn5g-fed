@@ -28,3 +28,6 @@
 [submodule "component/oai-nef"]
 	path = component/oai-nef
 	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nef
+[submodule "component/oai-pcf"]
+	path = component/oai-pcf
+	url = https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-pcf.git

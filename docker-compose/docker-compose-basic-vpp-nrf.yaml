@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
-        image: oai-udr:v1.4.0
+        image: oaisoftwarealliance/oai-udr:v1.5.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -51,7 +51,7 @@ services:
                 ipv4_address: 192.168.70.136
     oai-udm:
         container_name: "oai-udm"
-        image: oai-udm:v1.4.0
+        image: oaisoftwarealliance/oai-udm:v1.5.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -77,7 +77,7 @@ services:
                 ipv4_address: 192.168.70.137
     oai-ausf:
         container_name: "oai-ausf"
-        image: oai-ausf:v1.4.0
+        image: oaisoftwarealliance/oai-ausf:v1.5.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE_ID=0
@@ -102,7 +102,7 @@ services:
                 ipv4_address: 192.168.70.138
     oai-nrf:
         container_name: "oai-nrf"
-        image: oai-nrf:v1.4.0
+        image: oaisoftwarealliance/oai-nrf:v1.5.0
         environment:
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             - NRF_INTERFACE_PORT_FOR_SBI=80
@@ -115,7 +115,7 @@ services:
                 ipv4_address: 192.168.70.130
     oai-amf:
         container_name: "oai-amf"
-        image: oai-amf:v1.4.0
+        image: oaisoftwarealliance/oai-amf:v1.5.0
         environment:
             - TZ=Europe/paris
             - INSTANCE=0
@@ -185,7 +185,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oai-smf:v1.4.0
+        image: oaisoftwarealliance/oai-smf:v1.5.0
         environment:
             - TZ=Europe/Paris
             - INSTANCE=0
@@ -250,9 +250,9 @@ services:
             public_net:
                 ipv4_address: 192.168.70.133
     vpp-upf:
-        image: oai-upf-vpp:v1.4.0
         privileged: true
         container_name: "vpp-upf"
+        image: oaisoftwarealliance/oai-upf-vpp:v1.5.0
         environment:
             - IF_1_IP=192.168.70.201
             - IF_1_TYPE=N4
@@ -293,10 +293,10 @@ services:
             public_net_core:
                 ipv4_address: 192.168.73.134
     oai-ext-dn:
-        image: trf-gen-cn5g:latest
         privileged: true
         init: true
         container_name: "oai-ext-dn"
+        image: oaisoftwarealliance/trf-gen-cn5g:latest
         entrypoint: /bin/bash -c \
               "iptables -t nat -A POSTROUTING -o eth0 -j MASQUERADE;"\
               "ip route add 12.1.1.0/24 via 192.168.73.201 dev eth0; ip route; sleep infinity"

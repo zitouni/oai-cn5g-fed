@@ -42,9 +42,9 @@ spec:
     type: Docker
   source: 
     dockerfile: |
-        FROM image-registry.openshift-image-registry.svc:5000/oai/oai-ran-base:develop AS nr-ue-base
+        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-base:develop AS nr-ue-base
 
-        FROM image-registry.openshift-image-registry.svc:5000/oai/oai-ran-build:develop AS nr-ue-build
+        FROM image-registry.openshift-image-registry.svc:5000/oai-tutorial/oai-ran-build:develop AS nr-ue-build
 
         RUN python3 ./docker/scripts/generateTemplate.py ./docker/scripts/nr_ue_parameters.yaml && \
             cp /oai-ran/docker/scripts/nr_ue_entrypoint.sh /oai-ran/docker/scripts/entrypoint.sh
@@ -63,6 +63,7 @@ spec:
                 iputils \
                 iproute \
                 atlas \
+                gdb \
                 python3 \
                 python3-pip \
                 libXpm \
@@ -75,7 +76,7 @@ spec:
 
         WORKDIR /opt/oai-nr-ue/bin
         COPY --from=nr-ue-build \
-            /oai-ran/targets/bin/nr-uesoftmodem.Rel15 \
+            /oai-ran/cmake_targets/ran_build/build/nr-uesoftmodem \
             /oai-ran/docker/scripts/entrypoint.sh \
             ./
 
@@ -139,7 +140,5 @@ spec:
         COPY --from=nr-ue-build /oai-ran/ci-scripts/conf_files/ue.* .
 
         WORKDIR /opt/oai-nr-ue
-        CMD ["/opt/oai-nr-ue/bin/nr-uesoftmodem.Rel15", "-O", "/opt/oai-nr-ue/etc/nr-ue.conf"]
+        CMD ["/opt/oai-nr-ue/bin/nr-uesoftmodem", "-O", "/opt/oai-nr-ue/etc/nr-ue.conf"]
         ENTRYPOINT ["/opt/oai-nr-ue/bin/entrypoint.sh"]
-
-

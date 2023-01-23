@@ -1,5 +1,95 @@
 # RELEASE NOTES: #
 
+## v1.5.0 -- January 2023 ##
+
+* New tutorials:
+  - UL CL with policies --> `docs/DEPLOY_SA5G_ULCL.md`
+  - Testing with `OMEC-gnbsim` --> `docs/DEPLOY_SA5G_WITH_OMEC_GNBSIM.md`
+  - SD-Fabric usage
+* Update the helm charts and helm chart tutorial
+* Switched tutorials to latest `mysql` version (`8.0`)
+* Fixes in slicing tutorial to use latest OAI RAN images
+* Common features/fixes for all Network Functions:
+  - Proper exit on SIGTERM
+  - jinja2-based configuration file
+  - Ubuntu22 and cgroup2 support (even on `SPGWU-TINY`)
+  - Giving some time for FQDN resolution
+  - Release mode does not use libasan anymore
+  - Health-checks are natively in the distributed images
+* `AMF` changes:
+  - Minimal fix for Decoding RegistrationRequest from COTS UE
+  - Fix small issue for NGAP lib
+  - NGAP IES code refactoring
+  - Fix PDU session release
+  - Refactor NGAP message callback
+  - Fix nake ptr
+  - Fix UL NAS transport
+  - Fix typo for Rejected NSSAI
+  - PDU session release supported
+  - Update SST type (int instead of string) in conf file
+  - Events exposure: location report with empty supi fixed
+  - small fix for event exposure loss of connectivity
+  - Minor fix for encoding no SD in PduSessionResourceSetupRequest
+  - Fix SST/SD on cots ue
+  - Docker images improvements
+* `AUSF` changes:
+  - Docker images improvements
+* `NEF` changes:
+  - Docker images improvements
+* `NRF` changes:
+  - Enhance UPF profile in NRF and fix bug in SBI when body is too long
+  - Added Status change notification
+  - Docker images improvements
+* `NSSF` changes:
+  - Docker images improvements
+* `PCF` changes:
+  - Initial release
+  - NRF registration
+  - Add Npcf_SMPolicyControl API Create, Update, Delete and Get procedures
+  - Add file based policy provisioning
+  - Add policy decision feature based on SUPI, DNN, Slice and default policy
+* `SMF` changes:
+  - Feature improvements:
+    * PDU SESS EST + Qos Monitoring events exposure
+    * PFCP: removing dependency to folly
+    * Add IEs to support UE Rel 16
+    * Added and integrated UPF graph instead of PFCP associations list
+      * Supported scenarios:
+        - I-UPF / A-UPF N9
+        - UL CL
+    * Implement Npcf_SMPolicyControl API client
+    * Changing the configuration file to jinja2-based approach
+      * At least one slice (slice #0) shall be completely defined
+  - Fixes:
+    * Fix openapi cause
+    * Fix small issue for Mime parser for normal message
+    * Fix Volume Threshold IE to PFCP Create URR IE
+    * Fix mcc mnc 00 udr
+    * Fix issues to work with Release-16 COTS UE
+    * Fix issue when there's no valid reply from UPF for PDU session release
+    * Fix Protocol identifier Selected Bearer Control Mode
+    * Fix issue for Static UE IP Addr
+    * Fix URR ID in IE Create URR (post UPF graph implementation)
+    * Fix issue for Full DNN (APN Operator Identifier)
+* `SPGWU-TINY` changes:
+  - Docker images improvements
+  - Ubuntu22 full support
+* `UDM` changes:
+  - Docker images improvements
+* `UDR` changes:
+  - Improve MySQL connection handling
+  - Fix issue with DNNs including special characters
+  - SessionManagementSubscriptionData POST API
+  - Fix session management subscription data
+  - Docker image improvements
+* `UPF-VPP` changes:
+  - Ubuntu22.04 support
+  - SNSSAI fix
+  - Support UL CL UPF deployment
+  - Support I-UPF / A-UPF N9 UPF deployment
+  - GTP payload length fix
+  - Major Configuration update
+
 ## v1.4.0 -- July 2022 ##
 
 * All official images produced by CI are pushed to `oaisoftwarealliance` Docker-Hub Team account

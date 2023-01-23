@@ -411,20 +411,21 @@ pipeline {
 }
 
 def updateDockerCompose(filename, lAmfTag, lNrfTag, lSmfTag, lSpgwuTag, lAusfTag, lUdmTag, lUdrTag, lNssfTag, lUpfVppTag, lRanTag) {
-  sh 'sed -i -e "s@oai-amf:v1.4.0@oai-amf:' + lAmfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-nrf:v1.4.0@oai-nrf:' + lNrfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-smf:v1.4.0@oai-smf:' + lSmfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-spgwu-tiny:v1.4.0@oai-spgwu-tiny:' + lSpgwuTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-ausf:v1.4.0@oai-ausf:' + lAusfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-udm:v1.4.0@oai-udm:' + lUdmTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-udr:v1.4.0@oai-udr:' + lUdrTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-nssf:v1.4.0@oai-nssf:' + lNssfTag + '@" ' + filename
-  sh 'sed -i -e "s@oai-upf-vpp:v1.4.0@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-amf:v1.5.0@oai-amf:' + lAmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nrf:v1.5.0@oai-nrf:' + lNrfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-smf:v1.5.0@oai-smf:' + lSmfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-spgwu-tiny:v1.5.0@oai-spgwu-tiny:' + lSpgwuTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-ausf:v1.5.0@oai-ausf:' + lAusfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-udm:v1.5.0@oai-udm:' + lUdmTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-udr:v1.5.0@oai-udr:' + lUdrTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nssf:v1.5.0@oai-nssf:' + lNssfTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-upf-vpp:v1.5.0@oai-upf-vpp:' + lUpfVppTag + '@" ' + filename
+  sh 'sed -i -e "s@oaisoftwarealliance/trf-gen-cn5g:latest@trf-gen-cn5g:latest@" ' + filename
   // Using the develop variant of gnbsim
   sh 'sed -i -e "s@gnbsim:latest@gnbsim:develop@" docker-compose/docker-compose-gnbsim*.y*ml docker-compose/docker-compose*ransim.y*ml'
   // Using a dedicated version of the OAI RAN images
-  sh 'sed -i -e "s@oai-gnb:develop@oai-gnb:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
-  sh 'sed -i -e "s@oai-nr-ue:develop@oai-nr-ue:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-gnb:develop@oai-gnb:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
+  sh 'sed -i -e "s@oaisoftwarealliance/oai-nr-ue:develop@oai-nr-ue:' + lRanTag + '@" docker-compose/docker-compose-slicing-ransim.yaml'
 }
 
 def archivesArtifacts(filename,folder) {
