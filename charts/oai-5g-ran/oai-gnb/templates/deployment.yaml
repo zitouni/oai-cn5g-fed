@@ -34,6 +34,7 @@ spec:
       containers:
       - name: gnb
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.config.mountConfig}}
         volumeMounts:
           - mountPath: /opt/oai-gnb/etc/mounted.conf
@@ -166,6 +167,7 @@ spec:
           {{- end}}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
+        imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.start.tcpdump}}
