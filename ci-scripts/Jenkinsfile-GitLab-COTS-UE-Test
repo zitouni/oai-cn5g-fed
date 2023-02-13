@@ -62,6 +62,9 @@ containerInPods = ["nrf", "amf", "smf", "spgwu", "ausf", "udm", "udr"]
 boolean logoutToDo   = false
 boolean deployedCore = false
 boolean deployedGNB  = false
+boolean analysisToDo = true
+boolean coreDeploy   = true
+boolean gnbDeploy    = true
 boolean testStart0   = true
 boolean testStart1   = true
 boolean testStop0    = true
@@ -117,6 +120,8 @@ pipeline {
             }
             if ((branchNames[ii] == "develop") && (baseTags[ii] == "develop")) {
               destTags[ii] = getLastCommitFromBranch(ii, repoNames[ii], branchNames[ii])
+            } else {
+              destTags[ii] = baseTags[ii]
             }
           }
           // Checking if all needed images are on cetautomatix to be pushed
@@ -125,6 +130,12 @@ pipeline {
             imageStatus += checkImageInfo(imageNames[ii], baseTags[ii])
           }
           if (imageStatus > 0) {
+            coreDeploy   = false
+            gnbDeploy    = false
+            testStart0   = false
+            testStart1   = false
+            testStop0    = false
+            testStop1    = false
             error ("Some images are not present!")
           }
         }
@@ -144,6 +155,7 @@ pipeline {
           sh "oc project ${oc_project_name}"
           for (ii = 0; ii < imageNames.size(); ii++) {
             pushToOpenshiftRegistry (imageNames[ii], baseTags[ii], destTags[ii])
+            appendImageInfo(imageNames[ii], destTags[ii])
           }
           // Checking that will-be-used tags have been pushed
           for (ii = 0; ii < imageNames.size(); ii++) {
@@ -173,11 +185,22 @@ pipeline {
         }
       }
       post {
+        success {
+          script {
+            coreDeploy = true
+          }
+        }
         unsuccessful {
           script {
             // In case the spray command fails, to have some context.
             sh "oc describe pod &> archives/describe-pods.logs"
             sh "oc get pods -o wide"
+            coreDeploy   = false
+            gnbDeploy    = false
+            testStart0   = false
+            testStart1   = false
+            testStop0    = false
+            testStop1    = false
           }
         }
       }
@@ -197,7 +220,8 @@ pipeline {
           sh "echo 'Tested Tag is ${ranFullImage}' > archives/oai-gnb-image-info.log"
           sh "docker image inspect --format='Date = {{.Created}}' ${ranFullImage} >> archives/oai-gnb-image-info.log"
           sh "docker image inspect --format='Size = {{.Size}} bytes' ${ranFullImage} >> archives/oai-gnb-image-info.log"
-          stash includes: 'archives/gnb-image-info.log', name: 'gNB_image'
+          sh "echo 'OC Pushed Tag is N/A' >> archives/oai-gnb-image-info.log"
+          stash includes: 'archives/oai-gnb-image-info.log', name: 'gNB_image'
           // Deploying now
           dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
             sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
@@ -211,15 +235,26 @@ pipeline {
         }
       }
       post {
+        success {
+          script {
+            gnbDeploy    = true
+          }
+        }
         unsuccessful {
           script {
             dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
               sh "docker-compose stop -t 3 || true"
-              sh "docker logs sa-b210-gnb > gnb.logs 2>&1 || true"
-              stash includes: 'gnb.logs', name: 'gNB_logs'
+              sleep 2
+              sh "docker logs sa-b210-gnb > oai-gnb.logs 2>&1 || true"
+              stash includes: 'oai-gnb.logs', name: 'gNB_logs'
               sh "docker-compose down -t 3 || true"
             }
-            deployedGNB = false
+            deployedGNB  = false
+            gnbDeploy    = false
+            testStart0   = false
+            testStart1   = false
+            testStop0    = false
+            testStop1    = false
           }
         }
       }
@@ -234,29 +269,27 @@ pipeline {
             dir ('ci-scripts/cots-ue-mbim-scripts') {
               // I don't want that stage to fail.
               // It's easier then to un-deploy gNB.
-              sh 'ls -lst'
-
               try {
-                sh 'sudo ./start.sh 2>&1 | tee /tmp/test-start0.log'
+                sh 'sudo bash -c "set -o pipefail && ./start.sh 2>&1 | tee /tmp/test-start0.log"'
               } catch (Exception e) {
                 echo "Test-Start #0 seems to have failed!"
                 testStart0 = false
               }
               try {
-                sh 'sudo ./stop.sh 2>&1 | tee /tmp/test-stop0.log'
+                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop0.log"'
               } catch (Exception e) {
                 echo "Test-Stop #0 seems to have failed!"
                 testStop0 = false
               }
               sleep 5
               try {
-                sh 'sudo ./start.sh 2>&1 | tee /tmp/test-start1.log'
+                sh 'sudo bash -c "set -o pipefail && ./start.sh 2>&1 | tee /tmp/test-start1.log"'
               } catch (Exception e) {
                 echo "Test-Start #1 seems to have failed!"
                 testStart1 = false
               }
               try {
-                sh 'sudo ./stop.sh 2>&1 | tee /tmp/test-stop1.log'
+                sh 'sudo bash -c "set -o pipefail && ./stop.sh 2>&1 | tee /tmp/test-stop1.log"'
               } catch (Exception e) {
                 echo "Test-Stop #1 seems to have failed!"
                 testStop1 = false
@@ -281,8 +314,9 @@ pipeline {
               ranFullImage = params.FULL_RAN_TAG
               sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
               sh "docker-compose stop -t 3 || true"
-              sh "docker logs sa-b210-gnb > gnb.logs 2>&1 || true"
-              stash includes: 'gnb.logs', name: 'gNB_logs'
+              sleep 2
+              sh "docker logs sa-b210-gnb > oai-gnb.logs 2>&1 || true"
+              stash includes: 'oai-gnb.logs', name: 'gNB_logs'
               sh "docker-compose down -t 3 || true"
             }
             deployedGNB = false
@@ -298,8 +332,8 @@ pipeline {
           unstash 'ue_logs'
           unstash 'gNB_image'
           unstash 'gNB_logs'
-          if (fileExists('gnb.logs')) {
-            sh 'mv gnb.logs archives'
+          if (fileExists('oai-gnb.logs')) {
+            sh 'mv oai-gnb.logs archives'
           }
           dir ('ci-scripts/charts/oai-5g-basic') {
             sh 'helm uninstall $(helm list -aq)'
@@ -311,6 +345,34 @@ pipeline {
           sh "sudo podman logout ${oc_registry_url}"
           sh 'oc logout'
           logoutToDo = false
+        }
+      }
+    }
+    stage ('Post-Run Analysis') {
+      steps {
+        script {
+          analysisToDo = false
+          OPTIONS=''
+          if (coreDeploy == false) {
+            OPTIONS += ' --core_deploy_failed'
+          }
+          if (gnbDeploy == false) {
+            OPTIONS += ' --gnb_deploy_failed'
+          }
+          if (testStart0 == false) {
+            OPTIONS += ' --ue_test0_start_failed'
+          }
+          if (testStop0 == false) {
+            OPTIONS += ' --ue_test0_stop_failed'
+          }
+          if (testStart1 == false) {
+            OPTIONS += ' --ue_test1_start_failed'
+          }
+          if (testStop1 == false) {
+            OPTIONS += ' --ue_test1_stop_failed'
+          }
+          // The python script may return an error
+          sh " ./ci-scripts/checkCOTS-UE-Testing.py --job_name ${JOB_NAME} --job_id ${BUILD_ID} --job_url ${BUILD_URL}${OPTIONS}"
         }
       }
     }
@@ -330,8 +392,8 @@ pipeline {
           } catch (Exception e) {
             echo "could not retrieve stashes from gNB or UE server"
           }
-          if (fileExists('gnb.logs')) {
-            sh 'mv gnb.logs archives'
+          if (fileExists('oai-gnb.logs')) {
+            sh 'mv oai-gnb.logs archives'
           }
           dir ('ci-scripts/charts/oai-5g-basic') {
             sh 'helm uninstall $(helm list -aq)'
@@ -345,6 +407,35 @@ pipeline {
         sh 'zip -r cn5g_cots_ue_test_logs.zip archives'
         if (fileExists('cn5g_cots_ue_test_logs.zip')) {
           archiveArtifacts artifacts: 'cn5g_cots_ue_test_logs.zip'
+        }
+        if (analysisToDo) {
+          OPTIONS=''
+          if (coreDeploy == false) {
+            OPTIONS += ' --core_deploy_failed'
+          }
+          if (gnbDeploy == false) {
+            OPTIONS += ' --gnb_deploy_failed'
+          }
+          if (testStart0 == false) {
+            OPTIONS += ' --ue_test0_start_failed'
+          }
+          if (testStop0 == false) {
+            OPTIONS += ' --ue_test0_stop_failed'
+          }
+          if (testStart1 == false) {
+            OPTIONS += ' --ue_test1_start_failed'
+          }
+          if (testStop1 == false) {
+            OPTIONS += ' --ue_test1_stop_failed'
+          }
+          try {
+            sh " ./ci-scripts/checkCOTS-UE-Testing.py --job_name ${JOB_NAME} --job_id ${BUILD_ID} --job_url ${BUILD_URL}${OPTIONS}"
+          } catch (Exception e) {
+            echo "We've alreay failed the pipeline if we are here"
+          }
+        }
+        if (fileExists('test_results_oai_cn5g_cots_ue.html')) {
+          archiveArtifacts artifacts: 'test_results_oai_cn5g_cots_ue.html'
         }
       }
     }
@@ -378,6 +469,10 @@ def checkImageInfo (imageName, origTag) {
     status = 1
   }
   return status
+}
+
+def appendImageInfo (imageName, destTag) {
+  sh "echo 'OC Pushed Tag is ${imageName}:${destTag}' >> archives/${imageName}-image-info.log"
 }
 
 def pushToOpenshiftRegistry (imageName, origTag, destTag) {

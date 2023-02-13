@@ -10,3 +10,6 @@ if [[ -v DNN1 ]]; then mbimcli -d $DEVICE -p --disconnect=1; fi
 if [[ -v DNN1 ]]; then ip link set $INTERFACE.1 down; fi
 if [[ -v DNN1 ]]; then ip link del link wwan0 name $INTERFACE.1 type vlan id 1; fi
 mbimcli -p -d $DEVICE --set-radio-state=off
+
+echo "-------Removing the $INTERFACE -------"
+ifconfig $INTERFACE down

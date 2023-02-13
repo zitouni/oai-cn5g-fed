@@ -18,6 +18,9 @@ DNN_TYPE1=${DNN_TYPE1:-ipv4v6}
 INTERFACE=${INTERFACE:-wwan0}
 DEVICE=$(ls /dev/cdc*)
 
+echo "-------Setting up $INTERFACE for testing-------"
+ifconfig $INTERFACE up
+
 if [[ -v DNN1 ]]; then ip link add link wwan0 name $INTERFACE.1 type vlan id 1; fi
 if [[ -v DNN1 ]]; then ip link set $INTERFACE.1 up; fi
 
