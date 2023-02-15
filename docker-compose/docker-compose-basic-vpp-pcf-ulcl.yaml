@@ -16,7 +16,7 @@ services:
             test: /bin/bash -c "/tmp/mysql-healthcheck.sh"
             interval: 10s
             timeout: 5s
-            retries: 5
+            retries: 30
         networks:
             public_net:
                 ipv4_address: 192.168.70.131
@@ -224,7 +224,6 @@ services:
             - DISCOVER_UPF=yes
             - DISCOVER_PCF=no
             - USE_FQDN_DNS=no # Issue with PCF DNS resolving
-            - USE_NETWORK_INSTANCE=yes
             - ENABLE_USAGE_REPORTING=yes
             - DNN_NI0=oai
             - TYPE0=IPv4
