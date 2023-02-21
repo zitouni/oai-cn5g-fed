@@ -533,6 +533,7 @@ def retrieveLogsFromPods() {
       echo "Getting logs from ${podName} failed"
     }
   }
+  sh "oc describe pod &> archives/describe-pods-post-test.logs"
   sh "oc get pods.metrics.k8s.io &> archives/nf-resource-consumption.log"
   if (nrfPod.contains("oai-nrf")) {
     sh "oc rsync ${nrfPod}:/pcap archives"

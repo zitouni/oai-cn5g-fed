@@ -28,6 +28,9 @@ BUTTON_FOOTER_TEMPLATE = 'ci-scripts/html-templates/button-footer.htm'
 IMAGE_TABLE_HEADER_TEMPLATE = 'ci-scripts/html-templates/image-table-header.htm'
 IMAGE_TABLE_FOOTER_TEMPLATE = 'ci-scripts/html-templates/image-table-footer.htm'
 IMAGE_TABLE_ROW_TEMPLATE = 'ci-scripts/html-templates/image-table-row.htm'
+COMMAND_TABLE_HEADER_TEMPLATE = 'ci-scripts/html-templates/command-table-header.htm'
+COMMAND_TABLE_FOOTER_TEMPLATE = 'ci-scripts/html-templates/command-table-footer.htm'
+COMMAND_TABLE_ROW_TEMPLATE = 'ci-scripts/html-templates/command-table-row.htm'
 LIST_HEADER_TEMPLATE = 'ci-scripts/html-templates/list-header.htm'
 LIST_FOOTER_TEMPLATE = 'ci-scripts/html-templates/list-footer.htm'
 LIST_ROW_TEMPLATE = 'ci-scripts/html-templates/list-row.htm'
@@ -105,6 +108,34 @@ def generate_image_table_row(name, tag, ocTag, creationDate, size):
         row = re.sub('OC_TAG', ocTag, row)
         row = re.sub('CREATION_DATE', creationDate, row)
         row = re.sub('IMAGE_SIZE', size, row)
+    return row
+
+def generate_command_table_header():
+    cwd = os.getcwd()
+    header = ''
+    with open(os.path.join(cwd, COMMAND_TABLE_HEADER_TEMPLATE), 'r') as temp:
+        header = temp.read()
+    return header
+
+def generate_command_table_footer():
+    cwd = os.getcwd()
+    footer = ''
+    with open(os.path.join(cwd, COMMAND_TABLE_FOOTER_TEMPLATE), 'r') as temp:
+        footer = temp.read()
+    return footer
+
+def generate_command_table_row(command, status):
+    cwd = os.getcwd()
+    row = ''
+    with open(os.path.join(cwd, COMMAND_TABLE_ROW_TEMPLATE), 'r') as temp:
+        row = temp.read()
+        row = re.sub('COMMAND', command, row)
+        if status:
+            row = re.sub('STATUS', 'PASS', row)
+            row = re.sub('COLOR', 'lightgreen', row)
+        else:
+            row = re.sub('STATUS', 'FAIL', row)
+            row = re.sub('COLOR', 'lightcoral', row)
     return row
 
 def generate_list_header():

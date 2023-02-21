@@ -160,13 +160,13 @@ def nfDetails(nfName):
         return generate_image_table_row(contName, 'Not Found', 'Not Found', f'could not open archives/{nfName}-image-info.log', 'N/A')
     with open(os.path.join(cwd, f'archives/{nfName}-image-info.log'), 'r') as podImageLog:
         for line in podImageLog:
-            result = re.search('Tested Tag is (?P<imageName>' + nfName + '[a-zA-Z0-9\-\:]+)', line)
+            result = re.search('Tested Tag is (?P<imageName>' + nfName + '[a-zA-Z0-9\.\-\:]+)', line)
             if result is not None:
                 fullTag = result.group('imageName')
-            result = re.search('OC Pushed Tag is (?P<ocName>' + nfName + '[a-zA-Z0-9\-\:]+)', line)
+            result = re.search('OC Pushed Tag is (?P<ocName>' + nfName + '[a-zA-Z0-9\.\-\:]+)', line)
             if result is not None:
                 ocTag = result.group('ocName')
-            result = re.search('Tested Tag is (?P<imageName>[a-zA-Z0-9\.\/]+' + nfName + '[a-zA-Z0-9\-\:\_]+)', line)
+            result = re.search('Tested Tag is (?P<imageName>[a-zA-Z0-9\.\/]+' + nfName + '[a-zA-Z0-9\-\:\.\_]+)', line)
             if result is not None:
                 fullTag = result.group('imageName')
             result = re.search('Size = (?P<imageSize>[0-9]+) bytes', line)
@@ -334,7 +334,7 @@ def detailsUeStopTest(runNb):
     return (True, detailsHtml)
 
 if __name__ == '__main__':
-    # Parse the arguments to get the deployment instruction
+    # Parse the arguments
     args = _parse_args()
 
     # Parse logs for details
