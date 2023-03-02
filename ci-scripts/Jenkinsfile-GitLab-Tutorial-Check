@@ -80,37 +80,38 @@ pipeline {
 
           // Find out the cause of the trigger
           for (cause in currentBuild.getBuildCauses()) {
-            if (cause.toString() ==~ /.*UpstreamCause.*/) {
+            println cause.toString()
+            if (cause.toString().contains('UpstreamCause')) {
               upstreamEvent = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-NRF.*/) {
+            if (cause.toString().contains('OAI-CN5G-NRF')) {
               upstreamJobs[NRF] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-AMF.*/) {
+            if (cause.toString().contains('OAI-CN5G-AMF')) {
               upstreamJobs[AMF] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-SMF.*/) {
+            if (cause.toString().contains('OAI-CN5G-SMF')) {
               upstreamJobs[SMF] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN-SPGWU-TINY.*/) {
+            if (cause.toString().contains('OAI-CN-SPGWU-TINY')) {
               upstreamJobs[SPGWU] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-AUSF.*/) {
+            if (cause.toString().contains('OAI-CN5G-AUSF')) {
               upstreamJobs[AUSF] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-UDM.*/) {
+            if (cause.toString().contains('OAI-CN5G-UDM')) {
               upstreamJobs[UDM] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-UDR.*/) {
+            if (cause.toString().contains('OAI-CN5G-UDR')) {
               upstreamJobs[UDR] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-NSSF.*/) {
+            if (cause.toString().contains('OAI-CN5G-NSSF')) {
               upstreamJobs[NSSF] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-UPF-VPP.*/) {
+            if (cause.toString().contains('OAI-CN5G-UPF-VPP')) {
               upstreamJobs[UPF_VPP] = true
             }
-            if (cause.toString() ==~ /.*OAI-CN5G-PCF.*/) {
+            if (cause.toString().contains('OAI-CN5G-PCF')) {
               upstreamJobs[PCF] = true
             }
           }
