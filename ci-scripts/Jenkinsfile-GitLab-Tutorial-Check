@@ -139,7 +139,7 @@ pipeline {
             if (ii == AMF) {
               branchNames[AMF] = params.AMF_BRANCH
               imageTags[AMF] = params.AMF_TAG
-              if (upstreamEvent && imageTags[AMF].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[AMF]) {
                 echo "Upstream Job passed AMF_TAG to use: ${imageTags[AMF]}"
                 echo "Upstream Job passed AMF_BRANCH to use: ${branchNames[AMF]}"
                 run_mini_gnbsim = true
@@ -152,7 +152,7 @@ pipeline {
             if (ii == SMF) {
               branchNames[SMF] = params.SMF_BRANCH
               imageTags[SMF] = params.SMF_TAG
-              if (upstreamEvent && imageTags[SMF].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[SMF]) {
                 echo "Upstream Job passed SMF_TAG to use: ${imageTags[SMF]}"
                 echo "Upstream Job passed SMF_BRANCH to use: ${branchNames[SMF]}"
                 run_mini_gnbsim = true
@@ -165,7 +165,7 @@ pipeline {
             if (ii == SPGWU) {
               branchNames[SPGWU] = params.SPGWU_BRANCH
               imageTags[SPGWU] = params.SPGWU_TAG
-              if (upstreamEvent && imageTags[SPGWU].contains('ci-temp-pr')) {
+              if (upstreamEvent && upstreamJobs[SPGWU]) {
                 echo "Upstream Job passed SPGWU_TAG to use: ${imageTags[SPGWU]}"
                 echo "Upstream Job passed SPGWU_BRANCH to use: ${branchNames[SPGWU]}"
                 run_mini_gnbsim = true
@@ -178,7 +178,7 @@ pipeline {
             if (ii == AUSF) {
               branchNames[AUSF] = params.AUSF_BRANCH
               imageTags[AUSF] = params.AUSF_TAG
-              if (upstreamEvent && imageTags[AUSF].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[AUSF]) {
                 echo "Upstream Job passed AUSF_TAG to use: ${imageTags[AUSF]}"
                 echo "Upstream Job passed AUSF_BRANCH to use: ${branchNames[AUSF]}"
                 run_mini_gnbsim = false
@@ -191,7 +191,7 @@ pipeline {
             if (ii == UDM) {
               branchNames[UDM] = params.UDM_BRANCH
               imageTags[UDM] = params.UDM_TAG
-              if (upstreamEvent && imageTags[UDM].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[UDM]) {
                 echo "Upstream Job passed UDM_TAG to use: ${imageTags[UDM]}"
                 echo "Upstream Job passed UDM_BRANCH to use: ${branchNames[UDM]}"
                 run_mini_gnbsim = false
@@ -204,7 +204,7 @@ pipeline {
             if (ii == UDR) {
               branchNames[UDR] = params.UDR_BRANCH
               imageTags[UDR] = params.UDR_TAG
-              if (upstreamEvent && imageTags[UDR].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[UDR]) {
                 echo "Upstream Job passed UDR_TAG to use: ${imageTags[UDR]}"
                 echo "Upstream Job passed UDR_BRANCH to use: ${branchNames[UDR]}"
                 run_mini_gnbsim = false
@@ -217,7 +217,7 @@ pipeline {
             if (ii == NSSF) {
               branchNames[NSSF] = params.NSSF_BRANCH
               imageTags[NSSF] = params.NSSF_TAG
-              if (upstreamEvent && imageTags[UDR].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[NSSF]) {
                 echo "Upstream Job passed NSSF_TAG to use: ${imageTags[NSSF]}"
                 echo "Upstream Job passed NSSF_BRANCH to use: ${branchNames[NSSF]}"
                 run_mini_gnbsim = false
@@ -230,7 +230,7 @@ pipeline {
             if (ii == UPF_VPP) {
               branchNames[UPF_VPP] = params.UPF_VPP_BRANCH
               imageTags[UPF_VPP] = params.UPF_VPP_TAG
-              if (upstreamEvent && imageTags[UPF_VPP].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[UPF_VPP]) {
                 echo "Upstream Job passed UPF_VPP_TAG to use: ${imageTags[UPF_VPP]}"
                 echo "Upstream Job passed UPF_VPP_BRANCH to use: ${branchNames[UPF_VPP]}"
                 run_mini_gnbsim = false
@@ -243,7 +243,7 @@ pipeline {
             if (ii == PCF) {
               branchNames[PCF] = params.PCF_BRANCH
               imageTags[PCF] = params.PCF_TAG
-              if (upstreamEvent && imageTags[PCF].contains('ci-tmp-pr')) {
+              if (upstreamEvent && upstreamJobs[PCF]) {
                 echo "Upstream Job passed PCF_TAG to use: ${imageTags[PCF]}"
                 echo "Upstream Job passed PCF_BRANCH to use: ${branchNames[PCF]}"
                 run_mini_gnbsim = false
