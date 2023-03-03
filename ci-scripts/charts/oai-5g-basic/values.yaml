@@ -44,8 +44,6 @@ oai-ausf:
     version: AUSF_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
-  imagePullSecrets:
-    - name: "regcred"
   nodeSelector: {}
 oai-amf:
   enabled: true
