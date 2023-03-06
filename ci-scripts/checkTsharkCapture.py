@@ -59,6 +59,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--timeout', '-t',
         action='store',
+        type=int,
         default=30,
         help='Time-Out before leaving (in seconds)',
     )
@@ -81,7 +82,7 @@ if __name__ == '__main__':
             status = False
             break
         run_time = time.time() - start_time
-        if int(run_time) > int(args.timeout):
+        if int(run_time) > args.timeout:
             status = False
             timeOut = True
             break

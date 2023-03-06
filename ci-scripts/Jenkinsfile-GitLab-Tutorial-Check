@@ -80,7 +80,6 @@ pipeline {
 
           // Find out the cause of the trigger
           for (cause in currentBuild.getBuildCauses()) {
-            println cause.toString()
             if (cause.toString().contains('UpstreamCause')) {
               upstreamEvent = true
             }

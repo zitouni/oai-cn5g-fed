@@ -39,8 +39,9 @@ services:
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
             - NRF_FQDN=oai-nrf
-            # change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -63,10 +64,10 @@ services:
             - UDR_FQDN=oai-udr
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NRF_FQDN=oai-nrf
-            # change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
         depends_on:
             - oai-udr
         networks:
@@ -84,14 +85,14 @@ services:
             - SBI_IF_NAME=eth0
             - USE_FQDN_DNS=yes
             - UDM_IP_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
             - REGISTER_NRF=yes
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NRF_FQDN=oai-nrf
-            #change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - UDM_PORT=8080
+            - NRF_PORT=8080
         depends_on:
             - oai-udm
         networks:
@@ -154,19 +155,20 @@ services:
             - SMF_HTTP_VERSION_0=v2
             - SELECTED_0=true
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - NF_REGISTRATION=yes
             - USE_FQDN_DNS=yes
             - EXTERNAL_AUSF=yes
+            - EXTERNAL_UDM=no
             - NRF_FQDN=oai-nrf
             - AUSF_IPV4_ADDRESS=192.168.70.138
-            - AUSF_PORT=8080
             - AUSF_FQDN=oai-ausf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
-            #change for HTTP2
+            # changes for HTTP2
             - USE_HTTP2=yes
+            - NRF_PORT=8080
+            - AUSF_PORT=8080
+            - UDM_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -188,21 +190,22 @@ services:
             - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
             - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
             - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_PORT=8080
             - AMF_FQDN=oai-amf
             - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_PORT=8080
             - UDM_FQDN=oai-udm
             - UPF_IPV4_ADDRESS=192.168.70.134
             - UPF_FQDN_0=oai-spgwu
             - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_PORT=8080
             - USE_LOCAL_SUBSCRIPTION_INFO=yes
             - NRF_FQDN=oai-nrf
             - REGISTER_NRF=yes
             - DISCOVER_UPF=yes
             - USE_FQDN_DNS=yes
+            # changes for HTTP2
             - HTTP_VERSION=2
+            - AMF_PORT=8080
+            - UDM_PORT=8080
+            - NRF_PORT=8080
             - UE_MTU=1500
             # Slice 0 (1, 0xFFFFFF)
             - DNN_NI0=oai

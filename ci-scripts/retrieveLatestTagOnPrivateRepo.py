@@ -38,21 +38,33 @@ PRIVATE_LOCAL_REGISTRY_URL='https://selfix.sboai.cs.eurecom.fr:443'
 
 def main() -> None:
     args = _parse_args()
+    if args.repo_name == '5gc-gnbsim':
+        tagRoot = 'main'
+        nbChars = 11
+    else:
+        tagRoot = 'develop'
+        nbChars = 15
 
     cmd = f'curl --insecure -Ss -u oaicicd:oaicicd {PRIVATE_LOCAL_REGISTRY_URL}/v2/{args.repo_name}/tags/list | jq .'
     tagList = run_cmd(cmd)
     latestTag = ''
     latestDate = datetime.strptime('2022-01-01T00:00:00', '%Y-%m-%dT%H:%M:%S')
     for line in tagList.split('\n'):
-        res = re.search('"(?P<tag>develop-[0-9a-zA-Z]+)"', line)
+        res = re.search(f'"(?P<tag>{tagRoot}-[0-9a-zA-Z]+)"', line)
         if res is not None:
             tag = res.group('tag')
             # on SPGWU / GitHub     `git log -1 --pretty=format:"%h"` returns 7 characters
             # on other NF / GitLab  `git log -1 --pretty=format:"%h"` returns 8 characters
-            if len(tag) == 15 or len(tag) == 16:
+            if len(tag) == nbChars or len(tag) == (nbChars+1):
                 cmd = f'curl --insecure -Ss -u oaicicd:oaicicd {PRIVATE_LOCAL_REGISTRY_URL}/v2/{args.repo_name}/manifests/{tag} | jq .history'
                 tagInfo = run_cmd(cmd)
                 res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*docker_version', tagInfo)
+                if res2 is not None:
+                    date = datetime.strptime(res2.group('date'), '%Y-%m-%dT%H:%M:%S')
+                    if date > latestDate:
+                        latestDate = date
+                        latestTag = tag
+                res2 = re.search('"created.*(?P<date>202[0-9-]\-[0-9]+-[0-9]+T[0-9]+:[0-9]+:[0-9]+).*container_config.*WORKDIR', tagInfo)
                 if res2 is not None:
                     date = datetime.strptime(res2.group('date'), '%Y-%m-%dT%H:%M:%S')
                     if date > latestDate:

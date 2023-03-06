@@ -28,12 +28,16 @@ BUTTON_FOOTER_TEMPLATE = 'ci-scripts/html-templates/button-footer.htm'
 IMAGE_TABLE_HEADER_TEMPLATE = 'ci-scripts/html-templates/image-table-header.htm'
 IMAGE_TABLE_FOOTER_TEMPLATE = 'ci-scripts/html-templates/image-table-footer.htm'
 IMAGE_TABLE_ROW_TEMPLATE = 'ci-scripts/html-templates/image-table-row.htm'
+IMAGE_TABLE_SEP_TEMPLATE = 'ci-scripts/html-templates/image-table-sep.htm'
 COMMAND_TABLE_HEADER_TEMPLATE = 'ci-scripts/html-templates/command-table-header.htm'
 COMMAND_TABLE_FOOTER_TEMPLATE = 'ci-scripts/html-templates/command-table-footer.htm'
 COMMAND_TABLE_ROW_TEMPLATE = 'ci-scripts/html-templates/command-table-row.htm'
 LIST_HEADER_TEMPLATE = 'ci-scripts/html-templates/list-header.htm'
 LIST_FOOTER_TEMPLATE = 'ci-scripts/html-templates/list-footer.htm'
 LIST_ROW_TEMPLATE = 'ci-scripts/html-templates/list-row.htm'
+LIST_SUB_HEADER_TEMPLATE = 'ci-scripts/html-templates/list-sub-header.htm'
+LIST_SUB_FOOTER_TEMPLATE = 'ci-scripts/html-templates/list-sub-footer.htm'
+LIST_SUB_ROW_TEMPLATE = 'ci-scripts/html-templates/list-sub-row.htm'
 
 import os
 import re
@@ -110,6 +114,13 @@ def generate_image_table_row(name, tag, ocTag, creationDate, size):
         row = re.sub('IMAGE_SIZE', size, row)
     return row
 
+def generate_image_table_separator():
+    cwd = os.getcwd()
+    row = ''
+    with open(os.path.join(cwd, IMAGE_TABLE_SEP_TEMPLATE), 'r') as temp:
+        row = temp.read()
+    return row
+
 def generate_command_table_header():
     cwd = os.getcwd()
     header = ''
@@ -159,4 +170,29 @@ def generate_list_row(message, iconName):
         row = temp.read()
         row = re.sub('ROW_MESSAGE', message, row)
         row = re.sub('ICON_NAME', iconName, row)
+    return row
+
+def generate_list_sub_header():
+    cwd = os.getcwd()
+    header = ''
+    with open(os.path.join(cwd, LIST_SUB_HEADER_TEMPLATE), 'r') as temp:
+        header = temp.read()
+    return header
+
+def generate_list_sub_footer():
+    cwd = os.getcwd()
+    footer = ''
+    with open(os.path.join(cwd, LIST_SUB_FOOTER_TEMPLATE), 'r') as temp:
+        footer = temp.read()
+    return footer
+
+# bagdeColor can be 'primary', 'secondary', 'success', 'danger', 'warning', 'info', 'light', 'dark'
+def generate_list_sub_row(message, nbInBadge, bagdeColor):
+    cwd = os.getcwd()
+    row = ''
+    with open(os.path.join(cwd, LIST_SUB_ROW_TEMPLATE), 'r') as temp:
+        row = temp.read()
+        row = re.sub('ROW_MESSAGE', message, row)
+        row = re.sub('NUMBER', nbInBadge, row)
+        row = re.sub('LEVEL', bagdeColor, row)
     return row

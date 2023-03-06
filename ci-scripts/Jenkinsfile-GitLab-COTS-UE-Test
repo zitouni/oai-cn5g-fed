@@ -120,6 +120,7 @@ pipeline {
             }
             if ((branchNames[ii] == "develop") && (baseTags[ii] == "develop")) {
               destTags[ii] = getLastCommitFromBranch(ii, repoNames[ii], branchNames[ii])
+              baseTags[ii] = getCorrectBaseTag(imageNames[ii], destTags[ii])
             } else {
               destTags[ii] = baseTags[ii]
             }
@@ -443,11 +444,12 @@ pipeline {
 }
 
 def getLastCommitFromBranch(index, repoName, branchName) {
-  if (ii != SPGWU) {
+  if (index != SPGWU) {
     echo "Checking on GitLab"
-    shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.short_id"
+    shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.id"
     shaone = shaone.trim()
     shaone = shaone.replaceAll('"','')
+    shaone = shaone.take(8)
   } else {
     echo "Checking on GitHub"
     shaone = sh returnStdout: true, script: "curl --silent 'https://api.github.com/repos/OPENAIRINTERFACE/${repoName}/branches/${branchName}' | jq .commit.sha"
@@ -456,6 +458,17 @@ def getLastCommitFromBranch(index, repoName, branchName) {
     shaone = shaone.take(8)
   }
   return "${branchName}-${shaone}"
+}
+
+def getCorrectBaseTag(imageName, destTag) {
+  baseTag = "develop"
+  try {
+    sh "sudo podman images | grep ${imageName} | grep ${destTag}"
+    baseTag = destTag
+  } catch (Exception e) {
+    echo "Still using develop as base tag"
+  }
+  return baseTag
 }
 
 def checkImageInfo (imageName, origTag) {
