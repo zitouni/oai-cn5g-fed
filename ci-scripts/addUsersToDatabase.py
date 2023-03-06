@@ -23,10 +23,9 @@ For more information about the OpenAirInterface (OAI) Software Alliance:
 
 import argparse
 import logging
+import os
 import re
 import sys
-import time
-import cls_cmd
 
 logging.basicConfig(
     level=logging.DEBUG,
@@ -41,65 +40,56 @@ def _parse_args() -> argparse.Namespace:
         argparse.Namespace: the created parser
     """
     example_text = '''example:
-        ./ci-scripts/checkContainerStatus.py --help
-        ./ci-scripts/checkContainerStatus.py --container_name NameOfContainer --timeout MaxTimeInSeconds'''
+        ./ci-scripts/addUsersToDatabase.py --help
+        ./ci-scripts/addUsersToDatabase.py --database-file SQL_FILENAME --nb-users NB_USERS_TO_ADD'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK Utility tool',
                                     epilog=example_text,
                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
-    # Container Name
     parser.add_argument(
-        '--container_name', '-n',
+        '--database-file', '-df',
         action='store',
-        help='Name of Container to follow',
+        help='SQL File to modify',
     )
 
-    # Time out in seconds
     parser.add_argument(
-        '--timeout', '-t',
+        '--nb-users', '-n',
         action='store',
         type=int,
         default=30,
-        help='Time-Out before leaving (in seconds)',
+        help='Number of Users to add',
     )
     return parser.parse_args()
 
 if __name__ == '__main__':
     # Parse the arguments
     args = _parse_args()
-    start_time = time.time()
 
-    myCmds = cls_cmd.LocalCmd()
-    doLoop = True
-    silent = False
-    status = True
-    timeOut = False
-    while doLoop:
-        res = myCmds.run('docker inspect --format="STATUS: {{.State.Health.Status}}" ' + args.container_name, silent=silent)
-        silent = True
-        if res.returncode != 0:
-            status = False
-            break
-        run_time = time.time() - start_time
-        if int(run_time) > args.timeout:
-            status = False
-            timeOut = True
-            break
-        if re.search('STATUS: healthy', res.stdout) is not None:
-            status = True
-            break
-        else:
-            time.sleep(2)
-
-    myCmds.close()
-    run_time = time.time() - start_time
-    if status:
-        logging.debug(f'Healthy in {run_time:.2f} seconds')
-        sys.exit(0)
-    else:
-        if timeOut:
-            logging.error(f'Time-out in {run_time:.2f} seconds; not healthy yet')
-        else:
-            logging.error(f'Something went wrong!')
+    cwd = os.getcwd()
+    if not os.path.isfile(os.path.join(cwd, args.database_file)):
+        logging.error(f'{args.database_file} does not exist')
         sys.exit(-1)
+
+    lines = ''
+    with open(os.path.join(cwd, args.database_file), 'r') as rfile:
+        for line in rfile:
+           lines += line
+           if (re.search('208950000000128', line) is not None) and (re.search('defaultSingleNssais', line) is not None):
+               count = 0
+               while count < args.nb_users:
+                   newImsi = format(count + 130, '08d')
+                   lines += re.sub('208950000000128', f'2089500{newImsi}', line)
+                   count += 1
+
+           if (re.search('208950000000130', line) is not None) and (re.search('5G_AKA', line) is not None):
+               count = 0
+               while count < args.nb_users:
+                   newImsi = format(count + 132, '08d')
+                   lines += re.sub('208950000000130', f'2089500{newImsi}', line)
+                   count += 1
+
+    with open(os.path.join(cwd, args.database_file), 'w') as wfile:
+        wfile.write(lines)
+
+    sys.exit(0)
