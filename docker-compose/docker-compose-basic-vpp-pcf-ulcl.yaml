@@ -263,23 +263,17 @@ services:
         image: oaisoftwarealliance/oai-pcf:develop
         container_name: "oai-pcf"
         environment:
-            - INSTANCE=0
-            - PID_DIRECTORY=/var/run
-            - SBI_IF_NAME=eth0
-            - SBI_PORT=80
-            - PCF_FQDN=oai-pcf
             - PCF_NAME=OAI-PCF
+            - SBI_IF_NAME=eth0
             - SBI_PORT_HTTP1=80
             - SBI_PORT_HTTP2=9090
             - SBI_API_VERSION=v1
+            - SBI_HTTP_VERSION=1
             - REGISTER_NRF=yes
-            - USE_FQDN_DNS=no
-            - USE_HTTP2=no
-            - PCF_SLICE_CONFIG=123-222
-            - NRF_API_VERSION=v1
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
+            - CLIENT_HTTP_VERSION=1
+            - NRF_HOST=oai-nrf
             - NRF_PORT=80
+            - NRF_API_VERSION=v1
             - POLICY_DECISIONS_DIR=/openair-pcf/policies/policy_decisions
             - PCC_RULES_DIR=/openair-pcf/policies/pcc_rules
             - TRAFFIC_RULES_DIR=/openair-pcf/policies/traffic_rules
