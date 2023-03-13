@@ -328,10 +328,22 @@ def detailsUeStopTest(runNb):
         detailsHtml += generate_list_footer()
         detailsHtml += generate_button_footer()
         return (False, detailsHtml)
+    status = True
+    previousCmd = ''
+    errorIssues = ''
+    with open(os.path.join(cwd, f'archives/test-stop{runNb}.log'), 'r') as testRunLog:
+        for line in testRunLog:
+            if re.search('^---- ', line) is not None:
+                previousCmd = re.sub('^---- ', '', line.strip())
+            if re.search('error: operation failed:', line) is not None:
+                status = False
+                errorIssues += generate_list_row(f'This command returned an error: <pre><b>{previousCmd}</b></pre>', 'fire')
+                errorIssues += generate_list_row(line.strip(), 'remove-sign')
+    detailsHtml += errorIssues
     detailsHtml += generate_list_row(f'More details in archives/test-stop{runNb}.log', 'info-sign')
     detailsHtml += generate_list_footer()
     detailsHtml += generate_button_footer()
-    return (True, detailsHtml)
+    return (status, detailsHtml)
 
 if __name__ == '__main__':
     # Parse the arguments
