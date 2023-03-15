@@ -36,8 +36,8 @@ logging.basicConfig(
 )
 
 LOOP_INTERVAL = 5
-NB_GNBSIM_INSTANCES = 4
-NB_PROFILES = [1, 1, 1, 1]
+NB_GNBSIM_INSTANCES = 8
+NB_PROFILES = [1, 1, 1, 1, 1, 1, 1, 1]
 
 def main() -> None:
     #Parse arguments

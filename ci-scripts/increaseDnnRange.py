@@ -71,7 +71,8 @@ if __name__ == '__main__':
         logging.error(f'{args.docker_compose_file} does not exist')
         sys.exit(-1)
 
-    endingIP = '12.1.1.50'
+    startingIP = '12.1.0.2'
+    endingIP = '12.1.0.50'
     cicdrSuffix = '24'
     if args.nb_users < 1023:
         endingIP = '12.1.3.254'
@@ -95,11 +96,13 @@ if __name__ == '__main__':
            if (re.search('DNN_RANGE0=12', line) is not None) or (re.search('DNN_RANGE1=12', line) is not None):
                lines += re.sub('12', '13', line)
            elif (re.search('DNN_RANGE2=12', line) is not None):
-               lines += re.sub('12.1.1.50', f'{endingIP}', line)
+               lines += re.sub('12.1.1.2 - 12.1.1.50', f'{startingIP} - {endingIP}', line)
            elif (re.search('NETWORK_UE_IP=12.1.1.0/24', line) is not None):
-               lines += re.sub('12.1.1.0/24', f'12.1.1.0/{cicdrSuffix}', line)
+               lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
            elif (re.search('ip route add 12.1.1.0/24', line) is not None):
-               lines += re.sub('12.1.1.0/24', f'12.1.1.0/{cicdrSuffix}', line)
+               lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
+           elif (re.search('grep 12.1.1', line) is not None):
+               lines += re.sub('grep 12.1.1', 'grep 12.1.0', line)
            else:
                lines += line
 
