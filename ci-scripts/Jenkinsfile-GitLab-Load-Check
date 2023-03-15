@@ -208,9 +208,9 @@ pipeline {
           sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --amf-silent'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
-            echo 'Adding 8000 Users to database'
-            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 8000'
-            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 8000'
+            echo 'Adding 16000 Users to database'
+            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             // No tshark: too big
@@ -248,11 +248,11 @@ pipeline {
       steps {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
-            sh 'sed -i -e "s@TEST_REGISTER@True@" -e "s@NB_REGISTRATIONS@1250@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_REGISTER@True@" -e "s@NB_REGISTRATIONS@625@" omec-gnbsim-config-*.yaml'
             sh 'sed -i -e "s@TEST_PDU_SESSION@False@" -e "s@NB_PDU_SESSIONS@10@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
-            // Test should be finished in 300 seconds
-            sh '../../checkOmecGnbsimStatus.py --timeout 500'
+            // Test should be finished in 150 seconds
+            sh '../../checkOmecGnbsimStatus.py --timeout 250'
           }
           retrieveGnbsimLogs('archives/registration-test', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
@@ -300,9 +300,9 @@ pipeline {
         script {
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
-            echo 'Adding 8000 Users to database'
-            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 8000'
-            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 8000'
+            echo 'Adding 16000 Users to database'
+            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
@@ -340,11 +340,11 @@ pipeline {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'sed -i -e "s@TEST_REGISTER@False@" -e "s@NB_REGISTRATIONS@10@" omec-gnbsim-config-*.yaml'
-            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@150@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@125@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
             // One UE takes 3.7 seconds to finish (3 seconds for the traffic test)
-            // 150 UE x 3.7 = 555 seconds
-            sh '../../checkOmecGnbsimStatus.py --timeout 600 || true'
+            // 125 UE x 3.7 = 460 seconds (ie 8 minutes)
+            sh '../../checkOmecGnbsimStatus.py --timeout 500'
           }
           retrieveGnbsimLogs('archives/pdu-sess-est-test', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
@@ -392,9 +392,9 @@ pipeline {
         script {
           updateDockerCompose('docker-compose/docker-compose-basic-nrf-http2.yaml', gnbsimTag)
           dir ('docker-compose') {
-            echo 'Adding 8000 Users to database'
-            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 8000'
-            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 8000'
+            echo 'Adding 16000 Users to database'
+            sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
@@ -432,7 +432,7 @@ pipeline {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'sed -i -e "s@TEST_REGISTER@False@" -e "s@NB_REGISTRATIONS@10@" omec-gnbsim-config-*.yaml'
-            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@10@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@5@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
             // Test should fail in less than 60 seconds
             sh '../../checkOmecGnbsimStatus.py --timeout 120 || true'
@@ -566,10 +566,9 @@ def retrieveGnbsimLogs(logPath, dcPath) {
   sh "mkdir -p ${logPath}"
   sh "cp ${dcPath}/*.yaml ${logPath}"
   sh "mv ${dcPath}/*.png ${logPath}"
-  sh "docker logs omec-gnbsim-0 > ${logPath}/omec-gnbsim-0.log 2>&1"
-  sh "docker logs omec-gnbsim-1 > ${logPath}/omec-gnbsim-1.log 2>&1"
-  sh "docker logs omec-gnbsim-2 > ${logPath}/omec-gnbsim-2.log 2>&1"
-  sh "docker logs omec-gnbsim-3 > ${logPath}/omec-gnbsim-3.log 2>&1"
+  for (ii = 0; ii < 8; ii++) {
+    sh "docker logs omec-gnbsim-${ii} > ${logPath}/omec-gnbsim-${ii}.log 2>&1"
+  }
 }
 
 def retrieveLogs(logPath, dcFileName) {

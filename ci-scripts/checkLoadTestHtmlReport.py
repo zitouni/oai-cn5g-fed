@@ -66,6 +66,9 @@ class HtmlReport():
     def testSummary(self, testName, testPath):
         cwd = os.getcwd()
 
+        if not os.path.isdir(cwd + '/archives/' + testPath):
+            return ''
+
         log_files = sorted(os.listdir(cwd + '/archives/' + testPath))
         deployedContainerImages = []
         for log_file in log_files:
@@ -110,6 +113,8 @@ class HtmlReport():
 
         instancesDetails = []
         fullTestStatus = True
+        fullCountUePassed = 0
+        fullCountUeFailed = 0
         for log_file in log_files:
             if not log_file.endswith(".log"):
                 continue
@@ -141,9 +146,15 @@ class HtmlReport():
             instancesDetails.append((testCompleted, testPassed, profileName, profileType, passedUeCount, failedUeCount))
             if not testCompleted or not testPassed:
                 fullTestStatus = False
+            fullCountUePassed += passedUeCount
+            fullCountUeFailed += failedUeCount
 
         testDetails = ''
-        testDetails += generate_chapter(f'Load Test Summary for {testName}', '', fullTestStatus)
+        if fullCountUeFailed == 0:
+            message = f'Test Passed for all {fullCountUePassed} Users'
+        else:
+            message = f'Test Passed for only {fullCountUePassed} Users and Failed for {fullCountUeFailed}'
+        testDetails += generate_chapter(f'Load Test Summary for {testName}', message, fullTestStatus)
         testDetails += generate_button_header(f'{testPath}-details', 'More details on load test results')
         testDetails += generate_image_table_header()
         for (cName,iTag,iSize,iDate) in deployedContainerImages:
