@@ -308,10 +308,34 @@ Here we try some scaling testing with gnbsim. There are additional IMSIs added i
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim2
 Creating gnbsim2 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim2 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim3
 Creating gnbsim3 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim3 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim4
 Creating gnbsim4 ... done
+```
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim4 --timeout 40
+```
+-->
+``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim5
 Creating gnbsim5 ... done
 ```
