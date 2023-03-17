@@ -105,6 +105,7 @@ services:
             - 80/tcp
             - 8080/tcp
         environment:
+            - TZ=Europe/Paris
             - NRF_INTERFACE_NAME_FOR_SBI=eth0
             # The default HTTP2 port is 8080 for all network functions
             # It is shown here as example.
@@ -121,7 +122,7 @@ services:
             - 8080/tcp
             - 38412/sctp
         environment:
-            - TZ=Europe/paris
+            - TZ=Europe/Paris
             - MCC=208
             - MNC=95
             - REGION_ID=128

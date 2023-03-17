@@ -392,7 +392,7 @@ pipeline {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
-          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --all-log-level error'
+          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf-http2.yaml --all-log-level error'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf-http2.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
