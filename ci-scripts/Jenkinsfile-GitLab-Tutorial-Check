@@ -145,7 +145,7 @@ pipeline {
                 run_static_ue_ip = true
                 run_vpp_upf = true
                 run_slicing_w_nssf = true
-                run_ulcl_pcf = false
+                run_ulcl_pcf = true
               }
             }
             if (ii == SMF) {
