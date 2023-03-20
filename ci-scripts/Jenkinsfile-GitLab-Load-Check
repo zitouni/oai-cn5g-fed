@@ -46,7 +46,7 @@ pulledImages = [false, false, false, false, false, false, false]
 gnbsimTag = params.gnbsimTag
 
 // Flags
-doTsharkCaptureRegistration = false
+doTsharkCaptureRegistration = true
 doTsharkCapturePDUSession = true
 doTsharkCapturePDUSessionHttp2 = true
 
