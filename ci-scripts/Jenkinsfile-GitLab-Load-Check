@@ -388,7 +388,7 @@ pipeline {
         }
       }
     }
-    stage ('Deploy OAI-CN5G in Basic-NRF - PDU Sess Est Test - HTTP2') {
+    stage ('Deploy OAI-CN5G in Basic-NRF - Deregistration Test - HTTP2') {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
@@ -420,7 +420,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/pdu-sess-est-test-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+            retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
             }
@@ -430,16 +430,18 @@ pipeline {
       }
     }
     // PDU Session Establishment Test should not fail
-    stage ('PDU Session Establishment Test - HTTP2') {
+    stage ('Deregistration Test - HTTP2') {
       steps {
         script {
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'sed -i -e "s@TEST_REGISTER@False@" -e "s@NB_REGISTRATIONS@10@" omec-gnbsim-config-*.yaml'
-            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@5@" omec-gnbsim-config-*.yaml'
+            sh 'sed -i -e "s@TEST_PDU_SESSION@True@" -e "s@NB_PDU_SESSIONS@125@" -e "s@pdusessest@deregister@" omec-gnbsim-config-*.yaml'
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml up -d'
-            sh '../../checkOmecGnbsimStatus.py --timeout 120'
+            // One UE takes 3.7 seconds to finish (3 seconds for the traffic test)
+            // 125 UE x 3.7 = 460 seconds (ie 8 minutes)
+            sh '../../checkOmecGnbsimStatus.py --timeout 500'
           }
-          retrieveGnbsimLogs('archives/pdu-sess-est-test-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
+          retrieveGnbsimLogs('archives/deregistration-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
           dir ('ci-scripts/docker-compose/load-test-gnbsim') {
             sh 'docker-compose -f docker-compose-omec-gnbsim.yaml down -t 0'
           }
@@ -448,7 +450,7 @@ pipeline {
       post {
         unsuccessful {
           script {
-            retrieveGnbsimLogs('archives/pdu-sess-est-test-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
+            retrieveGnbsimLogs('archives/deregistration-http2', 'ci-scripts/docker-compose/load-test-gnbsim')
             dir ('ci-scripts/docker-compose/load-test-gnbsim') {
               sh 'docker-compose -f docker-compose-omec-gnbsim.yaml down -t 0'
             }
@@ -456,7 +458,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/pdu-sess-est-test-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+            retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
             }
@@ -465,14 +467,14 @@ pipeline {
         }
       }
     }
-    stage ('Undeploy OAI-CN5G - PDU Sess Est Test - HTTP2') {
+    stage ('Undeploy OAI-CN5G - Deregistration Test - HTTP2') {
       steps {
         script {
           dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives/pdu-sess-est-test-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
+          retrieveLogs('archives/deregistration-http2', 'docker-compose/docker-compose-basic-nrf-http2.yaml')
           dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf-http2.yaml down -t 3'
           }
