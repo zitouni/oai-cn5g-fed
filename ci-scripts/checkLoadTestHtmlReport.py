@@ -58,7 +58,7 @@ class HtmlReport():
             wfile.write(generate_header(args))
             loadTests = [('Registration', 'registration-test'), \
                          ('PDU Session Establishment', 'pdu-sess-est-test'),
-                         ('PDU Session Establishment - HTTP2', 'pdu-sess-est-test-http2')]
+                         ('Deregistration - HTTP2', 'deregistration-http2')]
             for (testName, testPath) in loadTests:
                 wfile.write(self.testSummary(testName, testPath))
             wfile.write(generate_footer())
