@@ -2,7 +2,7 @@
 # This script requires below environment variables
 # DNN1 -- dnn of the second PDU session
 
-DEVICE=$(ls /dev/cdc*)
+DEVICE=/dev/cdc-wdm0
 INTERFACE=${INTERFACE:-wwan0}
 DNN1=ims
 echo "---- mbimcli -d ${DEVICE} -p --disconnect=0"
