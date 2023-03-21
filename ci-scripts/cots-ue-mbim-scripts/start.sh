@@ -16,7 +16,7 @@ DNN1=ims
 DNN_TYPE0=${DNN_TYPE0:-ipv4}
 DNN_TYPE1=${DNN_TYPE1:-ipv4v6}
 INTERFACE=${INTERFACE:-wwan0}
-DEVICE=$(ls /dev/cdc*)
+DEVICE=/dev/cdc-wdm0
 
 echo "-------Setting up $INTERFACE for testing-------"
 ifconfig $INTERFACE up
