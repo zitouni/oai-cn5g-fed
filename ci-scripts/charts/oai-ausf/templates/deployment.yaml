@@ -116,6 +116,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: ausfName
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
           - name: SBI_IF_NAME
             valueFrom:
               configMapKeyRef:

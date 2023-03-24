@@ -112,6 +112,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: nrfApiVersion
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
       volumes:
       {{- if .Values.persistent.sharedvolume}}
       - name: cn5g-pvc

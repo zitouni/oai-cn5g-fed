@@ -71,6 +71,8 @@ config:
   useLocalSubscriptionInfo: "yes" # If yes ip-allocation will be handled by SMF if no the information will be reterived from UDM
   useFqdnDns: "yes" # use only when the DNS can resolve FQDN of other network functions
   useLocalPCCRules: "yes"      # Set to yes if SMF uses local PCC rules instead of from an PCF
+  useDlPdrInPfcpSessEsta: "no" # Set to yes if Downlink PDR is to be included in PFCP session establishment message
+  localN3Ipv4Address: "0.0.0.0" # for SD-Fabric UPF
   discoverPcf: "no"            # Set to yes if PCF is used and want to be discovered via NRF
   ueMtu: 1500
   registerNrf: "yes" # if wants to use NRF registry and discovery
@@ -96,7 +98,7 @@ config:
   qosProfile5qi1: 1
   sessionAmbrUl1: "1000Mbps"
   sessionAmbrDl1: "1000Mbps"
-
+  logLevel: "info"
 
 ## currently only used by tcpdump container to store the tcpdump, this volume will be shared between all the network functions (If true it should be true for all the NFs specially NRF)
 persistent:
