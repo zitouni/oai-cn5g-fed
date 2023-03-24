@@ -114,6 +114,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: pidDirectory
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
           - name: USE_FQDN_DNS
             valueFrom:
               configMapKeyRef:

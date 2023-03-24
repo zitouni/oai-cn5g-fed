@@ -71,6 +71,11 @@ spec:
               configMapKeyRef:
                 name: {{ .Chart.Name }}-configmap
                 key: pidDirectory
+          - name: LOG_LEVEL
+            valueFrom:
+              configMapKeyRef:
+                name: {{ .Chart.Name }}-configmap
+                key: logLevel
           - name: UDM_NAME
             valueFrom:
               configMapKeyRef:
