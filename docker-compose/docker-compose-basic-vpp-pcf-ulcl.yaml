@@ -262,23 +262,9 @@ services:
     oai-pcf:
         image: oaisoftwarealliance/oai-pcf:develop
         container_name: "oai-pcf"
-        environment:
-            - PCF_NAME=OAI-PCF
-            - SBI_IF_NAME=eth0
-            - SBI_PORT_HTTP1=80
-            - SBI_PORT_HTTP2=9090
-            - SBI_API_VERSION=v1
-            - SBI_HTTP_VERSION=1
-            - REGISTER_NRF=yes
-            - CLIENT_HTTP_VERSION=1
-            - NRF_HOST=oai-nrf
-            - NRF_PORT=80
-            - NRF_API_VERSION=v1
-            - POLICY_DECISIONS_DIR=/openair-pcf/policies/policy_decisions
-            - PCC_RULES_DIR=/openair-pcf/policies/pcc_rules
-            - TRAFFIC_RULES_DIR=/openair-pcf/policies/traffic_rules
         volumes:
             - ./policies:/openair-pcf/policies
+            - ./conf/ulcl_config.yaml:/openair-pcf/etc/config.yaml
         depends_on:
             - oai-nrf
         networks:
