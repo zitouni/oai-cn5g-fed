@@ -87,7 +87,10 @@ pipeline {
       steps {
         script {
           echo '\u2705 \u001B[32mVerify Parameters\u001B[0m'
-          sh "git clean -x -d -f > /dev/null 2>&1"
+          sh "git clean -x -d -ff > /dev/null 2>&1"
+          sh "git submodule foreach --recursive 'git clean -x -d -ff' > /dev/null 2>&1"
+          sh "git submodule deinit --force --all > /dev/null 2>&1"
+          sh "git submodule update --init --recursive ci-scripts/common"
           sh "mkdir -p archives"
           for (ii = 0; ii < imageNames.size(); ii++) {
             if (ii == NRF) {
@@ -545,6 +548,14 @@ def retrieveLogsFromPods() {
     } catch (Exception e) {
       echo "Getting logs from ${podName} failed"
     }
+  }
+  // Retrieving mysql logs
+  podName = sh returnStdout: true, script: "oc get pods | grep mysql | awk {'print \$1'} || true"
+  podName = podName.trim()
+  try {
+    sh "oc logs ${podName} &> archives/mysql.logs"
+  } catch (Exception e) {
+    echo "Getting logs from ${podName} failed"
   }
   sh "oc describe pod &> archives/describe-pods-post-test.logs"
   sh "oc get pods.metrics.k8s.io &> archives/nf-resource-consumption.log"
