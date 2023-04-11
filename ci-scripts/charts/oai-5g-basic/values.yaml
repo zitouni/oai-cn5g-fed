@@ -127,6 +127,25 @@ oai-spgwu-tiny:
     dnn1: "ims" # should match with SMF information
     logLevel: "debug"
   nodeSelector: {}
+oai-traffic-server:
+  enabled: true
+  weight: 6
+  kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
+  trafficServer:
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-traffic-server
+    version: latest
+    #pullPolicy: IfNotPresent or Never or Always
+    pullPolicy: IfNotPresent
+  multus:
+    create: true
+    n3Ip: "172.21.6.202"
+    n3Netmask: "22"
+    n6Gw: "172.21.7.254"
+    hostInterface: "bond0"
+  config:
+    ueroute: 12.1.1.0/24
+    upfIpadd: 172.21.6.201
+    noOfIperf3Server: 2
 oai-smf:
   enabled: true
   weight: 6
