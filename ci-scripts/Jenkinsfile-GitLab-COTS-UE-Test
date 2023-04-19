@@ -302,7 +302,7 @@ pipeline {
             sh 'sudo chmod 666 /tmp/test-st*.log'
             sh 'cp /tmp/test-st*.log archives'
             sh 'sudo rm /tmp/test-st*.log'
-            stash includes: 'archives/test-st*.log', name: 'ue_logs'
+            stash includes: 'archives/*.log', name: 'ue_logs'
             // We will extend with other kinds of UE (smartphones, ...)
           }
         }
@@ -602,15 +602,9 @@ def checkStatusOnGNB() {
   if (cnt != 30) {
     status += 1
   }
-  amfStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep 'Received NGAP_REGISTER_GNB_CNF'"
-  if (amfStatus.contains('Received NGAP_REGISTER_GNB_CNF: associated AMF 1')) {
-    echo "gNB is connected to AMF"
-  } else {
-    status += 2
-  }
   cnt = 0
   while (cnt < 10) {
-    syncStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep sync"
+    syncStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep sync || true"
     if (syncStatus.contains('got sync')) {
       echo "gNB radio is ready"
       cnt = 30
@@ -621,6 +615,12 @@ def checkStatusOnGNB() {
   }
   if (cnt != 30) {
     status += 4
+  }
+  amfStatus = sh returnStdout: true, script: "docker logs sa-b210-gnb 2>&1 | grep 'Received NGAP_REGISTER_GNB_CNF' || true"
+  if (amfStatus.contains('Received NGAP_REGISTER_GNB_CNF: associated AMF 1')) {
+    echo "gNB is connected to AMF"
+  } else {
+    status += 2
   }
   return status
 }
