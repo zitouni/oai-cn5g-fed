@@ -15,12 +15,18 @@ spec:
     metadata:
       labels:
         {{- include "oai-smf.selectorLabels" . | nindent 8 }}
-    {{- if .Values.multus.create }}
+    {{- if .Values.multus.n4Interface.create }}
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-n4-net1",
-                 "default-route": ["{{ .Values.multus.n4Gateway }}"]
+                 "name": "{{ .Chart.Name }}-n4",
+                 "interface": "n4"
+                {{- if .Values.multus.defaultGateway }}
+                 ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
+                {{- end }}
+                {{- if .Values.multus.n4Interface.Gateway }}
+                ,"gateway": "{{ .Values.multus.n4Interface.Gateway }}"
+                {{- end }}
           }]
     {{- end }}
     spec:
@@ -37,43 +43,50 @@ spec:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
       containers:
+    {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"
         imagePullPolicy: {{ .Values.tcpdumpimage.pullPolicy }}
+        {{- if .Values.resources.define}}
+        resources:
+          requests:
+            memory: {{ .Values.resources.requests.tcpdump.memory | quote }}
+            cpu: {{ .Values.resources.requests.tcpdump.cpu | quote }}
+          limits:
+            memory: {{ .Values.resources.limits.tcpdump.memory | quote }}
+            cpu: {{ .Values.resources.limits.tcpdump.cpu | quote }}
+        {{- end}}
         securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
+           privileged: true
+           capabilities:
+              add:
+               - NET_ADMIN
+              drop:
+               - ALL
         {{- if .Values.start.tcpdump}}
         command:
           - /bin/sh
           - -c
-          - /usr/sbin/tcpdump -i any -w /pcap/oai-smf_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
+          - /usr/sbin/tcpdump -i any -w /tmp/pcap/{{ .Chart.Name }}_`date +%Y-%m-%d_%H_%M-%S-%Z`.pcap
         {{- else}}
-        {{- if .Values.resources.define}}
-        resources:
-          requests:
-            memory: {{ .Values.resources.tcpdump.requests.memory | quote }}
-            cpu: {{ .Values.resources.tcpdump.requests.cpu | quote }}
-          limits:
-            memory: {{ .Values.resources.tcpdump.limits.memory | quote }}
-            cpu: {{ .Values.resources.tcpdump.limits.cpu | quote }}
-        {{- end}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+        {{- if .Values.includeTcpDumpContainer}}
         {{- if .Values.persistent.sharedvolume}}
         volumeMounts:
-        - mountPath: "/pcap"
+        - mountPath: "/tmp/pcap"
           name: cn5g-pvc
         {{- end}}
+        {{- end}}
+    {{- end }}
       - name: smf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         volumeMounts:
           - mountPath: /openair-smf/etc
             name: configuration
-        securityContext:
-          {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.readinessProbe}}
         readinessProbe:
           exec:
@@ -102,11 +115,11 @@ spec:
         {{- if .Values.resources.define}}
         resources:
           requests:
-            memory: {{ .Values.resources.nf.requests.memory | quote }}
-            cpu: {{ .Values.resources.nf.requests.cpu | quote }}
+            memory: {{ .Values.resources.requests.nf.memory | quote }}
+            cpu: {{ .Values.resources.requests.nf.cpu | quote }}
           limits:
-            memory: {{ .Values.resources.nf.limits.memory | quote }}
-            cpu: {{ .Values.resources.nf.limits.cpu | quote }}
+            memory: {{ .Values.resources.limits.nf.memory | quote }}
+            cpu: {{ .Values.resources.limits.nf.cpu | quote }}
         {{- end}}
         {{- if .Values.start.smf}}
         command:
@@ -120,10 +133,12 @@ spec:
           - infinity
         {{- end}}
       volumes:
+      {{- if .Values.includeTcpDumpContainer}}
       {{- if .Values.persistent.sharedvolume}}
       - name: cn5g-pvc
         persistentVolumeClaim:
           claimName: cn5g-pvc
+      {{- end }}
       {{- end }}
       - configMap:
           name: {{ .Chart.Name }}-configmap
