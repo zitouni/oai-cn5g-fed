@@ -29,12 +29,12 @@
 |Fritzbox 6850         |                                                          |     |NA                                                                                      |
 
 
-**Sim Cards** 
+**Sim Cards**
 
 - Opencells
 - Symocom SJS1 and SJA2
 
 **Note**:
 
-1. We are having issues with Android 13 we are investigating and trying to resolve them 
+1. We are having issues with Android 13 we are investigating and trying to resolve them.
 2. We have issues with Anritsu Test UICC TM P0551A sim cards because they sent concealed SUCI which is not yet implemented.
