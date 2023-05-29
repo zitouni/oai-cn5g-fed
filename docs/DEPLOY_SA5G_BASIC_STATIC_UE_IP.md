@@ -68,17 +68,11 @@ docker-compose-host $: chmod 777 /tmp/oai/static-ue-ip
 
 Edit the correct docker-compose file of Basic OAI 5G core network, set the parameter `USE_LOCAL_SUBSCRIPTION_INFO` to `no` in the smf service configuration of the docker-compose file.
 
-- If using nrf [docker-compose file with nrf](../docker-compose/docker-compose-basic-nrf.yaml)
+- When using nrf [docker-compose file with nrf](../docker-compose/docker-compose-basic-nrf.yaml)
 
 ``` shell
 docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=yes/USE_LOCAL_SUBSCRIPTION_INFO=no/g' docker-compose-basic-nrf.yaml
 docker-compose-host $: sed -i 's/SMF_SELECTION=yes/SMF_SELECTION=no/g' docker-compose-basic-nrf.yaml
-```
-
-- If not using nrf [docker-compose file without nrf](../docker-compose/docker-compose-basic-nonrf.yaml)
-
-``` console
-docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=yes/USE_LOCAL_SUBSCRIPTION_INFO=no/g' docker-compose-basic-nonrf.yaml
 ```
 
 Then configure the [user subscription database sql file](../docker-compose/database/oai_db2.sql) with IMSI and DNN information mapping. In the table `SessionManagementSubscriptionData` add below entries
@@ -102,7 +96,7 @@ For now these two entries are present in the database file
 
 ## 3. Deploying OAI 5g Core Network
 
-In the previous tutorial we explain how to deploy the core network using our [python deployer](../docker-compose/core-network.py). Here we will only provide quick commands needed to deploy the core network, to learn how to use the python deployer please follow [this page](./DEPLOY_SA5G_MINI_DEPLOYMENT.md).
+In the previous tutorial we explain how to deploy the core network using our [python deployer](../docker-compose/core-network.py). Here we will only provide quick commands needed to deploy the core network, to learn how to use the python deployer please follow [this page](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md).
 
 - Start the core network components, check which scenario you are using with nrf or without nrf
 
