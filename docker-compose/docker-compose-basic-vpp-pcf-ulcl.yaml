@@ -181,69 +181,13 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:develop
+        image: oai-smf:develop
         expose:
             - 80/tcp
             - 8080/tcp
             - 8805/udp
-        environment:
-            - TZ=Europe/Paris
-            - SMF_INTERFACE_NAME_FOR_N4=eth0
-            - SMF_INTERFACE_NAME_FOR_SBI=eth0
-            - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
-            - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
-            - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_FQDN=oai-amf
-            - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_FQDN=oai-udm
-            - UPF_IPV4_ADDRESS=192.168.70.201
-            - UPF_FQDN_0=ulcl.node.5gcn.mnc95.mcc208.3gppnetwork.org
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            - PCF_IPV4_ADDRESS=192.168.70.139
-            - PCF_FQDN=oai-pcf
-            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
-            - USE_LOCAL_SUBSCRIPTION_INFO=yes  #Set to yes if SMF uses local subscription information instead of from an UDM
-            - USE_LOCAL_PCC_RULES=no  #Set to yes if SMF uses local PCC rules instead of from a PCF
-            - REGISTER_NRF=yes
-            - DISCOVER_UPF=yes
-            - DISCOVER_PCF=no
-            - USE_FQDN_DNS=no # Issue with PCF DNS resolving
-            - ENABLE_USAGE_REPORTING=yes
-            # changes for HTTP2
-            - HTTP_VERSION=2
-            - AMF_PORT=8080
-            - UDM_PORT=8080
-            - NRF_PORT=8080
-            - PCF_PORT=8080
-            - UE_MTU=1500
-            # Slice 0 (1, 0xFFFFFF)
-            - DNN_NI0=oai
-            - TYPE0=IPv4
-            - DNN_RANGE0=12.1.1.151 - 12.1.1.253
-            - NSSAI_SST0=1
-            - SESSION_AMBR_UL0=200Mbps
-            - SESSION_AMBR_DL0=400Mbps
-            # Slice 1 (1, 1)
-            - DNN_NI1=oai.ipv4
-            - TYPE1=IPv4
-            - DNN_RANGE1=12.1.1.51 - 12.1.1.150
-            - NSSAI_SST1=1
-            - NSSAI_SD1=1
-            - SESSION_AMBR_UL1=100Mbps
-            - SESSION_AMBR_DL1=200Mbps
-            # Slice 2 (222, 123)
-            - DNN_NI2=default
-            - TYPE2=IPv4
-            - DNN_RANGE2=12.1.1.2 - 12.1.1.50
-            - NSSAI_SST2=222
-            - NSSAI_SD2=123
-            - SESSION_AMBR_UL2=50Mbps
-            - SESSION_AMBR_DL2=100Mbps
-            # Slice 3 for ims
-            - DNN_NI3=ims
-            - TYPE3=IPv4v6
-            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
+        volumes:
+            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
         extra_hosts:
             - "ulcl.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.201"
             - "aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.202"
@@ -256,7 +200,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-pcf:
         container_name: "oai-pcf"
-        image: oaisoftwarealliance/oai-pcf:develop
+        image: oai-pcf:develop
         expose:
             - 80/tcp
             - 8080/tcp

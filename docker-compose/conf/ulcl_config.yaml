@@ -43,6 +43,7 @@ nfs:
     host: oai-amf
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
     n1:
@@ -52,6 +53,7 @@ nfs:
     host: oai-smf
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
     n4:
@@ -61,30 +63,35 @@ nfs:
     host: oai-udm
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
   udr:
     host: oai-udr
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
   ausf:
     host: oai-ausf
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
   pcf:
     host: oai-pcf
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
   nrf:
     host: oai-nrf
     sbi:
       port_http1: 80
+      port_http2: 8080
       api_version: v1
       interface_name: eth0
 
@@ -135,7 +142,6 @@ amf:
 smf:
   ue_mtu: 1500
   support_features:
-    # TODO why is UDM actually not used in this whole scenario?
     use_local_subscription_info: yes # Use infos from local_subscription_info or from UDM
     use_local_pcc_rules: no # Use infos from local_pcc_rules or from PCF
   # this is an example how you can enable/disable UPF features while the profile comes from NRF, host has to match with NRF profile
@@ -154,6 +160,26 @@ smf:
     secondary_ipv4: "8.8.8.8"
   ims:
     pcscf_ipv4: "127.0.0.1"
+  # the DNN you configure here should be configured in "dnns"
+  local_subscription_infos:
+    - single_nssai:
+        sst: 1
+        sd: 0xFFFFFF
+      dnn: "oai"
+      qos_profile:
+        5qi: 6
+    - single_nssai:
+        sst: 1
+        sd: 1
+      dnn: "oai.ipv4"
+      qos_profile:
+        5qi: 7
+    - single_nssai:
+        sst: 222
+        sd: 123
+      dnn: "default"
+      qos_profile:
+        5qi: 9
 
 ## DNN configuration
 dnns:
@@ -169,28 +195,6 @@ dnns:
   - dnn: "ims"
     pdu_session_type: "IPv4v6"
     ipv4_pool: "14.1.1.2 - 14.1.1.253"
-
-local_subscription_infos:
-  - nssai:
-      sst: 1
-      sd: 0xFFFFFF
-    dnn: "oai"
-    scc_mode: 1
-    qos_profile:
-      5qi: 6
-  - nssai:
-      sst: 1
-      sd: 1
-    dnn: "oai.ipv4"
-    scc_mode: 1
-    qos_profile:
-      5qi: 7
-  - nssai:
-      sst: 222
-      sd: 123
-    dnn: "default"
-    qos_profile:
-      5qi: 9
 
 pcf:
   local_policy:
