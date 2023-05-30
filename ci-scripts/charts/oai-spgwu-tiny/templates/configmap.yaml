@@ -7,6 +7,7 @@ metadata:
 data:
   routes.sh: |
       #!/bin/sh
+      sleep 3
       tun0_ip=$(ip -f inet addr show tun0 | awk '/inet / {print $2}' | awk -F '/' '{print $1}')
       iptables -t nat -A POSTROUTING -o {{ .Values.config.n3If }}  -s {{ .Values.config.netUeIp2 }} -j SNAT --to {{ .Values.multus.n3Ip }}
       ip route add {{ .Values.config.netUeIp2 }} via $tun0_ip dev tun0
