@@ -69,6 +69,7 @@ boolean testStart0   = true
 boolean testStart1   = true
 boolean testStop0    = true
 boolean testStop1    = true
+boolean pulledImage  = false
 
 //-------------------------------------------------------------------------------
 // Pipeline start
@@ -268,6 +269,9 @@ pipeline {
             testStart1   = false
             testStop0    = false
             testStop1    = false
+            if (pulledImage) {
+              sh "docker rmi ${ranFullImage} || true"
+            }
           }
         }
       }
@@ -341,6 +345,9 @@ pipeline {
               sh "docker-compose down -t 3 || true"
             }
             deployedGNB = false
+            if (pulledImage) {
+              sh "docker rmi ${ranFullImage} || true"
+            }
           }
         }
       }
@@ -599,6 +606,7 @@ def checkAndPullRanImage (ranFullImage) {
     if (ranFullImage.contains('porcepix')) {
       sh 'docker logout porcepix.sboai.cs.eurecom.fr'
     }
+    pulledImage  = true
   }
 }
 
