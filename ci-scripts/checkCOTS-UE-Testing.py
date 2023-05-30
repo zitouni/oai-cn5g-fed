@@ -357,6 +357,7 @@ def detailsUeTrafficTest(runNb):
     status = True
     # Checking the trace route message
     cnt = 0
+    oai_org_final_destination = ''
     with open(os.path.join(cwd, f'archives/test-traffic{runNb}.log'), 'r') as testRunLog:
         for line in testRunLog:
             if re.search('12.1.1.1', line) is not None:
@@ -368,14 +369,21 @@ def detailsUeTrafficTest(runNb):
             if re.search('openairinterface.org', line) is not None and cnt > 0:
                 cnt += 1
                 detailsHtml += generate_list_row(line, 'forward')
+            # internet is using a cache?
+            elif oai_org_final_destination != '' and re.search(oai_org_final_destination, line) is not None:
+                cnt += 1
+                detailsHtml += generate_list_row(line, 'forward')
             if re.search('traceroute to openairinterface.org', line) is not None:
                 cnt += 1
                 detailsHtml += generate_list_row(line, 'info-sign')
+                res = re.search('traceroute to openairinterface.org \((?P<ip_address>[0-9\.]+)\),', line)
+                if res is not None:
+                    oai_org_final_destination = res.group('ip_address')
     if cnt != 4:
         detailsHtml += generate_list_row('TraceRoute did NOT complete', 'question-sign')
         status = False
     else:
-        detailsHtml += generate_list_row('TraceRoute was complete', 'info-sign')
+        detailsHtml += generate_list_row('TraceRoute was complete', 'thumbs-up')
     # Checking the OAI logo image
     myCmds = cls_cmd.LocalCmd()
     res = myCmds.run(f'file {cwd}/archives/test-oai_final_logo.png', silent=True)
