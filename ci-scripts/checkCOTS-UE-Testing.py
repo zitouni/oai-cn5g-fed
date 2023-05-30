@@ -26,6 +26,7 @@ import logging
 import os
 import re
 import sys
+import common.python.cls_cmd as cls_cmd
 
 from common.python.generate_html import (
     generate_header,
@@ -344,6 +345,53 @@ def detailsUeStopTest(runNb):
     detailsHtml += generate_button_footer()
     return (status, detailsHtml)
 
+def detailsUeTrafficTest(runNb):
+    detailsHtml = generate_button_header(f'ue-traffic{runNb}-details', f'Details on the UE traffic test #{runNb}')
+    detailsHtml += generate_list_header()
+    cwd = os.getcwd()
+    if not os.path.isfile(os.path.join(cwd, f'archives/test-traffic{runNb}.log')) or not os.path.isfile(os.path.join(cwd, f'archives/test-oai_final_logo.png')):
+        detailsHtml += generate_list_row(f'could not open archives/test-traffic{runNb}.log', 'question-sign')
+        detailsHtml += generate_list_footer()
+        detailsHtml += generate_button_footer()
+        return (False, detailsHtml)
+    status = True
+    # Checking the trace route message
+    cnt = 0
+    with open(os.path.join(cwd, f'archives/test-traffic{runNb}.log'), 'r') as testRunLog:
+        for line in testRunLog:
+            if re.search('12.1.1.1', line) is not None:
+                cnt += 1
+                detailsHtml += generate_list_row(line, 'forward')
+            if re.search('oaiocp-gw.oai.cs.eurecom.fr', line) is not None:
+                cnt += 1
+                detailsHtml += generate_list_row(line, 'forward')
+            if re.search('openairinterface.org', line) is not None and cnt > 0:
+                cnt += 1
+                detailsHtml += generate_list_row(line, 'forward')
+            if re.search('traceroute to openairinterface.org', line) is not None:
+                cnt += 1
+                detailsHtml += generate_list_row(line, 'info-sign')
+    if cnt != 4:
+        detailsHtml += generate_list_row('TraceRoute did NOT complete', 'question-sign')
+        status = False
+    else:
+        detailsHtml += generate_list_row('TraceRoute was complete', 'info-sign')
+    # Checking the OAI logo image
+    myCmds = cls_cmd.LocalCmd()
+    res = myCmds.run(f'file {cwd}/archives/test-oai_final_logo.png', silent=True)
+    if res.returncode != 0:
+        status = False
+    htmlMessage = re.sub(f'{cwd}/archives/test-oai_final_logo.png', 'archives/test-oai_final_logo.png', res.stdout)
+    if re.search('PNG image data, 800 x 267, 8-bit/color RGBA, non-interlaced', res.stdout) is None:
+        detailsHtml += generate_list_row(htmlMessage, 'thumbs-down')
+        status = False
+    else:
+        detailsHtml += generate_list_row(htmlMessage, 'thumbs-up')
+    myCmds.close()
+    detailsHtml += generate_list_footer()
+    detailsHtml += generate_button_footer()
+    return (status, detailsHtml)
+
 if __name__ == '__main__':
     # Parse the arguments
     args = _parse_args()
@@ -364,6 +412,7 @@ if __name__ == '__main__':
         ueStart0Status = True
     else:
         ueStart0Status = False
+    (ueTraffic0Status, ueTrafficTest0) = detailsUeTrafficTest(0)
     (ueStop0Status, ueStopTest0) = detailsUeStopTest(0)
     if ueStop0Status and not args.ue_test0_stop_failed:
         ueStop0Status = True
@@ -389,6 +438,8 @@ if __name__ == '__main__':
         wfile.write(ranDetails)
         wfile.write(generate_chapter('First COTS-UE Connection', 'Registration / PDU session establishment / Ping Traffic status', ueStart0Status))
         wfile.write(ueStartTest0)
+        wfile.write(generate_chapter('First COTS-UE Traffic Test', 'Traceroute / Curl', ueTraffic0Status))
+        wfile.write(ueTrafficTest0)
         wfile.write(generate_chapter('First COTS-UE Deconnection', 'PDU Session release / Deregistration', ueStop0Status))
         wfile.write(ueStopTest0)
         wfile.write(generate_chapter('Second COTS-UE Connection', 'Registration / PDU session establishment / Ping Traffic status', ueStart1Status))
