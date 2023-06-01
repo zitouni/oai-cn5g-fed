@@ -452,7 +452,7 @@ if __name__ == '__main__':
         wfile.write(ueStopTest0)
         wfile.write(generate_chapter('Second COTS-UE Connection', 'Registration / PDU session establishment / Ping Traffic status', ueStart1Status))
         wfile.write(ueStartTest1)
-        wfile.write(generate_chapter('First COTS-UE Deconnection', 'PDU Session release / Deregistration', ueStop1Status))
+        wfile.write(generate_chapter('Second COTS-UE Deconnection', 'PDU Session release / Deregistration', ueStop1Status))
         wfile.write(ueStopTest1)
         wfile.write(generate_chapter('Post-Run PCAP Analysis', 'To be done', True))
         wfile.write(generate_footer())
