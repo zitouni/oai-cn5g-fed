@@ -71,7 +71,7 @@ Edit the correct docker-compose file of Basic OAI 5G core network, set the param
 - When using nrf [docker-compose file with nrf](../docker-compose/docker-compose-basic-nrf.yaml)
 
 ``` shell
-docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=yes/USE_LOCAL_SUBSCRIPTION_INFO=no/g' docker-compose-basic-nrf.yaml
+docker-compose-host $: sed -i 's/use_local_subscription_info: yes/use_local_subscription_info: no/g' conf/basic_nrf_config.yaml
 docker-compose-host $: sed -i 's/SMF_SELECTION=yes/SMF_SELECTION=no/g' docker-compose-basic-nrf.yaml
 ```
 
@@ -295,7 +295,7 @@ Removing network demo-oai-public-net
 <!---
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: sed -i 's/USE_LOCAL_SUBSCRIPTION_INFO=no/USE_LOCAL_SUBSCRIPTION_INFO=yes/g' docker-compose-basic-nrf.yaml
+docker-compose-host $: sed -i 's/use_local_subscription_info: no/use_local_subscription_info: yes/g' conf/basic_nrf_config.yaml
 docker-compose-host $: sed -i 's/SMF_SELECTION=no/SMF_SELECTION=yes/g' docker-compose-basic-nrf.yaml
 ```
 -->

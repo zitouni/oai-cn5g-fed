@@ -34,7 +34,7 @@ log_level:
 
 # If you enable registration, the other NFs will use the NRF discovery mechanism
 register_nf:
-  general: yes
+  general: no
 
 ############## SBI Interfaces
 ### Each NF takes its local SBI interfaces and remote interfaces from here, unless it gets them using NRF discovery mechanisms
@@ -43,7 +43,6 @@ nfs:
     host: oai-amf
     sbi:
       port_http1: 80
-      port_http2: 8080
       api_version: v1
       interface_name: eth0
     n1:
@@ -53,47 +52,11 @@ nfs:
     host: oai-smf
     sbi:
       port_http1: 80
-      port_http2: 8080
       api_version: v1
       interface_name: eth0
     n4:
       interface_name: eth0
       port: 8805
-  udm:
-    host: oai-udm
-    sbi:
-      port_http1: 80
-      port_http2: 8080
-      api_version: v1
-      interface_name: eth0
-  udr:
-    host: oai-udr
-    sbi:
-      port_http1: 80
-      port_http2: 8080
-      api_version: v1
-      interface_name: eth0
-  ausf:
-    host: oai-ausf
-    sbi:
-      port_http1: 80
-      port_http2: 8080
-      api_version: v1
-      interface_name: eth0
-  pcf:
-    host: oai-pcf
-    sbi:
-      port_http1: 80
-      port_http2: 8080
-      api_version: v1
-      interface_name: eth0
-  nrf:
-    host: oai-nrf
-    sbi:
-      port_http1: 80
-      port_http2: 8080
-      api_version: v1
-      interface_name: eth0
 
 #### Common for UDR and AMF
 database:
@@ -102,17 +65,20 @@ database:
   type: mysql
   password: test
   database_name: oai_db
-  random: true   # TODO can we find a better name for this? What does it mean?
+  random: true
   connection_timeout: 300 # seconds
 
 ############## NF-specific configuration
-# TODO here we have a mismatch between SNSSAI of SMF and AMF
 amf:
   # This really depends on if we want to keep the "mini" version or not
   support_features:
-    use_external_ausf: yes
-    use_external_udm: no   # TODO Why is this no in the original docker-compose?
+    use_external_ausf: no
+    use_external_udm: no
     use_external_nssf: no
+  relative_capacity: 30
+  statistics_timer_interval: 20  #in seconds
+  core_configuration:
+    emergency_support: false
   served_guami_list:
     - mcc: 208
       mnc: 95
@@ -127,8 +93,9 @@ amf:
       mnc: 95
       tac: 0xa000
       nssai:
-        - sst: 128
-          sd: 12
+        - sst: 1
+        - sst: 1
+          sd: 1
         - sst: 222
           sd: 123
   supported_integrity_algorithms:
@@ -144,43 +111,52 @@ smf:
   ue_mtu: 1500
   support_features:
     use_local_subscription_info: yes # Use infos from local_subscription_info or from UDM
-    use_local_pcc_rules: no # Use infos from local_pcc_rules or from PCF
-  # this is an example how you can enable/disable UPF features while the profile comes from NRF, host has to match with NRF profile
+    use_local_pcc_rules: yes # Use infos from local_pcc_rules or from PCF
   upfs:
-    - host: ulcl.node.5gcn.mnc95.mcc208.3gppnetwork.org
-      config:
-        enable_usage_reporting: yes
-    - host: aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org
+    - host: oai-spgwu
+      port: 8805
       config:
         enable_usage_reporting: no
-    - host: aupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org
-      config:
-        enable_usage_reporting: no
+        # follows UPFInfo from 3GPP TS 29.510, currently only these values from interfaceUpfInfoList are supported
+      upf_info:
+        interfaceUpfInfoList:
+          - interfaceType: "N3"
+            networkInstance: "access.oai.org"
+          - interfaceType: "N6"
+            networkInstance: "core.oai.org"
   ue_dns:
     primary_ipv4: "172.21.3.100"
+    primary_ipv6: "2001:4860:4860::8888"
     secondary_ipv4: "8.8.8.8"
+    secondary_ipv6: "2001:4860:4860::8888"
   ims:
     pcscf_ipv4: "127.0.0.1"
-  # the DNN you configure here should be configured in "dnns"
+    pcscf_ipv6: "fe80::7915:f408:1787:db8b"
+ # the DNN you configure here should be configured in "dnns"
   local_subscription_infos:
     - single_nssai:
         sst: 1
-        sd: 0xFFFFFF
       dnn: "oai"
       qos_profile:
-        5qi: 6
+        5qi: 9
+        session_ambr_ul: "200Mbps"
+        session_ambr_dl: "400Mbps"
     - single_nssai:
         sst: 1
         sd: 1
       dnn: "oai.ipv4"
       qos_profile:
-        5qi: 7
+        5qi: 9
+        session_ambr_ul: "100Mbps"
+        session_ambr_dl: "200Mbps"
     - single_nssai:
         sst: 222
         sd: 123
-      dnn: "default"
+      dnn: "oai.ipv4"
       qos_profile:
         5qi: 9
+        session_ambr_ul: "50Mbps"
+        session_ambr_dl: "100Mbps"
 
 ## DNN configuration
 dnns:
@@ -196,9 +172,3 @@ dnns:
   - dnn: "ims"
     pdu_session_type: "IPv4v6"
     ipv4_pool: "14.1.1.2 - 14.1.1.253"
-
-pcf:
-  local_policy:
-    policy_decisions_path: /openair-pcf/policies/policy_decisions
-    pcc_rules_path: /openair-pcf/policies/pcc_rules
-    traffic_rules_path: /openair-pcf/policies/traffic_rules

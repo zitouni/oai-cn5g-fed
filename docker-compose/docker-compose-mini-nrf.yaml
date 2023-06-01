@@ -86,52 +86,8 @@ services:
     oai-smf:
         container_name: "oai-smf"
         image: oaisoftwarealliance/oai-smf:develop
-        environment:
-            - TZ=Europe/Paris
-            - SMF_INTERFACE_NAME_FOR_N4=eth0
-            - SMF_INTERFACE_NAME_FOR_SBI=eth0
-            - DEFAULT_DNS_IPV4_ADDRESS=172.21.3.100
-            - DEFAULT_DNS_SEC_IPV4_ADDRESS=8.8.8.8
-            - AMF_IPV4_ADDRESS=192.168.70.132
-            - AMF_FQDN=oai-amf
-            - UPF_IPV4_ADDRESS=192.168.70.134
-            - UPF_FQDN_0=oai-spgwu
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            - USE_LOCAL_SUBSCRIPTION_INFO=yes  #Set to yes if SMF uses local subscription information instead of from an UDM
-            - REGISTER_NRF=yes
-            - DISCOVER_UPF=yes
-            - USE_FQDN_DNS=yes
-            - UE_MTU=1500
-            # Slice 0 (1, 0xFFFFFF)
-            - DNN_NI0=oai
-            - TYPE0=IPv4
-            - DNN_RANGE0=12.1.1.151 - 12.1.1.253
-            - NSSAI_SST0=1
-            - SESSION_AMBR_UL0=200Mbps
-            - SESSION_AMBR_DL0=400Mbps
-            # Slice 1 (1, 1)
-            - DNN_NI1=oai.ipv4
-            - TYPE1=IPv4
-            - DNN_RANGE1=12.1.1.51 - 12.1.1.150
-            - NSSAI_SST1=1
-            - NSSAI_SD1=1
-            - SESSION_AMBR_UL1=100Mbps
-            - SESSION_AMBR_DL1=200Mbps
-            # Slice 2 (222, 123)
-            - DNN_NI2=default
-            - TYPE2=IPv4
-            - DNN_RANGE2=12.1.1.2 - 12.1.1.50
-            - NSSAI_SST2=222
-            - NSSAI_SD2=123
-            - SESSION_AMBR_UL2=50Mbps
-            - SESSION_AMBR_DL2=100Mbps
-            # Slice 3 for ims
-            - DNN_NI3=ims
-            - TYPE3=IPv4v6
-            - DNN_RANGE3=14.1.1.2 - 14.1.1.253
-            - DEFAULT_CSCF_IPV4_ADDRESS=127.0.0.1  # only needed when ims is being used
-            - ENABLE_USAGE_REPORTING=no # Set yes if UE USAGE REPORTING is to be done at UPF
+        volumes:
+            - ./conf/mini_nrf_config.yaml:/openair-smf/etc/config.yaml
         depends_on:
             - oai-nrf
             - oai-amf
