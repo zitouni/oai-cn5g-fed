@@ -21,7 +21,7 @@ spec:
         k8s.v1.cni.cncf.io/networks: >-
           [{
                  "name": "{{ .Chart.Name }}-n2",
-                 "interface": "n2",
+                 "interface": "n2"
                 {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                 {{- end }}
@@ -29,7 +29,7 @@ spec:
           {{- if .Values.multus.n3Interface.create }}
           ,{
                  "name": "{{ .Chart.Name }}-n3",
-                 "interface": "n3",
+                 "interface": "n3"
                 {{- if .Values.multus.n3Interface.Gateway }}
                 ,"gateway": {{ .Values.multus.n3Interface.Gateway }}
                 {{- end }}
@@ -38,7 +38,7 @@ spec:
           {{- if .Values.multus.ruInterface.create }}
           ,{
                  "name": "{{ .Chart.Name }}-ru",
-                 "interface": "ru",
+                 "interface": "ru"
                 {{- if .Values.multus.ruInterface.Gateway }}
                 ,"gateway": {{ .Values.multus.ruInterface.Gateway }}
                 {{- end }}

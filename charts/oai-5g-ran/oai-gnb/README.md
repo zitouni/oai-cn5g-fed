@@ -87,7 +87,7 @@ The directory structure
 
 The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`.
 
-The charts are configured to be used with primary CNI of Kubernetes. When you will mount the configuration file you have to define static ip-addresses for N2, N3 and RU. Most of the primary CNIs do not allow static ip-address allocation. To overcome this we are using multus-cni with static ip-address allocation. At minimum you have to create one multus interface which you can use for N2, N3 and RU. If you want you can create dedicated interfaces. 
+The charts are configured to be used with primary CNI of Kubernetes. When you will mount the configuration file you have to define static ip-addresses for N2, N3 and RU. Most of the primary CNIs do not allow static ip-address allocation. To overcome this we are using multus-cni with static ip-address allocation. At minimum you have to create one multus interface which you can use for N2, N3 and RU. If you want you can create dedicated interfaces.
 
 You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF) different sample configuration files for different bandwidths and frequencies. The binary of oai-gnb is called as `nr-softmodem`. To know more about its functioning and command line parameters you can visit this [page](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/RUNMODEM.md)
 
@@ -121,6 +121,9 @@ Only needed if you are doing advanced debugging
 
 ## How to use
 
+0. Make sure the core network is running else you need to first start the core network. You can follow any of the below links
+  - [OAI 5G Core Basic](../../oai-5g-basic/README.md)
+  - [OAI 5G Core Mini](../../oai-5g-mini/README.md)
 
 1. If you want to mount your configuration file then you set can `config.mountConfig`. The configuration file should be added in `templates/configmap.yaml`. Once the GNB is configured. 
 

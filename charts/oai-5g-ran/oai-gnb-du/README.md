@@ -80,7 +80,7 @@ The directory structure
 
 The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb-du. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`.
 
-The charts are configured to be used with primary CNI of Kubernetes. When you will mount the configuration file you have to define static ip-addresses for F1 and RU. Most of the primary CNIs do not allow static ip-address allocation. To overcome this we are using multus-cni with static ip-address allocation. At minimum you have to create one multus interface which you can use for F1 and RU. If you want you can create dedicated interfaces. 
+**NOTE**: The charts are configured to be used with primary CNI of Kubernetes. When you will mount the configuration file you have to define static ip-addresses for F1 and RU. Most of the primary CNIs do not allow static ip-address allocation. To overcome this we are using multus-cni with static ip-address allocation. If you are using DU in RF simulated mode then you need minimum one multus interface which you can use for F1 and RU. If you want to use DU with hardware RU then you need a dedicated interface for Fronthaul.
 
 You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF) different sample configuration files for different bandwidths and frequencies. The binary of oai-gnb is called as `nr-softmodem`. To know more about its functioning and command line parameters you can visit this [page](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/RUNMODEM.md)
 
@@ -114,6 +114,11 @@ Only needed if you are doing advanced debugging
 
 ## How to use
 
+0. Make sure the core network is running else you need to first start the core network. You can follow any of the below links
+  - [OAI 5G Core Basic](../../oai-5g-basic/README.md)
+  - [OAI 5G Core Mini](../../oai-5g-mini/README.md)
+1. Configure the `parent` interface for `f1` based on your Kubernetes cluster worker nodes. 
+
 ### F1 split only
 
 Make sure core network and `cu` is running before starting the `du`
@@ -134,7 +139,7 @@ helm install oai-gnb-du .
 
 ### Connect the UE
 
-1. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+1. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to `--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time`. As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
 
 ```bash
 helm install oai-nr-ue ../oai-nr-ue
