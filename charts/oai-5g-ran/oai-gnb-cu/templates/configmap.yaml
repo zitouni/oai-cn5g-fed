@@ -42,7 +42,7 @@ data:
           tr_s_preference = "f1";
 
           local_s_if_name = "f1";
-          local_s_address = "172.21.6.92";
+          local_s_address = "172.21.16.92";
           remote_s_address = "127.0.0.1";
           local_s_portc   = 501;
           local_s_portd   = 2152;
@@ -199,7 +199,7 @@ data:
               GNB_INTERFACE_NAME_FOR_NG_AMF            = "n2";
               GNB_IPV4_ADDRESS_FOR_NG_AMF              = "172.21.6.90";
               GNB_INTERFACE_NAME_FOR_NGU               = "n3";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "172.21.6.91";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "172.21.8.91";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
         }

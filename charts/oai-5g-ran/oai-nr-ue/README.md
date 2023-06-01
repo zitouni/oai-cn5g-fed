@@ -94,6 +94,16 @@ Only needed if you are doing advanced debugging
 
 ## How to use
 
+Make sure the core network is running else you need to first start the core network. You can follow any of the below links
+  - [OAI 5G Core Basic](../../oai-5g-basic/README.md)
+  - [OAI 5G Core Mini](../../oai-5g-mini/README.md)
+  
+Make sure the gNB is running in split mode or non-split mode.
+
+1. If you are using nr-ue without or without multus interface the below configuration parameter remains the same.
+	+ If you are using `oai-nr-ue` with `oai-gnb` then in [values.yaml](./values.yaml) you need to set `config.rfSimulator` as `oai-gnb`. 
+	+ If you are using `oai-nr-ue` with `oai-gnb-du` then in [values.yaml](./values.yaml) you need to set `config.rfSimulator` as `oai-gnb-du`. 
+
 ```bash
 helm install oai-nr-ue .
 ```
