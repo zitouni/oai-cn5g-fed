@@ -226,6 +226,13 @@ pipeline {
           sh "docker image inspect --format='Size = {{.Size}} bytes' ${ranFullImage} >> archives/oai-gnb-image-info.log"
           sh "echo 'OC Pushed Tag is N/A' >> archives/oai-gnb-image-info.log"
           stash allowEmpty: true, includes: 'archives/oai-gnb-image-info.log', name: 'gNB_image'
+          // Check for entrypoint content (until 2023.w22)
+          sh "docker create --name test-entrypoint ${ranFullImage}"
+          sh "docker cp test-entrypoint:/opt/oai-gnb/bin/entrypoint.sh gnb-entrypoint.sh"
+          sh "docker rm -f test-entrypoint"
+          entryContent = sh returnStdout: true, script: "cat gnb-entrypoint.sh"
+          mountedFileAsMountedDotConf = entryContent.contains('create sed expressions for substituting each occurrence')
+          sh "rm -f gnb-entrypoint.sh"
           // Adding capture on SCTP and L2 port 9999
           sh "sudo rm -f /tmp/oai-gnb-l2-trace.pcap /tmp/oai-gnb-l2-trace.logs"
           sh 'nohup sudo tshark -i any -f "sctp or udp port 9999" -w /tmp/oai-gnb-l2-trace.pcap > /tmp/oai-gnb-l2-trace.logs 2>&1 &'
@@ -233,6 +240,9 @@ pipeline {
           // Deploying now
           dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
             sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
+            if (mountedFileAsMountedDotConf) {
+              sh "sed -i -e 's@/opt/oai-gnb/etc/gnb.conf@/opt/oai-gnb/etc/mounted.conf@' docker-compose.yml"
+            }
             sh "docker-compose up -d"
             deployedGNB = true
             gNBStatus = checkStatusOnGNB()
