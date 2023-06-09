@@ -26,23 +26,15 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
-        environment:
-            - TZ=Europe/Paris
-            - NSSF_NAME=oai-nssf
-            - NSSF_FQDN=nssf.oai-5gcn.eur
-            - SBI_IF_NAME=eth0
-            - SBI_PORT_HTTP2=8080
-            - SBI_API_VERSION=v1
-            # NSSF is not registered to NRF
-            - NSSF_SLICE_CONFIG=/openair-nssf/etc/nssf_slice_config.yaml
+        volumes:
+            - ./conf/slicing_base_config.yaml:/openair-nssf/etc/config.yaml
+            - ./conf/nssf_slice_config.yaml:/openair-nssf/etc/nssf_slice_config.yaml
         cap_add:
             - NET_ADMIN
             - SYS_ADMIN
         cap_drop:
             - ALL
         privileged: true
-        volumes: 
-            - ./nssf_slice_config.yaml:/openair-nssf/etc/nssf_slice_config.yaml
         networks:
             public_net:
                 ipv4_address: 192.168.70.132
