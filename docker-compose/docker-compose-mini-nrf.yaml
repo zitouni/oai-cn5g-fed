@@ -23,9 +23,8 @@ services:
     oai-nrf:
         container_name: "oai-nrf"
         image: oaisoftwarealliance/oai-nrf:develop
-        environment:
-            - TZ=Europe/Paris
-            - NRF_INTERFACE_NAME_FOR_SBI=eth0
+        volumes:
+            - ./conf/mini_nrf_config.yaml:/openair-nrf/etc/config.yaml
         networks:
             public_net:
                 ipv4_address: 192.168.70.130
