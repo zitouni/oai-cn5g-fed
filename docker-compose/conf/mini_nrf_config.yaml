@@ -36,13 +36,15 @@ log_level:
 register_nf:
   general: yes
 
+http_version: 1
+
 ############## SBI Interfaces
 ### Each NF takes its local SBI interfaces and remote interfaces from here, unless it gets them using NRF discovery mechanisms
 nfs:
   amf:
     host: oai-amf
     sbi:
-      port_http1: 80
+      port: 80
       api_version: v1
       interface_name: eth0
     n1:
@@ -51,7 +53,7 @@ nfs:
   smf:
     host: oai-smf
     sbi:
-      port_http1: 80
+      port: 80
       api_version: v1
       interface_name: eth0
     n4:
@@ -60,7 +62,7 @@ nfs:
   nrf:
     host: oai-nrf
     sbi:
-      port_http1: 80
+      port: 80
       api_version: v1
       interface_name: eth0
 

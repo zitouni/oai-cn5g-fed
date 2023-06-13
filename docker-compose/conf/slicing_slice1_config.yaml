@@ -38,13 +38,14 @@ log_level:
 register_nf:
   general: yes
 
+http_version: 2
+
 ############## SBI Interfaces
 nfs:
   smf:
     host: oai-smf-slice1
     sbi:
-      port_http1: 80
-      port_http2: 8080
+      port: 8080
       api_version: v1
       interface_name: eth0
     n4:
@@ -53,8 +54,7 @@ nfs:
   nrf:
     host: oai-nrf-slice12
     sbi:
-      port_http1: 80
-      port_http2: 8080
+      port: 8080
       api_version: v1
       interface_name: eth0
 
