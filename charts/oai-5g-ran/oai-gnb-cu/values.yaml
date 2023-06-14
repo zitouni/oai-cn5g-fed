@@ -28,11 +28,21 @@ serviceAccount:
 ## Change these ip-addresses according to your environment 
 multus:
   # if default gatway is empty then it will be removed
-  defaultGateway: 172.21.7.254
+  defaultGateway: ""
+  f1Interface:
+    create: true
+    IPadd: "172.21.16.92"
+    Netmask: "22"
+    # #name inside the pod is hardcoded right now
+    # name: "f1"
+    # if gatway is commented then it will be removed
+    #Gateway: "172.21.19.254"
+    #routes: 
+    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n2Interface:
     create: false
     IPadd: "172.21.6.90"
-    # #name inside the pod is hardcoded right now
+    #name inside the pod is hardcoded right now
     # name: "n2"
     Netmask: "22"
     # if gatway is empty then it will be removed
@@ -41,22 +51,12 @@ multus:
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
   n3Interface:
     create: false
-    IPadd: "172.21.6.91"
+    IPadd: "172.21.8.91"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
     # name: "n3"
     # if gatway is commented then it will be removed
-    #Gateway: "172.21.7.254"
-    #routes: 
-    hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
-  f1Interface:
-    create: false
-    IPadd: "172.21.6.92"
-    Netmask: "22"
-    # #name inside the pod is hardcoded right now
-    # name: "f1"
-    # if gatway is commented then it will be removed
-    #Gateway: "172.21.7.254"
+    #Gateway: "172.21.11.254"
     #routes: 
     hostInterface: "bond0"      # Interface of the host machine on which this pod will be scheduled
 
@@ -82,8 +82,8 @@ config:
   gnbNgaIpAddress: "status.podIP" # if multus.n2Interface.create is true then use multus.n2Interface.Ipadd 
   gnbNguIfName: "eth0"   #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0 
   gnbNguIpAddress: "status.podIP" # if multus.n3Interface.create is true then use multus.n3Interface.Ipadd or multus.n2Interface.Ipadd if you are using only 1 extra interface
-  f1IfName: "eth0"                # if multus.n2Interface.create is true then use multus.n2Interface.Ipadd 
-  f1cuIpAddress: "status.podIP"   # if multus.f1Interface.create is true then use multus.f1Interface.Ipadd or multus.n2Interface.Ipadd if you are using only 1 extra interface
+  f1IfName: "f1"                # if multus.f1Interface.create is true then use multus.f1Interface.Ipadd
+  f1cuIpAddress: "172.21.16.92"   # if multus.f1Interface.create is true then use multus.f1Interface.Ipadd or multus.n2Interface.Ipadd if you are using only 1 extra interface
   ## Its the DU which communicates with the CU so no need for DU ip-address
   f1duIpAddress: "127.0.0.1"
   f1cuPort: "2152"

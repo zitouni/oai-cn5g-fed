@@ -34,3 +34,15 @@ helm dependency update
 ```
 helm spray .
 ```
+
+## Note:
+
+If you want to use `oai-spgwu-tiny` with a single interface then you can enable any one out of three interfaces. Lets say we enable `multus.n3Interface.create`. Then change the below configuration parameters 
+
+```
+    n3If: "n3"   # n3 if multus.n3Interface.create is true
+    n4If: "eth0" # n4 if multus.n4Interface.create is true
+    n6If: "eth0"  # n6 multus.n6Interface.create is true
+```
+
+Make sure `n3` subnet is reachable from gNB. 

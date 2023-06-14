@@ -27,12 +27,14 @@ serviceAccount:
 ## Change these ip-addresses according to your environment
 
 multus:
-  # if default gatway is commented or left blank then it will be removed
-  defaultGateway: "172.21.7.254"
+  # if default gatway is left blank then it will be removed
+  defaultGateway: ""
   f1Interface:
-    create: false
-    IPadd: "172.21.6.100"
+    create: true
+    IPadd: "172.21.16.100"
     Netmask: "22"
+    # #name inside the pod is hardcoded right now
+    # name: "f1"
     # if gatway is empty then it will be removed
     #Gateway: "172.21.7.254"
     #routes: [{'dst': '10.8.0.0/24','gw': '172.21.7.254'}, {'dst': '10.9.0.0/24','gw': '172.21.7.254'}]
@@ -41,6 +43,8 @@ multus:
     create: false
     IPadd: "192.168.80.90"
     Netmask: "24"
+    # #name inside the pod is hardcoded right now
+    # name: "ru"
     # if gatway is commented then it will be remove
     #Gateway: "192.168.80.1"  #In case you don't have a gateway remove it from here
     ## The value must be [0, master's MTU]. If commented it will masters MTU
@@ -64,17 +68,17 @@ config:
   tac: "1"     # check the information with AMF
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4
   nssaiSd0: "ffffff"    #values in hexa-decimal format
-  f1IfName: "eth0"                # net1 incase multus create is true
-  f1cuIpAddress: "172.21.6.92"     # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
-  f1duIpAddress: "status.podIP"    # 172.21.6.100 if using multus
+  f1IfName: "f1"                # f1 incase multus.f1Interface.create is true
+  f1cuIpAddress: "172.21.16.92"     # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
+  f1duIpAddress: "172.21.16.100"    # 172.21.16.100 if using multus
   f1cuPort: "2152"
   f1duPort: "2152"
-  #Not mandatory
+  #Not mandatory (leave it as it is)
   amfIpAddress: "127.0.0.1"  # Not mandatory, you can leave it like this in coming release it will be removed
-  gnbNgaIfName: "eth0"            # net1 in case multus create is true that means another interface is created for ngap interface, n2 to communicate with amf
-  gnbNgaIpAddress: "status.podIP" # f1Interface.Ipadd in case multus create is true
-  gnbNguIfName: "eth0"   #net1 in case multus create is true gtu interface for upf/spgwu
-  gnbNguIpAddress: "status.podIP" # f1Interface.Ipadd in case multus create is true
+  gnbNgaIfName: "eth0"            
+  gnbNgaIpAddress: "status.podIP" 
+  gnbNguIfName: "eth0"   
+  gnbNguIpAddress: "status.podIP"
 
 
 ## Debugging section

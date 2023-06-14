@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
-        image: oaisoftwarealliance/oai-udr:develop
+        image: oaisoftwarealliance/oai-udr:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -50,7 +50,7 @@ services:
                 ipv4_address: 192.168.70.136
     oai-udm:
         container_name: "oai-udm"
-        image: oaisoftwarealliance/oai-udm:develop
+        image: oaisoftwarealliance/oai-udm:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -75,7 +75,7 @@ services:
                 ipv4_address: 192.168.70.137
     oai-ausf:
         container_name: "oai-ausf"
-        image: oaisoftwarealliance/oai-ausf:develop
+        image: oaisoftwarealliance/oai-ausf:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -100,7 +100,7 @@ services:
                 ipv4_address: 192.168.70.138
     oai-nrf:
         container_name: "oai-nrf"
-        image: oaisoftwarealliance/oai-nrf:develop
+        image: oaisoftwarealliance/oai-nrf:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -111,7 +111,7 @@ services:
                 ipv4_address: 192.168.70.130
     oai-amf:
         container_name: "oai-amf"
-        image: oaisoftwarealliance/oai-amf:develop
+        image: oaisoftwarealliance/oai-amf:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -176,7 +176,7 @@ services:
                 ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
-        image: oaisoftwarealliance/oai-smf:develop
+        image: oaisoftwarealliance/oai-smf:v1.5.1
         expose:
             - 80/tcp
             - 8080/tcp
@@ -191,7 +191,7 @@ services:
                 ipv4_address: 192.168.70.133
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:develop
+        image: oaisoftwarealliance/oai-spgwu-tiny:v1.5.1
         expose:
             - 2152/udp
             - 8805/udp

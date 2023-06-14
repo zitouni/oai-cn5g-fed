@@ -16,26 +16,26 @@ spec:
       labels:
         {{- include "oai-gnb-cu.selectorLabels" . | nindent 8 }}
         app: oai-gnb-cu
-    {{- if .Values.multus.n2Interface.create }}
+    {{- if .Values.multus.f1Interface.create }}
       annotations:
         k8s.v1.cni.cncf.io/networks: >-
           [{
-                 "name": "{{ .Chart.Name }}-net1",
-                 "interface": "n2"
+                 "name": "{{ .Chart.Name }}-f1",
+                 "interface": "f1"
                   {{- if .Values.multus.defaultGateway }}
                  ,"default-route": ["{{ .Values.multus.defaultGateway }}"]
                   {{- end }}
           }
           {{- if .Values.multus.n3Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net2",
+                 "name": "{{ .Chart.Name }}-n3",
                  "interface": "n3"
           }
           {{- end }}
-          {{- if .Values.multus.f1Interface.create }}
+          {{- if .Values.multus.n2Interface.create }}
           ,{
-                 "name": "{{ .Chart.Name }}-net3",
-                 "interface": "f1"
+                 "name": "{{ .Chart.Name }}-n2",
+                 "interface": "n2"
           }
           {{- end }}
           ]

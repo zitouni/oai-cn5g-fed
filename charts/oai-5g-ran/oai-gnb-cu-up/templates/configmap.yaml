@@ -28,7 +28,7 @@ data:
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "net3";
+          local_s_if_name = "f1u";
           local_s_address = "{{ .Values.multus.f1uInterface.IPadd }}";
           remote_s_address = "{{ .Values.config.f1duIpAddress }}";
           local_s_portc   = 501;
@@ -55,9 +55,9 @@ data:
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "net2";
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n3";
               GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n3Interface.IPadd }}";
-              GNB_INTERFACE_NAME_FOR_NGU               = "net2";
+              GNB_INTERFACE_NAME_FOR_NGU               = "n3";
               GNB_IPV4_ADDRESS_FOR_NGU                 = "{{ .Values.multus.n3Interface.IPadd }}";
               GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };

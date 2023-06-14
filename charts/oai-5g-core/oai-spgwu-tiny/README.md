@@ -62,7 +62,7 @@ The directory structure
 |multus.n4Interface.create       |true/false                     |                                     |
 |multus.n4Interface.Ipadd        |Ip-Address                     |                                     |
 |multus.n4Interface.Netmask      |Netmask                        |                                     |
-|multus.n4Interface.Gateway      |Ip-Address                     |                                     |
+|multus.n4Interface.Gateway      |Ip-Address                     |This interface is used to communicate with NRF |
 |multus.n4Interface.routes       |Json                           |Routes if you want to add in your pod|
 |multus.n4Interface.hostInterface|host interface                 |Host interface on which pod will run |
 |multus.n6Interface.create       |true/false                     |                                     |

@@ -78,9 +78,41 @@ The directory structure
 |multus.f1uInterface.routes       |Json                           |Routes you want to add in the pod|
 |multus.f1uInterface.hostInterface|host interface                 |Host machine interface name      |
 
-The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb-cu. If you want to use your own configuration file for oai-gnb-cu-up. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`. 
+The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb-cu-cp. If you want to use your own configuration file for oai-gnb-cu-up. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line arguments for oai-gnb-cu-up is provided in `config.useAdditionalOptions`. 
 
 You can find [here](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF) different sample configuration files for different bandwidths and frequencies. The binary of oai-gnb is called as `nr-softmodem`. To know more about its functioning and command line parameters you can visit this [page](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/RUNMODEM.md)
+
+
+### Configure CU-UP with 1 interface
+
+Minimum you need two interfaces for e1,f1 split. It is because in CU-UP F1U and N3 bind to the same 2152 port number for GTP. 
+
+Though you can use only 1 interface but then you need to change the port of F1U to 2153 or some other port number.
+
+To enable choose any one of the interfaces out of three, lets say we will enable `multus.e1Interface.create`. This interface has name `e1` inside the pod.
+
+If you want to use only one interface then you have to configure some parameters in `templates/configmap.yaml`. You can replace the below blocks with the blocks in templates/configmap.yaml
+
+```
+          local_s_if_name = "e1";
+          local_s_address = "{{ .Values.multus.e1Interface.IPadd }}";
+          remote_s_address = "{{ .Values.config.f1duIpAddress }}";
+          local_s_portc   = 501;
+          local_s_portd   = 2153;
+          remote_s_portc  = 500;
+          remote_s_portd  = 2153;
+```
+
+```
+          NETWORK_INTERFACES :
+          {
+              GNB_INTERFACE_NAME_FOR_NG_AMF            = "e1";
+              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.e1Interface.IPadd }}";
+              GNB_INTERFACE_NAME_FOR_NGU               = "e1";
+              GNB_IPV4_ADDRESS_FOR_NGU                 = "{{ .Values.multus.e1Interface.IPadd }}";
+              GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
+          };
+```
 
 ## Advanced Debugging Parameters
 
@@ -113,7 +145,13 @@ Only needed if you are doing advanced debugging
 
 ## How to use
 
-Make sure core network and `oai-gnb-cu-cp` is running before starting the `cu-up`
+0. Make sure the core network is running else you need to first start the core network. You can follow any of the below links
+  - [OAI 5G Core Basic](../../oai-5g-basic/README.md)
+  - [OAI 5G Core Mini](../../oai-5g-mini/README.md)
+  - Check properly that the n2 and n3 ip-address are configured via multus interface because we need multiple interfaces for cu-cp and cu-up deployment. 
+1. Configure the `parent` interface for `n3`, `e1` and `f1` based on your Kubernetes cluster worker nodes. 
+
+Make sure `oai-gnb-cu-cp` is running before starting the `cu-up`
 
 ```bash
 helm install oai-gnb-cu-cp ../oai-gnb-cu-cp
@@ -124,7 +162,7 @@ helm install oai-gnb-du ../oai-gnb-du
 
 ### Connect the UE
 
-1. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to "--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+1. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to `--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time`. As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
 
 ```bash
 helm install oai-nr-ue ../oai-nr-ue
@@ -139,7 +177,6 @@ ping -I oaitun_ue1 12.1.1.1
 #ping towards google dns
 ping -I oaitun_ue1 8.8.8.8
 ```
-
 
 ## Note
 
