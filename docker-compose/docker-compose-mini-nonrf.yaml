@@ -22,7 +22,7 @@ services:
                 ipv4_address: 192.168.70.131
     oai-amf:
         container_name: "oai-amf"
-        image: oaisoftwarealliance/oai-amf:v1.5.1
+        image: oaisoftwarealliance/oai-amf:develop
         environment:
             - TZ=Europe/Paris
             - MCC=208
@@ -83,7 +83,7 @@ services:
             - "oai-spgwu:192.168.70.134"
     oai-spgwu:
         container_name: "oai-spgwu"
-        image: oaisoftwarealliance/oai-spgwu-tiny:v1.5.1
+        image: oaisoftwarealliance/oai-spgwu-tiny:develop
         environment:
             - TZ=Europe/Paris
             - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
