@@ -26,22 +26,12 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
+        # TODO: to be removed later
+        command: ["/openair-udr/bin/oai_udr", "-c", "/openair-udr/etc/config.yaml", "-o"]
+        volumes:
+            - ./conf/basic_vpp_nrf_config.yaml:/openair-udr/etc/config.yaml
         environment:
             - TZ=Europe/Paris
-            - UDR_NAME=OAI_UDR
-            - UDR_INTERFACE_NAME_FOR_NUDR=eth0
-            - MYSQL_IPV4_ADDRESS=192.168.70.131
-            - MYSQL_USER=test
-            - MYSQL_PASS=test
-            - MYSQL_DB=oai_db
-            - WAIT_MYSQL=120
-            - USE_FQDN_DNS=yes
-            - REGISTER_NRF=yes
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            # changes for HTTP2
-            - USE_HTTP2=yes
-            - NRF_PORT=8080
         depends_on:
             - mysql
             - oai-nrf
@@ -54,20 +44,12 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
+        volumes:
+            - ./conf/basic_vpp_nrf_config.yaml:/openair-udm/etc/config.yaml
+        # TODO: to be removed later
+        command: ["/openair-udm/bin/oai_udm", "-c", "/openair-udm/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - UDM_NAME=OAI_UDM
-            - SBI_IF_NAME=eth0
-            - USE_FQDN_DNS=yes
-            - UDR_IP_ADDRESS=192.168.70.136
-            - UDR_PORT=8080
-            - UDR_FQDN=oai-udr
-            - REGISTER_NRF=yes
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            # changes for HTTP2
-            - USE_HTTP2=yes
-            - NRF_PORT=8080
         depends_on:
             - oai-udr
         networks:
@@ -79,20 +61,12 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
+        volumes:
+            - ./conf/basic_vpp_nrf_config.yaml:/openair-ausf/etc/config.yaml
+        # TODO: to be removed later
+        command: ["/openair-ausf/bin/oai_ausf", "-c", "/openair-ausf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - AUSF_NAME=OAI_AUSF
-            - SBI_IF_NAME=eth0
-            - USE_FQDN_DNS=yes
-            - UDM_IP_ADDRESS=192.168.70.137
-            - UDM_FQDN=oai-udm
-            - REGISTER_NRF=yes
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            # changes for HTTP2
-            - USE_HTTP2=yes
-            - UDM_PORT=8080
-            - NRF_PORT=8080
         depends_on:
             - oai-udm
         networks:
@@ -106,6 +80,8 @@ services:
             - 8080/tcp
         volumes:
             - ./conf/basic_vpp_nrf_config.yaml:/openair-nrf/etc/config.yaml
+        environment:
+            - TZ=Europe/Paris
         networks:
             public_net:
                 ipv4_address: 192.168.70.130
@@ -116,53 +92,12 @@ services:
             - 80/tcp
             - 8080/tcp
             - 38412/sctp
+        volumes:
+            - ./conf/basic_vpp_nrf_config.yaml:/openair-amf/etc/config.yaml
+        # TODO: to be removed later
+        command:  ["/openair-amf/bin/oai_amf", "-c", "/openair-amf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - MCC=208
-            - MNC=95
-            - REGION_ID=128
-            - AMF_SET_ID=1
-            - SERVED_GUAMI_MCC_0=208
-            - SERVED_GUAMI_MNC_0=95
-            - SERVED_GUAMI_REGION_ID_0=128
-            - SERVED_GUAMI_AMF_SET_ID_0=1
-            - SERVED_GUAMI_MCC_1=460
-            - SERVED_GUAMI_MNC_1=11
-            - SERVED_GUAMI_REGION_ID_1=10
-            - SERVED_GUAMI_AMF_SET_ID_1=1
-            - PLMN_SUPPORT_MCC=208
-            - PLMN_SUPPORT_MNC=95
-            - PLMN_SUPPORT_TAC=0xa000
-            # Slice 0 (222, 123)
-            - SST_0=222
-            - SD_0=123
-            # Slice 0 (128, 12)
-            - SST_1=128
-            - SD_1=12
-            - AMF_INTERFACE_NAME_FOR_NGAP=eth0
-            - AMF_INTERFACE_NAME_FOR_N11=eth0
-            # One single SMF instance
-            - SMF_INSTANCE_ID_0=1
-            - SMF_FQDN_0=oai-smf
-            - SMF_IPV4_ADDR_0=192.168.70.133
-            - SELECTED_0=true
-            - NF_REGISTRATION=yes
-            - USE_FQDN_DNS=yes
-            - SMF_SELECTION=yes
-            - EXTERNAL_AUSF=yes
-            - EXTERNAL_UDM=no
-            - EXTERNAL_NSSF=no
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            - AUSF_IPV4_ADDRESS=192.168.70.138
-            - AUSF_FQDN=oai-ausf
-            - UDM_IPV4_ADDRESS=192.168.70.137
-            - UDM_FQDN=oai-udm
-            # changes for HTTP2
-            - USE_HTTP2=yes
-            - NRF_PORT=8080
-            - AUSF_PORT=8080
-            - UDM_PORT=8080
         depends_on:
             - mysql
             - vpp-upf
@@ -180,6 +115,8 @@ services:
             - 8805/udp
         volumes:
             - ./conf/basic_vpp_nrf_config.yaml:/openair-smf/etc/config.yaml
+        environment:
+            - TZ=Europe/Paris
         extra_hosts:
             - "vpp-upf.node.5gcn.mnc95.mcc208.3gppnetwork.org:192.168.70.201"
         depends_on:
