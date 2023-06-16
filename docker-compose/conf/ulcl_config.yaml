@@ -92,38 +92,45 @@ nfs:
 
 #### Common for UDR and AMF
 database:
-  server: mysql
+  host: mysql
   user: test
   type: mysql
   password: test
   database_name: oai_db
-  random: true   # TODO can we find a better name for this? What does it mean?
+  generate_random: true
   connection_timeout: 300 # seconds
 
-############## NF-specific configuration
-# TODO here we have a mismatch between SNSSAI of SMF and AMF
+############# NF-specific configuration
 amf:
+  pid_directory: "/var/run"
+  amf_name: "OAI-AMF"
   # This really depends on if we want to keep the "mini" version or not
-  support_features:
-    use_external_ausf: yes
-    use_external_udm: no   # TODO Why is this no in the original docker-compose?
-    use_external_nssf: no
+  support_features_options:
+    enable_simple_scenario: no
+    enable_nssf: no
+    enable_smf_selection: yes
+  relative_capacity: 30
+  statistics_timer_interval: 20  #in seconds
+  emergency_support: false
   served_guami_list:
     - mcc: 208
       mnc: 95
-      region_id: 128
+      amf_region_id: 128
       amf_set_id: 1
+      amf_pointer: 1
     - mcc: 460
       mnc: 11
-      region_id: 10
+      amf_region_id: 10
       amf_set_id: 1
+      amf_pointer: 1
   plmn_support_list:
     - mcc: 208
       mnc: 95
       tac: 0xa000
       nssai:
-        - sst: 128
-          sd: 12
+        - sst: 1
+        - sst: 1
+          sd: 1
         - sst: 222
           sd: 123
   supported_integrity_algorithms:

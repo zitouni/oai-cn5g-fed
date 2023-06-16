@@ -72,6 +72,7 @@ Edit the correct docker-compose file of Basic OAI 5G core network, set the param
 
 ``` shell
 docker-compose-host $: sed -i 's/use_local_subscription_info: yes/use_local_subscription_info: no/g' conf/basic_nrf_config.yaml
+docker-compose-host $: sed -i 's/enable_smf_selection: yes/enable_smf_selection: no/g' conf/basic_nrf_config.yaml
 ```
 
 Then configure the [user subscription database sql file](../docker-compose/database/oai_db2.sql) with IMSI and DNN information mapping. In the table `SessionManagementSubscriptionData` add below entries
@@ -295,6 +296,7 @@ Removing network demo-oai-public-net
 For CI purposes please ignore this line
 ``` shell
 docker-compose-host $: sed -i 's/use_local_subscription_info: no/use_local_subscription_info: yes/g' conf/basic_nrf_config.yaml
+docker-compose-host $: sed -i 's/enable_smf_selection: no/enable_smf_selection: yes/g' conf/basic_nrf_config.yaml
 ```
 -->
 
