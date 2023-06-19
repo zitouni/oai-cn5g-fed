@@ -208,12 +208,15 @@ pipeline {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
-          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --all-log-level error'
+          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
+          // Mandatory for omec-gnbsim registration
+          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
             sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
             sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file conf/basic_nrf_config.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             // No tshark: too big
@@ -302,12 +305,15 @@ pipeline {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
-          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --all-log-level error'
+          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
+          // Mandatory for omec-gnbsim registration
+          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
             sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
             sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file conf/basic_nrf_config.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
@@ -396,12 +402,15 @@ pipeline {
       steps {
         script {
           echo 'Silencing all NFs to reduce size of logs'
-          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/docker-compose-basic-nrf.yaml --all-log-level error'
+          sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
+          // Mandatory for omec-gnbsim registration
+          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
             sh '../ci-scripts/addUsersToDatabase.py --database-file database/oai_db2.sql --nb-users 16000'
             sh '../ci-scripts/increaseDnnRange.py --docker-compose-file docker-compose-basic-nrf.yaml --nb-users 16000'
+            sh '../ci-scripts/increaseDnnRange.py --docker-compose-file conf/basic_nrf_config.yaml --nb-users 16000'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d mysql'
             sleep 2
             sh 'sudo rm -f /tmp/oai-cn5g-load-test.*'
@@ -558,8 +567,6 @@ def updateDockerCompose(filename, lRanTag) {
   for (ii = 0; ii < imageNames.size(); ii++) {
     sh 'sed -i -e "s@oaisoftwarealliance/' + imageNames[ii] + ':develop@' + imageNames[ii] + ':' + imageTags[ii] + '@" ' + filename
   }
-  // Mandatory for omec-gnbsim registration
-  sh 'sed -i -e "s@EXTERNAL_UDM=no@EXTERNAL_UDM=yes@" ' + filename
   sh 'sed -i -e "s@oaisoftwarealliance/trf-gen-cn5g:latest@trf-gen-cn5g:latest@" ' + filename
   sh 'sed -i -e "s@5gc-gnbsim:tag-to-use@5gc-gnbsim:' + lRanTag + '@" ci-scripts/docker-compose/load-test-gnbsim/docker-compose-omec-gnbsim.yaml'
 }
