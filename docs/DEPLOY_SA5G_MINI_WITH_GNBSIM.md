@@ -79,7 +79,7 @@ docker-compose-host $: chmod 777 /tmp/oai/mini-gnbsim
 As a first timer, we recommend to first run without any PCAP capture.
 
 ``` console
-docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 2
 ...
 [2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
@@ -89,7 +89,7 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 1 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
+docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 2 --capture /tmp/oai/mini-gnbsim/mini-gnbsim.pcap
 ```
 
 ``` console
@@ -99,7 +99,6 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 sec
 31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
 753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   23 seconds ago   Up 22 seconds (healthy)   2152/udp, 8805/udp             oai-spgwu
 84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-6f0ce91e4efb   oai-nrf:latest                  "/bin/bash /openair-…"   24 seconds ago   Up 23 seconds (healthy)   80/tcp, 9090/tcp               oai-nrf
 565617169b42   mysql:8.0                       "docker-entrypoint.s…"   24 seconds ago   Up 23 seconds (healthy)   3306/tcp, 33060/tcp            mysql
 oai-cn5g-fed/docker-compose$
 ```
@@ -168,7 +167,6 @@ c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minu
 31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 38412/sctp   oai-amf
 753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   4 minutes ago    Up 4 minutes (healthy)    2152/udp, 8805/udp             oai-spgwu
 84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 8805/udp     oai-smf
-6f0ce91e4efb   oai-nrf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp               oai-nrf
 565617169b42   mysql:8.0                       "docker-entrypoint.s…"   4 minutes ago    Up 4 minutes (healthy)    3306/tcp, 33060/tcp            mysql
 ```
 Now we are ready to perform some traffic test.
@@ -270,7 +268,6 @@ iperf Done.
 You can recover the logs like this:
 
 ``` console
-docker-compose-host $: docker logs oai-nrf > /tmp/oai/mini-gnbsim/nrf.log 2>&1
 docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
 docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
@@ -282,7 +279,6 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 | mysql         | 192.168.70.131 |
 | oai-amf       | 192.168.70.132 |
 | oai-smf       | 192.168.70.133 |
-| oai-nrf       | 192.168.70.130 |
 | oai-spgwu     | 192.168.70.134 |
 | oai-ext-dn    | 192.168.70.135 |
 | Host Machine  | 192.168.70.129 |
@@ -293,7 +289,6 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 | [5gcn-deployment-gnbsim.pcap](./results/gnbSIM/pcap/5gcn-deployment-gnbsim.pcap)                  |
 | [amf.log](./results/dsTest/logs/amf.log), [initialmessage.log](./results/dsTest/logs/initialmessage.log) |
 | [smf.log](./results/dsTest/logs/smf.log)                                                          |
-| [nrf.log](./results/dsTest/logs/nrf.log)                                                          |
 | [spgwu.log](./results/dsTest/logs/spgwu.log)
 
 ## 9. Trying Some Advanced Stuff
@@ -367,7 +362,6 @@ d48135fd045c   ubuntu:bionic                   "/bin/bash -c ' apt …"   16 min
 c64ae3c7f7c6   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   16 minutes ago   Up 16 minutes (healthy)   2152/udp, 8805/udp             oai-spgwu
 1cd8319bddb0   oai-smf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
 9cda92a46be4   mysql:8.0                       "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes (healthy)   3306/tcp, 33060/tcp            mysql
-cc407925adf2   oai-nrf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp               oai-nrf
 
 ```
 * Let's verify all gnb and ue are registered at our 5G core -
@@ -449,12 +443,11 @@ Let recover one last time the logs:
 For CI purposes please ignore these lines
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml stop -t 2
-docker-compose-host $: docker-compose -f docker-compose-mini-nrf.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-mini-nonrf.yaml stop -t 2
 ```
 -->
 
 ``` shell
-docker-compose-host $: docker logs oai-nrf > /tmp/oai/mini-gnbsim/nrf.log 2>&1
 docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
 docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
@@ -490,7 +483,7 @@ Service gnbsim is  stopped
 ### 10.2. Undeploy the core network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-mini --scenario 1
+docker-compose-host $: python3 ./core-network.py --type stop-mini --scenario 2
 ...
 [2021-09-14 16:47:44,070] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```

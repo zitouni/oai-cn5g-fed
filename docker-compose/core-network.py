@@ -348,7 +348,9 @@ if __name__ == '__main__':
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(MINI_W_NRF)
+            #deploy(MINI_W_NRF)
+            logging.error('Mini deployments with NRF are no longer supported')
+            sys.exit(-1)
         # Mini function without NRF
         elif args.scenario == '2':
             deploy(MINI_NO_NRF)
