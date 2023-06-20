@@ -121,7 +121,7 @@ amf:
   supported_integrity_algorithms:
     - "NIA1"
     - "NIA2"
-  supported_ciphering_algorithms:
+  supported_encryption_algorithms:
     - "NEA1"
     - "NEA2"
 

@@ -132,7 +132,7 @@ amf:
     - "NIA0"
     - "NIA1"
     - "NIA2"
-  supported_ciphering_algorithms:
+  supported_encryption_algorithms:
     - "NEA0"
     - "NEA1"
     - "NEA2"
