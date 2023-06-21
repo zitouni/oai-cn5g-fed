@@ -176,7 +176,7 @@ pipeline {
             // Normally spray should time out at 5 minutes. Just being cautious
             // helm spray --timeout 300 .
             timeout (8) {
-              sh "helm spray ."
+              sh "helm install oai5gcn ."
             }
           }
           sh "oc describe pod &> archives/describe-pods.logs"
