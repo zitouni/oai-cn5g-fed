@@ -41,8 +41,8 @@ def _parse_args() -> argparse.Namespace:
     """
     example_text = '''example:
         ./ci-scripts/silentCN5G-NF.py --help
-        ./ci-scripts/silentCN5G-NF.py --docker-compose-file DC_FILENAME --amf-log-level error
-        ./ci-scripts/silentCN5G-NF.py --docker-compose-file DC_FILENAME --amf-silent'''
+        ./ci-scripts/silentCN5G-NF.py --docker-compose-file DC_FILENAME --all-log-level error
+        ./ci-scripts/silentCN5G-NF.py --docker-compose-file DC_FILENAME --all-silent'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK Utility tool',
                                     epilog=example_text,
@@ -70,117 +70,6 @@ def _parse_args() -> argparse.Namespace:
         help='Set all NFs to the same log level',
     )
 
-    # AMF arguments
-    parser.add_argument(
-        '--amf-silent',
-        action='store_true',
-        default=False,
-        help='Make AMF NF silent',
-    )
-
-    parser.add_argument(
-        '--amf-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set AMF log level',
-    )
-
-    # SMF arguments
-    parser.add_argument(
-        '--smf-silent',
-        action='store_true',
-        default=False,
-        help='Make SMF NF silent',
-    )
-
-    parser.add_argument(
-        '--smf-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set SMF log level',
-    )
-
-    # NRF arguments
-    parser.add_argument(
-        '--nrf-silent',
-        action='store_true',
-        default=False,
-        help='Make NRF NF silent',
-    )
-
-    parser.add_argument(
-        '--nrf-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set NRF log level',
-    )
-
-    # SPGWU arguments
-    parser.add_argument(
-        '--spgwu-silent',
-        action='store_true',
-        default=False,
-        help='Make SPGWU NF silent',
-    )
-
-    parser.add_argument(
-        '--spgwu-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set SPGWU log level',
-    )
-
-    # AUSF arguments
-    parser.add_argument(
-        '--ausf-silent',
-        action='store_true',
-        default=False,
-        help='Make AUSF NF silent',
-    )
-
-    parser.add_argument(
-        '--ausf-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set AUSF log level',
-    )
-
-    # UDM arguments
-    parser.add_argument(
-        '--udm-silent',
-        action='store_true',
-        default=False,
-        help='Make UDM NF silent',
-    )
-
-    parser.add_argument(
-        '--udm-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set UDM log level',
-    )
-
-    # UDR arguments
-    parser.add_argument(
-        '--udr-silent',
-        action='store_true',
-        default=False,
-        help='Make UDR NF silent',
-    )
-
-    parser.add_argument(
-        '--udr-log-level',
-        action='store',
-        default='',
-        choices = ["info", "error", "warning"],
-        help='Set UDR log level',
-    )
 
     return parser.parse_args()
 
@@ -188,36 +77,8 @@ if __name__ == '__main__':
     # Parse the arguments
     args = _parse_args()
     # Finalize arguments
-    if args.amf_silent:
-        args.amf_log_level = 'off'
-    if args.smf_silent:
-        args.smf_log_level = 'off'
-    if args.nrf_silent:
-        args.nrf_log_level = 'off'
-    if args.spgwu_silent:
-        args.spgwu_log_level = 'off'
-    if args.ausf_silent:
-        args.ausf_log_level = 'off'
-    if args.udm_silent:
-        args.udm_log_level = 'off'
-    if args.udr_silent:
-        args.udr_log_level = 'off'
-    if args.all_silent:
-        args.amf_log_level = 'off'
-        args.smf_log_level = 'off'
-        args.nrf_log_level = 'off'
-        args.spgwu_log_level = 'off'
-        args.ausf_log_level = 'off'
-        args.udm_log_level = 'off'
-        args.udr_log_level = 'off'
-    if args.all_log_level != '':
-        args.amf_log_level = args.all_log_level
-        args.smf_log_level = args.all_log_level
-        args.nrf_log_level = args.all_log_level
-        args.spgwu_log_level = args.all_log_level
-        args.ausf_log_level = args.all_log_level
-        args.udm_log_level = args.all_log_level
-        args.udr_log_level = args.all_log_level
+    if args.all_silent and args.all_log_level == '':
+        args.all_log_level = 'off'
 
     cwd = os.getcwd()
     if not os.path.isfile(os.path.join(cwd, args.docker_compose_file)):
@@ -225,65 +86,21 @@ if __name__ == '__main__':
         sys.exit(-1)
 
     lines = ''
-    amfContainerFound = False
-    smfContainerFound = False
-    nrfContainerFound = False
-    spgwuContainerFound = False
-    ausfContainerFound = False
-    udmContainerFound = False
-    udrContainerFound = False
+    logLevelSectionFound = False
     with open(os.path.join(cwd, args.docker_compose_file), 'r') as rfile:
         for line in rfile:
-           lines += line
-           # amf
-           if re.search('image: oaisoftwarealliance/oai-amf:', line) is not None and args.amf_log_level != '':
-               amfContainerFound = True
-           if re.search('TZ=Europe', line) is not None and amfContainerFound and args.amf_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.amf_log_level}', line)
+           modifiedLine = False
+           # general
+           if re.search('log_level:', line) is not None and args.all_log_level != '':
+               logLevelSectionFound = True
+           if re.search('general: debug', line) is not None and logLevelSectionFound and args.all_log_level != '':
+               newLine = re.sub('general: debug$', f'general: {args.all_log_level}', line)
+               logLevelSectionFound = False
+               modifiedLine = True
+           if modifiedLine:
                lines += newLine
-               amfContainerFound = False
-           # smf
-           if re.search('image: oaisoftwarealliance/oai-smf:', line) is not None and args.smf_log_level != '':
-               smfContainerFound = True
-           if re.search('TZ=Europe', line) is not None and smfContainerFound and args.smf_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.smf_log_level}', line)
-               lines += newLine
-               smfContainerFound = False
-           # nrf
-           if re.search('image: oaisoftwarealliance/oai-nrf:', line) is not None and args.nrf_log_level != '':
-               nrfContainerFound = True
-           if re.search('TZ=Europe', line) is not None and nrfContainerFound and args.nrf_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.nrf_log_level}', line)
-               lines += newLine
-               nrfContainerFound = False
-           # spgwu
-           if re.search('image: oaisoftwarealliance/oai-spgwu-tiny:', line) is not None and args.spgwu_log_level != '':
-               spgwuContainerFound = True
-           if re.search('TZ=Europe', line) is not None and spgwuContainerFound and args.spgwu_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.spgwu_log_level}', line)
-               lines += newLine
-               spgwuContainerFound = False
-           # ausf
-           if re.search('image: oaisoftwarealliance/oai-ausf:', line) is not None and args.ausf_log_level != '':
-               ausfContainerFound = True
-           if re.search('TZ=Europe', line) is not None and ausfContainerFound and args.ausf_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.ausf_log_level}', line)
-               lines += newLine
-               ausfContainerFound = False
-           # udm
-           if re.search('image: oaisoftwarealliance/oai-udm:', line) is not None and args.udm_log_level != '':
-               udmContainerFound = True
-           if re.search('TZ=Europe', line) is not None and udmContainerFound and args.udm_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.udm_log_level}', line)
-               lines += newLine
-               udmContainerFound = False
-           # udr
-           if re.search('image: oaisoftwarealliance/oai-udr:', line) is not None and args.udr_log_level != '':
-               udrContainerFound = True
-           if re.search('TZ=Europe', line) is not None and udrContainerFound and args.udr_log_level != '':
-               newLine = re.sub('TZ=Europe.*$', f'LOG_LEVEL={args.udr_log_level}', line)
-               lines += newLine
-               udrContainerFound = False
+           else:
+               lines += line
 
     with open(os.path.join(cwd, args.docker_compose_file), 'w') as wfile:
         wfile.write(lines)

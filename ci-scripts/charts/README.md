@@ -154,8 +154,12 @@ Run the below command on openshift jumphost which has access to `helm command`
 ```shell
 #assuming my current directory is ci-scripts/charts/oai-5g-basic
 helm dependency update
-helm spray .
+helm install oai5gcn .
 oc describe pod &> pod-describe-logs.logs
+#Check that deployment is ready 
+export READY_PODS=$(oc get pods -o custom-columns=NAMESPACE:metadata.namespace,POD:metadata.name,PodIP:status.podIP,READY:status.containerStatuses[*].ready | grep -v NAME | wc -l)
+export TOTAL_PODS=$(oc get pods | grep -v NAME | wc -l)
+## when READY_PODS==TOTAL_PODS the deployment is complete
 ```
 
 By default the time-out for helm spray is 300 seconds or 5 mins, if you want to reduce or increase it add this flag `--timeout xxx` time in seconds
@@ -303,7 +307,7 @@ Stop the core-network functions, login to `openshift-jumphost`
 
 ```shell
 oc project oaicicd-core
-helm uninstall $(helm list -aq)
+helm uninstall oai5gcn
 ```
 
 The default graceperiod for all network functions is `5 seconds` so if you want to put a time out in jenkins then you can put `10 seconds`

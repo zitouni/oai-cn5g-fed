@@ -295,7 +295,7 @@ pipeline {
       when { expression {run_mini_gnbsim} }
       steps {
         script {
-          updateDockerCompose('docker-compose/docker-compose-mini-nrf.yaml', ranTag)
+          updateDockerCompose('docker-compose/docker-compose-mini-nonrf.yaml', ranTag)
           dir ('ci-scripts') {
             // Tee will make the command always pass
             // Please use the same log name as the folder used in the tutorial
@@ -309,8 +309,8 @@ pipeline {
           } catch (Exception e) {
             echo "Minimalist gnbsim Tutorial PASSED"
           }
-          archivesArtifacts('docker-compose/docker-compose-mini-nrf.yaml', 'mini-gnbsim')
-          cleanUpDockerCompose('docker-compose/docker-compose-mini-nrf.yaml')
+          archivesArtifacts('docker-compose/docker-compose-mini-nonrf.yaml', 'mini-gnbsim')
+          cleanUpDockerCompose('docker-compose/docker-compose-mini-nonrf.yaml')
         }
       }
     }

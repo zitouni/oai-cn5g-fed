@@ -303,12 +303,11 @@ Make sure you edit the IMSI, opc and key according to the settings of your user 
                             Add an automatic PCAP capture on docker networks to CAPTURE file
 
     example:
-            python3 core-network.py --type start-mini
             python3 core-network.py --type start-basic
             python3 core-network.py --type start-basic-vpp
-            python3 core-network.py --type stop-mini
             python3 core-network.py --type start-mini --scenario 2
-            python3 core-network.py --type start-basic --scenario 2
+            python3 core-network.py --type stop-mini --scenario 2
+            python3 core-network.py --type start-basic --scenario 1
     ```
 - **Optional** Before executing the script it is better to start capturing packets to see the message flow between smf <--> nrf <--> upf. The packets will be captured on **demo-oai** bridge which should be configured on the `docker-compose-host` machine.
 

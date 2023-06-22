@@ -103,6 +103,10 @@ if __name__ == '__main__':
                lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
            elif (re.search('grep 12.1.1', line) is not None):
                lines += re.sub('grep 12.1.1', 'grep 12.1.0', line)
+           elif (re.search('ipv4_pool: "12.1.1.151 - 12.1.1.253"', line) is not None) or (re.search('ipv4_pool: "12.1.1.51 - 12.1.1.150"', line) is not None):
+               lines += re.sub('12', '13', line)
+           elif (re.search('ipv4_pool: "12.1.1.2 - 12.1.1.50"', line) is not None):
+               lines += re.sub('12.1.1.2 - 12.1.1.50', f'{startingIP} - {endingIP}', line)
            else:
                lines += line
 

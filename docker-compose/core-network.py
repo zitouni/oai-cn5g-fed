@@ -43,6 +43,13 @@ BASIC_NO_NRF = 'docker-compose-basic-nonrf.yaml'
 BASIC_VPP_W_NRF = 'docker-compose-basic-vpp-nrf.yaml'
 BASIC_VPP_NO_NRF = 'docker-compose-basic-vpp-nonrf.yaml'
 
+COMPOSE_CONF_MAP = {
+    'docker-compose-mini-nrf.yaml': 'conf/mini_nrf_config.yaml',
+    'docker-compose-mini-nonrf.yaml' : 'conf/mini_nonrf_config.yaml',
+    'docker-compose-basic-nrf.yaml' : 'conf/basic_nrf_config.yaml',
+    'docker-compose-basic-vpp-nrf.yaml' : 'conf/basic_vpp_nrf_config.yaml'
+}
+
 def _parse_args() -> argparse.Namespace:
     """Parse the command line args
 
@@ -174,6 +181,25 @@ def undeploy(file_name):
     run_cmd(cmd, True)
     logging.debug('\033[0;32m OAI 5G core components are UnDeployed\033[0m....')
 
+def generate_nrf_curl_cmd(compose_file):
+    # if not found, there is an exception here, but it is fine because then we have to update our scenarios
+    conf_file = COMPOSE_CONF_MAP[compose_file]
+    with open(conf_file) as f:
+        y = yaml.safe_load(f)
+        http_version = y.get('http_version', 1)
+        nrf_port = 80
+
+        if y.get('nfs') and y['nfs'].get('nrf'):
+            nrf_cfg = y['nfs']['nrf']
+            if nrf_cfg.get('sbi') and nrf_cfg['sbi'].get('port'):
+                nrf_port = nrf_cfg['sbi']['port']
+
+        cmd = 'curl -s -X GET '
+        if http_version == 2:
+            cmd = cmd + '--http2-prior-knowledge '
+        cmd = cmd + f'http://192.168.70.130:{nrf_port}/nnrf-nfm/v1/nf-instances?nf-type='
+        return cmd
+
 
 def check_config(file_name):
     """Checks the container configurations
@@ -182,36 +208,38 @@ def check_config(file_name):
         None
     """
 
+    curl_cmd = generate_nrf_curl_cmd(file_name)
+
     logging.debug('\033[0;34m Checking if the containers are configured\033[0m....')
     # With NRF configuration check
     if args.scenario == '1':
         logging.debug('\033[0;34m Checking if AMF, SMF and UPF registered with nrf core network\033[0m....')
-        cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"'
+        cmd = f'{curl_cmd}"AMF" | grep -o "192.168.70.132"'
         amf_registration_nrf = run_cmd(cmd, False)
         if amf_registration_nrf is not None:
             print(amf_registration_nrf)
-        cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"'
+        cmd = f'{curl_cmd}"SMF" | grep -o "192.168.70.133"'
         smf_registration_nrf = run_cmd(cmd, False)
         if smf_registration_nrf is not None:
             print(smf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF:
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.201"'
+            cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.201"'
         else:
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"'
+            cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd, False)
         if upf_registration_nrf is not None:
             print(upf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
             logging.debug('\033[0;34m Checking if AUSF, UDM and UDR registered with nrf core network\033[0m....')
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"'
+            cmd = f'{curl_cmd}"AUSF" | grep -o "192.168.70.138"'
             ausf_registration_nrf = run_cmd(cmd, False)
             if ausf_registration_nrf is not None:
                 print(ausf_registration_nrf)
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"'
+            cmd = f'{curl_cmd}"UDM" | grep -o "192.168.70.137"'
             udm_registration_nrf = run_cmd(cmd, False)
             if udm_registration_nrf is not None:
                 print(udm_registration_nrf)
-            cmd = 'curl -s -X GET http://192.168.70.130/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"'
+            cmd = f'{curl_cmd}"UDR" | grep -o "192.168.70.136"'
             udr_registration_nrf = run_cmd(cmd, False)
             if udr_registration_nrf is not None:
                 print(udr_registration_nrf)
@@ -320,7 +348,9 @@ if __name__ == '__main__':
     if args.type == 'start-mini':
         # Mini function with NRF
         if args.scenario == '1':
-            deploy(MINI_W_NRF)
+            #deploy(MINI_W_NRF)
+            logging.error('Mini deployments with NRF are no longer supported')
+            sys.exit(-1)
         # Mini function without NRF
         elif args.scenario == '2':
             deploy(MINI_NO_NRF)

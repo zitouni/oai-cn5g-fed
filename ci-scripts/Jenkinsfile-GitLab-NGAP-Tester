@@ -202,7 +202,7 @@ pipeline {
     stage ('Deploy OAI-CN5G in Basic-NRF') {
       steps {
         script {
-          sh 'cp -Rf /opt/ngap-tester/test/* ci-scripts/docker-compose/ngap-tester/'
+          sh 'cp -Rf /opt/ngap-tester-v1.6/test/* ci-scripts/docker-compose/ngap-tester/'
           updateDockerCompose('ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', ngapTesterTag)
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d'
@@ -219,7 +219,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
             dir ('ci-scripts/docker-compose/ngap-tester') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -270,7 +270,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives', 'ci-scripts/docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
             dir ('ci-scripts/docker-compose/ngap-tester') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -286,7 +286,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml')
+          retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
           dir ('ci-scripts/docker-compose/ngap-tester') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
@@ -389,9 +389,10 @@ def cleanUpDockerCompose() {
   sh 'docker volume prune --force'
 }
 
-def retrieveLogs(logPath, dcFileName) {
+def retrieveLogs(logPath, dcFileName, ycFileName) {
   sh "mkdir -p ${logPath}"
   sh "cp ${dcFileName} ${logPath}"
+  sh "cp ${ycFileName} ${logPath}"
   sh "docker logs oai-nrf > ${logPath}/oai-nrf.log 2>&1"
   sh "docker logs oai-udr > ${logPath}/oai-udr.log 2>&1"
   sh "docker logs oai-udm > ${logPath}/oai-udm.log 2>&1"

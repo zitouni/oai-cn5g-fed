@@ -110,12 +110,11 @@ optional arguments:
                         Add an automatic PCAP capture on docker networks to CAPTURE file
 
 example:
-        python3 core-network.py --type start-mini
         python3 core-network.py --type start-basic
         python3 core-network.py --type start-basic-vpp
-        python3 core-network.py --type stop-mini
         python3 core-network.py --type start-mini --scenario 2
-        python3 core-network.py --type start-basic --scenario 2
+        python3 core-network.py --type stop-mini --scenario 2
+        python3 core-network.py --type start-basic --scenario 1
 
 ```
 
