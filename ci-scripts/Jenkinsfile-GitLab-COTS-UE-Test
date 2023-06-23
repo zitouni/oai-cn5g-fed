@@ -181,7 +181,7 @@ pipeline {
           }
           sh "oc describe pod &> archives/describe-pods.logs"
           sh "oc get pods -o wide"
-          sleep 20
+          sleep 60
           coreStatus = checkCoreNetworkDeployment()
           if (coreStatus > 0) {
             error ('Core Deployment went wrong')
@@ -528,8 +528,20 @@ def pushToOpenshiftRegistry (imageName, origTag, destTag) {
   noHttpsURL = oc_registry_url.replaceAll("https://", "")
   sh "sudo podman rmi ${noHttpsURL}/${oc_project_name}/${imageName}:${destTag} || true"
   sh "sudo podman image tag ${imageName}:${origTag} ${noHttpsURL}/${oc_project_name}/${imageName}:${destTag}"
-  sh "sudo podman push --tls-verify=false ${noHttpsURL}/${oc_project_name}/${imageName}:${destTag}"
+  cnt = 0
+  while (cnt < 4) {
+    try {
+      sh "sudo podman push --tls-verify=false ${noHttpsURL}/${oc_project_name}/${imageName}:${destTag}"
+      cnt = 10
+    } catch (Exception e) {
+      echo "Network issue when pushing? Trying again!"
+      cnt += 1
+    }
+  }
   sh "sudo podman rmi ${noHttpsURL}/${oc_project_name}/${imageName}:${destTag} || true"
+  if (cnt != 10) {
+    error "Could not push"
+  }
 }
 
 def checkCoreNetworkDeployment() {
@@ -564,7 +576,7 @@ def checkCoreNetworkDeployment() {
     echo "PFCP association KO"
     status += 2
   }
-
+  sleep 30
   return status
 }
 
