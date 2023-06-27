@@ -44,8 +44,6 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
-        # TODO: to be removed later
-        command: ["/openair-udr/bin/oai_udr", "-c", "/openair-udr/etc/config.yaml", "-o"]
         volumes:
             - ./conf/slicing_base_config.yaml:/openair-udr/etc/config.yaml
         depends_on:
@@ -59,8 +57,6 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
-        # TODO: to be removed later
-        command: ["/openair-udm/bin/oai_udm", "-c", "/openair-udm/etc/config.yaml", "-o"]
         volumes:
             - ./conf/slicing_base_config.yaml:/openair-udm/etc/config.yaml
         depends_on:
@@ -74,8 +70,6 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
-        # TODO: to be removed later
-        command: ["/openair-ausf/bin/oai_ausf", "-c", "/openair-ausf/etc/config.yaml", "-o"]
         volumes:
             - ./conf/slicing_base_config.yaml:/openair-ausf/etc/config.yaml
         depends_on:
@@ -112,8 +106,6 @@ services:
             - 80/tcp
             - 8080/tcp
             - 38412/sctp
-        # TODO: to be removed later
-        command: ["/openair-amf/bin/oai_amf", "-c", "/openair-amf/etc/config.yaml", "-o"]
         volumes:
             - ./conf/slicing_base_config.yaml:/openair-amf/etc/config.yaml
         depends_on:
