@@ -132,7 +132,7 @@ pipeline {
               if (upstreamEvent && upstreamJobs[NRF]) {
                 echo "Upstream Job passed NRF_TAG to use: ${imageTags[NRF]}"
                 echo "Upstream Job passed NRF_BRANCH to use: ${branchNames[NRF]}"
-                run_mini_gnbsim = true
+                run_mini_gnbsim = false
                 run_static_ue_ip = true
                 run_vpp_upf = true
                 run_slicing_w_nssf = true
