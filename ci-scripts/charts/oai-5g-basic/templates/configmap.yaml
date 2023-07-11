@@ -4,4 +4,4 @@ kind: ConfigMap
 metadata:
   name: oai5gcn
 data:
-  {{ (.Files.Glob "conf.yaml").AsConfig | indent 2 }}
+  {{ (.Files.Glob "config.yaml").AsConfig | indent 2 }}

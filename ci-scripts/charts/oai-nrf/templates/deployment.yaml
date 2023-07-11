@@ -69,13 +69,7 @@ spec:
         {{- end}}
         securityContext:
           {{- toYaml .Values.securityContext | nindent 12 }}
-        {{- if .Values.start.nrf}}
-        command:
-          - /openair-nrf/bin/oai_nrf
-          - -c
-          - /openair-nrf/etc/conf.yaml
-          - -o
-        {{- else}}
+        {{- if not .Values.start.nrf}}
         command:
           - /bin/sleep
           - infinity

@@ -107,13 +107,7 @@ spec:
         env:
           - name: TZ
             value: {{ .Values.config.tz }}
-        {{- if .Values.start.udr}}
-        command:
-          - /openair-udr/bin/oai_udr
-          - -c
-          - /openair-udr/etc/conf.yaml
-          - -o
-        {{- else}}
+        {{- if not .Values.start.udr}}
         command:
           - /bin/sleep
           - infinity
