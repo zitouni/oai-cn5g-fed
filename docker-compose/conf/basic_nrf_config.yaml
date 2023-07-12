@@ -175,7 +175,7 @@ smf:
     - single_nssai:
         sst: 222
         sd: 123
-      dnn: "oai.ipv4"
+      dnn: "default"
       qos_profile:
         5qi: 9
         session_ambr_ul: "50Mbps"
