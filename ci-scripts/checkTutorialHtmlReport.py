@@ -108,10 +108,7 @@ class HtmlReport():
 				continue
 			rootName = re.sub('.log.*$', '', log_file)
 			containerName = 'oai-' + rootName
-			if re.search('spgwu', rootName) is not None:
-				imageRootName = 'oai-spgwu-tiny:'
-				fileRootName = 'spgwu-tiny'
-			elif re.search('vpp-upf', rootName) is not None:
+			if re.search('vpp-upf', rootName) is not None:
 				imageRootName = 'oai-upf-vpp:'
 				fileRootName = 'upf-vpp'
 				containerName = rootName

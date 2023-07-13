@@ -72,9 +72,9 @@ def main() -> None:
     smfTimeX = []
     smfCpuY = []
     smfMemY = []
-    spgwuTimeX = []
-    spgwuMemY = []
-    spgwuCpuY = []
+    upfTimeX = []
+    upfMemY = []
+    upfCpuY = []
     x = 0
     while True:
         # Performing some statistics measurements on CPU and Memory usages for each NF
@@ -116,12 +116,12 @@ def main() -> None:
                     smfTimeX.append(x * LOOP_INTERVAL)
                     smfCpuY.append(float(result.group('cpu_usage')))
                     smfMemY.append(float(result.group('memory_usage')))
-            if line.count('oai-spgwu') > 0:
+            if line.count('oai-upf') > 0:
                 result = re.search(' (?P<cpu_usage>[0-9\.]+)% *(?P<memory_usage>[0-9\.]+)MiB / ', line)
                 if result is not None:
-                    spgwuTimeX.append(x * LOOP_INTERVAL)
-                    spgwuCpuY.append(float(result.group('cpu_usage')))
-                    spgwuMemY.append(float(result.group('memory_usage')))
+                    upfTimeX.append(x * LOOP_INTERVAL)
+                    upfCpuY.append(float(result.group('cpu_usage')))
+                    upfMemY.append(float(result.group('memory_usage')))
         # Checking the status of each gnbsim container
         ret = []
         for idx in range(NB_GNBSIM_INSTANCES):
@@ -171,8 +171,8 @@ def main() -> None:
     plt.plot(udmTimeX, udmMemY, label='UDM')
     plt.plot(udrTimeX, udrMemY, label='UDR')
     plt.plot(smfTimeX, smfMemY, label='SMF')
-    if len(spgwuTimeX) > 0:
-        plt.plot(spgwuTimeX, spgwuMemY, label='SPGWU')
+    if len(upfTimeX) > 0:
+        plt.plot(upfTimeX, upfMemY, label='UPF')
     plt.legend()
     plt.title('Memory Usage per NF')
     plt.ylabel('MiB')
@@ -188,7 +188,7 @@ def main() -> None:
     plt.plot(udmTimeX, udmCpuY, label='UDM')
     plt.plot(udrTimeX, udrCpuY, label='UDR')
     plt.plot(smfTimeX, smfCpuY, label='SMF')
-    plt.plot(spgwuTimeX, spgwuCpuY, label='SPGWU')
+    plt.plot(upfTimeX, upfCpuY, label='UPF')
     plt.legend()
     plt.title('CPU Usage per NF')
     plt.ylabel('%age')
