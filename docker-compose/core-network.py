@@ -276,7 +276,7 @@ def check_config(file_name):
         elif file_name == BASIC_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: oai-spgwu"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: oai-upf"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
@@ -293,8 +293,8 @@ def check_config(file_name):
                 logging.debug('\033[0;32m SMF is receiving heartbeats from UPF\033[0m....')
         else:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-            cmd1 = 'docker logs oai-spgwu 2>&1 | grep "Received SX HEARTBEAT RESPONSE"'
-            cmd2 = 'docker logs oai-spgwu 2>&1 | grep "Received SX HEARTBEAT REQUEST"'
+            cmd1 = 'docker logs oai-upf 2>&1 | grep "Received SX HEARTBEAT RESPONSE"'
+            cmd2 = 'docker logs oai-upf 2>&1 | grep "Received SX HEARTBEAT REQUEST"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None and upf_logs2 is None:

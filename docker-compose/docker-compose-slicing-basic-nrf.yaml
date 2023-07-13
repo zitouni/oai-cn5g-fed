@@ -162,9 +162,9 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.141
-    oai_spgwu_slice1:
-        container_name: "oai-spgwu-slice1"
-        image: oaisoftwarealliance/oai-spgwu-tiny:develop
+    oai_upf_slice1:
+        container_name: "oai-upf-slice1"
+        image: oaisoftwarealliance/oai-upf:develop
         expose:
             - 2152/udp
             - 8805/udp
@@ -179,7 +179,7 @@ services:
             - ENABLE_5G_FEATURES=yes
             - REGISTER_NRF=yes
             - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai_spgwu_slice1
+            - UPF_FQDN_5G=oai_upf_slice1
             - NRF_IPV4_ADDRESS=192.168.70.136
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai_nrf_slice12
@@ -202,9 +202,9 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.142
-    oai_spgwu_slice2:
-        container_name: "oai-spgwu-slice2"
-        image: oaisoftwarealliance/oai-spgwu-tiny:develop
+    oai_upf_slice2:
+        container_name: "oai-upf-slice2"
+        image: oaisoftwarealliance/oai-upf:develop
         expose:
             - 2152/udp
             - 8805/udp
@@ -219,7 +219,7 @@ services:
             - ENABLE_5G_FEATURES=yes
             - REGISTER_NRF=yes
             - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai_spgwu_slice2
+            - UPF_FQDN_5G=oai_upf_slice2
             - NRF_IPV4_ADDRESS=192.168.70.136
             - NRF_API_VERSION=v1
             - NRF_FQDN=oai_nrf_slice12
