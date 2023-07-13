@@ -240,7 +240,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -277,7 +277,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -293,7 +293,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+          retrieveLogs('archives/registration-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
           dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
@@ -336,7 +336,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -374,7 +374,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -390,7 +390,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml')
+          retrieveLogs('archives/pdu-sess-est-test', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
           dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
@@ -433,7 +433,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -471,7 +471,7 @@ pipeline {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
+            retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
             dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
@@ -487,7 +487,7 @@ pipeline {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml')
+          retrieveLogs('archives/deregistration', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
           dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
@@ -586,9 +586,10 @@ def retrieveGnbsimLogs(logPath, dcPath) {
   }
 }
 
-def retrieveLogs(logPath, dcFileName) {
+def retrieveLogs(logPath, dcFileName, ymlFileName) {
   sh "mkdir -p ${logPath}"
   sh "cp ${dcFileName} ${logPath}"
+  sh "cp ${ymlFileName} ${logPath}"
   sh "cp docker-compose/database/oai_db2.sql ${logPath}"
   sh "cp /tmp/oai-cn5g-load-test.* ${logPath} || true"
   sh "docker logs oai-nrf > ${logPath}/oai-nrf.log 2>&1"

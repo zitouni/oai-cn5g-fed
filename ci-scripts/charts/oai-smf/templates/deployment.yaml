@@ -110,13 +110,7 @@ spec:
             memory: {{ .Values.resources.nf.limits.memory | quote }}
             cpu: {{ .Values.resources.nf.limits.cpu | quote }}
         {{- end}}
-        {{- if .Values.start.smf}}
-        command:
-          - /openair-smf/bin/oai_smf
-          - -c
-          - /openair-smf/etc/conf.yaml
-          - -o
-        {{- else}}
+        {{- if not .Values.start.smf}}
         command:
           - /bin/sleep
           - infinity

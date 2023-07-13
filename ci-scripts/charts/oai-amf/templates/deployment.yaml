@@ -113,13 +113,7 @@ spec:
         - containerPort: {{ .Values.config.amfInterfaceSBIHTTP2Port }}
           name: http2
           protocol: TCP
-        {{- if .Values.start.amf}}
-        command:
-          - /openair-amf/bin/oai_amf
-          - -c
-          - /openair-amf/etc/conf.yaml
-          - -o
-        {{- else}}
+        {{- if not .Values.start.amf}}
         command:
           - /bin/sleep
           - infinity

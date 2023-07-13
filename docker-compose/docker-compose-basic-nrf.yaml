@@ -26,8 +26,6 @@ services:
         expose:
             - 80/tcp
             - 8080/tcp
-        # TODO: to be removed later
-        command: ["/openair-udr/bin/oai_udr", "-c", "/openair-udr/etc/config.yaml", "-o"]
         volumes:
             - ./conf/basic_nrf_config.yaml:/openair-udr/etc/config.yaml
         environment:
@@ -46,8 +44,6 @@ services:
             - 8080/tcp
         volumes:
             - ./conf/basic_nrf_config.yaml:/openair-udm/etc/config.yaml
-        # TODO: to be removed later
-        command: ["/openair-udm/bin/oai_udm", "-c", "/openair-udm/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -63,8 +59,6 @@ services:
             - 8080/tcp
         volumes:
             - ./conf/basic_nrf_config.yaml:/openair-ausf/etc/config.yaml
-        # TODO: to be removed later
-        command: ["/openair-ausf/bin/oai_ausf", "-c", "/openair-ausf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -94,8 +88,6 @@ services:
             - 38412/sctp
         volumes:
             - ./conf/basic_nrf_config.yaml:/openair-amf/etc/config.yaml
-        # TODO: to be removed later
-        command:  ["/openair-amf/bin/oai_amf", "-c", "/openair-amf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
         depends_on:
