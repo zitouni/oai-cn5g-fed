@@ -20,6 +20,8 @@
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
+**CAUTION: 2023/07/13: This tutorial has been updated to use the new UPF that replaces SPGWU-TINY.**
+
 **TABLE OF CONTENTS**
 
 1.  [Pre-requisites](#1-pre-requisites)
@@ -35,12 +37,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 * In this demo the image tags and commits which are used are listed below, follow [Building images](./BUILD_IMAGES.md) instructions to build images with these tags.
 
-| CNF Name    | Branch Name             | tag      | Ubuntu 18.04 | RHEL8          |
+| CNF Name    | Branch Name             | tag      | Ubuntu 20.04 | RHEL8          |
 | ----------- |:----------------------- | ---------| ------------ | ---------------|
-| AMF         | `master`                | `v1.5.0` | X            | X              |
-| SMF         | `master`                | `v1.5.0` | X            | X              |
-| NRF         | `master`                | `v1.5.0` | X            | X              |
-| SPGW-U-TINY | `master`                | `v1.5.0` | X            | X              |
+| AMF         | `master`                | `v1.6.0` | X            | X              |
+| SMF         | `master`                | `v1.6.0` | X            | X              |
+| NRF         | `master`                | `v1.6.0` | X            | X              |
+| UPF         | `master`                | `v1.6.0` | X            | X              |
 
 <br/>
 
@@ -81,7 +83,7 @@ As a first timer, we recommend to first run without any PCAP capture.
 ``` console
 docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 2
 ...
-[2021-09-14 16:44:47,176] root:DEBUG:  OAI 5G Core network is configured and healthy....
+[2023-07-13 12:59:57,491] root:DEBUG:  Starting 5gcn components... Please wait....
 ```
 
 For CI purposes, we are deploying with an automated PCAP capture on the docker network.
@@ -94,12 +96,11 @@ docker-compose-host $: python3 ./core-network.py --type start-mini --scenario 2 
 
 ``` console
 oai-cn5g-fed/docker-compose$ docker ps -a
-CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
-c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   23 seconds ago   Up 22 seconds                                            oai-ext-dn
-31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   23 seconds ago   Up 22 seconds (healthy)   2152/udp, 8805/udp             oai-spgwu
-84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   23 seconds ago   Up 22 seconds (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-565617169b42   mysql:8.0                       "docker-entrypoint.s…"   24 seconds ago   Up 23 seconds (healthy)   3306/tcp, 33060/tcp            mysql
+811594cc284a        oai-upf:latest             "/openair-upf/bin/oa…"   About a minute ago   Up About a minute (healthy)   2152/udp, 8805/udp             oai-upf
+ecde9367e35f        oai-smf:latest             "/openair-smf/bin/oa…"   About a minute ago   Up About a minute (healthy)   80/tcp, 8080/tcp, 8805/udp     oai-smf
+68b72a425b31        trf-gen-cn5g:latest        "/bin/bash -c ' ip r…"   About a minute ago   Up About a minute (healthy)                                  oai-ext-dn
+57f65999d804        oai-amf:latest             "/openair-amf/bin/oa…"   About a minute ago   Up About a minute (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+a44ea43b7962        mysql:8.0                  "docker-entrypoint.s…"   About a minute ago   Up About a minute (healthy)   3306/tcp, 33060/tcp            mysql
 oai-cn5g-fed/docker-compose$
 ```
 
@@ -161,13 +162,13 @@ gnbsim   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)
 After launching gnbsim, make sure all services status are healthy -
 ``` console
 docker-compose-host $: docker ps -a
-CONTAINER ID   IMAGE                           COMMAND                  CREATED          STATUS                    PORTS                          NAMES
-2ad428f94fb0   gnbsim:latest                   "/gnbsim/bin/entrypo…"   33 seconds ago   Up 32 seconds (healthy)                                  gnbsim
-c25db05aa023   ubuntu:bionic                   "/bin/bash -c ' apt …"   4 minutes ago    Up 4 minutes                                             oai-ext-dn
-31b6391a3a41   oai-amf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 38412/sctp   oai-amf
-753ae61f715f   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   4 minutes ago    Up 4 minutes (healthy)    2152/udp, 8805/udp             oai-spgwu
-84c164ab8136   oai-smf:latest                  "/bin/bash /openair-…"   4 minutes ago    Up 4 minutes (healthy)    80/tcp, 9090/tcp, 8805/udp     oai-smf
-565617169b42   mysql:8.0                       "docker-entrypoint.s…"   4 minutes ago    Up 4 minutes (healthy)    3306/tcp, 33060/tcp            mysql
+CONTAINER ID   IMAGE                           COMMAND                  CREATED              STATUS                        PORTS                          NAMES
+2ad428f94fb0   gnbsim:latest                   "/gnbsim/bin/entrypo…"   33 seconds ago       Up 32 seconds (healthy)                                      gnbsim
+811594cc284a   oai-upf:latest                  "/openair-upf/bin/oa…"   4 minutes ago        Up 4 minutes (healthy)        2152/udp, 8805/udp             oai-upf
+ecde9367e35f   oai-smf:latest                  "/openair-smf/bin/oa…"   4 minutes ago        Up 4 minutes (healthy)        80/tcp, 8080/tcp, 8805/udp     oai-smf
+68b72a425b31   trf-gen-cn5g:latest             "/bin/bash -c ' ip r…"   4 minutes ago        Up 4 minutes (healthy)                                       oai-ext-dn
+57f65999d804   oai-amf:latest                  "/openair-amf/bin/oa…"   4 minutes ago        Up 4 minutes (healthy)        80/tcp, 9090/tcp, 38412/sctp   oai-amf
+a44ea43b7962   mysql:8.0                       "docker-entrypoint.s…"   4 minutes ago        Up 4 minutes (healthy)        3306/tcp, 33060/tcp            mysql
 ```
 Now we are ready to perform some traffic test.
 
@@ -175,7 +176,7 @@ You can see also if the UE got allocated an IP address.
 
 ``` shell
 docker-compose-host $: docker logs gnbsim 2>&1 | grep "UE address:"
-[gnbsim]2022/09/14 16:45:40.584271 example.go:329: UE address: 12.1.1.2
+[gnbsim]2023/07/13 13:01:40.584271 example.go:329: UE address: 12.1.1.2
 ```
 
 ### 7.2. Ping test
@@ -270,7 +271,7 @@ You can recover the logs like this:
 ``` console
 docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
-docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
+docker-compose-host $: docker logs oai-upf > /tmp/oai/mini-gnbsim/upf.log 2>&1
 docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 ```
 
@@ -279,7 +280,7 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 | mysql         | 192.168.70.131 |
 | oai-amf       | 192.168.70.132 |
 | oai-smf       | 192.168.70.133 |
-| oai-spgwu     | 192.168.70.134 |
+| oai-upf       | 192.168.70.134 |
 | oai-ext-dn    | 192.168.70.135 |
 | Host Machine  | 192.168.70.129 |
 | gnbsim gNB    | 192.168.70.136 |
@@ -289,7 +290,6 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 | [5gcn-deployment-gnbsim.pcap](./results/gnbSIM/pcap/5gcn-deployment-gnbsim.pcap)                  |
 | [amf.log](./results/dsTest/logs/amf.log), [initialmessage.log](./results/dsTest/logs/initialmessage.log) |
 | [smf.log](./results/dsTest/logs/smf.log)                                                          |
-| [spgwu.log](./results/dsTest/logs/spgwu.log)
 
 ## 9. Trying Some Advanced Stuff
 
@@ -357,12 +357,11 @@ a25174c51297   gnbsim:latest                   "/gnbsim/bin/entrypo…"   3 minu
 ed440f95fb19   gnbsim:latest                   "/gnbsim/bin/entrypo…"   4 minutes ago    Up 4 minutes  (healthy)                                  gnbsim3
 8c4e4098955d   gnbsim:latest                   "/gnbsim/bin/entrypo…"   14 minutes ago   Up 14 minutes (healthy)                                  gnbsim2
 895b1838c62a   gnbsim:latest                   "/gnbsim/bin/entrypo…"   15 minutes ago   Up 15 minutes (healthy)                                  gnbsim
-d48135fd045c   ubuntu:bionic                   "/bin/bash -c ' apt …"   16 minutes ago   Up 16 minutes                                            oai-ext-dn
-5e98a708d12b   oai-amf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
-c64ae3c7f7c6   oai-spgwu-tiny:latest           "/openair-spgwu-tiny…"   16 minutes ago   Up 16 minutes (healthy)   2152/udp, 8805/udp             oai-spgwu
-1cd8319bddb0   oai-smf:latest                  "/bin/bash /openair-…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 8805/udp     oai-smf
-9cda92a46be4   mysql:8.0                       "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes (healthy)   3306/tcp, 33060/tcp            mysql
-
+811594cc284a   oai-upf:latest                  "/openair-upf/bin/oa…"   16 minutes ago   Up 16 minutes (healthy)   2152/udp, 8805/udp             oai-upf
+ecde9367e35f   oai-smf:latest                  "/openair-smf/bin/oa…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 8080/tcp, 8805/udp     oai-smf
+68b72a425b31   trf-gen-cn5g:latest             "/bin/bash -c ' ip r…"   16 minutes ago   Up 16 minutes (healthy)                                  oai-ext-dn
+57f65999d804   oai-amf:latest                  "/openair-amf/bin/oa…"   16 minutes ago   Up 16 minutes (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+a44ea43b7962   mysql:8.0                       "docker-entrypoint.s…"   16 minutes ago   Up 16 minutes (healthy)   3306/tcp, 33060/tcp            mysql
 ```
 * Let's verify all gnb and ue are registered at our 5G core -
 ``` console
@@ -450,7 +449,7 @@ docker-compose-host $: docker-compose -f docker-compose-mini-nonrf.yaml stop -t 
 ``` shell
 docker-compose-host $: docker logs oai-amf > /tmp/oai/mini-gnbsim/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/mini-gnbsim/smf.log 2>&1
-docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mini-gnbsim/spgwu.log 2>&1
+docker-compose-host $: docker logs oai-upf > /tmp/oai/mini-gnbsim/upf.log 2>&1
 docker-compose-host $: docker logs gnbsim > /tmp/oai/mini-gnbsim/gnbsim.log 2>&1
 docker-compose-host $: docker logs gnbsim2 > /tmp/oai/mini-gnbsim/gnbsim2.log 2>&1
 docker-compose-host $: docker logs gnbsim3 > /tmp/oai/mini-gnbsim/gnbsim3.log 2>&1
