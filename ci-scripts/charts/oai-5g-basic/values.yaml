@@ -64,12 +64,12 @@ oai-amf:
     http2Param: "--http2-prior-knowledge"
   nodeSelector:     #Using dedicated nodeName in the chart directly
     worker: "telco"
-oai-spgwu-tiny:
+oai-upf:
   enabled: true
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: SPGWU_TINY_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-upf    ## The image will be pulled from dockerhub
+    version: UPF_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:

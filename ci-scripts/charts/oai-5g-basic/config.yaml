@@ -127,7 +127,7 @@ smf:
     use_local_pcc_rules: yes # Use infos from local_pcc_rules or from PCF
   # we resolve from NRF, this is just to configure usage_reporting
   upfs:
-    - host: oai-spgwu-tiny
+    - host: oai-upf
       config:
         enable_usage_reporting: no
   ue_dns:
