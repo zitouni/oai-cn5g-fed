@@ -48,7 +48,7 @@ UDM=5
 UDR=6
 
 imageNames = ["oai-nrf", "oai-amf", "oai-smf", "oai-upf", "oai-ausf", "oai-udm", "oai-udr"]
-repoNames = ["oai-cn5g-nrf", "oai-cn5g-amf", "oai-cn5g-smf", "openair-upf", "oai-cn5g-ausf", "oai-cn5g-udm", "oai-cn5g-udr"]
+repoNames = ["oai-cn5g-nrf", "oai-cn5g-amf", "oai-cn5g-smf", "oai-cn5g-upf", "oai-cn5g-ausf", "oai-cn5g-udm", "oai-cn5g-udr"]
 // Branch Names and BaseTags should be configured by default with develop values
 // In pipeline configuration
 // In case of a upstream event, the parent pipeline should provide different values

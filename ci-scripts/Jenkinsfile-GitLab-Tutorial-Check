@@ -39,7 +39,7 @@ PCF=9
 
 // Default tags / branches  --> could be passed on by upstream job
 imageNames = ["oai-nrf", "oai-amf", "oai-smf", "oai-upf", "oai-ausf", "oai-udm", "oai-udr", "oai-nssf", "oai-upf-vpp", "oai-pcf"]
-repoNames = ["oai-cn5g-nrf", "oai-cn5g-amf", "oai-cn5g-smf", "openair-upf", "oai-cn5g-ausf", "oai-cn5g-udm", "oai-cn5g-udr", "oai-cn5g-nssf", "oai-cn5g-upf-vpp", "oai-cn5g-pcf"]
+repoNames = ["oai-cn5g-nrf", "oai-cn5g-amf", "oai-cn5g-smf", "oai-cn5g-upf", "oai-cn5g-ausf", "oai-cn5g-udm", "oai-cn5g-udr", "oai-cn5g-nssf", "oai-cn5g-upf-vpp", "oai-cn5g-pcf"]
 branchNames = ["", "", "", "", "", "", "", "", "", ""]
 imageTags = ["", "", "", "", "", "", "", "", "", ""]
 upstreamJobs = [false, false, false, false, false, false, false, false, false, false]
