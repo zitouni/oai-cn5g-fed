@@ -71,21 +71,9 @@ spec:
       - name: upf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
-        {{- if .Values.config.netUeIp2}}
-        #just a hack to create two ue subnets in upf as the code does not support
-        lifecycle:
-           postStart:
-             exec:
-               command: ["/bin/sh", "-c", "/tmp/routes.sh"]
-        {{- end}}
         volumeMounts:
           - mountPath: /openair-upf/etc
             name: configuration
-        {{- if .Values.config.netUeIp2}}
-          - mountPath: /tmp/routes.sh
-            subPath: routes.sh
-            name: hack
-        {{- end}}
         securityContext:
             {{- toYaml .Values.securityContext | nindent 12 }}
         {{- if .Values.readinessProbe}}

@@ -1,18 +1,3 @@
-{{- if .Values.config.netUeIp2}}
----
-kind: ConfigMap
-apiVersion: v1
-metadata:
-  name: {{ .Chart.Name }}-configmap-hack
-data:
-  routes.sh: |
-      #!/bin/sh
-      sleep 3
-      tun0_ip=$(ip -f inet addr show tun0 | awk '/inet / {print $2}' | awk -F '/' '{print $1}')
-      iptables -t nat -A POSTROUTING -o {{ .Values.config.n3If }}  -s {{ .Values.config.netUeIp2 }} -j SNAT --to {{ .Values.multus.n3Ip }}
-      ip route add {{ .Values.config.netUeIp2 }} via $tun0_ip dev tun0
-{{- end}}
----
 kind: ConfigMap
 apiVersion: v1
 metadata:
@@ -94,8 +79,11 @@ data:
              ENABLE_5G_FEATURES = "yes";
              ENABLE_BPF_DATAPATH = "no";
              REGISTER_NRF = "{{ .Values.config.registerNRF }}";  # Set to 'yes' if UPF resgisters to an NRF
+             HTTP_VERSION = {{ if .Values.config.nrfHTTPVersion }}{{ .Values.config.nrfHTTPVersion }}{{ else }}1{{ end }};   #Set HTTP version for NRF (1 or 2)Default 1
              USE_FQDN_NRF = "{{ .Values.config.useFqdnNrf }}"; # Set to 'yes' if UPF relies on a DNS/FQDN service to resolve NRF's FQDN
              UPF_FQDN_5G  = "{{ .Values.config.fqdn }}";  #Set FQDN of UPF
+             # Dummy since we are just trying to resolve it
+             REMOTE_N6_GW = "oai-nrf";
 
              NRF :
              {
@@ -111,7 +99,7 @@ data:
                 {
                   NSSAI_SST = {{ .Values.config.nssaiSst0 }};
                   {{- if .Values.config.nssaiSd0}}
-                  NSSAI_SD = "{{ .Values.config.nssaiSd0 }}";
+                  NSSAI_SD = {{ .Values.config.nssaiSd0 }};
                   {{- end }}
                   DNN_LIST = ({DNN = "{{ .Values.config.dnn0 }}";});
                 }
@@ -119,7 +107,7 @@ data:
                 ,{
                   NSSAI_SST = {{ .Values.config.nssaiSst1 }};
                   {{- if .Values.config.nssaiSd1}}
-                  NSSAI_SD = "{{ .Values.config.nssaiSd1 }}";
+                  NSSAI_SD = {{ .Values.config.nssaiSd1 }};
                   {{- end }}
                   DNN_LIST = ({DNN = "{{ .Values.config.dnn1 }}";});
                 }
@@ -128,7 +116,7 @@ data:
                 ,{
                   NSSAI_SST = {{ .Values.config.nssaiSst2 }};
                   {{- if .Values.config.nssaiSd2}}
-                  NSSAI_SD = "{{ .Values.config.nssaiSd2 }}";
+                  NSSAI_SD = {{ .Values.config.nssaiSd2 }};
                   {{- end }}
                   DNN_LIST = ({DNN = "{{ .Values.config.dnn2 }}";});
                 }
@@ -137,7 +125,7 @@ data:
                 ,{
                   NSSAI_SST = {{ .Values.config.nssaiSst3 }};
                   {{- if .Values.config.nssaiSd3}}
-                  NSSAI_SD = "{{ .Values.config.nssaiSd3 }}";
+                  NSSAI_SD = {{ .Values.config.nssaiSd3 }};
                   {{- end }}
                   DNN_LIST = ({DNN = "{{ .Values.config.dnn3 }}";});
                 }

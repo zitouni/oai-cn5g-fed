@@ -52,13 +52,15 @@ services:
         image: oaisoftwarealliance/oai-upf:develop
         environment:
             - TZ=Europe/Paris
-            - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
+            - LOG_LEVEL=debug
+            - SGW_INTERFACE_NAME_FOR_N3=eth0
             - SGW_INTERFACE_NAME_FOR_SX=eth0
             - PGW_INTERFACE_NAME_FOR_SGI=eth0
             - NETWORK_UE_NAT_OPTION=yes
             - NETWORK_UE_IP=12.1.1.0/24
             - ENABLE_5G_FEATURES=yes
             - REGISTER_NRF=no
+            - ENABLE_BPF_DATAPATH=no
             - USE_FQDN_NRF=no
             - UPF_FQDN_5G=oai-upf
             - NRF_IPV4_ADDRESS=0.0.0.0
@@ -102,9 +104,6 @@ services:
             public_net:
                 ipv4_address: 192.168.70.135
 networks:
-    # public_net:
-    #     external:
-    #         name: demo-oai-public-net
     public_net:
         driver: bridge
         name: demo-oai-public-net
