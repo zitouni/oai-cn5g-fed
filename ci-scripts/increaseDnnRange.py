@@ -33,6 +33,7 @@ logging.basicConfig(
     format="[%(asctime)s] %(levelname)8s: %(message)s"
 )
 
+
 def _parse_args() -> argparse.Namespace:
     """Parse the command line args
 
@@ -44,8 +45,8 @@ def _parse_args() -> argparse.Namespace:
         ./ci-scripts/increaseDnnRange.py docker-compose-file DC_FILENAME --nb-users NB_USERS_TO_ADD'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK Utility tool',
-                                    epilog=example_text,
-                                    formatter_class=argparse.RawDescriptionHelpFormatter)
+                                     epilog=example_text,
+                                     formatter_class=argparse.RawDescriptionHelpFormatter)
 
     parser.add_argument(
         '--docker-compose-file', '-dcf',
@@ -62,6 +63,7 @@ def _parse_args() -> argparse.Namespace:
     )
     return parser.parse_args()
 
+
 if __name__ == '__main__':
     # Parse the arguments
     args = _parse_args()
@@ -71,44 +73,36 @@ if __name__ == '__main__':
         logging.error(f'{args.docker_compose_file} does not exist')
         sys.exit(-1)
 
-    startingIP = '12.1.0.2'
-    endingIP = '12.1.0.50'
+    startingIP = '12.1.0.0'
     cicdrSuffix = '24'
     if args.nb_users < 1023:
-        endingIP = '12.1.3.254'
         cicdrSuffix = '22'
     elif args.nb_users < 2047:
-        endingIP = '12.1.7.254'
         cicdrSuffix = '21'
     elif args.nb_users < 4095:
-        endingIP = '12.1.15.254'
         cicdrSuffix = '20'
     elif args.nb_users < 8191:
-        endingIP = '12.1.31.254'
         cicdrSuffix = '19'
     elif args.nb_users < 16383:
-        endingIP = '12.1.63.254'
         cicdrSuffix = '18'
 
     lines = ''
     with open(os.path.join(cwd, args.docker_compose_file), 'r') as rfile:
         for line in rfile:
-           if (re.search('DNN_RANGE0=12', line) is not None) or (re.search('DNN_RANGE1=12', line) is not None):
-               lines += re.sub('12', '13', line)
-           elif (re.search('DNN_RANGE2=12', line) is not None):
-               lines += re.sub('12.1.1.2 - 12.1.1.50', f'{startingIP} - {endingIP}', line)
-           elif (re.search('NETWORK_UE_IP=12.1.1.0/24', line) is not None):
-               lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
-           elif (re.search('ip route add 12.1.1.0/24', line) is not None):
-               lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
-           elif (re.search('grep 12.1.1', line) is not None):
-               lines += re.sub('grep 12.1.1', 'grep 12.1.0', line)
-           elif (re.search('ipv4_pool: "12.1.1.151 - 12.1.1.253"', line) is not None) or (re.search('ipv4_pool: "12.1.1.51 - 12.1.1.150"', line) is not None):
-               lines += re.sub('12', '13', line)
-           elif (re.search('ipv4_pool: "12.1.1.2 - 12.1.1.50"', line) is not None):
-               lines += re.sub('12.1.1.2 - 12.1.1.50', f'{startingIP} - {endingIP}', line)
-           else:
-               lines += line
+            if (re.search('NETWORK_UE_IP=12.1.1.0/24', line) is not None):
+                lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
+            elif (re.search('ip route add 12.1.1.0/24', line) is not None):
+                lines += re.sub('12.1.1.0/24', f'12.1.0.0/{cicdrSuffix}', line)
+            elif (re.search('grep 12.1.1', line) is not None):
+                lines += re.sub('grep 12.1.1', 'grep 12.1.0', line)
+            elif (re.search('ipv4_subnet: "12.1.1.128/25"', line) is not None):
+                lines += re.sub("12.1.1.128/25", "13.1.1.128/25", line)
+            elif (re.search('ipv4_subnet: "12.1.1.64/26"', line) is not None):
+                lines += re.sub("12.1.1.64/26", "13.1.1.64/26", line)
+            elif (re.search('ipv4_subnet: "12.1.1.0/26"', line) is not None):
+                lines += re.sub('12.1.1.0/26', f'{startingIP}/{cicdrSuffix}', line)
+            else:
+                lines += line
 
     with open(os.path.join(cwd, args.docker_compose_file), 'w') as wfile:
         wfile.write(lines)

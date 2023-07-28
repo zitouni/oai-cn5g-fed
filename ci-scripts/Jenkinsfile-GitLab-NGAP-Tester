@@ -203,11 +203,13 @@ pipeline {
       steps {
         script {
           sh 'cp -Rf /opt/ngap-tester-v1.6/test/* ci-scripts/docker-compose/ngap-tester/'
-          updateDockerCompose('ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', ngapTesterTag)
-          dir ('ci-scripts/docker-compose/ngap-tester') {
+          // Let use the official docker-compose and adapt it to NGAP-Tester
+          updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', ngapTesterTag)
+          adaptForNGAPtester('docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
+          dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml up -d'
-            sh '../../checkContainerStatus.py --container_name mysql --timeout 40'
-            sh '../../checkContainerStatus.py --container_name oai-spgwu --timeout 40'
+            sh '../ci-scripts/checkContainerStatus.py --container_name mysql --timeout 40'
+            sh '../ci-scripts/checkContainerStatus.py --container_name oai-spgwu --timeout 40'
             sh 'docker-compose -f docker-compose-basic-nrf.yaml ps -a'
           }
         }
@@ -215,12 +217,12 @@ pipeline {
       post {
         unsuccessful {
           script {
-            dir ('ci-scripts/docker-compose/ngap-tester') {
+            dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
-            dir ('ci-scripts/docker-compose/ngap-tester') {
+            retrieveLogs('archives', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
+            dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
             cleanUpDockerCompose()
@@ -267,11 +269,13 @@ pipeline {
           script {
             dir ('ci-scripts/docker-compose/ngap-tester') {
               sh 'docker-compose -f docker-compose-ngap-tester.yaml down -t 0'
+            }
+            dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
             }
             sleep 5
-            retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
-            dir ('ci-scripts/docker-compose/ngap-tester') {
+            retrieveLogs('archives', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
+            dir ('docker-compose') {
               sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
             }
             cleanUpDockerCompose()
@@ -282,12 +286,12 @@ pipeline {
     stage ('Undeploy OAI-CN5G') {
       steps {
         script {
-          dir ('ci-scripts/docker-compose/ngap-tester') {
+          dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml stop -t 3'
           }
           sleep 5
-          retrieveLogs('archives', 'ci-scripts/docker-compose/ngap-tester/docker-compose-basic-nrf.yaml', 'ci-scripts/docker-compose/ngap-tester/conf/basic_nrf_config.yaml')
-          dir ('ci-scripts/docker-compose/ngap-tester') {
+          retrieveLogs('archives', 'docker-compose/docker-compose-basic-nrf.yaml', 'docker-compose/conf/basic_nrf_config.yaml')
+          dir ('docker-compose') {
             sh 'docker-compose -f docker-compose-basic-nrf.yaml down -t 3'
           }
           cleanUpDockerCompose()
@@ -381,6 +385,22 @@ def updateDockerCompose(filename, lRanTag) {
   }
   sh 'sed -i -e "s@oaisoftwarealliance/trf-gen-cn5g:latest@trf-gen-cn5g:latest@" ' + filename
   sh 'sed -i -e "s@ngap-tester:develop@ngap-tester:' + lRanTag + '@" ci-scripts/docker-compose/ngap-tester/docker-compose-ngap-tester.yaml'
+}
+
+def adaptForNGAPtester(filename, confname) {
+  // NGAP Tester only works in HTTP/1 and port 80
+  sh 'sed -i -e "s@NETWORK_UE_IP=12.1.1.0/24@NETWORK_UE_IP=13.1.0.0/20@" ' + filename
+  sh 'sed -i -e "s@HTTP_VERSION=2@HTTP_VERSION=1@"                       ' + filename
+  sh 'sed -i -e "s@NRF_PORT=8080@NRF_PORT=80@"                           ' + filename
+  sh 'sed -i -e "s@ip route add 12.1.1.0/24@ip route add 13.1.0.0/20@"   ' + filename
+  sh 'sed -i -e "s@grep 12.1.1@grep 13.1.0@"                             ' + filename
+  sh 'sed -i -e "s@port: 8080@port: 80@"                                 ' + confname
+  sh 'sed -i -e "s@http_version: 2@http_version: 1@"                     ' + confname
+  sh 'sed -i -e "s@enable_smf_selection: yes@enable_smf_selection: no@"  ' + confname
+  sh 'sed -i -e "s@12.1.1.0/26@13.1.0.0/20@"                             ' + confname
+  sh 'sed -i -e "s@NIA2@NIA3@" -e "s@NIA0@NIA2@"                         ' + confname
+  sh 'grep -v NIA3 ' + confname + ' | grep -v NEA1 > tmp.yaml'
+  sh 'mv tmp.yaml ' + confname
 }
 
 def cleanUpDockerCompose() {
