@@ -102,17 +102,17 @@ does NOT break any existing tested feature.
 So for example, at time of writing, N2 Handover support code is included in `v1.1.0` release.
 But it is not tested yet. So it is not advertised in the `CHANGELOG.md` and the Release Notes.
 
-Anyhow, the tutorials' docker-compose files on the latest commit of the `master` branch of
+Anyhow, the tutorials' docker-compose files on the latest commit of the `develop` branch of
 `oai-cn5g-fed` repository SHALL support any additional un-tested feature.
 
 ```bash
 # Clone
 $ git clone  https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
-# On an existing repository, resync to the last `master` commit
+# On an existing repository, resync to the last `develop` commit
 $ git fetch --prune
-$ git checkout master
-$ git rebase origin/master
+$ git checkout develop
+$ git rebase origin/develop
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
@@ -150,13 +150,14 @@ We recommend to add the `--no-cache` option in that case.
 
 We are supporting the following releases:
 
-* Ubuntu `18.04` or `bionic`
 * Ubuntu `20.04` or `focal`
 * Ubuntu `22.04` or `jammy`
 
 When building, you can specify which base image to work on (by default it will be `ubuntu:focal`).
 
 You just add the `--build-arg BASE_IMAGE=ubuntu:xxxx` option.
+
+**CAUTION: Since `v1.5.1` we are no longer supporting Ubuntu `18.04` or `bionic`.**
 
 # 3. Build AMF Image #
 

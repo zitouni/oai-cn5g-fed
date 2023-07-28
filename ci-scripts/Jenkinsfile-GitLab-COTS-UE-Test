@@ -372,6 +372,9 @@ pipeline {
           if (fileExists('oai-gnb.logs')) {
             sh 'mv oai-gnb.logs archives'
           }
+          if (fileExists('oai-gnb-l2-trace.pcap')) {
+            sh 'mv oai-gnb-l2-trace.* archives'
+          }
           dir ('ci-scripts/charts/oai-5g-basic') {
             sh 'helm uninstall $(helm list -aq)'
             // Let's do later a script to check.

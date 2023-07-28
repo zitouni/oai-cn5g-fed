@@ -22,9 +22,9 @@ If you want to use a specific branch or commit, please refer to [Build your own 
 
 The images are hosted under the oai account `oaisoftwarealliance`.
 
-**All images that are currently pushed to Docker-Hub have an `Ubuntu-18.04` base image.**
+**All images that are currently pushed to Docker-Hub have an `Ubuntu-20.04` base image.**
 
-**But they should be working on any newer Ubuntu host (such as `20.04` or `22.04`).**
+**But they should be working on any newer Ubuntu host (such as `22.04`).**
 
 Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has the reached pulling limit as `anonymous`.
 
@@ -75,7 +75,7 @@ This repository only has tutorials and Continuous Integration scripts.
 
 **At the time of writing (2023/01), the release tag is `v1.5.0`.**
 
-| CNF Name    | Branch Name | Tag      | Ubuntu 18.04 | RHEL8 (UBI8)    |
+| CNF Name    | Branch Name | Tag      | Ubuntu 20.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
 | FED REPO    | N/A         | `v1.5.1` |              |                 |
 | AMF         | `master`    | `v1.5.1` | X            | X               |
@@ -117,7 +117,37 @@ git submodule init
 git submodule update
 ```
 
-Later versions of the `master` branch may not work with the pulled images.
+## If you are using the `develop` images ##
+
+If you want to pull the `develop` tags of the published images:
+
+```bash
+#!/bin/bash
+docker pull oaisoftwarealliance/oai-amf:develop
+docker pull oaisoftwarealliance/oai-nrf:develop
+docker pull oaisoftwarealliance/oai-spgwu-tiny:develop
+docker pull oaisoftwarealliance/oai-smf:develop
+docker pull oaisoftwarealliance/oai-udr:develop
+docker pull oaisoftwarealliance/oai-udm:develop
+docker pull oaisoftwarealliance/oai-ausf:develop
+docker pull oaisoftwarealliance/oai-upf-vpp:develop
+docker pull oaisoftwarealliance/oai-nssf:develop
+docker pull oaisoftwarealliance/oai-pcf:develop
+docker pull oaisoftwarealliance/oai-nef:develop
+# Utility image to generate traffic
+docker pull oaisoftwarealliance/trf-gen-cn5g:latest
+```
+
+Now these development images will **NOT** work with the `master` versions of the tutorials. You **SHALL** switch to the `develop` versions.
+
+```bash
+# Clone directly on the latest release tag
+$ git clone --branch develop https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ cd oai-cn5g-fed
+# If you forgot to clone directly to the latest release tag
+$ git checkout -f develop
+$ git rebase origin/develop
+```
 
 You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md).
 

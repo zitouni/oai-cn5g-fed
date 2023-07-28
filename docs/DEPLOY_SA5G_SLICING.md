@@ -309,14 +309,14 @@ PING 12.2.1.2 (12.2.1.2) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3039ms
 rtt min/avg/max/mdev = 0.390/0.635/1.004/0.232 ms
 
-docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.129
-PING 12.1.1.129 (12.1.1.129) 56(84) bytes of data.
-64 bytes from 12.1.1.129: icmp_seq=1 ttl=63 time=40.0 ms
-64 bytes from 12.1.1.129: icmp_seq=2 ttl=63 time=39.5 ms
-64 bytes from 12.1.1.129: icmp_seq=3 ttl=63 time=11.2 ms
-64 bytes from 12.1.1.129: icmp_seq=4 ttl=63 time=11.2 ms
+docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.130
+PING 12.1.1.130 (12.1.1.130) 56(84) bytes of data.
+64 bytes from 12.1.1.130: icmp_seq=1 ttl=63 time=40.0 ms
+64 bytes from 12.1.1.130: icmp_seq=2 ttl=63 time=39.5 ms
+64 bytes from 12.1.1.130: icmp_seq=3 ttl=63 time=11.2 ms
+64 bytes from 12.1.1.130: icmp_seq=4 ttl=63 time=11.2 ms
 
---- 12.1.1.129 ping statistics ---
+--- 12.1.1.130 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3003ms
 rtt min/avg/max/mdev = 11.206/25.511/40.071/14.292 ms
 ```
@@ -378,7 +378,7 @@ docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransi
 | rfsim UE2             | 192.168.70.155 |
 | gnbsim gNB            | 192.168.70.156 |
 | UE1                   | 12.2.1.2       |
-| UE2                   | 12.1.1.129     |
+| UE2                   | 12.1.1.130     |
 | UE3                   | 12.1.1.2       |
 
 | Pcap/log files                                                                             |
