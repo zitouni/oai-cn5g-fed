@@ -281,7 +281,7 @@ def check_config(file_name):
         elif file_name == BASIC_W_NRF:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: oai-upf"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Resolve IP Addr 192.168.70.134, FQDN oai-upf"'
             upf_logs1 = run_cmd(cmd1)
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
