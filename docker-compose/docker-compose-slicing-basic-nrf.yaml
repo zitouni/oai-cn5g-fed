@@ -169,27 +169,12 @@ services:
             - 2152/udp
             - 8805/udp
             - 8080/tcp
+        volumes:
+            - ./conf/slicing_slice1_config.yaml:/openair-upf/etc/config.yaml
+        # TODO: remove once YAML is the default command
+        command: ["/openair-upf/bin/oai_upf", "-c", "/openair-upf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
-            - SGW_INTERFACE_NAME_FOR_SX=eth0
-            - PGW_INTERFACE_NAME_FOR_SGI=eth0
-            - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.2.1.0/24
-            - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=yes
-            - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai_upf_slice1
-            - NRF_IPV4_ADDRESS=192.168.70.136
-            - NRF_API_VERSION=v1
-            - NRF_FQDN=oai_nrf_slice12
-            # Mandatory to set the NRF PORT to 8080 (it is set to default to 80 otherwise)
-            - HTTP_VERSION=2
-            - NRF_PORT=8080
-            # One single slice / DNN is defined
-            - NSSAI_SST_0=128
-            - NSSAI_SD_0=128
-            - DNN_0=default
         depends_on:
             - oai_nrf_slice12
             - oai_smf_slice1
@@ -209,26 +194,12 @@ services:
             - 2152/udp
             - 8805/udp
             - 8080/tcp
+        volumes:
+            - ./conf/slicing_slice2_config.yaml:/openair-upf/etc/config.yaml
+        # TODO: remove once YAML is the default command
+        command: ["/openair-upf/bin/oai_upf", "-c", "/openair-upf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - SGW_INTERFACE_NAME_FOR_S1U_S12_S4_UP=eth0
-            - SGW_INTERFACE_NAME_FOR_SX=eth0
-            - PGW_INTERFACE_NAME_FOR_SGI=eth0
-            - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.1.1.0/24
-            - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=yes
-            - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai_upf_slice2
-            - NRF_IPV4_ADDRESS=192.168.70.136
-            - NRF_API_VERSION=v1
-            - NRF_FQDN=oai_nrf_slice12
-            # Mandatory to set the NRF PORT to 8080 (it is set to default to 80 otherwise)
-            - HTTP_VERSION=2
-            - NRF_PORT=8080
-            # One single slice / DNN is defined
-            - NSSAI_SST_0=1
-            - DNN_0=oai
         depends_on:
             - oai_nrf_slice12
             - oai_smf_slice2
