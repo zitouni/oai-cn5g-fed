@@ -22,6 +22,8 @@
 
 Note: In case readers are interested in deploying debuggers/developers core network environment with more logs please follow [this tutorial](./DEBUG_5G_CORE.md)
 
+**CAUTION: 2023/07/13: This tutorial has been updated to use the new UPF that replaces SPGWU-TINY.**
+
 **TABLE OF CONTENTS**
 
 1.  Pre-requisites
@@ -40,17 +42,17 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 You can also retrieve the images from `docker-hub`. See [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md).
 
-| CNF Name    | Branch Name    | Tag used at time of writing   | Ubuntu 18.04 | RHEL8         |
-| ----------- |:-------------- | ----------------------------- | ------------ | --------------|
-| NSSF        | `master`      | `v1.5.0`                      | X            | X              |
-| AMF         | `master`      | `v1.5.0`                      | X            | X              |
-| AUSF        | `master`      | `v1.5.0`                      | X            | X              |
-| NRF         | `master`      | `v1.5.0`                      | X            | X              |
-| SMF         | `master`      | `v1.5.0`                      | X            | X              |
-| UDR         | `master`      | `v1.5.0`                      | X            | X              |
-| UDM         | `master`      | `v1.5.0`                      | X            | X              |
-| SPGWU       | `master`      | `v1.5.0`                      | X            | X              |
-| UPF-VPP     | `master`      | `v1.5.0`                      | X            | X              |
+| CNF Name    | Branch Name   | Tag used at time of writing   | Ubuntu 20.04 | RHEL8         |
+| ----------- |:------------- | ----------------------------- | ------------ | --------------|
+| NSSF        | `master`      | `v1.6.0`                      | X            | X              |
+| AMF         | `master`      | `v1.6.0`                      | X            | X              |
+| AUSF        | `master`      | `v1.6.0`                      | X            | X              |
+| NRF         | `master`      | `v1.6.0`                      | X            | X              |
+| SMF         | `master`      | `v1.6.0`                      | X            | X              |
+| UDR         | `master`      | `v1.6.0`                      | X            | X              |
+| UDM         | `master`      | `v1.6.0`                      | X            | X              |
+| UPF         | `master`      | `v1.6.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v1.6.0`                      | X            | X              |
 
 <br/>
 
@@ -137,19 +139,19 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/s
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml up -d
 mysql is up-to-date
 Creating oai-nrf-slice12 ... done
-Creating oai-nssf         ... done
-Creating oai-ext-dn       ... done
-Creating oai-nrf-slice3   ... done
-Creating oai-spgwu-slice2 ... done
-Creating oai-udr          ... done
-Creating vpp-upf-slice3   ... done
-Creating oai-udm          ... done
-Creating oai-ausf         ... done
-Creating oai-amf          ... done
-Creating oai-smf-slice3   ... done
-Creating oai-smf-slice1   ... done
-Creating oai-smf-slice2   ... done
-Creating oai-spgwu-slice1 ... done
+Creating oai-udr         ... done
+Creating oai-nrf-slice3  ... done
+Creating oai-nssf        ... done
+Creating oai-ext-dn      ... done
+Creating oai-udm         ... done
+Creating oai-ausf        ... done
+Creating oai-amf         ... done
+Creating oai-smf-slice3  ... done
+Creating oai-smf-slice1  ... done
+Creating oai-smf-slice2  ... done
+Creating oai-upf-slice1  ... done
+Creating vpp-upf-slice3  ... done
+Creating oai-upf-slice2  ... done
 ```
 
 ``` shell
@@ -160,7 +162,7 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/slicing-with-nssf/slicing-with-ns
 For CI purposes please ignore this line
 ``` shell
 docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name mysql --timeout 120
-docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oai-spgwu-slice1 --timeout 30
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oai-upf-slice1 --timeout 30
 ```
 -->
 
@@ -168,23 +170,23 @@ docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oa
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml ps -a
-Name                    Command                  State                  Ports
------------------------------------------------------------------------------------------------
-mysql              docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
-oai-amf            /bin/bash /openair-amf/bin ...   Up (healthy)   38412/sctp, 80/tcp, 9090/tcp
-oai-ausf           /bin/bash /openair-ausf/bi ...   Up (healthy)   80/tcp
-oai-ext-dn         /bin/bash -c  apt update;  ...   Up (healthy)
-oai-nrf-slice12    /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp
-oai-nrf-slice3     /bin/bash /openair-nrf/bin ...   Up (healthy)   80/tcp, 9090/tcp
-oai-nssf           /bin/bash /openair-nssf/bi ...   Up (healthy)   80/tcp, 8080/tcp
-oai-smf-slice1     /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
-oai-smf-slice2     /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
-oai-smf-slice3     /bin/bash /openair-smf/bin ...   Up (healthy)   80/tcp, 8805/udp, 9090/tcp
-oai-spgwu-slice1   /openair-spgwu-tiny/bin/en ...   Up (healthy)   2152/udp, 8805/udp
-oai-spgwu-slice2   /openair-spgwu-tiny/bin/en ...   Up (healthy)   2152/udp, 8805/udp
-oai-udm            /bin/bash /openair-udm/bin ...   Up (healthy)   80/tcp
-oai-udr            /bin/bash /openair-udr/bin ...   Up (healthy)   80/tcp
-vpp-upf-slice3     /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
+Name                    Command                  State                       Ports
+--------------------------------------------------------------------------------------------------------
+mysql             docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
+oai-amf           /openair-amf/bin/oai_amf - ...   Up (healthy)   38412/sctp, 80/tcp, 8080/tcp, 9090/tcp
+oai-ausf          /openair-ausf/bin/oai_ausf ...   Up (healthy)   80/tcp, 8080/tcp
+oai-ext-dn        /bin/bash -c  iptables -t  ...   Up (healthy)
+oai-nrf-slice12   /openair-nrf/bin/oai_nrf - ...   Up (healthy)   80/tcp, 8080/tcp, 9090/tcp
+oai-nrf-slice3    /openair-nrf/bin/oai_nrf - ...   Up (healthy)   80/tcp, 8080/tcp, 9090/tcp
+oai-nssf          /openair-nssf/bin/oai_nssf ...   Up (healthy)   80/tcp, 8080/tcp
+oai-smf-slice1    /openair-smf/bin/oai_smf - ...   Up (healthy)   80/tcp, 8080/tcp, 8805/udp
+oai-smf-slice2    /openair-smf/bin/oai_smf - ...   Up (healthy)   80/tcp, 8080/tcp, 8805/udp
+oai-smf-slice3    /openair-smf/bin/oai_smf - ...   Up (healthy)   80/tcp, 8080/tcp, 8805/udp
+oai-udm           /openair-udm/bin/oai_udm - ...   Up (healthy)   80/tcp, 8080/tcp
+oai-udr           /openair-udr/bin/oai_udr - ...   Up (healthy)   80/tcp, 8080/tcp
+oai-upf-slice1    /openair-upf/bin/oai_udr - ...   Up (healthy)   2152/udp, 8080/tcp, 8805/udp
+oai-upf-slice2    /openair-upf/bin/oai_udr - ...   Up (healthy)   2152/udp, 8080/tcp, 8805/udp
+vpp-upf-slice3    /openair-upf/bin/entrypoin ...   Up (healthy)   2152/udp, 8085/udp
 ```
 
 ## 6. Getting `ransim` docker images
@@ -307,14 +309,14 @@ PING 12.2.1.2 (12.2.1.2) 56(84) bytes of data.
 4 packets transmitted, 4 received, 0% packet loss, time 3039ms
 rtt min/avg/max/mdev = 0.390/0.635/1.004/0.232 ms
 
-docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.129
-PING 12.1.1.129 (12.1.1.129) 56(84) bytes of data.
-64 bytes from 12.1.1.129: icmp_seq=1 ttl=63 time=40.0 ms
-64 bytes from 12.1.1.129: icmp_seq=2 ttl=63 time=39.5 ms
-64 bytes from 12.1.1.129: icmp_seq=3 ttl=63 time=11.2 ms
-64 bytes from 12.1.1.129: icmp_seq=4 ttl=63 time=11.2 ms
+docker-compose-host $: docker exec oai-ext-dn ping -c 4 12.1.1.130
+PING 12.1.1.130 (12.1.1.130) 56(84) bytes of data.
+64 bytes from 12.1.1.130: icmp_seq=1 ttl=63 time=40.0 ms
+64 bytes from 12.1.1.130: icmp_seq=2 ttl=63 time=39.5 ms
+64 bytes from 12.1.1.130: icmp_seq=3 ttl=63 time=11.2 ms
+64 bytes from 12.1.1.130: icmp_seq=4 ttl=63 time=11.2 ms
 
---- 12.1.1.129 ping statistics ---
+--- 12.1.1.130 ping statistics ---
 4 packets transmitted, 4 received, 0% packet loss, time 3003ms
 rtt min/avg/max/mdev = 11.206/25.511/40.071/14.292 ms
 ```
@@ -340,8 +342,8 @@ docker-compose-host $: docker logs oai-nrf-slice3 > /tmp/oai/slicing-with-nssf/n
 docker-compose-host $: docker logs oai-smf-slice1 > /tmp/oai/slicing-with-nssf/smf-slice1.log 2>&1
 docker-compose-host $: docker logs oai-smf-slice2 > /tmp/oai/slicing-with-nssf/smf-slice2.log 2>&1
 docker-compose-host $: docker logs oai-smf-slice3 > /tmp/oai/slicing-with-nssf/smf-slice3.log 2>&1
-docker-compose-host $: docker logs oai-spgwu-slice1 > /tmp/oai/slicing-with-nssf/spgwu-slice1.log 2>&1
-docker-compose-host $: docker logs oai-spgwu-slice2 > /tmp/oai/slicing-with-nssf/spgwu-slice2.log 2>&1
+docker-compose-host $: docker logs oai-upf-slice1 > /tmp/oai/slicing-with-nssf/upf-slice1.log 2>&1
+docker-compose-host $: docker logs oai-upf-slice2 > /tmp/oai/slicing-with-nssf/upf-slice2.log 2>&1
 docker-compose-host $: docker logs vpp-upf-slice3 > /tmp/oai/slicing-with-nssf/vpp-upf-slice3.log 2>&1
 docker-compose-host $: docker logs gnbsim > /tmp/oai/slicing-with-nssf/gnbsim.log 2>&1
 docker-compose-host $: docker logs rfsim5g-oai-gnb > /tmp/oai/slicing-with-nssf/rfsim5g-oai-gnb.log 2>&1
@@ -364,8 +366,8 @@ docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransi
 | oai-smf-slice1        | 192.168.70.139 |
 | oai-smf-slice2        | 192.168.70.140 |
 | oai-smf-slice3        | 192.168.70.141 |
-| oai-spgwu-slice1      | 192.168.70.142 |
-| oai-spgwu-slice2      | 192.168.70.143 |
+| oai-upf-slice1        | 192.168.70.142 |
+| oai-upf-slice2        | 192.168.70.143 |
 | vpp-upf-slice3 (N4)   | 192.168.70.144 |
 | vpp-upf-slice3 (N3)   | 192.168.72.144 |
 | vpp-upf-slice3 (N6)   | 192.168.73.144 |
@@ -376,7 +378,7 @@ docker-compose-host $: docker logs ueransim > /tmp/oai/slicing-with-nssf/ueransi
 | rfsim UE2             | 192.168.70.155 |
 | gnbsim gNB            | 192.168.70.156 |
 | UE1                   | 12.2.1.2       |
-| UE2                   | 12.1.1.129     |
+| UE2                   | 12.1.1.130     |
 | UE3                   | 12.1.1.2       |
 
 | Pcap/log files                                                                             |
@@ -411,36 +413,36 @@ Network oai-public-access is external, skipping
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-slicing-basic-nrf.yaml down -t 0
-Stopping oai-spgwu-slice1 ... done
-Stopping oai-smf-slice3   ... done
-Stopping oai-smf-slice1   ... done
-Stopping oai-smf-slice2   ... done
-Stopping oai-amf          ... done
-Stopping oai-ausf         ... done
-Stopping oai-udm          ... done
-Stopping oai-udr          ... done
-Stopping vpp-upf-slice3   ... done
-Stopping oai-spgwu-slice2 ... done
-Stopping oai-nrf-slice12  ... done
-Stopping mysql            ... done
-Stopping oai-nssf         ... done
-Stopping oai-ext-dn       ... done
-Stopping oai-nrf-slice3   ... done
-Removing oai-spgwu-slice1 ... done
-Removing oai-smf-slice3   ... done
-Removing oai-smf-slice1   ... done
-Removing oai-smf-slice2   ... done
-Removing oai-amf          ... done
-Removing oai-ausf         ... done
-Removing oai-udm          ... done
-Removing oai-udr          ... done
-Removing vpp-upf-slice3   ... done
-Removing oai-spgwu-slice2 ... done
-Removing oai-nrf-slice12  ... done
-Removing mysql            ... done
-Removing oai-nssf         ... done
-Removing oai-ext-dn       ... done
-Removing oai-nrf-slice3   ... done
+Stopping oai-nssf        ... done
+Stopping oai-upf-slice2  ... done
+Stopping oai-upf-slice1  ... done
+Stopping oai-ext-dn      ... done
+Stopping oai-smf-slice2  ... done
+Stopping vpp-upf-slice3  ... done
+Stopping oai-smf-slice1  ... done
+Stopping oai-smf-slice3  ... done
+Stopping oai-amf         ... done
+Stopping oai-nrf-slice3  ... done
+Stopping oai-ausf        ... done
+Stopping oai-nrf-slice12 ... done
+Stopping oai-udm         ... done
+Stopping oai-udr         ... done
+Stopping mysql           ... done
+Removing oai-upf-slice1  ... done
+Removing oai-amf         ... done
+Removing oai-udr         ... done
+Removing vpp-upf-slice3  ... done
+Removing oai-smf-slice2  ... done
+Removing oai-nrf-slice12 ... done
+Removing oai-smf-slice3  ... done
+Removing oai-smf-slice1  ... done
+Removing mysql           ... done
+Removing oai-ext-dn      ... done
+Removing oai-udm         ... done
+Removing oai-nssf        ... done
+Removing oai-nrf-slice3  ... done
+Removing oai-upf-slice2  ... done
+Removing oai-ausf        ... done
 Removing network demo-oai-public-net
 Removing network oai-public-access
 Removing network oai-public-core

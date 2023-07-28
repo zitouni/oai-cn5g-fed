@@ -79,4 +79,4 @@ smf:
 dnns:
   - dnn: "default"
     pdu_session_type: "IPV4"
-    ipv4_pool: "12.2.1.2 - 12.2.1.128"
+    ipv4_subnet: "12.2.1.0/25"

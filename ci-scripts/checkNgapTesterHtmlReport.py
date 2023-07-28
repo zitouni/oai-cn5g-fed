@@ -78,12 +78,8 @@ class HtmlReport():
             if re.search('image-info', log_file) is not None:
                 continue
             containerName = re.sub('.log.*$', '', log_file)
-            if re.search('spgwu', containerName) is not None:
-                imageRootName = 'oai-spgwu-tiny:'
-                fileRootName = 'oai-spgwu-tiny'
-            else:
-                imageRootName = f'{containerName}:'
-                fileRootName = containerName
+            imageRootName = f'{containerName}:'
+            fileRootName = containerName
             imageTag = ''
             imageSize = ''
             imageDate = ''

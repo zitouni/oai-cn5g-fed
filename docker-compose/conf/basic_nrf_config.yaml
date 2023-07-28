@@ -161,7 +161,7 @@ smf:
     use_local_pcc_rules: yes # Use infos from local_pcc_rules or from PCF
   # we resolve from NRF, this is just to configure usage_reporting
   upfs:
-    - host: oai-spgwu
+    - host: oai-upf
       config:
         enable_usage_reporting: no
   ue_dns:
@@ -221,17 +221,13 @@ upf:
 dnns:
   - dnn: "oai"
     pdu_session_type: "IPV4"
-    ipv4_pool: "12.1.1.151 - 12.1.1.253"
-    ipv4_subnet: "12.1.1.0/24"
+    ipv4_subnet: "12.1.1.128/25"
   - dnn: "oai.ipv4"
     pdu_session_type: "IPV4"
-    ipv4_pool: "12.1.1.51 - 12.1.1.150"
-    ipv4_subnet: "12.1.1.0/24"
+    ipv4_subnet: "12.1.1.64/26"
   - dnn: "default"
     pdu_session_type: "IPV4"
-    ipv4_pool: "12.1.1.2 - 12.1.1.50"
-    ipv4_subnet: "12.1.1.0/24"
+    ipv4_subnet: "12.1.1.0/26"
   - dnn: "ims"
     pdu_session_type: "IPV4V6"
-    ipv4_pool: "14.1.1.2 - 14.1.1.253"
-    ipv4_subnet: "14.1.1.0/24"
+    ipv4_subnet: "14.1.1.2/24"

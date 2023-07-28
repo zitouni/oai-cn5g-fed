@@ -52,7 +52,7 @@ class HtmlReport():
 		with open(os.path.join(cwd, REPORT_NAME), 'w') as wfile:
 			wfile.write(generate_header(args))
 
-			tutorials = ['mini-gnbsim', 'static-ue-ip', 'vpp-upf-gnbsim', 'slicing-with-nssf', 'ulcl-scenario']
+			tutorials = ['mini-gnbsim', 'static-ue-ip', 'vpp-upf-gnbsim', 'slicing-with-nssf', 'ulcl-scenario', 'upf-ebpf-gnbsim']
 			for tutorial in tutorials:
 				if not os.path.isfile(cwd + '/archives/' + tutorial + '.log'):
 					continue
@@ -108,10 +108,7 @@ class HtmlReport():
 				continue
 			rootName = re.sub('.log.*$', '', log_file)
 			containerName = 'oai-' + rootName
-			if re.search('spgwu', rootName) is not None:
-				imageRootName = 'oai-spgwu-tiny:'
-				fileRootName = 'spgwu-tiny'
-			elif re.search('vpp-upf', rootName) is not None:
+			if re.search('vpp-upf', rootName) is not None:
 				imageRootName = 'oai-upf-vpp:'
 				fileRootName = 'upf-vpp'
 				containerName = rootName
