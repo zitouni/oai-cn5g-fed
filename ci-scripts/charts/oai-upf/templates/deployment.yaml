@@ -103,7 +103,7 @@ spec:
         command: 
           - /openair-upf/bin/oai_upf 
           - -c
-          - /openair-upf/etc/upf.conf 
+          - /openair-upf/etc/config.yaml
           - -o
         {{- else}}
         command:
@@ -126,14 +126,8 @@ spec:
           claimName: cn5g-pvc
       {{- end }}
       - configMap:
-          name: {{ .Chart.Name }}-configmap
+          name: oai5gcn
         name: configuration
-        {{- if .Values.config.netUeIp2}}
-      - configMap:
-          name: {{ .Chart.Name }}-configmap-hack
-          defaultMode: 0777
-        name: hack
-      {{- end }}
       dnsPolicy: ClusterFirst
       restartPolicy: Always
       schedulerName: default-scheduler

@@ -120,36 +120,12 @@ services:
         expose:
             - 2152/udp
             - 8805/udp
-            - 8080/tcp
+        volumes:
+            - ./conf/basic_nrf_config.yaml:/openair-upf/etc/config.yaml
+        # TODO: remove once YAML is the default command
+        command: ["/openair-upf/bin/oai_upf", "-c", "/openair-upf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
-            - LOG_LEVEL=debug
-            - SGW_INTERFACE_NAME_FOR_N3=eth0
-            - SGW_INTERFACE_NAME_FOR_SX=eth0
-            - PGW_INTERFACE_NAME_FOR_SGI=eth0
-            - NETWORK_UE_NAT_OPTION=yes
-            - NETWORK_UE_IP=12.1.1.0/24
-            - ENABLE_5G_FEATURES=yes
-            - REGISTER_NRF=yes
-            - ENABLE_BPF_DATAPATH=no
-            - USE_FQDN_NRF=yes
-            - UPF_FQDN_5G=oai-upf
-            - NRF_IPV4_ADDRESS=192.168.70.130
-            - NRF_FQDN=oai-nrf
-            # Mandatory to set the NRF PORT to 8080 (it is set to default to 80 otherwise)
-            - HTTP_VERSION=2
-            - NRF_PORT=8080
-            # Slice 0 (1, 0xFFFFFF)
-            - NSSAI_SST_0=1
-            - DNN_0=oai
-            # Slice 1 (1, 1)
-            - NSSAI_SST_1=1
-            - NSSAI_SD_1=1
-            - DNN_1=oai.ipv4
-            # Slice 2 (222, 123)
-            - NSSAI_SST_2=222
-            - NSSAI_SD_2=123
-            - DNN_2=default
         depends_on:
             - oai-nrf
             - oai-smf
