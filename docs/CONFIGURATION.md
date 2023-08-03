@@ -487,7 +487,7 @@ The allowed values and the description of the configuration of AMF are described
 
 | Name                                        | Type   | Description                                                                                                                                                                                                    | Allowed values                                                   | Default value                      |
 |:--------------------------------------------|:-------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:-----------------------------------|
-| UE MTU                                      | Int    | UE MTU, signaled to the UE via PCO                                                                                                                                                                             | Any int                                                          | `1500`                             |
+| UE MTU                                      | Int    | UE MTU, signaled to the UE via PCO                                                                                                                                                                             | Any integer between `1` and `65535`                              | `1500`                             |
 | Use Local Subscription Info                 | Bool   | If set to yes, SMF will use the information from `local_subscription_infos`, otherwise UDM is contacted. In this case, you have to provide `udm` in [NFs](#nfs)                                                | `yes`, `no` (and other YAML boolean values)                      | `no`                               |
 | Use Local PCC rules                         | Bool   | If set to no, SMF will get PCC rules from PCF. *Local PCC Rules on SMF are not supported yet*. In this case, you have to provide `pcf` in [NFs](#nfs)                                                          | `yes`, `no` (and other YAML boolean values)                      | `yes`                              |
 | UPF Host                                    | String | Host of the UPF                                                                                                                                                                                                | Any hostname or an IPv4 address in dotted decimal representation |                                    |
@@ -543,6 +543,22 @@ qos_profile:
   arp_preempt_vulnerability: "NOT_PREEMPTABLE"
   session_ambr_ul: "1000Mbps"
   session_ambr_dl: "1000Mbps"
+```
+
+In case you do not configure `upfs` and you set `register_nf: no`, SMF will use a default UPF:
+
+```yaml
+host: oai-upf
+port: 8805
+config:
+  enable_usage_reporting: no
+  enable_dl_pdr_in_pfcp_session_establishment: no
+upf_info:
+  interfaceUpfInfoList:
+    - interfaceType: N3
+      networkInstance: access.oai.org
+    - interfaceType: N6
+      networkInstance: core.oai.org
 ```
 
 *Note: In case you use a COTS UE, it is highly recommended to configure an `ims` DNN. Please see
