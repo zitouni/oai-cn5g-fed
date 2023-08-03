@@ -85,6 +85,7 @@ The following table gives an overview:
 | `smf`          | [SMF](#smf)                   | SMF          |
 | `pcf`          | [PCF](#pcf)                   | PCF          |
 | `nssf`         | [NSSF](#nssf)                 | NSSF         |
+| `upf`          | [UPF](#upf)                   | UPF          |
 
 The default values described in this document are the values that are taken by the NF if you do not specify it in the
 configuration file. If there is no default value here, you need to configure it.
@@ -125,10 +126,12 @@ log_level:
 
 ## Register NF
 
-The `register_nf` key follows the same principles as the [Log Level](#log-level). Here, you can configure
+The `register_nf` key follows the same principles as the [Log Level](#log-level), it also allows you to configure
+a `general` configuration and an NF-specific configuration.
+Here, you can configure
 if an NF should register to NRF. It is important to note that if one NF registers to NRF, it *expects* other NFs to
 register
-towards NRF. This means that a register NF will use the NRF discovery or event notification mechanism.
+towards NRF. This means that a registered NF will use the NRF discovery or event notification mechanism.
 
 | Name        | Type | Description                                               | Allowed values                              | Default value |
 |:------------|:-----|:----------------------------------------------------------|:--------------------------------------------|:--------------|
@@ -138,7 +141,7 @@ towards NRF. This means that a register NF will use the NRF discovery or event n
 
 Here, you can configure which HTTP version should be used for the client and the server. The NF will only launch one
 HTTP server, serving either HTTP version 1 or version 2.
-Currently, there is no difference between `1` and `1.1` as all our servers use HTTP version `1.1`.
+Currently, there is no difference between `1` and `1.1`, as all our servers use HTTP version `1.1`.
 
 | Name         | Type | Description                               | Allowed values  | Default value |
 |:-------------|:-----|:------------------------------------------|:----------------|:--------------|
@@ -197,8 +200,9 @@ this:
 | `udr`  | `oai-udr`          | UDR, UDM      |
 | `upf`  | `oai-upf`          | UPF           | 
 
-The NF will only parse and validate the NF key if necessary. For example, if [register NF](#register-nf) is set, it only
-takes the values it needs.
+The NF will only parse and validate the NF key if necessary. For example, if [register NF](#register-nf) is set, it will
+rely on NF discovery and does not follow the configuration here. It does, however, take the `api_version` from the `nfs`
+configuration.
 
 ### AMF specific NF configuration
 
@@ -264,7 +268,7 @@ n6:
   interface_name: <n6_interface_name>
 ``` 
 
-The description of the N3, N4 and N6 interfaces of UPF are as follows:
+The description of the N3, N4 and N6 interfaces of UPF is as follows:
 
 | Name              | Type   | Description                                  | Allowed values                      | Default value |
 |:------------------|:-------|:---------------------------------------------|:------------------------------------|:--------------|
@@ -278,7 +282,7 @@ The description of the N3, N4 and N6 interfaces of UPF are as follows:
 
 The `database` section allows you to configure how to connect to the database.
 
-It takes the following keys:
+It can be configured as follows:
 
 ```yaml
 database:
@@ -306,7 +310,7 @@ The allowed values are described in the following table:
 ## DNNs
 
 In the `dnns` section you can configure DNNs, which are used by SMF and UPF.
-It is a list of DNN configuration. Each DNN configuration can can configure the following values:
+It is a list of DNN configurations. Each DNN configuration can configure the following values:
 
 ```yaml
 dnn: <dnn_name>
@@ -321,16 +325,16 @@ ue_dns:
 ```
 
 The `ue_dns` key is only used by SMF and there is no default value. If you do not provide anything here, the `ue_dns`
-configuration from SMF is used. It is used to configure different DNS servers per DNN.
+configuration from SMF is used. Here, you can configure different DNS servers per DNN.
 
 The allowed values are described in the following table:
 
-| Name             | Type   | Description                                                            | Allowed values                                                        | Default value |
-|:-----------------|:-------|:-----------------------------------------------------------------------|:----------------------------------------------------------------------|:--------------|
-| DNN              | String | DNN to be used by SMF, UPF and communicated by the UE                  | Any string                                                            | `default`     |
-| PDU Session Type | String | Type of the PDU session ( *currently only IPV4 supported by SMF* )     | `IPV4`, `IPV4V6`, `IPV6`                                              | `IPV4`        |
-| IPv4 Subnet      | String | IPv4 subnet which is used to assign UE IPv4 addresses for PDU sessions | IP address in CIDR format: Host in dotted decimal followed by /suffix | `12.1.1.0/24` |
-| IPv6 Prefix      | String | IPv6 prefix which is used to assign UE IPv6 addresses for PDU sessions | Any value                                                             |               | 
+| Name             | Type   | Description                                                                    | Allowed values                                                        | Default value |
+|:-----------------|:-------|:-------------------------------------------------------------------------------|:----------------------------------------------------------------------|:--------------|
+| DNN              | String | DNN to be used by SMF, UPF and communicated by the UE                          | Any string                                                            | `default`     |
+| PDU Session Type | String | Type of the PDU session ( *currently only IPV4 supported by SMF and OAI-UPF* ) | `IPV4`, `IPV4V6`, `IPV6`                                              | `IPV4`        |
+| IPv4 Subnet      | String | IPv4 subnet which is used to assign UE IPv4 addresses for PDU sessions         | IP address in CIDR format: Host in dotted decimal followed by /suffix | `12.1.1.0/24` |
+| IPv6 Prefix      | String | IPv6 prefix which is used to assign UE IPv6 addresses for PDU sessions         | Any value                                                             |               | 
 
 If you do not configure any DNN in the `dnns` section, or you remove the `dnns` section completely, the following
 default dnn is configured:
@@ -385,11 +389,11 @@ amf:
     - <enc_algorithm>
 ```
 
-The allowed values and the description of the configuration of AMF are described in the following table:
+The allowed values of the AMF configuration are described in the following table:
 
 | Name                      | Type   | Description                                                                        | Allowed values                              | Default value |
 |:--------------------------|:-------|:-----------------------------------------------------------------------------------|:--------------------------------------------|:--------------|
-| PID Directory             | String | TODO currenly unused???                                                            | Any string                                  |               |
+| PID Directory             | String | TODO currently unused???                                                           | Any string                                  |               |
 | AMF Name                  | String | AMF Name used in AMF NF profile                                                    | Any string                                  |               |
 | Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but connect to MySQL database itself | `yes`, `no` (and other YAML boolean values) | `no`          |
 | Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                   | `yes`, `no` (and other YAML boolean values) | `no`          |
@@ -489,7 +493,7 @@ The allowed values and the description of the configuration of AMF are described
 | UPF Host                                    | String | Host of the UPF                                                                                                                                                                                                | Any hostname or an IPv4 address in dotted decimal representation |                                    |
 | UPF Port                                    | Int    | Port of the UPF N4 interface                                                                                                                                                                                   | Any integer between `1` and `65535`                              | `8805`                             |
 | Enable Usage Reporting                      | Bool   | If set to yes, SMF will request UPF to send usage reports                                                                                                                                                      | `yes`, `no` (and other YAML boolean values)                      | `no`                               |
-| Enable DL PDR in PFCP Session Establishment | Bool   | If set to yes, SMF will send DL rules during PFCP session establishment and update these rules with the gNB T-EID in a session modification. Enable this if your UPF expects this behavior                     | `yes`, `no` (and other YAML boolean values)                      | `no`                               |
+| Enable DL PDR in PFCP Session Establishment | Bool   | If set to yes, SMF will send DL rules during PFCP session establishment and update these rules with the gNB F-TEID in a session modification. Enable this if your UPF expects this behavior                    | `yes`, `no` (and other YAML boolean values)                      | `no`                               |
 | Local N3 IPv4                               | String | If the UPF is not Release 16-compliant and does not support generating F-TEIDs, SMF will generate the F-TEID and use this IP address for the F-TEID.                                                           | IPv4 address in dotted decimal representation                    |                                    |
 | UPF Info                                    | Struct | This datatype is used to configure the UPF profile on SMF, especially useful when no NRF is used. It follows the `UpfInfo` definition of 3GPP TS 29.510, but only `interfaceUpfInfoList` is supported for now. | `UpfInfo` from 29.510                                            |                                    |
 | Interface Type                              | String | Interface type of this interface                                                                                                                                                                               | Any string                                                       | `N3` or `N6`                       |
@@ -541,8 +545,8 @@ qos_profile:
   session_ambr_dl: "1000Mbps"
 ```
 
-*Note: In case you use a COTS UE, it is highly recommended to configure an `ims` DNN. Please see the examples on how to
-do that.*
+*Note: In case you use a COTS UE, it is highly recommended to configure an `ims` DNN. Please see
+the [examples](../docker-compose) on how to do that.*
 
 ## PCF
 
@@ -555,7 +559,7 @@ local_policy:
   traffic_rules_path: <traffic_rules_path>
 ```
 
-How to configure the policies for PCF itself are not covered in this document. You can see
+How to configure the policies for PCF itself is not covered in this document. You can see
 the [policies](../docker-compose/policies) folder for examples.
 
 The allowed values of the PCF configuration are as follows:
@@ -563,8 +567,8 @@ The allowed values of the PCF configuration are as follows:
 | Name                  | Type   | Description                            | Allowed values | Default value                            |
 |:----------------------|:-------|:---------------------------------------|:---------------|:-----------------------------------------|
 | Policy Decisions Path | String | Path to the policy decisions directory | Any string     | `/openair-pcf/policies/policy_decisions` |
-| PCC Rules Path        | String | Path to the PCC rules directory        | Any string     | `/openair-pcf/policies/traffic_rules`    |
-| Traffic Rules Path    | String | Path to the traffic rules directory    | Any string     | `/openair-pcf/policies/pcc_rules`        |
+| PCC Rules Path        | String | Path to the PCC rules directory        | Any string     | `/openair-pcf/policies/pcc_rules`        |
+| Traffic Rules Path    | String | Path to the traffic rules directory    | Any string     | `/openair-pcf/policies/traffic_rules`    |
 
 The paths you configure here are not validated upon reading the configuration, but PCF will try to open these
 directories on start and inform you if there was an issue.
@@ -589,9 +593,48 @@ The allowed values of the NSSF configuration are as follows:
 The path you configure here is not validated upon reading the configuration, but NSSF will try to open this file on
 start and inform you when there is an issue.
 
+## UPF
+
+The `upf` section is used to configure the behavior of OAI-UPF.
+
+You can configure the following values:
+
+```yaml
+upf:
+  support_features:
+    enable_bpf_datapath: <enable_bpf_datapath>
+    enable_snat: <enable_snat>
+  remote_n6_gw: <remote_n6_gw>
+  # Here you can configure a list of supported NSSAIs/DNNs
+  upf_info:
+    - sst: <sst>
+      sd: <sd>
+      dnnList:
+        - dnn: <dnn>
+```
+
+The allowed values of the UPF configuration are as follows:
+
+| Name                | Type   | Description                                                                  | Allowed values                              | Default value |
+|:--------------------|:-------|:-----------------------------------------------------------------------------|:--------------------------------------------|:--------------|
+| Enable BPF Datapath | bool   | If set to yes, BPF is used for the datapath, otherwise simple switch is used | `yes`, `no` (and other YAML boolean values) | `no`          |
+| Enable SNAT         | bool   | If set to yes, Source NAT is done for the UE IP address                      | `yes`, `no` (and other YAML boolean values) | `no`          |
+| Remote N6 Gateway   | string | The N6 next-hop where uplink traffic should be sent                          | Any string                                  |               |
+
+SST, SD and DNN behave the same as described for [SMF](#smf). If you do not configure `upf_info`, the following default
+configuration is used:
+
+```yaml
+upf_info:
+  - sst: 1
+    sd: 0xFFFFFF
+    dnnList:
+      - dnn: "default"
+```
+
 # 3. Database configuration
 
-A new user subscription information should be present in the mysql database before trying to connect the UE. This can
+A user subscription should be present in the mysql database before trying to connect the UE. This can
 be done by adding the UE information in the [oai_db2.sql](../docker-compose/database/oai_db2.sql) file
 
 First, you have to configure the authentication subscription:
@@ -606,8 +649,8 @@ VALUES ('208950000000031', '5G_AKA', '0C0A34601D4F07677303652C0462535B', '0C0A34
         'milenage', '63bfa50ee6523365ff14c1f45f88737d', NULL, NULL, NULL, NULL, '208950000000031');
 ```
 
-If you configure `use_local_subscription_info: no` in SMF, you also have to add the subscription info for your UE in the
-database:
+If you configure `use_local_subscription_info: no` in SMF, you also have to add the session management subscription info
+for your UE in the database:
 
 ```sql
 INSERT INTO `SessionManagementSubscriptionData` (`ueid`, `servingPlmnid`, `singleNssai`, `dnnConfigurations`)
