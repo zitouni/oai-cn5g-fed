@@ -35,7 +35,7 @@ log_level:
 # If you enable registration, the other NFs will use the NRF discovery mechanism
 register_nf:
   general: yes
-
+  
 http_version: 2
 
 ############## SBI Interfaces
@@ -100,7 +100,7 @@ database:
   generate_random: true
   connection_timeout: 300 # seconds
 
-############# NF-specific configuration
+############## NF-specific configuration
 amf:
   pid_directory: "/var/run"
   amf_name: "OAI-AMF"
@@ -109,6 +109,7 @@ amf:
     enable_simple_scenario: no
     enable_nssf: no
     enable_smf_selection: yes
+    use_external_udm: no
   relative_capacity: 30
   statistics_timer_interval: 20  #in seconds
   emergency_support: false
@@ -147,42 +148,44 @@ smf:
   support_features:
     use_local_subscription_info: yes # Use infos from local_subscription_info or from UDM
     use_local_pcc_rules: no # Use infos from local_pcc_rules or from PCF
-  # this is an example how you can enable/disable UPF features while the profile comes from NRF, host has to match with NRF profile
+  # we resolve from NRF, this is just to configure usage_reporting
   upfs:
-    - host: ulcl.node.5gcn.mnc95.mcc208.3gppnetwork.org
-      config:
-        enable_usage_reporting: yes
-    - host: aupf1.node.5gcn.mnc95.mcc208.3gppnetwork.org
-      config:
-        enable_usage_reporting: no
-    - host: aupf2.node.5gcn.mnc95.mcc208.3gppnetwork.org
+    - host: vpp-upf
       config:
         enable_usage_reporting: no
   ue_dns:
     primary_ipv4: "172.21.3.100"
+    primary_ipv6: "2001:4860:4860::8888"
     secondary_ipv4: "8.8.8.8"
+    secondary_ipv6: "2001:4860:4860::8888"
   ims:
     pcscf_ipv4: "127.0.0.1"
-  # the DNN you configure here should be configured in "dnns"
+    pcscf_ipv6: "fe80::7915:f408:1787:db8b"
+ # the DNN you configure here should be configured in "dnns"
   local_subscription_infos:
     - single_nssai:
         sst: 1
-        sd: 0xFFFFFF
       dnn: "oai"
       qos_profile:
-        5qi: 6
+        5qi: 9
+        session_ambr_ul: "200Mbps"
+        session_ambr_dl: "400Mbps"
     - single_nssai:
         sst: 1
         sd: 1
       dnn: "oai.ipv4"
       qos_profile:
-        5qi: 7
+        5qi: 9
+        session_ambr_ul: "100Mbps"
+        session_ambr_dl: "200Mbps"
     - single_nssai:
         sst: 222
         sd: 123
       dnn: "default"
       qos_profile:
         5qi: 9
+        session_ambr_ul: "50Mbps"
+        session_ambr_dl: "100Mbps"
 
 ## DNN configuration
 dnns:
@@ -201,6 +204,6 @@ dnns:
 
 pcf:
   local_policy:
-    policy_decisions_path: /openair-pcf/policies/ulcl/policy_decisions
-    pcc_rules_path: /openair-pcf/policies/ulcl/pcc_rules
-    traffic_rules_path: /openair-pcf/policies/ulcl/traffic_rules
+    policy_decisions_path: /openair-pcf/policies/redirection/policy_decisions
+    pcc_rules_path: /openair-pcf/policies/redirection/pcc_rules
+    traffic_rules_path: /openair-pcf/redirection/policies/traffic_rules

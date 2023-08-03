@@ -6,6 +6,10 @@ edge-scenario:
   - dnai: edge
 
 internet-scenario:
+  redirectInfo:
+    redirectEnabled: true
+    redirectAddressType: URL
+    redirectServerAddress: facebook.com
   routeToLocs:
     - dnai: access
     - dnai: ulcl
