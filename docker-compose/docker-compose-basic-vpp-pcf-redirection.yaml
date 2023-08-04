@@ -27,7 +27,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -43,7 +43,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -58,7 +58,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -73,7 +73,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         networks:
@@ -87,7 +87,7 @@ services:
             - 8080/tcp
             - 38412/sctp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -106,7 +106,7 @@ services:
             - 8080/tcp
             - 8805/udp
         volumes:
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         extra_hosts:
@@ -124,7 +124,7 @@ services:
             - 8080/tcp
         volumes:
             - ./policies/redirection:/openair-pcf/policies
-            - ./conf/redirection_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/redirection_steering_config.yaml:/openair-smf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
