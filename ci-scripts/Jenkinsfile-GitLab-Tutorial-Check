@@ -301,13 +301,12 @@ pipeline {
             // Please use the same log name as the folder used in the tutorial
             sh './checkTutorial.py --tutorial DEPLOY_SA5G_MINI_WITH_GNBSIM.md | tee ../archives/mini-gnbsim.log'
           }
-          // Checking if FAIL appears
           try {
-            sh 'grep -L FAIL archives/mini-gnbsim.log > /dev/null'
+            sh 'grep -l "is PASS" archives/mini-gnbsim.log > /dev/null'
+            echo "Minimalist gnbsim Tutorial PASSED"
+          } catch (Exception e) {
             currentBuild.result = 'FAILURE'
             echo "Minimalist gnbsim Tutorial FAILED"
-          } catch (Exception e) {
-            echo "Minimalist gnbsim Tutorial PASSED"
           }
           archivesArtifacts('docker-compose/docker-compose-mini-nonrf.yaml', 'mini-gnbsim')
           cleanUpDockerCompose('docker-compose/docker-compose-mini-nonrf.yaml')
@@ -324,13 +323,12 @@ pipeline {
             // Please use the same log name as the folder used in the tutorial
             sh './checkTutorial.py --tutorial DEPLOY_SA5G_BASIC_STATIC_UE_IP.md | tee ../archives/static-ue-ip.log'
           }
-          // Checking if FAIL appears
           try {
-            sh 'grep -L FAIL archives/static-ue-ip.log > /dev/null'
+            sh 'grep -l "is PASS" archives/static-ue-ip.log > /dev/null'
+            echo "Static UE IP Tutorial PASSED"
+          } catch (Exception e) {
             currentBuild.result = 'FAILURE'
             echo "Static UE IP Tutorial FAILED"
-          } catch (Exception e) {
-            echo "Static UE IP Tutorial PASSED"
           }
           archivesArtifacts('docker-compose/docker-compose-basic-nrf.yaml', 'static-ue-ip')
           cleanUpDockerCompose('docker-compose/docker-compose-basic-nrf.yaml')
@@ -347,13 +345,12 @@ pipeline {
             // Please use the same log name as the folder used in the tutorial
             sh './checkTutorial.py --tutorial DEPLOY_SA5G_WITH_VPP_UPF.md | tee ../archives/vpp-upf-gnbsim.log'
           }
-          // Checking if FAIL appears
           try {
-            sh 'grep -L FAIL archives/vpp-upf-gnbsim.log > /dev/null'
+            sh 'grep -l "is PASS" archives/vpp-upf-gnbsim.log > /dev/null'
+            echo "UPF-VPP Tutorial PASSED"
+          } catch (Exception e) {
             currentBuild.result = 'FAILURE'
             echo "UPF-VPP Tutorial FAILED"
-          } catch (Exception e) {
-            echo "UPF-VPP Tutorial PASSED"
           }
           archivesArtifacts('docker-compose/docker-compose-basic-vpp-nrf.yaml', 'vpp-upf-gnbsim')
           cleanUpDockerCompose('docker-compose/docker-compose-basic-vpp-nrf.yaml')
@@ -370,13 +367,12 @@ pipeline {
             // Please use the same log name as the folder used in the tutorial
             sh './checkTutorial.py --tutorial DEPLOY_SA5G_SLICING.md | tee ../archives/slicing-with-nssf.log'
           }
-          // Checking if FAIL appears
           try {
-            sh 'grep -L FAIL archives/slicing-with-nssf.log > /dev/null'
+            sh 'grep -l "is PASS" archives/slicing-with-nssf.log > /dev/null'
+            echo "NSSF-Slicing Tutorial PASSED"
+          } catch (Exception e) {
             currentBuild.result = 'FAILURE'
             echo "NSSF-Slicing Tutorial FAILED"
-          } catch (Exception e) {
-            echo "NSSF-Slicing Tutorial PASSED"
           }
           archivesArtifacts('docker-compose/docker-compose-slicing-basic-nrf.yaml', 'slicing-with-nssf')
           cleanUpDockerCompose('docker-compose/docker-compose-slicing-basic-nrf.yaml')
@@ -393,13 +389,12 @@ pipeline {
             // Please use the same log name as the folder used in the tutorial
             sh './checkTutorial.py --tutorial DEPLOY_SA5G_ULCL.md | tee ../archives/ulcl-scenario.log'
           }
-          // Checking if FAIL appears
           try {
-            sh 'grep -L FAIL archives/ulcl-scenario.log > /dev/null'
+            sh 'grep -l "is PASS" archives/ulcl-scenario.log > /dev/null'
+            echo "UL-CL-Policies Tutorial PASSED"
+          } catch (Exception e) {
             currentBuild.result = 'FAILURE'
             echo "UL-CL-Policies Tutorial FAILED"
-          } catch (Exception e) {
-            echo "UL-CL-Policies Tutorial PASSED"
           }
           archivesArtifacts('docker-compose/docker-compose-basic-vpp-pcf-ulcl.yaml', 'ulcl-scenario')
           cleanUpDockerCompose('docker-compose/docker-compose-basic-vpp-pcf-ulcl.yaml')
