@@ -52,8 +52,6 @@ services:
         image: oaisoftwarealliance/oai-upf:develop
         volumes:
             - ./conf/mini_nonrf_config.yaml:/openair-upf/etc/config.yaml
-        # TODO: remove once YAML is the default command
-        command: ["/openair-upf/bin/oai_upf", "-c", "/openair-upf/etc/config.yaml", "-o"]
         environment:
             - TZ=Europe/Paris
         depends_on:
