@@ -58,6 +58,12 @@ nfs:
       api_version: v1
       interface_name: eth0
 
+# anchor is set to re-use slice config in SMF
+snssais:
+  - &slice3
+    sst: 130
+    sd: 130
+
 smf:
   support_features:
     use_local_subscription_info: yes # Use infos from local_subscription_info or from UDM
@@ -65,10 +71,15 @@ smf:
   ue_dns:
     primary_ipv4: "172.21.3.100"
     secondary_ipv4: "8.8.8.8"
+  # the DNN you configure here should be configured in "dnns"
+  # follows the SmfInfo datatype from 3GPP TS 29.510
+  smf_info:
+    sNssaiSmfInfoList:
+      - sNssai: *slice3
+        dnnSmfInfoList:
+          - dnn: "oai.ipv4"
   local_subscription_infos:
-    - single_nssai:
-        sst: 130
-        sd: 130
+    - single_nssai: *slice3
       dnn: "oai.ipv4"
       qos_profile:
         5qi: 5
