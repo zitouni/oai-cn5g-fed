@@ -19,7 +19,6 @@ services:
             retries: 30
         networks:
             public_net:
-                ipv4_address: 192.168.70.131
     oai-udr:
         container_name: "oai-udr"
         image: oaisoftwarealliance/oai-udr:develop
@@ -35,7 +34,6 @@ services:
             - oai-nrf
         networks:
             public_net:
-                ipv4_address: 192.168.70.136
     oai-udm:
         container_name: "oai-udm"
         image: oaisoftwarealliance/oai-udm:develop
@@ -50,7 +48,6 @@ services:
             - oai-udr
         networks:
             public_net:
-                ipv4_address: 192.168.70.137
     oai-ausf:
         container_name: "oai-ausf"
         image: oaisoftwarealliance/oai-ausf:develop
@@ -65,7 +62,6 @@ services:
             - oai-udm
         networks:
             public_net:
-                ipv4_address: 192.168.70.138
     oai-nrf:
         container_name: "oai-nrf"
         image: oaisoftwarealliance/oai-nrf:develop
@@ -78,7 +74,6 @@ services:
             - TZ=Europe/Paris
         networks:
             public_net:
-                ipv4_address: 192.168.70.130
     oai-amf:
         container_name: "oai-amf"
         image: oaisoftwarealliance/oai-amf:develop
@@ -96,7 +91,6 @@ services:
             - oai-ausf
         networks:
             public_net:
-                ipv4_address: 192.168.70.132
     oai-smf:
         container_name: "oai-smf"
         image: oaisoftwarealliance/oai-smf:develop
@@ -113,7 +107,6 @@ services:
             - oai-amf
         networks:
             public_net:
-                ipv4_address: 192.168.70.133
     oai-upf:
         container_name: "oai-upf"
         image: oaisoftwarealliance/oai-upf:develop
@@ -135,12 +128,12 @@ services:
         privileged: true
         networks:
             public_net:
-                ipv4_address: 192.168.70.134
     oai-ext-dn:
         privileged: true
         init: true
         container_name: oai-ext-dn
         image: oaisoftwarealliance/trf-gen-cn5g:latest
+        # TODO: Add FQDN support to resolve UPF
         entrypoint: /bin/bash -c \
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; ip route; sleep infinity"
         command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]
