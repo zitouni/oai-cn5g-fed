@@ -12,7 +12,11 @@
   </tr>
 </table>
 
-![SA UL CL Scenario](./images/5gcn_ulcl.png)
+![SA Traffic Steering Scenario](./images/steering_tutorial.png)
+
+
+![SA Traffic Redirection Scenario](./images/redirection_tutorial.png)
+
 
 **Reading time: ~ 20 minutes**
 

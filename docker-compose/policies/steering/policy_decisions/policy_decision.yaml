@@ -3,7 +3,7 @@ decision_supi1:
   pcc_rules: 
     - steering-rule-primary
 
-decision_supi1:
+decision_supi2:
   supi_imsi: "208950000000033"
   pcc_rules: 
     - steering-rule-secondary
