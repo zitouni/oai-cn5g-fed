@@ -12,11 +12,12 @@
   </tr>
 </table>
 
-![SA Traffic Steering Scenario](./images/steering_tutorial.png)
 
-
+## Traffic Redirection ##
 ![SA Traffic Redirection Scenario](./images/redirection_tutorial.png)
 
+## Traffic Steering ##
+![SA Traffic Steering Scenario](./images/steering_tutorial.png)
 
 **Reading time: ~ 20 minutes**
 
@@ -40,21 +41,232 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 For this demo, all the images which use the `develop` branch have been retrieved from the official `docker-hub` (see also
 [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md)).
 
-| NF Name | Branch Name | Tag used at time of writing | Ubuntu 18.04 | RHEL8 |
+| NF Name | Branch Name | Tag used at time of writing | Ubuntu 20.04 | RHEL8 |
 |----------|:------------|-----------------------------|--------------|-------|
-| NSSF     | `develop`    | `v1.5.0`                    | X            | -     |
-| AMF      | `develop`    | `v1.5.0`                    | X            | -     |
-| AUSF     | `develop`    | `v1.5.0`                    | X            | -     |
-| NRF      | `develop`    | `v1.5.0`                    | X            | -     |
-| SMF      | `develop`    | `v1.5.0`                    | X            | -     |
-| UDR      | `develop`    | `v1.5.0`                    | X            | -     |
-| UDM      | `develop`    | `v1.5.0`                    | X            | -     |
-| PCF      | `develop`    | `v1.5.0`                    | X            | -     |
-| UPF-VPP  | `develop`    | `V1.5.0`                    | X            | -     |
+| NSSF     | `develop`    | `v1.x.x`                    | X            | -     |
+| AMF      | `develop`    | `v1.x.x`                    | X            | -     |
+| AUSF     | `develop`    | `v1.x.x`                    | X            | -     |
+| NRF      | `develop`    | `v1.x.x`                    | X            | -     |
+| SMF      | `develop`    | `v1.x.x`                    | X            | -     |
+| UDR      | `develop`    | `v1.x.x`                    | X            | -     |
+| UDM      | `develop`    | `v1.x.x`                    | X            | -     |
+| PCF      | `develop`    | `v1.x.x`                    | X            | -     |
+| UPF-VPP  | `develop`    | `v1.x.x`                    | X            | -     |
 
 <br/>
 
-This tutorial shows how to configure the Traffic Steering and Redirection feature at SMF and UPF, based on policies from the PCF.
+This tutorial shows how to configure the Traffic Redirection and Steering feature at SMF and UPF, based on policies from the PCF.
+
+We will show and validate:
+* Part 1: Traffic redirection scenario for a subscriber (gnbsim) with traffic classification and URL based redirection to destination server
+* Part 2: Traffic steering scenario for a two subscribers (gnbsim) with traffic classification and steer of uplink traffic to destination server using multiple N6 interfaces
+
+## Part1: Traffic Redirection ##
 
 ## 1. Pre-requisites
+Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files.
+We recommend creating exactly the same folder to not break the flow of commands afterwards.
+
+<!---
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: rm -rf /tmp/oai/redirect-scenario
+```
+-->
+
+``` shell
+docker-compose-host $: mkdir -p /tmp/oai/redirect-scenario
+docker-compose-host $: chmod 777 /tmp/oai/redirect-scenario
+```
+## [2. Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
+
 ## 3. Deploying OAI 5g Core Network
+
+We deploy an adapted version of [docker-compose-basic-vpp-pcf-steering.yaml](../docker-compose/docker-compose-basic-vpp-pcf-steering.yaml) of the 5G core with the PCF as additional NF and 3 UPFs instead of 1.
+
+We use `docker-compose` to deploy the core network. Please refer to the file [docker-compose-basic-vpp-pcf-steering.yaml](../docker-compose/docker-compose-basic-vpp-pcf-steering.yaml)
+for details.
+
+
+### Docker Networks
+In total, 6 different docker networks are used:
+* public_net (demo-oai) for control plane 
+* public_net_access (cn5g-access) for the N3 interface between gnbsim and gNB
+* public_net_core (cn5g-core) for the N6 interface between UPF and DN
+
+
+### Deployment and Tracing
+
+The first interface (demo-oai) is used for the control plane, including the N4 interfaces to all UPFs. The others are used for the user plane.
+
+Therefore, we do not need to filter out the UP when tracing on the `demo-oai` interface.
+We run the `mysql` service first, so that we can start the trace before anything is sent over the CP. 
+You can choose to skip this step and deploy all the NFs at once.
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.yaml up -d mysql 
+Creating network "demo-oai-public-net" with driver "bridge"
+Creating network "oai-public-access" with the default driver
+Creating network "oai-public-core1" with the default driver
+Creating mysql ... done
+```
+
+We capture the packets on the docker networks and filter out ARP. 
+``` shell
+docker-compose-host $: sleep 1
+docker-compose-host $: nohup sudo tshark -i demo-oai -f "not arp" -w /tmp/oai/redirect-scenario/control_plane.pcap > /tmp/oai/redirect-scenario/control_plane.log 2>&1 &
+```
+<!--
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/redirect-scenario/control_plane.log --timeout 60
+```
+-->
+
+Then, we start all the NFs.
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.yaml up -d
+mysql is up-to-date
+Creating oai-nrf             ... done
+Creating oai-udr             ... done
+Creating vpp-upf             ... done
+Creating oai-pcf             ... done
+Creating oai-udm             ... done
+Creating oai-ext-dn          ... done
+Creating oai-ausf            ... done
+Creating oai-amf             ... done
+Creating oai-smf             ... done
+```
+
+<!--
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name mysql --timeout 120
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oai-amf --timeout 30
+docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.yaml ps -a
+```
+-->
+
+### Checking the Status of the NFs
+Using `docker ps` you can verify that no NF exited, e.g. because of a faulty configuration:
+
+Also all should be in an `healthy` state before going further. The `mysql` container may take some time.
+``` console 
+docker-compose-host $: docker ps
+CONTAINER ID   IMAGE                 COMMAND                  CREATED          STATUS                    PORTS                          NAMES
+16e442edd7b9   oai-smf:develop        "/bin/bash /openair-…"   30 seconds ago   Up 29 seconds (healthy)   80/tcp, 8080/tcp, 8805/udp     oai-smf
+17cd7f15c863   oai-amf:develop       "python3 /openair-am…"   31 seconds ago   Up 29 seconds (healthy)   80/tcp, 9090/tcp, 38412/sctp   oai-amf
+81d91b0e9719   oai-ausf:develop       "/bin/bash /openair-…"   32 seconds ago   Up 31 seconds (healthy)   80/tcp                         oai-ausf
+4c11b8c156fc   trf-gen-cn5g:latest   "/bin/bash -c 'iptab…"   32 seconds ago   Up 30 seconds (healthy)                                  oai-ext-dn
+9da12093f3d6   oai-udm:v1.5.0        "/bin/bash /openair-…"   33 seconds ago   Up 31 seconds (healthy)   80/tcp                         oai-udm
+b867ac7db503   oai-upf-vpp:v1.5.0    "/openair-upf/bin/en…"   34 seconds ago   Up 31 seconds (healthy)   2152/udp, 8085/udp             vpp-upf
+4e133a45bd0b   oai-pcf:v1.5.0        "/bin/bash /openair-…"   34 seconds ago   Up 33 seconds (healthy)   80/tcp, 8080/tcp               oai-pcf
+341271bb659a   oai-udr:v1.5.0        "/bin/bash /openair-…"   34 seconds ago   Up 33 seconds (healthy)   80/tcp                         oai-udr
+aa8cbc6fe533   oai-nrf:v1.5.0        "python3 /openair-nr…"   34 seconds ago   Up 33 seconds (healthy)   80/tcp, 9090/tcp               oai-nrf
+ac10687810e0   mysql:5.7             "docker-entrypoint.s…"   34 seconds ago   Up 33 seconds (healthy)   3306/tcp, 33060/tcp            mysql         
+```
+
+Please wait until all NFs are healthy. 
+
+When you are running in debug mode, you should also check the docker logs of SMF and verify that the UPF graph has been built successfully:
+
+``` console
+docker-compose-host $: docker logs oai-smf | grep -A 5 graph
+```
+
+## 4. Simulate with gnbsim
+
+When the CN is deployed successfully, we can simulate a gNB and UE using `gnbsim`. 
+Please see the [gnbsim tutorial](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md) on how to retrieve or build the image.
+
+``` shell
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml up -d 
+Creating gnbsim-vpp ...
+Creating gnbsim-vpp ... done
+```
+
+<!--
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp --timeout 30
+```
+-->
+
+
+We can verify that the gNB received an IP address and that the PDU session establishment was successful. 
+``` shell
+docker-compose-host $: docker logs gnbsim-vpp 2>&1 | grep "UE address:"
+[gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.2
+```
+It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
+you see the IP address.
+
+Please note, that the UL CL is transparent for the UE and this only shows that there is a PDU session, not that
+the traffic is routed correctly. Currently, the SMF tries to create a session on any UPF if the selection based on PCC rules 
+fails. 
+
+## 5. Traffic Test for Redirection
+
+*Note: As tshark is running in the background, and we run everything in the same terminal, we will stop the control plane traces here. If you want, you can open tshark on another terminal and terminate it whenever it suits you.*  
+``` shell
+docker-compose-host $: sudo pkill tshark 
+docker-compose-host $: sleep 5
+```
+
+Before we start the traffic tests, we start the user plane trace without any filter:
+``` shell
+docker-compose-host $: nohup sudo tshark -i cn5g-access -i cn5g-core-11 -i cn5g-core-12 -i cn5g-core-21 -i cn5g-core-22 -w /tmp/oai/redirect-scenario/user_plane_redirect.pcap > /tmp/oai/redirect-scenario/user_plane_redirect.log 2>&1 &
+```
+
+<!--
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/redirect-scenario/user_plane_redirect.log --timeout 60
+```
+-->
+
+This capture contains all the UP network interfaces.
+
+Then, we generate ICMP traffic to `1.1.1.1` and `1.1.1.2`:
+
+``` console 
+docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com
+<!DOCTYPE html>
+<html>
+<!--
+<?xml version="1.0" encoding="UTF-8"?><WISPAccessGatewayParam xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.acmewisp.com/WISPAccessGatewayParam.xsd"><Proxy><MessageType>110</MessageType><ResponseCode>200</ResponseCode><NextURL>facebook.com</NextURL></Proxy></WISPAccessGatewayParam>
+-->
+   <head>
+      <title>Redirection</title>
+      <meta http-equiv="refresh" content="0; URL=facebook.com">
+   </head>
+   <body>
+      Please <a href='facebook.com'>click here</a> to continue
+   </body>
+</html>
+```
+We will see in the [analysis](#8-trace-analysis) that the IP packets to `google.com` are redirected to destination `facebook.com` over EXT-DN-Internet.
+
+To better analyse the traces for the following scenarios, we stop the trace:
+``` shell
+docker-compose-host $: sudo pkill tshark 
+```
+
+## 8 Trace Analysis
+
+Now that we have captured control plane and user plane traces, we can stop `tshark`:
+``` shell
+docker-compose-host $: sudo pkill tshark
+```
+
+Then, we change the permissions of the traces to open them in Wireshark:
+``` shell
+docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/control_plane.*
+docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_redirect.*
+docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_edge_only.*
+docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_internet_only.*
+```
+
+As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
+column. 
