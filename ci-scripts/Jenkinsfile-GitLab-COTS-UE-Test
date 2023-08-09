@@ -182,6 +182,8 @@ pipeline {
           sh "oc describe pod &> archives/describe-pods.logs"
           sh "oc get pods -o wide"
           sleep 60
+          sh "oc describe pod &>> archives/describe-pods.logs"
+          sh "oc get pods -o wide"
           coreStatus = checkCoreNetworkDeployment()
           if (coreStatus > 0) {
             error ('Core Deployment went wrong')
