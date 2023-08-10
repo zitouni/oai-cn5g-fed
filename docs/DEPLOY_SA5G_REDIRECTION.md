@@ -266,6 +266,12 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_redi
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
 
+We capture here UPF session details
+
+```shell
+docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-steering-session.log 2>&1
+```
+
 ### Rdirection Scenario
 
 The results of this tutorial are located in [results/redirect](results/redirect). 
@@ -295,7 +301,6 @@ docker-compose-host $: docker logs oai-amf > /tmp/oai/redirect-scenario/amf.log 
 docker-compose-host $: docker logs oai-smf > /tmp/oai/redirect-scenario/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/redirect-scenario/nrf.log 2>&1
 docker-compose-host $: docker logs vpp-upf > /tmp/oai/redirect-scenario/vpp-upf-redirect.log 2>&1
-docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-steering-session.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/redirect-scenario/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/redirect-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/redirect-scenario/ausf.log 2>&1

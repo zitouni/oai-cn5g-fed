@@ -208,11 +208,16 @@ docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gn
 -->
 
 
-We can verify that the gNB received an IP address and that the PDU session establishment was successful. 
+We can verify that both the UEs received an IP address and that the PDU session establishment was successful. 
 ``` shell
-docker-compose-host $: docker logs gnbsim-vpp 2>&1 | grep "UE address:"
+docker-compose-host $: docker logs gnbsim-vpp2 2>&1 | grep "UE address:"
 [gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.2
 ```
+``` shell
+docker-compose-host $: docker logs gnbsim-vpp3 2>&1 | grep "UE address:"
+[gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.2
+```
+
 It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
 you see the IP address.
 
@@ -299,19 +304,22 @@ docker-compose-host $: sudo pkill tshark
 Then, we change the permissions of the traces to open them in Wireshark:
 ``` shell
 docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/control_plane.*
-docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_redirect.*
-docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_edge_only.*
-docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_internet_only.*
+docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_steering.*
 ```
-
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
+
+We capture here UPF session details
+
+```shell
+docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
+```
 
 ### Steering Scenario
 
 The results of this tutorial are located in [results/steering](results/steering). 
 
-First, we open the [user_plane_steering.pcapng](results/steering/user_plane_redirect.pcapng) file and sort based on time. 
+First, we open the [user_plane_steering.pcapng](results/steering/user_plane_steering.pcap) file and sort based on time. 
 
 ## 10 Undeploy Network Functions
 
@@ -336,7 +344,6 @@ docker-compose-host $: docker logs oai-amf > /tmp/oai/steering-scenario/amf.log 
 docker-compose-host $: docker logs oai-smf > /tmp/oai/steering-scenario/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/steering-scenario/nrf.log 2>&1
 docker-compose-host $: docker logs vpp-upf > /tmp/oai/steering-scenario/vpp-upf-redirect.log 2>&1
-docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/steering-scenario/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/steering-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/steering-scenario/ausf.log 2>&1
