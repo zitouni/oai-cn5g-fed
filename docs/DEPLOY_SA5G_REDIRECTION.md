@@ -13,7 +13,6 @@
 </table>
 
 
-## Traffic Redirection ##
 ![SA Traffic Redirection Scenario](./images/redirection_tutorial.png)
 
 **Reading time: ~ 20 minutes**
@@ -52,13 +51,11 @@ For this demo, all the images which use the `develop` branch have been retrieved
 
 <br/>
 
-This tutorial shows how to configure the Traffic Redirection and Steering feature at SMF and UPF, based on policies from the PCF.
+This tutorial shows how to configure the Traffic Redirection feature at SMF and UPF, based on policies from the PCF.
 
 We will show and validate:
-* Part 1: Traffic redirection scenario for a subscriber (gnbsim) with traffic classification and URL based redirection to destination server
-* Part 2: Traffic steering scenario for a two subscribers (gnbsim) with traffic classification and steer of uplink traffic to destination server using multiple N6 interfaces
+* Traffic redirection scenario for a subscriber (gnbsim) with traffic classification and URL based redirection to destination server
 
-## Part1: Traffic Redirection ##
 
 ## 1. Pre-requisites
 Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files.
@@ -86,7 +83,7 @@ for details.
 
 
 ### Docker Networks
-In total, 6 different docker networks are used:
+In total, 3 different docker networks are used:
 * public_net (demo-oai) for control plane 
 * public_net_access (cn5g-access) for the N3 interface between gnbsim and gNB
 * public_net_core (cn5g-core) for the N6 interface between UPF and DN
@@ -166,11 +163,6 @@ ac10687810e0   mysql:5.7             "docker-entrypoint.s…"   34 seconds ago  
 
 Please wait until all NFs are healthy. 
 
-When you are running in debug mode, you should also check the docker logs of SMF and verify that the UPF graph has been built successfully:
-
-``` console
-docker-compose-host $: docker logs oai-smf | grep -A 5 graph
-```
 
 ## 4. Simulate with gnbsim
 
@@ -225,7 +217,23 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/r
 
 This capture contains all the UP network interfaces.
 
-Then, we generate HTTP traffic to `google.com`.
+Please make a note that,
+* As you can see the policy rules (`policies/redirection/pcc_rules`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `redirection-scenario`.
+
+* Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
+You can see that the UE with the IMSI `208950000000031` is configured to use the `redirection-rule` as below, which describes that traffic should be redirected to the server with redirection type as URL.
+
+
+```bash
+redirection-scenario:
+  redirectInfo:
+    redirectEnabled: true
+    redirectAddressType: URL
+    redirectServerAddress: facebook.com
+```
+* Note: Currently only URL type of redirection supported 
+
+Now, we generate HTTP traffic to destination as `google.com`.
 
 ``` console 
 docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com
@@ -246,7 +254,7 @@ docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 goog
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `google.com` are redirected to destination `facebook.com` over EXT-DN-Internet.
 
 
-## 8 Trace Analysis
+## 6 Trace Analysis
 
 Now that we have captured control plane and user plane traces, we can stop `tshark`:
 ``` shell
@@ -274,7 +282,7 @@ The results of this tutorial are located in [results/redirect](results/redirect)
 
 First, we open the [user_plane_redirect.pcapng](results/redirect/user_plane_redirect.pcapng) file and sort based on time. 
 
-## 10 Undeploy Network Functions
+## 7 Undeploy Network Functions
 
 When you are done, you can undeploy the gnbsim instances and stop the NFs. 
 
@@ -311,5 +319,5 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down -t 
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-redirection.yaml down -t 2
 ```
 
-## 11 Conclusion
+## 8 Conclusion
 
