@@ -216,7 +216,7 @@ docker-compose-host $: sleep 5
 
 Before we start the traffic tests, we start the user plane trace without any filter:
 ``` shell
-docker-compose-host $: nohup sudo tshark -i cn5g-access -i cn5g-core-11 -i cn5g-core-12 -i cn5g-core-21 -i cn5g-core-22 -w /tmp/oai/redirect-scenario/user_plane_redirect.pcap > /tmp/oai/redirect-scenario/user_plane_redirect.log 2>&1 &
+docker-compose-host $: nohup sudo tshark -i cn5g-access -i cn5g-core  -w /tmp/oai/redirect-scenario/user_plane_redirect.pcap > /tmp/oai/redirect-scenario/user_plane_redirect.log 2>&1 &
 ```
 
 <!--
@@ -228,7 +228,7 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/r
 
 This capture contains all the UP network interfaces.
 
-Then, we generate ICMP traffic to `1.1.1.1` and `1.1.1.2`:
+Then, we generate HTTP traffic to `google.com`.
 
 ``` console 
 docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com
@@ -264,8 +264,6 @@ Then, we change the permissions of the traces to open them in Wireshark:
 ``` shell
 docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/control_plane.*
 docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_redirect.*
-docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_edge_only.*
-docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_internet_only.*
 ```
 
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
@@ -310,7 +308,6 @@ docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/redirect-scenario/gnbsi
 Finally, we undeploy the gnbsims and NFs to clean up the Docker networks.
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml down -t 2
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down -t 2
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-redirection.yaml down -t 2
 ```
@@ -459,14 +456,15 @@ Creating gnbsim-vpp3 ... done
 
 <!--
 For CI purposes please ignore these lines
-we use 1.1.1.1 and 1.1.1.2 as it serves HTTP, so we can verify if the UL CL works properly in the generated traces 
- * 192.168.76.160 is oai-ext-dn-edge
+we use 1.1.1.1 as it serves HTTP, so we can verify if the Steering works properly in the generated traces 
+ * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
+ * 192.168.74.135 is oai-ext-dn interface on N6 secondary subnet
 
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1' 2>&1 | tee /tmp/oai/ulcl-scenario/ue1-test0.log
-docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.2' 2>&1 | tee /tmp/oai/ulcl-scenario/ue1-test1.log
-docker-compose-host $: grep 192.168.76.160 /tmp/oai/ulcl-scenario/ue1-test0.log
-docker-compose-host $: grep 192.168.76.160 /tmp/oai/ulcl-scenario/ue1-test1.log
+docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test0.log
+docker-compose-host $: docker exec gnbsim-vpp3 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test1.log
+docker-compose-host $: grep 192.168.73.135 /tmp/oai/steering-scenario/ue1-test0.log
+docker-compose-host $: grep 192.168.74.135 /tmp/oai/steering-scenario/ue1-test1.log
 ```
 -->
 
@@ -490,7 +488,7 @@ Please note, that the UL CL is transparent for the UE and this only shows that t
 the traffic is routed correctly. Currently, the SMF tries to create a session on any UPF if the selection based on PCC rules 
 fails. 
 
-## 5. Traffic Test for Redirection
+## 5. Traffic Test for Steering
 
 *Note: As tshark is running in the background, and we run everything in the same terminal, we will stop the control plane traces here. If you want, you can open tshark on another terminal and terminate it whenever it suits you.*  
 ``` shell
@@ -500,37 +498,59 @@ docker-compose-host $: sleep 5
 
 Before we start the traffic tests, we start the user plane trace without any filter:
 ``` shell
-docker-compose-host $: nohup sudo tshark -i cn5g-access -i cn5g-core-11 -i cn5g-core-12 -i cn5g-core-21 -i cn5g-core-22 -w /tmp/oai/steering-scenario/user_plane_redirect.pcap > /tmp/oai/steering-scenario/user_plane_redirect.log 2>&1 &
+docker-compose-host $: nohup sudo tshark -i cn5g-access -i cn5g-core-pri -i cn5g-core-sec  -w /tmp/oai/steering-scenario/user_plane_steering.pcap > /tmp/oai/steering-scenario/user_plane_steering.log 2>&1 &
 ```
 
 <!--
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/steering-scenario/user_plane_redirect.log --timeout 60
+docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/steering-scenario/user_plane_steering.log --timeout 60
 ```
 -->
 
 This capture contains all the UP network interfaces.
 
-Then, we generate ICMP traffic to `1.1.1.1` and `1.1.1.2`:
+Then, we generate ICMP traffic to `1.1.1.1` from UE1:
 
 ``` console 
-docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com
-<!DOCTYPE html>
-<html>
-<!--
-<?xml version="1.0" encoding="UTF-8"?><WISPAccessGatewayParam xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:noNamespaceSchemaLocation="http://www.acmewisp.com/WISPAccessGatewayParam.xsd"><Proxy><MessageType>110</MessageType><ResponseCode>200</ResponseCode><NextURL>facebook.com</NextURL></Proxy></WISPAccessGatewayParam>
--->
-   <head>
-      <title>Redirection</title>
-      <meta http-equiv="refresh" content="0; URL=facebook.com">
-   </head>
-   <body>
-      Please <a href='facebook.com'>click here</a> to continue
-   </body>
-</html>
+docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 
+traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
+ 1  * * *
+ 2  192.168.73.135 (192.168.73.135)  4.787 ms  4.835 ms  4.824 ms
+ 3  rohan (192.168.73.1)  4.795 ms  4.768 ms  4.884 ms
+ 4  _gateway (192.168.107.1)  4.927 ms  4.909 ms  4.889 ms
+ 5  eurecom-gw.eurecom.fr (193.55.113.194)  4.857 ms  4.828 ms  4.801 ms
+ 6  gi0-0-0-6-ren-nr-sophia-rtr-091.noc.renater.fr (193.51.187.18)  4.769 ms  4.873 ms  4.761 ms
+ 7  xe-0-0-5-marseille1-rtr-131.noc.renater.fr (193.51.177.20)  8.094 ms  8.091 ms  8.021 ms
+ 8  xe-1-0-0-ren-nr-lyon1-rtr-131.noc.renater.fr (193.55.204.109)  10.676 ms xe-0-0-9-ren-nr-lyon1-rtr-131.noc.renater.fr (193.51.177.16)  10.697 ms xe-1-0-9-lyon1-rtr-131.noc.renater.fr (193.51.177.223)  10.442 ms
+ 9  renater-ias-geant-gw.gen.ch.geant.net (83.97.89.13)  20.646 ms  20.622 ms  20.548 ms
+10  ae2.mx1.fra.de.geant.net (62.40.98.180)  26.707 ms  26.472 ms  28.251 ms
+11  * * *
+12  172.70.240.3 (172.70.240.3)  28.176 ms 172.69.148.3 (172.69.148.3)  25.304 ms 172.70.248.3 (172.70.248.3)  28.933 ms
+13  one.one.one.one (1.1.1.1)  28.571 ms  25.481 ms  25.230 ms
 ```
-We will see in the [analysis](#8-trace-analysis) that the IP packets to `google.com` are redirected to destination `facebook.com` over EXT-DN-Internet.
+
+Then, we generate ICMP traffic to `1.1.1.1` from UE2:
+
+```console
+docker exec gnbsim-vpp3 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1'
+traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
+ 1  * * *
+ 2  192.168.74.135 (192.168.74.135)  0.601 ms  1.000 ms  1.022 ms
+ 3  rohan (192.168.73.1)  1.023 ms  1.022 ms  1.949 ms
+ 4  _gateway (192.168.107.1)  1.912 ms  1.892 ms  1.886 ms
+ 5  eurecom-gw.eurecom.fr (193.55.113.194)  2.339 ms  2.177 ms  2.299 ms
+ 6  gi0-0-0-6-ren-nr-sophia-rtr-091.noc.renater.fr (193.51.187.18)  2.363 ms  2.075 ms  1.918 ms
+ 7  xe-0-0-5-marseille1-rtr-131.noc.renater.fr (193.51.177.20)  4.577 ms  4.613 ms  4.568 ms
+ 8  xe-0-0-4-ren-nr-lyon1-rtr-131.noc.renater.fr (193.55.204.107)  19.794 ms xe-0-0-3-ren-nr-lyon1-rtr-131.noc.renater.fr (193.51.177.81)  19.776 ms xe-0-0-9-ren-nr-lyon1-rtr-131.noc.renater.fr (193.51.177.16)  19.750 ms
+ 9  renater-ias-geant-gw.gen.ch.geant.net (83.97.89.13)  15.771 ms  15.419 ms  15.393 ms
+10  ae2.mx1.fra.de.geant.net (62.40.98.180)  23.980 ms  23.949 ms  23.930 ms
+11  * * *
+12  172.69.148.3 (172.69.148.3)  24.503 ms 172.70.248.3 (172.70.248.3)  24.608 ms 162.158.108.2 (162.158.108.2)  24.564 ms
+13  one.one.one.one (1.1.1.1)  24.019 ms  24.469 ms  24.508 ms
+```
+
+We will see in the [analysis](#8-trace-analysis) that the IP packets to `1.1.1.1` are steered to destination over EXT-DN-Internet with corresponding N6 interface .
 
 To better analyse the traces for the following scenarios, we stop the trace:
 ``` shell
@@ -555,11 +575,11 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_inte
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
 
-### Rdirection Scenario
+### Steering Scenario
 
-The results of this tutorial are located in [results/redirect](results/redirect). 
+The results of this tutorial are located in [results/steering](results/steering). 
 
-First, we open the [user_plane_redirect.pcapng](results/redirect/user_plane_redirect.pcapng) file and sort based on time. 
+First, we open the [user_plane_steering.pcapng](results/steering/user_plane_redirect.pcapng) file and sort based on time. 
 
 ## 10 Undeploy Network Functions
 
@@ -568,7 +588,7 @@ When you are done, you can undeploy the gnbsim instances and stop the NFs.
 First, we stop the gnbsim instances:
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml stop -t 2
+docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml stop -t 2
 ```
 
 Then, we stop the NFs. 
@@ -589,14 +609,14 @@ docker-compose-host $: docker logs oai-udr > /tmp/oai/steering-scenario/udr.log 
 docker-compose-host $: docker logs oai-udm > /tmp/oai/steering-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/steering-scenario/ausf.log 2>&1
 docker-compose-host $: docker logs oai-pcf > /tmp/oai/steering-scenario/pcf.log 2>&1
-docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/steering-scenario/gnbsim-vpp.log 
+docker-compose-host $: docker logs gnbsim-vpp2 > /tmp/oai/steering-scenario/gnbsim-vpp2.log
+docker-compose-host $: docker logs gnbsim-vpp3 > /tmp/oai/steering-scenario/gnbsim-vpp3.log 
 ```
 
 Finally, we undeploy the gnbsims and NFs to clean up the Docker networks.
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml down -t 2
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp.yaml down -t 2
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.yaml down -t 2
 ```
 
