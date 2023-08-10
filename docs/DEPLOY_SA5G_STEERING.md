@@ -28,10 +28,10 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 2. [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
 3. [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
 4. [Simulate with gnbsim](#4-simulate-with-gnbsim)
-
-8. [Trace Analysis](#8-trace-analysis)
-9. [Undeploy Network Functions](#9-undeploy-network-functions)
-10. [Conclusion](#10-conclusion)
+5. [Traffic test for Steering](#5-traffic-test-for-steering)
+6. [Trace Analysis](#6-trace-analysis)
+7. [Undeploy Network Functions](#7-undeploy-network-functions)
+8. [Conclusion](#8-conclusion)
 
 For this demo, all the images which use the `develop` branch have been retrieved from the official `docker-hub` (see also
 [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md)).
@@ -50,11 +50,11 @@ For this demo, all the images which use the `develop` branch have been retrieved
 
 <br/>
 
-This tutorial shows how to configure the Traffic Redirection and Steering feature at SMF and UPF, based on policies from the PCF.
+This tutorial shows how to configure the Traffic Steering feature at SMF and UPF, based on policies from the PCF.
 
 We will show and validate:
-* Part 1: Traffic redirection scenario for a subscriber (gnbsim) with traffic classification and URL based redirection to destination server
-* Part 2: Traffic steering scenario for a two subscribers (gnbsim) with traffic classification and steer of uplink traffic to destination server using multiple N6 interfaces
+
+* Traffic steering scenario for a subscriber (gnbsim) with traffic classification and steering to destination server over multiple N6 inetrfaces at UPF
 
 ## 1. Pre-requisites
 Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files.
@@ -133,6 +133,8 @@ Creating oai-amf             ... done
 Creating oai-smf             ... done
 ```
 
+* Note: Here we use two docker subnets for N6, viz. `oai-public-core-pri` and `oai-public-core-sec`, which terminates to DN over two different ipv4 subnets. Opertaor can have differnt termination endpoints for these multiple N6 interfaces e.g. one could terminate to regular internet DN and another could be local edge server etc.
+
 <!--
 For CI purposes please ignore this line
 ``` shell
@@ -174,11 +176,15 @@ docker-compose-host $: docker logs oai-smf | grep -A 5 graph
 When the CN is deployed successfully, we can simulate a gNB and UE using `gnbsim`. 
 Please see the [gnbsim tutorial](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md) on how to retrieve or build the image.
 
+* Instantiate first Gnbsim instance (IMSI - 208950000000032)
+
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml up -d gnbsim-vpp2
 Creating gnbsim-vpp2 ...
 Creating gnbsim-vpp2 ... done
 ```
+
+* Instantiate second Gnbsim instance (IMSI - 208950000000033)
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.yaml up -d gnbsim-vpp3
@@ -221,9 +227,6 @@ docker-compose-host $: docker logs gnbsim-vpp3 2>&1 | grep "UE address:"
 It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
 you see the IP address.
 
-Please note, that the UL CL is transparent for the UE and this only shows that there is a PDU session, not that
-the traffic is routed correctly. Currently, the SMF tries to create a session on any UPF if the selection based on PCC rules 
-fails. 
 
 ## 5. Traffic Test for Steering
 
@@ -247,7 +250,31 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/s
 
 This capture contains all the UP network interfaces.
 
-Then, we generate ICMP traffic to `1.1.1.1` from UE1:
+
+Please make a note that,
+* As you can see the policy rules (`policies/steering/pcc_rules`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `steering-scenario`.
+
+* Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
+You can see that the UE with the IMSI `208950000000032` is configured to use the `steering-rule-primary`, whereas UE with the IMSI `208950000000033` is configured to use the `steering-rule-primary`
+
+* Now the important thing is traffic contorl rule which will be used here to steer traffic to one of N6 interface. As you can see below, we use DNAI of the interface at UPF to distinguish between steering rule.
+
+* A
+
+```bash
+steering-scenario-primary:
+  routeToLocs:
+    - dnai: access
+    - dnai: internet-primary
+
+steering-scenario-secondary:
+  routeToLocs:
+    - dnai: access
+    - dnai: internet-secondary
+
+```
+
+Now, we generate ICMP traffic to `1.1.1.1` from UE1:
 
 ``` console 
 docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 
@@ -289,7 +316,7 @@ traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
 
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `1.1.1.1` are steered to destination over EXT-DN-Internet with corresponding N6 interface .
 
-## 8 Trace Analysis
+## 6 Trace Analysis
 
 Now that we have captured control plane and user plane traces, we can stop `tshark`:
 ``` shell
@@ -316,7 +343,7 @@ The results of this tutorial are located in [results/steering](results/steering)
 
 First, we open the [user_plane_steering.pcapng](results/steering/user_plane_steering.pcap) file and sort based on time. 
 
-## 10 Undeploy Network Functions
+## 7 Undeploy Network Functions
 
 When you are done, you can undeploy the gnbsim instances and stop the NFs. 
 
@@ -354,4 +381,4 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.ya
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.yaml down -t 2
 ```
 
-## 11 Conclusion
+## 8 Conclusion

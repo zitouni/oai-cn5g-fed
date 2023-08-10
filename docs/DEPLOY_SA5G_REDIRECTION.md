@@ -29,10 +29,10 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 2. [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
 3. [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
 4. [Simulate with gnbsim](#4-simulate-with-gnbsim)
-
-8. [Trace Analysis](#8-trace-analysis)
-9. [Undeploy Network Functions](#9-undeploy-network-functions)
-10. [Conclusion](#10-conclusion)
+5. [Traffic test for Redirection](#5-traffic-test-for-redirection)
+6. [Trace Analysis](#6-trace-analysis)
+7. [Undeploy Network Functions](#7-undeploy-network-functions)
+8. [Conclusion](#8-conclusion)
 
 For this demo, all the images which use the `develop` branch have been retrieved from the official `docker-hub` (see also
 [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md)).
@@ -191,10 +191,6 @@ docker-compose-host $: docker logs gnbsim-vpp 2>&1 | grep "UE address:"
 It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
 you see the IP address.
 
-Please note, that the UL CL is transparent for the UE and this only shows that there is a PDU session, not that
-the traffic is routed correctly. Currently, the SMF tries to create a session on any UPF if the selection based on PCC rules 
-fails. 
-
 ## 5. Traffic Test for Redirection
 
 *Note: As tshark is running in the background, and we run everything in the same terminal, we will stop the control plane traces here. If you want, you can open tshark on another terminal and terminate it whenever it suits you.*  
@@ -321,3 +317,4 @@ docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-redirectio
 
 ## 8 Conclusion
 
+We shown in this tutorial how the traffic redirection can be configured in the OAI with the help of policy configuration at PCF. We have used VPP-UPF for validation of this feature. We have verified the URL based redirection in this tutorial. Other types of redirection, e.g. server address type `ipv4/ipv6/SIP URI` are not currently supported in VPP-UPF.
