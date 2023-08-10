@@ -104,7 +104,7 @@ You can choose to skip this step and deploy all the NFs at once.
 docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-redirection.yaml up -d mysql 
 Creating network "demo-oai-public-net" with driver "bridge"
 Creating network "oai-public-access" with the default driver
-Creating network "oai-public-core1" with the default driver
+Creating network "oai-public-core" with the default driver
 Creating mysql ... done
 ```
 
@@ -245,10 +245,6 @@ docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 goog
 ```
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `google.com` are redirected to destination `facebook.com` over EXT-DN-Internet.
 
-To better analyse the traces for the following scenarios, we stop the trace:
-``` shell
-docker-compose-host $: sudo pkill tshark 
-```
 
 ## 8 Trace Analysis
 

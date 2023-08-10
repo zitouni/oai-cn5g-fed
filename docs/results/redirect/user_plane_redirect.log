@@ -1,0 +1,7 @@
+nohup: ignoring input
+Running as user "root" and group "root". This could be dangerous.
+Capturing on 'cn5g-access' and 'cn5g-core'
+ ** (tshark:432003) 13:44:11.812291 [Main MESSAGE] -- Capture started.
+ ** (tshark:432003) 13:44:11.812621 [Main MESSAGE] -- File: "/tmp/oai/redirect-scenario/user_plane_redirect.pcap"
+tshark: 
+17 packets captured
