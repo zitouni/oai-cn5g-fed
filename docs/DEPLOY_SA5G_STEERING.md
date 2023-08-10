@@ -215,7 +215,7 @@ docker-compose-host $: docker logs gnbsim-vpp2 2>&1 | grep "UE address:"
 ```
 ``` shell
 docker-compose-host $: docker logs gnbsim-vpp3 2>&1 | grep "UE address:"
-[gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.2
+[gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.3
 ```
 
 It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
@@ -289,11 +289,6 @@ traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
 
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `1.1.1.1` are steered to destination over EXT-DN-Internet with corresponding N6 interface .
 
-To better analyse the traces for the following scenarios, we stop the trace:
-``` shell
-docker-compose-host $: sudo pkill tshark 
-```
-
 ## 8 Trace Analysis
 
 Now that we have captured control plane and user plane traces, we can stop `tshark`:
@@ -348,8 +343,8 @@ docker-compose-host $: docker logs oai-udr > /tmp/oai/steering-scenario/udr.log 
 docker-compose-host $: docker logs oai-udm > /tmp/oai/steering-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/steering-scenario/ausf.log 2>&1
 docker-compose-host $: docker logs oai-pcf > /tmp/oai/steering-scenario/pcf.log 2>&1
-docker-compose-host $: docker logs gnbsim-vpp2 > /tmp/oai/steering-scenario/gnbsim-vpp2.log
-docker-compose-host $: docker logs gnbsim-vpp3 > /tmp/oai/steering-scenario/gnbsim-vpp3.log 
+docker-compose-host $: docker logs gnbsim-vpp2 > /tmp/oai/steering-scenario/gnbsim-vpp2.log 2>&1
+docker-compose-host $: docker logs gnbsim-vpp3 > /tmp/oai/steering-scenario/gnbsim-vpp3.log 2>&1
 ```
 
 Finally, we undeploy the gnbsims and NFs to clean up the Docker networks.

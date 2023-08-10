@@ -305,7 +305,7 @@ docker-compose-host $: docker logs oai-udr > /tmp/oai/redirect-scenario/udr.log 
 docker-compose-host $: docker logs oai-udm > /tmp/oai/redirect-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/redirect-scenario/ausf.log 2>&1
 docker-compose-host $: docker logs oai-pcf > /tmp/oai/redirect-scenario/pcf.log 2>&1
-docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/redirect-scenario/gnbsim-vpp.log 
+docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/redirect-scenario/gnbsim-vpp.log 2>&1
 ```
 
 Finally, we undeploy the gnbsims and NFs to clean up the Docker networks.

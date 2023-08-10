@@ -1,0 +1,7 @@
+nohup: ignoring input
+Running as user "root" and group "root". This could be dangerous.
+Capturing on 'demo-oai'
+ ** (tshark:413217) 13:28:33.444472 [Main MESSAGE] -- Capture started.
+ ** (tshark:413217) 13:28:33.444855 [Main MESSAGE] -- File: "/tmp/oai/steering-scenario/control_plane.pcap"
+tshark: 
+1341 packets captured
