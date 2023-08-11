@@ -76,8 +76,6 @@ docker-compose-host $: chmod 777 /tmp/oai/redirect-scenario
 
 ## 3. Deploying OAI 5g Core Network
 
-We deploy an adapted version of [docker-compose-basic-vpp-pcf-redirection.yaml](../docker-compose/docker-compose-basic-vpp-pcf-redirection.yaml) of the 5G core with the PCF as additional NF and 3 UPFs instead of 1.
-
 We use `docker-compose` to deploy the core network. Please refer to the file [docker-compose-basic-vpp-pcf-redirection.yaml](../docker-compose/docker-compose-basic-vpp-pcf-redirection.yaml)
 for details.
 
@@ -214,13 +212,13 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/r
 This capture contains all the UP network interfaces.
 
 Please make a note that,
-* As you can see the policy rules (`policies/redirection/pcc_rules`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `redirection-scenario`.
+* As you can see the policy rules (`policies/redirection/pcc_rules.yaml`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `redirection-scenario`.
 
 * Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
 You can see that the UE with the IMSI `208950000000031` is configured to use the `redirection-rule` as below, which describes that traffic should be redirected to the server with redirection type as URL.
 
 
-```bash
+```yaml
 redirection-scenario:
   redirectInfo:
     redirectEnabled: true

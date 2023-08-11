@@ -75,8 +75,6 @@ docker-compose-host $: chmod 777 /tmp/oai/steering-scenario
 
 ## 3. Deploying OAI 5g Core Network
 
-We deploy an adapted version of [docker-compose-basic-vpp-pcf-steering.yaml](../docker-compose/docker-compose-basic-vpp-pcf-steering.yaml) of the 5G core with the PCF as additional NF and 3 UPFs instead of 1.
-
 We use `docker-compose` to deploy the core network. Please refer to the file [docker-compose-basic-vpp-pcf-steering.yaml](../docker-compose/docker-compose-basic-vpp-pcf-steering.yaml)
 for details.
 
@@ -252,16 +250,16 @@ This capture contains all the UP network interfaces.
 
 
 Please make a note that,
-* As you can see the policy rules (`policies/steering/pcc_rules`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `steering-scenario`.
+* As you can see the policy rules (`policies/steering/pcc_rules.yaml`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `steering-scenario`.
 
 * Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
-You can see that the UE with the IMSI `208950000000032` is configured to use the `steering-rule-primary`, whereas UE with the IMSI `208950000000033` is configured to use the `steering-rule-primary`
+You can see that the UE with the IMSI `208950000000032` is configured to use the `steering-rule-primary`, whereas UE with the IMSI `208950000000033` is configured to use the `steering-rule-secondary`
 
 * Now the important thing is traffic contorl rule which will be used here to steer traffic to one of N6 interface. As you can see below, we use DNAI of the interface at UPF to distinguish between steering rule.
 
 * A
 
-```bash
+```yaml
 steering-scenario-primary:
   routeToLocs:
     - dnai: access
