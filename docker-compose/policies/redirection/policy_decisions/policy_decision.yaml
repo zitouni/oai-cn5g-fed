@@ -2,15 +2,3 @@ decision_supi1:
   supi_imsi: "208950000000031"
   pcc_rules: 
     - redirection-rule
-
-decision_dnn:
-  dnn: default
-  pcc_rules:
-    - redirection-rule
-
-decision_slice:
-  slice: 
-    sst: 222
-    sd: "123"
-  pcc_rules:
-    - redirection-rule
