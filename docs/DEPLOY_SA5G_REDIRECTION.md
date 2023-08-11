@@ -252,7 +252,7 @@ we use 1.1.1.1 as it serves HTTP, so we can verify if the redirect works properl
  * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
 
 ``` shell
-docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com 2>&1 | tee /tmp/oai/redirect-scenario/ue-test.log
+docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com > tee /tmp/oai/redirect-scenario/ue-test.log 2>&1
 ```
 -->
 
@@ -309,7 +309,7 @@ Now we are able to collect the logs.
 docker-compose-host $: docker logs oai-amf > /tmp/oai/redirect-scenario/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/redirect-scenario/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/redirect-scenario/nrf.log 2>&1
-docker-compose-host $: docker logs vpp-upf > /tmp/oai/redirect-scenario/vpp-upf-redirect.log 2>&1
+docker-compose-host $: docker logs vpp-upf > /tmp/oai/redirect-scenario/vpp-upf.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/redirect-scenario/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/redirect-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/redirect-scenario/ausf.log 2>&1

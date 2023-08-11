@@ -1,99 +1,99 @@
-[2023-08-10 13:28:55.627] [udm_server] [start] Options parsed
-[2023-08-10 13:28:55.628] [system] [debug] Parsing the configuration file, file type YAML.
-[2023-08-10 13:28:55.628] [config ] [info] Reading NF configuration from /openair-udm/etc/config.yaml
-[2023-08-10 13:28:55.787] [config ] [debug] Unknown NF amf in configuration. Ignored
-[2023-08-10 13:28:55.788] [config ] [debug] Unknown NF smf in configuration. Ignored
-[2023-08-10 13:28:55.788] [config ] [debug] Unknown NF ausf in configuration. Ignored
-[2023-08-10 13:28:55.789] [config ] [debug] Unknown NF pcf in configuration. Ignored
-[2023-08-10 13:28:55.790] [config ] [debug] Unknown NF nssf in configuration. Ignored
-[2023-08-10 13:28:55.792] [config ] [debug] Validating configuration of log_level
-[2023-08-10 13:28:55.793] [config ] [debug] Validating configuration of register_nf
-[2023-08-10 13:28:55.794] [config ] [debug] Validating configuration of http_version
-[2023-08-10 13:28:55.794] [config ] [debug] Validating configuration of NRF
-[2023-08-10 13:28:55.811] [config ] [debug] Validating configuration of UDR
-[2023-08-10 13:28:55.811] [config ] [debug] Validating configuration of UDM
-[2023-08-10 13:28:55.830] [config ] [info] ==== OPENAIRINTERFACE udm vBranch: HEAD Abrev. Hash: 472ab3a Date: Wed Aug 2 13:15:00 2023 +0000 ====
-[2023-08-10 13:28:55.830] [config ] [info] Basic Configuration:
-[2023-08-10 13:28:55.830] [config ] [info]   - log_level..................................: debug
-[2023-08-10 13:28:55.830] [config ] [info]   - register_nf................................: Yes
-[2023-08-10 13:28:55.831] [config ] [info]   - http_version...............................: 2
-[2023-08-10 13:28:55.831] [config ] [info]     UDM:
-[2023-08-10 13:28:55.831] [config ] [info]     - host.....................................: oai-udm
-[2023-08-10 13:28:55.831] [config ] [info]     - SBI
-[2023-08-10 13:28:55.831] [config ] [info]       + URL....................................: http://oai-udm:8080
-[2023-08-10 13:28:55.831] [config ] [info]       + API Version............................: v1
-[2023-08-10 13:28:55.832] [config ] [info]       + IPv4 Address ..........................: 192.168.70.137
-[2023-08-10 13:28:55.832] [config ] [info]     - Instance ID..............................: 0
-[2023-08-10 13:28:55.832] [config ] [info]     - PID Directory............................: 
-[2023-08-10 13:28:55.832] [config ] [info]     - UDM Name.................................: 
-[2023-08-10 13:28:55.832] [config ] [info] Peer NF Configuration:
-[2023-08-10 13:28:55.832] [config ] [info]   NRF:
-[2023-08-10 13:28:55.833] [config ] [info]     - host.....................................: oai-nrf
-[2023-08-10 13:28:55.833] [config ] [info]     - SBI
-[2023-08-10 13:28:55.833] [config ] [info]       + URL....................................: http://oai-nrf:8080
-[2023-08-10 13:28:55.833] [config ] [info]       + API Version............................: v1
-[2023-08-10 13:28:55.833] [config ] [info]   UDR:
-[2023-08-10 13:28:55.834] [config ] [info]     - host.....................................: oai-udr
-[2023-08-10 13:28:55.834] [config ] [info]     - SBI
-[2023-08-10 13:28:55.834] [config ] [info]       + URL....................................: http://oai-udr:8080
-[2023-08-10 13:28:55.834] [config ] [info]       + API Version............................: v1
-[2023-08-10 13:28:55.834] [udm_app] [start] Starting...
-[2023-08-10 13:28:55.835] [udm_app] [debug] - NF instance info
-[2023-08-10 13:28:55.835] [udm_app] [debug]     Instance ID: fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-[2023-08-10 13:28:55.835] [udm_app] [debug]     Instance name: OAI-UDM
-[2023-08-10 13:28:55.835] [udm_app] [debug]     Instance type: UDM
-[2023-08-10 13:28:55.835] [udm_app] [debug]     Instance fqdn: oai-udm
-[2023-08-10 13:28:55.835] [udm_app] [debug]     Status: REGISTERED
-[2023-08-10 13:28:55.836] [udm_app] [debug]     HeartBeat timer: 50
-[2023-08-10 13:28:55.836] [udm_app] [debug]     Priority: 1
-[2023-08-10 13:28:55.836] [udm_app] [debug]     Capacity: 100
-[2023-08-10 13:28:55.836] [udm_app] [debug]     IPv4 Addr:
-[2023-08-10 13:28:55.836] [udm_app] [debug]         192.168.70.137
-[2023-08-10 13:28:55.836] [udm_app] [debug] 	UDM Info
-[2023-08-10 13:28:55.836] [udm_app] [debug] 		GroupId: oai-udm-testgroupid
-[2023-08-10 13:28:55.836] [udm_app] [debug] 		 SupiRanges: Start - 208950000000031, End - 208950000000131, Pattern - ^imsi-20895[31-131]{10}$
-[2023-08-10 13:28:55.836] [udm_app] [debug] 		 GpsiRanges: Start - 752740000, End - 752749999, Pattern - ^gpsi-75274[0-9]{4}$
-[2023-08-10 13:28:55.836] [udm_app] [debug] 		 Routing Indicators: 0210
-[2023-08-10 13:28:55.836] [udm_app] [debug] 		 Routing Indicators: 9876
-[2023-08-10 13:28:55.836] [udm_app] [debug] udm profile to JSON:
- {"capacity":100,"fqdn":"oai-udm","heartBeatTimer":50,"ipv4Addresses":["192.168.70.137"],"nfInstanceId":"fee6a3c4-0a0a-4e90-ad47-e8107706bea1","nfInstanceName":"OAI-UDM","nfStatus":"REGISTERED","nfType":"UDM","priority":1,"sNssais":[],"udmInfo":{"externalGroupIdentifiersRanges":[],"gpsiRanges":[{"end":"752749999","pattern":"^gpsi-75274[0-9]{4}$","start":"752740000"}],"groupId":"oai-udm-testgroupid","internalGroupIdentifiersRanges":[],"routingIndicators":["0210","9876"],"supiRanges":[{"end":"208950000000131","pattern":"^imsi-20895[31-131]{10}$","start":"208950000000031"}]}}
-[2023-08-10 13:28:55.836] [udm_nrf] [info] Sending NF registeration request
-[2023-08-10 13:28:55.837] [udm_app] [info] Send HTTP message with body {"capacity":100,"fqdn":"oai-udm","heartBeatTimer":50,"ipv4Addresses":["192.168.70.137"],"nfInstanceId":"fee6a3c4-0a0a-4e90-ad47-e8107706bea1","nfInstanceName":"OAI-UDM","nfStatus":"REGISTERED","nfType":"UDM","priority":1,"sNssais":[],"udmInfo":{"externalGroupIdentifiersRanges":[],"gpsiRanges":[{"end":"752749999","pattern":"^gpsi-75274[0-9]{4}$","start":"752740000"}],"groupId":"oai-udm-testgroupid","internalGroupIdentifiersRanges":[],"routingIndicators":["0210","9876"],"supiRanges":[{"end":"208950000000131","pattern":"^imsi-20895[31-131]{10}$","start":"208950000000031"}]}}
+[2023-08-11 15:11:31.053] [udm_server] [start] Options parsed
+[2023-08-11 15:11:31.053] [system] [debug] Parsing the configuration file, file type YAML.
+[2023-08-11 15:11:31.053] [config ] [info] Reading NF configuration from /openair-udm/etc/config.yaml
+[2023-08-11 15:11:31.135] [config ] [debug] Unknown NF amf in configuration. Ignored
+[2023-08-11 15:11:31.135] [config ] [debug] Unknown NF smf in configuration. Ignored
+[2023-08-11 15:11:31.135] [config ] [debug] Unknown NF ausf in configuration. Ignored
+[2023-08-11 15:11:31.135] [config ] [debug] Unknown NF pcf in configuration. Ignored
+[2023-08-11 15:11:31.135] [config ] [debug] Unknown NF nssf in configuration. Ignored
+[2023-08-11 15:11:31.136] [config ] [debug] Validating configuration of log_level
+[2023-08-11 15:11:31.137] [config ] [debug] Validating configuration of register_nf
+[2023-08-11 15:11:31.137] [config ] [debug] Validating configuration of http_version
+[2023-08-11 15:11:31.137] [config ] [debug] Validating configuration of NRF
+[2023-08-11 15:11:31.146] [config ] [debug] Validating configuration of UDR
+[2023-08-11 15:11:31.146] [config ] [debug] Validating configuration of UDM
+[2023-08-11 15:11:31.155] [config ] [info] ==== OPENAIRINTERFACE udm vBranch: HEAD Abrev. Hash: 472ab3a Date: Wed Aug 2 13:15:00 2023 +0000 ====
+[2023-08-11 15:11:31.155] [config ] [info] Basic Configuration:
+[2023-08-11 15:11:31.155] [config ] [info]   - log_level..................................: debug
+[2023-08-11 15:11:31.155] [config ] [info]   - register_nf................................: Yes
+[2023-08-11 15:11:31.155] [config ] [info]   - http_version...............................: 2
+[2023-08-11 15:11:31.155] [config ] [info]     UDM:
+[2023-08-11 15:11:31.155] [config ] [info]     - host.....................................: oai-udm
+[2023-08-11 15:11:31.155] [config ] [info]     - SBI
+[2023-08-11 15:11:31.155] [config ] [info]       + URL....................................: http://oai-udm:8080
+[2023-08-11 15:11:31.155] [config ] [info]       + API Version............................: v1
+[2023-08-11 15:11:31.155] [config ] [info]       + IPv4 Address ..........................: 192.168.70.137
+[2023-08-11 15:11:31.155] [config ] [info]     - Instance ID..............................: 0
+[2023-08-11 15:11:31.155] [config ] [info]     - PID Directory............................: 
+[2023-08-11 15:11:31.155] [config ] [info]     - UDM Name.................................: 
+[2023-08-11 15:11:31.155] [config ] [info] Peer NF Configuration:
+[2023-08-11 15:11:31.155] [config ] [info]   NRF:
+[2023-08-11 15:11:31.155] [config ] [info]     - host.....................................: oai-nrf
+[2023-08-11 15:11:31.155] [config ] [info]     - SBI
+[2023-08-11 15:11:31.155] [config ] [info]       + URL....................................: http://oai-nrf:8080
+[2023-08-11 15:11:31.155] [config ] [info]       + API Version............................: v1
+[2023-08-11 15:11:31.155] [config ] [info]   UDR:
+[2023-08-11 15:11:31.155] [config ] [info]     - host.....................................: oai-udr
+[2023-08-11 15:11:31.155] [config ] [info]     - SBI
+[2023-08-11 15:11:31.155] [config ] [info]       + URL....................................: http://oai-udr:8080
+[2023-08-11 15:11:31.155] [config ] [info]       + API Version............................: v1
+[2023-08-11 15:11:31.155] [udm_app] [start] Starting...
+[2023-08-11 15:11:31.155] [udm_app] [debug] - NF instance info
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Instance ID: 7888f71d-c525-4711-b7f6-3fcca74d054c
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Instance name: OAI-UDM
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Instance type: UDM
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Instance fqdn: oai-udm
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Status: REGISTERED
+[2023-08-11 15:11:31.155] [udm_app] [debug]     HeartBeat timer: 50
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Priority: 1
+[2023-08-11 15:11:31.155] [udm_app] [debug]     Capacity: 100
+[2023-08-11 15:11:31.155] [udm_app] [debug]     IPv4 Addr:
+[2023-08-11 15:11:31.155] [udm_app] [debug]         192.168.70.137
+[2023-08-11 15:11:31.155] [udm_app] [debug] 	UDM Info
+[2023-08-11 15:11:31.155] [udm_app] [debug] 		GroupId: oai-udm-testgroupid
+[2023-08-11 15:11:31.155] [udm_app] [debug] 		 SupiRanges: Start - 208950000000031, End - 208950000000131, Pattern - ^imsi-20895[31-131]{10}$
+[2023-08-11 15:11:31.155] [udm_app] [debug] 		 GpsiRanges: Start - 752740000, End - 752749999, Pattern - ^gpsi-75274[0-9]{4}$
+[2023-08-11 15:11:31.155] [udm_app] [debug] 		 Routing Indicators: 0210
+[2023-08-11 15:11:31.155] [udm_app] [debug] 		 Routing Indicators: 9876
+[2023-08-11 15:11:31.155] [udm_app] [debug] udm profile to JSON:
+ {"capacity":100,"fqdn":"oai-udm","heartBeatTimer":50,"ipv4Addresses":["192.168.70.137"],"nfInstanceId":"7888f71d-c525-4711-b7f6-3fcca74d054c","nfInstanceName":"OAI-UDM","nfStatus":"REGISTERED","nfType":"UDM","priority":1,"sNssais":[],"udmInfo":{"externalGroupIdentifiersRanges":[],"gpsiRanges":[{"end":"752749999","pattern":"^gpsi-75274[0-9]{4}$","start":"752740000"}],"groupId":"oai-udm-testgroupid","internalGroupIdentifiersRanges":[],"routingIndicators":["0210","9876"],"supiRanges":[{"end":"208950000000131","pattern":"^imsi-20895[31-131]{10}$","start":"208950000000031"}]}}
+[2023-08-11 15:11:31.155] [udm_nrf] [info] Sending NF registeration request
+[2023-08-11 15:11:31.155] [udm_app] [info] Send HTTP message with body {"capacity":100,"fqdn":"oai-udm","heartBeatTimer":50,"ipv4Addresses":["192.168.70.137"],"nfInstanceId":"7888f71d-c525-4711-b7f6-3fcca74d054c","nfInstanceName":"OAI-UDM","nfStatus":"REGISTERED","nfType":"UDM","priority":1,"sNssais":[],"udmInfo":{"externalGroupIdentifiersRanges":[],"gpsiRanges":[{"end":"752749999","pattern":"^gpsi-75274[0-9]{4}$","start":"752740000"}],"groupId":"oai-udm-testgroupid","internalGroupIdentifiersRanges":[],"routingIndicators":["0210","9876"],"supiRanges":[{"end":"208950000000131","pattern":"^imsi-20895[31-131]{10}$","start":"208950000000031"}]}}
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x555de71c57f0)
-> PUT /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x562b7f7c17f0)
+> PUT /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
 content-length: 578
 
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
-[2023-08-10 13:28:55.855] [udm_app] [info] Got response with httpcode (201)
+* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 201 
-< date: Thu, 10 Aug 2023 11:28:55 GMT
+< date: Fri, 11 Aug 2023 13:11:31 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:28:55.856] [udm_app] [info] NRF TASK Created 
-[2023-08-10 13:28:55.856] [udm_app] [start] Started
-[2023-08-10 13:28:55.858] [udm_server] [info] HTTP2 server started
-[2023-08-10 13:29:06.582] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:06.583] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:11:31.165] [udm_app] [info] Got response with httpcode (201)
+[2023-08-11 15:11:31.166] [udm_app] [info] NRF TASK Created 
+[2023-08-11 15:11:31.166] [udm_app] [start] Started
+[2023-08-11 15:11:31.167] [udm_server] [info] HTTP2 server started
+[2023-08-11 15:11:41.804] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:11:41.804] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001410)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001410)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -102,66 +102,138 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:06 GMT
+< date: Fri, 11 Aug 2023 13:11:41 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:06.648] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:12.845] [udm_ueau] [info] Handle generate_auth_data()
-[2023-08-10 13:29:12.845] [udm_ueau] [info] Handle Generate Auth Data Request
-[2023-08-10 13:29:12.845] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
-[2023-08-10 13:29:12.845] [udm_app] [info] Send HTTP message with body 
+[2023-08-11 15:11:41.860] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:11:52.115] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:11:52.115] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+*   Trying 192.168.70.130:8080...
+* TCP_NODELAY set
+* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x7f81480175a0)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
+Host: oai-nrf:8080
+accept: */*
+content-type: application/json
+content-length: 58
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
+* We are completely uploaded and fine
+< HTTP/2 204 
+< date: Fri, 11 Aug 2023 13:11:52 GMT
+< content-type: application/json
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
+< 
+* Connection #0 to host oai-nrf left intact
+[2023-08-11 15:11:52.121] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:02.142] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:02.142] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+*   Trying 192.168.70.130:8080...
+* TCP_NODELAY set
+* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x7f8148001410)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
+Host: oai-nrf:8080
+accept: */*
+content-type: application/json
+content-length: 58
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
+* We are completely uploaded and fine
+< HTTP/2 204 
+< date: Fri, 11 Aug 2023 13:12:02 GMT
+< content-type: application/json
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
+< 
+* Connection #0 to host oai-nrf left intact
+[2023-08-11 15:12:02.143] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:12.171] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:12.171] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+*   Trying 192.168.70.130:8080...
+* TCP_NODELAY set
+* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x7f8148001410)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
+Host: oai-nrf:8080
+accept: */*
+content-type: application/json
+content-length: 58
+
+* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
+* We are completely uploaded and fine
+< HTTP/2 204 
+< date: Fri, 11 Aug 2023 13:12:12 GMT
+< content-type: application/json
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
+< 
+* Connection #0 to host oai-nrf left intact
+[2023-08-11 15:12:12.172] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:20.377] [udm_ueau] [info] Handle generate_auth_data()
+[2023-08-11 15:12:20.377] [udm_ueau] [info] Handle Generate Auth Data Request
+[2023-08-11 15:12:20.377] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
+[2023-08-11 15:12:20.377] [udm_app] [info] Send HTTP message with body 
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c01a2b0)
+* Using Stream ID: 1 (easy handle 0x7f814001a3f0)
 > GET /nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
 
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
+[2023-08-11 15:12:20.384] [udm_app] [info] Got response with httpcode (200)
 < HTTP/2 200 
-< date: Thu, 10 Aug 2023 11:29:12 GMT
+< date: Fri, 11 Aug 2023 13:12:20 GMT
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:12.890] [udm_app] [info] Got response with httpcode (200)
-[2023-08-10 13:29:12.890] [udm_ueau] [info] Result For F1-Alg Key
+[2023-08-11 15:12:20.384] [udm_ueau] [info] Result For F1-Alg Key
 c a 34 60 1d 4f 7 67 73 3 65 2c 4 62 53 5b 
-[2023-08-10 13:29:12.890] [udm_ueau] [info] Result For F1-Alg OPC
+[2023-08-11 15:12:20.385] [udm_ueau] [info] Result For F1-Alg OPC
 63 bf a5 e e6 52 33 65 ff 14 c1 f4 5f 88 73 7d 
-[2023-08-10 13:29:12.890] [udm_ueau] [info] Result For F1-Alg AMF
+[2023-08-11 15:12:20.385] [udm_ueau] [info] Result For F1-Alg AMF
 80 0 
-[2023-08-10 13:29:12.890] [udm_ueau] [info] Result For F1-Alg SQN: 
+[2023-08-11 15:12:20.385] [udm_ueau] [info] Result For F1-Alg SQN: 
 0 0 0 0 0 20 
-[2023-08-10 13:29:12.890] [udm_ueau] [info] Current SQN 000000000040
-a5 4c 1 18 20 51 b3 b7 62 40 e2 1b a3 2c bb 13 
-6c ad 4f b 4d 58 9f e4 4d 57 fd 80 8d 31 4e 3a 
-a5 4c 1 18 20 51 b3 b7 62 40 e2 1b a3 2c bb 13 
-f0 6 2b f1 f4 c2 5f fc d1 fc 99 7a 34 ab 8e 23 
-e5 87 6c fb bf b0 fb 31 43 ca b8 55 f8 6e 4c c8 
-ae f5 c8 36 2d 86 da 1e 8f f 7a bd ed ef b c4 
-[2023-08-10 13:29:12.894] [udm_ueau] [info] XRES*(new)
-24 39 cd 8a ee 54 59 c9 7e ae 1d b4 fd b9 23 57 ca af 91 5c e b3 46 b6 97 d5 91 85 e4 8d cd 5c 
-[2023-08-10 13:29:12.894] [udm_ueau] [debug] derive_kausf ...
-[2023-08-10 13:29:12.894] [udm_ueau] [info] derive_kausf key
-3d 9b 86 f0 b0 da 93 2b 74 8d a5 26 fb 66 a1 fe 99 35 d0 f4 c3 d 72 11 81 af 7 4d c7 22 7e 33 
-[2023-08-10 13:29:12.894] [udm_ueau] [info] derive_kausf kausf
-c 0 f4 55 c6 29 84 8c d9 af 84 20 88 f6 dd 57 28 ea 6a 5c 86 8c e9 3e cc ed d0 15 f3 d4 ba 2c 
-[2023-08-10 13:29:12.894] [udm_ueau] [info] New SQN (for next round) = 000000000060
-[2023-08-10 13:29:12.894] [udm_ueau] [debug] PATCH Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
-[2023-08-10 13:29:12.894] [udm_ueau] [info] Update UDR with PATCH message, body:  [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
-[2023-08-10 13:29:12.894] [udm_app] [info] Send HTTP message with body [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
+[2023-08-11 15:12:20.385] [udm_ueau] [info] Current SQN 000000000040
+a4 38 cd 4e 26 4d 37 8b 2 2 96 59 58 3f 7d 2c 
+5 4c de fd 9a 3c 2d f6 80 3f 43 10 44 f4 90 84 
+a4 38 cd 4e 26 4d 37 8b 2 2 96 59 58 3f 7d 2c 
+99 e7 ba 7 23 a6 ed ee 1c 94 27 ea fd 6e 50 9d 
+32 e3 de e9 72 d8 45 a1 8a f 66 eb 91 8f dd 3e 
+63 9d 76 a6 e4 43 4 a0 e6 ee eb 4b 3a 8b b9 d6 
+[2023-08-11 15:12:20.388] [udm_ueau] [info] XRES*(new)
+bf 69 f0 af 3e 53 e3 35 34 de 1b 10 85 8f d 73 33 1d 44 f4 63 12 b7 fc 62 7c df 58 29 97 5 74 
+[2023-08-11 15:12:20.388] [udm_ueau] [debug] derive_kausf ...
+[2023-08-11 15:12:20.388] [udm_ueau] [info] derive_kausf key
+54 95 6f 8b 43 6b ad d4 6c ee eb 8d 9d 3e a7 ee 47 43 16 76 88 e4 3d 26 d3 d9 e 1a ea 1d e4 56 
+[2023-08-11 15:12:20.388] [udm_ueau] [info] derive_kausf kausf
+9a 6b 76 12 38 36 9 24 1e bd ec 0 10 df 92 61 a1 f 15 bd e9 4 3a f1 f8 d1 35 c8 f6 2c 48 92 
+[2023-08-11 15:12:20.389] [udm_ueau] [info] New SQN (for next round) = 000000000060
+[2023-08-11 15:12:20.389] [udm_ueau] [debug] PATCH Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
+[2023-08-11 15:12:20.389] [udm_ueau] [info] Update UDR with PATCH message, body:  [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
+[2023-08-11 15:12:20.389] [udm_app] [info] Send HTTP message with body [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c030e20)
+* Using Stream ID: 1 (easy handle 0x7f8140031140)
 > PATCH /nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
@@ -171,44 +243,44 @@ content-length: 137
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:12 GMT
+< date: Fri, 11 Aug 2023 13:12:20 GMT
 < 
+[2023-08-11 15:12:20.413] [udm_app] [info] Got response with httpcode (204)
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:12.910] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:12.910] [udm_ueau] [info] Send 200 Ok response to AUSF
-[2023-08-10 13:29:12.911] [udm_ueau] [info] AuthInfoResult {"authType":"5G_AKA","authenticationVector":{"autn":"2ea49cd2a97b8000231fdc7dd0b1947f","avType":"5G_HE_AKA","kausf":"0c00f455c629848cd9af842088f6dd5728ea6a5c868ce93eccedd015f3d4ba2c","rand":"caf99076db4c87b5ee5746c3f8c69b35","xresStar":"caaf915c0eb346b697d59185e48dcd5c"}}
-[2023-08-10 13:29:12.911] [udm_ueau] [info] Send response to AUSF
-[2023-08-10 13:29:12.911] [udm_ueau] [info] Update sqn in Database
-[2023-08-10 13:29:12.928] [udm_ueau] [info] Handle Authentication Confirmation
-[2023-08-10 13:29:12.928] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
-[2023-08-10 13:29:12.929] [udm_app] [info] Send HTTP message with body 
+[2023-08-11 15:12:20.413] [udm_ueau] [info] Send 200 Ok response to AUSF
+[2023-08-11 15:12:20.413] [udm_ueau] [info] AuthInfoResult {"authType":"5G_AKA","authenticationVector":{"autn":"ffc4a791d7548000ec967ba07c738131","avType":"5G_HE_AKA","kausf":"9a6b7612383609241ebdec0010df9261a10f15bde9043af1f8d135c8f62c4892","rand":"cb8d5c20dd5003898e15328103d55d0a","xresStar":"331d44f46312b7fc627cdf5829970574"}}
+[2023-08-11 15:12:20.413] [udm_ueau] [info] Send response to AUSF
+[2023-08-11 15:12:20.414] [udm_ueau] [info] Update sqn in Database
+[2023-08-11 15:12:20.425] [udm_ueau] [info] Handle Authentication Confirmation
+[2023-08-11 15:12:20.425] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription
+[2023-08-11 15:12:20.425] [udm_app] [info] Send HTTP message with body 
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c031e30)
+* Using Stream ID: 1 (easy handle 0x7f8140032110)
 > GET /nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
 
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 200 
-< date: Thu, 10 Aug 2023 11:29:12 GMT
+< date: Fri, 11 Aug 2023 13:12:20 GMT
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:12.936] [udm_app] [info] Got response with httpcode (200)
-[2023-08-10 13:29:12.936] [udm_ueau] [debug] PUT Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-status
-[2023-08-10 13:29:12.936] [udm_ueau] [debug] PATCH Request body = {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-10T11:29:12Z"}
-[2023-08-10 13:29:12.936] [udm_app] [info] Send HTTP message with body {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-10T11:29:12Z"}
+[2023-08-11 15:12:20.431] [udm_app] [info] Got response with httpcode (200)
+[2023-08-11 15:12:20.431] [udm_ueau] [debug] PUT Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-status
+[2023-08-11 15:12:20.431] [udm_ueau] [debug] PATCH Request body = {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-11T13:12:20Z"}
+[2023-08-11 15:12:20.431] [udm_app] [info] Send HTTP message with body {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-11T13:12:20Z"}
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c031e30)
+* Using Stream ID: 1 (easy handle 0x7f8140032110)
 > PUT /nudr-dr/v1/subscription-data/208950000000032/authentication-data/authentication-status HTTP/2
 Host: oai-udr:8080
 accept: */*
@@ -218,23 +290,23 @@ content-length: 204
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:12 GMT
+< date: Fri, 11 Aug 2023 13:12:20 GMT
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:12.965] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:12.966] [udm_ueau] [debug] authEventId=fb06480870fc05d916e8484de3efd2288a68def0486e818c34aaa7b6f8a0f0b5
-[2023-08-10 13:29:12.966] [udm_ueau] [info] Send 201 Created response to AUSF
-[2023-08-10 13:29:12.966] [udm_ueau] [info] Send response to AUSF
-[2023-08-10 13:29:17.250] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:17.250] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:12:20.454] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:20.455] [udm_ueau] [debug] authEventId=fb06480870fc05d916e8484de3efd2288a68def0486e818c34aaa7b6f8a0f0b5
+[2023-08-11 15:12:20.455] [udm_ueau] [info] Send 201 Created response to AUSF
+[2023-08-11 15:12:20.455] [udm_ueau] [info] Send response to AUSF
+[2023-08-11 15:12:22.315] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:22.315] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38017350)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -243,66 +315,66 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:17 GMT
+< date: Fri, 11 Aug 2023 13:12:22 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:17.257] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:23.022] [udm_ueau] [info] Handle generate_auth_data()
-[2023-08-10 13:29:23.023] [udm_ueau] [info] Handle Generate Auth Data Request
-[2023-08-10 13:29:23.023] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
-[2023-08-10 13:29:23.023] [udm_app] [info] Send HTTP message with body 
+[2023-08-11 15:12:22.318] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:31.218] [udm_ueau] [info] Handle generate_auth_data()
+[2023-08-11 15:12:31.218] [udm_ueau] [info] Handle Generate Auth Data Request
+[2023-08-11 15:12:31.218] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
+[2023-08-11 15:12:31.218] [udm_app] [info] Send HTTP message with body 
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c003110)
+* Using Stream ID: 1 (easy handle 0x7f8140032110)
 > GET /nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
 
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 200 
-< date: Thu, 10 Aug 2023 11:29:23 GMT
+< date: Fri, 11 Aug 2023 13:12:31 GMT
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:23.033] [udm_app] [info] Got response with httpcode (200)
-[2023-08-10 13:29:23.033] [udm_ueau] [info] Result For F1-Alg Key
+[2023-08-11 15:12:31.227] [udm_app] [info] Got response with httpcode (200)
+[2023-08-11 15:12:31.227] [udm_ueau] [info] Result For F1-Alg Key
 c a 34 60 1d 4f 7 67 73 3 65 2c 4 62 53 5b 
-[2023-08-10 13:29:23.033] [udm_ueau] [info] Result For F1-Alg OPC
+[2023-08-11 15:12:31.227] [udm_ueau] [info] Result For F1-Alg OPC
 63 bf a5 e e6 52 33 65 ff 14 c1 f4 5f 88 73 7d 
-[2023-08-10 13:29:23.033] [udm_ueau] [info] Result For F1-Alg AMF
+[2023-08-11 15:12:31.227] [udm_ueau] [info] Result For F1-Alg AMF
 80 0 
-[2023-08-10 13:29:23.033] [udm_ueau] [info] Result For F1-Alg SQN: 
+[2023-08-11 15:12:31.227] [udm_ueau] [info] Result For F1-Alg SQN: 
 0 0 0 0 0 20 
-[2023-08-10 13:29:23.033] [udm_ueau] [info] Current SQN 000000000040
-24 57 13 28 2c 6d 90 f9 1 3e f1 b6 48 83 35 ce 
-a1 ac 7a be 23 97 5d ba 8b 53 d8 6f a1 68 e1 e7 
-24 57 13 28 2c 6d 90 f9 1 3e f1 b6 48 83 35 ce 
-3d 7 1e 44 9a d 9d a2 17 f8 bc 95 18 f2 21 fe 
-8b 48 ae a5 79 b4 de de 6f 93 17 88 35 6f 79 7d 
-68 f1 ed d9 1 df 75 c3 42 e 4f 8 83 20 c9 9a 
-[2023-08-10 13:29:23.039] [udm_ueau] [info] XRES*(new)
-b7 46 ac 26 1f f2 ae a6 ed f3 d1 f3 96 7c e6 fe 2 23 12 88 1a db 27 2d bf a a4 70 c3 34 d0 8e 
-[2023-08-10 13:29:23.039] [udm_ueau] [debug] derive_kausf ...
-[2023-08-10 13:29:23.039] [udm_ueau] [info] derive_kausf key
-8a d6 5d 94 9c 54 b9 ad 2b d7 af 93 45 61 fa c f4 8a 19 9 4e 90 d3 8b 2a 8b 67 2d b7 f0 42 91 
-[2023-08-10 13:29:23.039] [udm_ueau] [info] derive_kausf kausf
-e8 95 47 86 10 81 cf 40 6d 9f b3 d9 bf 5a e3 d3 61 5d 14 39 4f be b4 3d 11 95 88 da e1 9c b2 73 
-[2023-08-10 13:29:23.039] [udm_ueau] [info] New SQN (for next round) = 000000000060
-[2023-08-10 13:29:23.039] [udm_ueau] [debug] PATCH Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
-[2023-08-10 13:29:23.039] [udm_ueau] [info] Update UDR with PATCH message, body:  [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
-[2023-08-10 13:29:23.039] [udm_app] [info] Send HTTP message with body [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
+[2023-08-11 15:12:31.227] [udm_ueau] [info] Current SQN 000000000040
+f1 4d 26 19 98 16 2f ea a2 a4 ca eb e7 3d 5 fa 
+c2 c6 13 b6 92 6a c1 84 9b ac 27 a 34 d9 42 34 
+f1 4d 26 19 98 16 2f ea a2 a4 ca eb e7 3d 5 fa 
+5e 6d 77 4c 2b f0 1 9c 7 7 43 f0 8d 43 82 2d 
+3a b5 32 9b 69 4b 21 bb fa 22 b4 5b 56 5 10 75 
+78 e 12 bc 94 6e d6 10 21 64 26 0 32 dd 55 a4 
+[2023-08-11 15:12:31.231] [udm_ueau] [info] XRES*(new)
+da 64 d5 5a 87 28 fe 84 c0 62 e b6 bb 83 a2 80 7 8e e5 c8 5e 20 43 4e 9e 46 a2 31 a8 11 1d ed 
+[2023-08-11 15:12:31.231] [udm_ueau] [debug] derive_kausf ...
+[2023-08-11 15:12:31.231] [udm_ueau] [info] derive_kausf key
+7c f3 a1 85 63 c1 79 20 1a b cd 4f a0 45 21 70 c7 c d6 19 6 4b 7d 10 3d 1c 8c b d9 ff e8 86 
+[2023-08-11 15:12:31.231] [udm_ueau] [info] derive_kausf kausf
+c5 f3 2a aa f9 80 e2 3d 89 a3 43 d3 4d d2 94 eb 73 85 f9 c3 89 83 96 56 97 86 5d f3 ce f2 d2 53 
+[2023-08-11 15:12:31.231] [udm_ueau] [info] New SQN (for next round) = 000000000060
+[2023-08-11 15:12:31.231] [udm_ueau] [debug] PATCH Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
+[2023-08-11 15:12:31.231] [udm_ueau] [info] Update UDR with PATCH message, body:  [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
+[2023-08-11 15:12:31.231] [udm_app] [info] Send HTTP message with body [{"from":"","op":"replace","path":"","value":"{\"lastIndexes\":{\"ausf\":0},\"sqn\":\"000000000060\",\"sqnScheme\":\"NON_TIME_BASED\"}"}]
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c004900)
+* Using Stream ID: 1 (easy handle 0x7f814001a3d0)
 > PATCH /nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
@@ -310,46 +382,46 @@ content-type: application/json
 content-length: 137
 
 * We are completely uploaded and fine
-[2023-08-10 13:29:23.064] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:23.064] [udm_ueau] [info] Send 200 Ok response to AUSF
-[2023-08-10 13:29:23.064] [udm_ueau] [info] AuthInfoResult {"authType":"5G_AKA","authenticationVector":{"autn":"f32bb4ec1051800025be903d3b43fe8c","avType":"5G_HE_AKA","kausf":"e89547861081cf406d9fb3d9bf5ae3d3615d14394fbeb43d119588dae19cb273","rand":"4be28246d770a4fb8d29556e136915e8","xresStar":"022312881adb272dbf0aa470c334d08e"}}
-[2023-08-10 13:29:23.064] [udm_ueau] [info] Send response to AUSF
-[2023-08-10 13:29:23.064] [udm_ueau] [info] Update sqn in Database
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:23 GMT
+< date: Fri, 11 Aug 2023 13:12:31 GMT
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:23.099] [udm_ueau] [info] Handle Authentication Confirmation
-[2023-08-10 13:29:23.099] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
-[2023-08-10 13:29:23.099] [udm_app] [info] Send HTTP message with body 
+[2023-08-11 15:12:31.251] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:31.251] [udm_ueau] [info] Send 200 Ok response to AUSF
+[2023-08-11 15:12:31.251] [udm_ueau] [info] AuthInfoResult {"authType":"5G_AKA","authenticationVector":{"autn":"0cb0755e67428000809aaf97fd85f9e5","avType":"5G_HE_AKA","kausf":"c5f32aaaf980e23d89a343d34dd294eb7385f9c38983965697865df3cef2d253","rand":"9ef8b777630b1be82eb36e33bcd725dc","xresStar":"078ee5c85e20434e9e46a231a8111ded"}}
+[2023-08-11 15:12:31.252] [udm_ueau] [info] Send response to AUSF
+[2023-08-11 15:12:31.252] [udm_ueau] [info] Update sqn in Database
+[2023-08-11 15:12:31.275] [udm_ueau] [info] Handle Authentication Confirmation
+[2023-08-11 15:12:31.275] [udm_ueau] [debug] GET Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription
+[2023-08-11 15:12:31.275] [udm_app] [info] Send HTTP message with body 
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-[2023-08-10 13:29:23.112] [udm_app] [info] Got response with httpcode (200)
-[2023-08-10 13:29:23.112] [udm_ueau] [debug] PUT Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-status
-[2023-08-10 13:29:23.112] [udm_ueau] [debug] PATCH Request body = {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-10T11:29:23Z"}
-[2023-08-10 13:29:23.112] [udm_app] [info] Send HTTP message with body {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-10T11:29:23Z"}
-* Using Stream ID: 1 (easy handle 0x7f9d3c030e20)
+* Using Stream ID: 1 (easy handle 0x7f814001a3d0)
 > GET /nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-subscription HTTP/2
 Host: oai-udr:8080
 accept: */*
 
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 200 
-< date: Thu, 10 Aug 2023 11:29:23 GMT
+< date: Fri, 11 Aug 2023 13:12:31 GMT
 < 
 * Connection #0 to host oai-udr left intact
+[2023-08-11 15:12:31.281] [udm_app] [info] Got response with httpcode (200)
+[2023-08-11 15:12:31.281] [udm_ueau] [debug] PUT Request:http://oai-udr:8080/nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-status
+[2023-08-11 15:12:31.281] [udm_ueau] [debug] PATCH Request body = {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-11T13:12:31Z"}
+[2023-08-11 15:12:31.281] [udm_app] [info] Send HTTP message with body {"authRemovalInd":false,"authType":"5G_AKA","nfInstanceId":"400346f4-087e-40b1-a4cd-00566953999d","servingNetworkName":"5G:mnc095.mcc208.3gppnetwork.org","success":true,"timeStamp":"2023-08-11T13:12:31Z"}
 *   Trying 192.168.70.136:8080...
 * TCP_NODELAY set
 * Connected to oai-udr (192.168.70.136) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3c030e20)
+* Using Stream ID: 1 (easy handle 0x7f814001a350)
 > PUT /nudr-dr/v1/subscription-data/208950000000033/authentication-data/authentication-status HTTP/2
 Host: oai-udr:8080
 accept: */*
@@ -359,23 +431,23 @@ content-length: 204
 * We are completely uploaded and fine
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:23 GMT
+< date: Fri, 11 Aug 2023 13:12:31 GMT
+[2023-08-11 15:12:31.294] [udm_app] [info] Got response with httpcode (204)
 < 
 * Connection #0 to host oai-udr left intact
-[2023-08-10 13:29:23.133] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:23.134] [udm_ueau] [debug] authEventId=7bd8255fab3df6378259e52881a882f396a312bea8c37b1a64f53562defe9adb
-[2023-08-10 13:29:23.134] [udm_ueau] [info] Send 201 Created response to AUSF
-[2023-08-10 13:29:23.134] [udm_ueau] [info] Send response to AUSF
-[2023-08-10 13:29:28.041] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:28.041] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:12:31.294] [udm_ueau] [debug] authEventId=7bd8255fab3df6378259e52881a882f396a312bea8c37b1a64f53562defe9adb
+[2023-08-11 15:12:31.294] [udm_ueau] [info] Send 201 Created response to AUSF
+[2023-08-11 15:12:31.294] [udm_ueau] [info] Send response to AUSF
+[2023-08-11 15:12:32.526] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:32.526] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001410)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -384,22 +456,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:28 GMT
+< date: Fri, 11 Aug 2023 13:12:32 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:28.047] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:38.420] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:38.420] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:12:32.529] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:42.615] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:42.615] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001410)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -408,22 +480,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:38 GMT
+< date: Fri, 11 Aug 2023 13:12:42 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:38.426] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:29:48.859] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:48.859] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:12:42.617] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:12:52.646] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:12:52.646] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -432,22 +504,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:48 GMT
+< date: Fri, 11 Aug 2023 13:12:52 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
-[2023-08-10 13:29:48.865] [udm_app] [info] Got response with httpcode (204)
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:59.100] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:29:59.100] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:12:52.647] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:13:02.702] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:02.702] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -456,22 +528,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:29:59 GMT
+< date: Fri, 11 Aug 2023 13:13:02 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
+[2023-08-11 15:13:02.703] [udm_app] [info] Got response with httpcode (204)
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:29:59.106] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:30:09.389] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:30:09.389] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:12.753] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:12.753] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -480,22 +552,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:30:09 GMT
+< date: Fri, 11 Aug 2023 13:13:12 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-[2023-08-10 13:30:09.394] [udm_app] [info] Got response with httpcode (204)
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
+[2023-08-11 15:13:12.754] [udm_app] [info] Got response with httpcode (204)
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:30:19.752] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:30:19.752] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:22.828] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:22.828] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -504,22 +576,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:30:19 GMT
+< date: Fri, 11 Aug 2023 13:13:22 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:30:19.759] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:30:30.116] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:30:30.116] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:22.829] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:13:32.855] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:32.855] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -528,22 +600,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:30:30 GMT
+< date: Fri, 11 Aug 2023 13:13:32 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:30:30.122] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:30:40.520] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:30:40.520] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:32.856] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:13:42.917] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:42.917] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd90)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -552,22 +624,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:30:40 GMT
+< date: Fri, 11 Aug 2023 13:13:42 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
-[2023-08-10 13:30:40.526] [udm_app] [info] Got response with httpcode (204)
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:30:51.025] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:30:51.026] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:42.918] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:13:52.997] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:13:52.997] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd90)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -576,22 +648,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:30:51 GMT
+< date: Fri, 11 Aug 2023 13:13:52 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:30:51.032] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:31:01.345] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:01.345] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:13:53.000] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:03.058] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:03.058] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd10)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -600,22 +672,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:01 GMT
+< date: Fri, 11 Aug 2023 13:14:03 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:31:01.351] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:31:11.796] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:11.796] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:14:03.059] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:13.101] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:13.101] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd10)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -624,22 +696,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:11 GMT
+< date: Fri, 11 Aug 2023 13:14:13 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:31:11.801] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:31:22.352] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:22.352] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:14:13.102] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:23.175] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:23.175] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd10)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -648,46 +720,22 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:22 GMT
+< date: Fri, 11 Aug 2023 13:14:23 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:31:22.357] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:31:32.648] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:32.649] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:14:23.176] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:33.230] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:33.230] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-[2023-08-10 13:31:32.685] [udm_app] [info] Got response with httpcode (204)
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:32 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:31:42.970] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:42.970] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -696,22 +744,46 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:42 GMT
+< date: Fri, 11 Aug 2023 13:14:33 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:31:42.975] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:31:53.468] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:31:53.468] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+[2023-08-11 15:14:33.231] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:43.279] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:43.279] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
 *   Trying 192.168.70.130:8080...
 * TCP_NODELAY set
 * Connected to oai-nrf (192.168.70.130) port 8080 (#0)
 * Using HTTP2, server supports multi-use
 * Connection state changed (HTTP/2 confirmed)
 * Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
+* Using Stream ID: 1 (easy handle 0x7f814801cd10)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
+Host: oai-nrf:8080
+accept: */*
+content-type: application/json
+content-length: 58
+
+* We are completely uploaded and fine
+* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
+< HTTP/2 204 
+< date: Fri, 11 Aug 2023 13:14:43 GMT
+< content-type: application/json
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
+< 
+* Connection #0 to host oai-nrf left intact
+[2023-08-11 15:14:43.282] [udm_app] [info] Got response with httpcode (204)
+[2023-08-11 15:14:53.358] [udm_app] [info] Sending NF heartbeat request
+[2023-08-11 15:14:53.358] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
+*   Trying 192.168.70.130:8080...
+* TCP_NODELAY set
+* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
+* Using HTTP2, server supports multi-use
+* Connection state changed (HTTP/2 confirmed)
+* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
+* Using Stream ID: 1 (easy handle 0x7f8148001370)
+> PATCH /nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c HTTP/2
 Host: oai-nrf:8080
 accept: */*
 content-type: application/json
@@ -720,136 +792,16 @@ content-length: 58
 * Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
 * We are completely uploaded and fine
 < HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:31:53 GMT
+< date: Fri, 11 Aug 2023 13:14:53 GMT
 < content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-[2023-08-10 13:31:53.475] [udm_app] [info] Got response with httpcode (204)
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:03.858] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:32:03.858] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:32:03 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
+[2023-08-11 15:14:53.359] [udm_app] [info] Got response with httpcode (204)
+< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/7888f71d-c525-4711-b7f6-3fcca74d054c
 < 
 * Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:03.905] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:32:14.341] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:32:14.341] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:32:14 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:14.347] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:32:24.788] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:32:24.788] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:32:24 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:24.793] [udm_app] [info] Got response with httpcode (204)
-[2023-08-10 13:32:35.110] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:32:35.110] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d38001370)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:32:35 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-[2023-08-10 13:32:35.115] [udm_app] [info] Got response with httpcode (204)
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:45.769] [udm_app] [info] Sending NF heartbeat request
-[2023-08-10 13:32:45.769] [udm_app] [info] Send HTTP message with body [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}]
-*   Trying 192.168.70.130:8080...
-* TCP_NODELAY set
-* Connected to oai-nrf (192.168.70.130) port 8080 (#0)
-* Using HTTP2, server supports multi-use
-* Connection state changed (HTTP/2 confirmed)
-* Copying HTTP/2 data in stream buffer to connection buffer after upgrade: len=0
-* Using Stream ID: 1 (easy handle 0x7f9d3801cac0)
-> PATCH /nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1 HTTP/2
-Host: oai-nrf:8080
-accept: */*
-content-type: application/json
-content-length: 58
-
-* Connection state changed (MAX_CONCURRENT_STREAMS == 100)!
-* We are completely uploaded and fine
-< HTTP/2 204 
-< date: Thu, 10 Aug 2023 11:32:45 GMT
-< content-type: application/json
-< location: 192.168.70.130/nnrf-nfm/v1/nf-instances/fee6a3c4-0a0a-4e90-ad47-e8107706bea1
-< 
-* Connection #0 to host oai-nrf left intact
-[2023-08-10 13:32:45.775] [udm_app] [info] Got response with httpcode (204)
 Caught signal 15
-[2023-08-10 13:32:48.276] [system] [start] exiting
+[2023-08-11 15:15:01.167] [system] [start] exiting
 Freeing Allocated memory...
 UDM API Server memory done
-[2023-08-10 13:32:48.276] [udm_app] [debug] Delete UDM APP instance...
+[2023-08-11 15:15:01.167] [udm_app] [debug] Delete UDM APP instance...
 UDM APP memory done
 Freeing allocated memory done

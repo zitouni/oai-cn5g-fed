@@ -13,28 +13,19 @@ clib_socket_init: connect (fd 3, '/run/vpp/cli.sock'): No such file or directory
 waiting for vpp-upf service
 
 clib_socket_init: connect (fd 3, '/run/vpp/cli.sock'): No such file or directory0: linux_epoll_file_update:120: epoll_ctl: Operation not permitted (errno 1)
-waiting for vpp-upf service
 0: upf_nwi_add_del_command_fn:383: table 1 not (yet) defined for IPv6
 0: upf_nwi_add_del_command_fn:383: table 2 not (yet) defined for IPv6
+waiting for vpp-upf service
 16
 vpp-upf service is running now
-UUID is exported: 8495f460-89ba-4857-87f8-04591658097a
-NRF_URL is 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/8495f460-89ba-4857-87f8-04591658097a
+UUID is exported: 079e4e90-9617-4cdb-ae10-b49f4802392a
+NRF_URL is 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/079e4e90-9617-4cdb-ae10-b49f4802392a
 Sending NF Registration Request (HTTP Version 2)
-curl command options are: --http2-prior-knowledge --write-out %{http_code} --silent --output /dev/null -X PUT 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/8495f460-89ba-4857-87f8-04591658097a -d @/openair-upf/etc/upf_profile.json -H "Content-Type: application/json" -H "Expect:"
+curl command options are: --http2-prior-knowledge --write-out %{http_code} --silent --output /dev/null -X PUT 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/079e4e90-9617-4cdb-ae10-b49f4802392a -d @/openair-upf/etc/upf_profile.json -H "Content-Type: application/json" -H "Expect:"
 Received NF registration response (HTTP_STATUS_CODE_200/201)
 
 Sending NF heartbeat request
-curl command options are: --http2-prior-knowledge --write-out %{http_code} --silent --output /dev/null -X PATCH 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/8495f460-89ba-4857-87f8-04591658097a -d [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}] -H "Content-Type: application/json" -H "Expect:"
-Received NF heartbeat response (HTTP_STATUS_CODE_204)
-
-Sending NF heartbeat request
-Received NF heartbeat response (HTTP_STATUS_CODE_204)
-
-Sending NF heartbeat request
-Received NF heartbeat response (HTTP_STATUS_CODE_204)
-
-Sending NF heartbeat request
+curl command options are: --http2-prior-knowledge --write-out %{http_code} --silent --output /dev/null -X PATCH 192.168.70.130:8080/nnrf-nfm/v1/nf-instances/079e4e90-9617-4cdb-ae10-b49f4802392a -d [{"op":"replace","path":"/nfStatus","value":"REGISTERED"}] -H "Content-Type: application/json" -H "Expect:"
 Received NF heartbeat response (HTTP_STATUS_CODE_204)
 
 Sending NF heartbeat request

@@ -163,12 +163,6 @@ ac10687810e0   mysql:5.7             "docker-entrypoint.s…"   34 seconds ago  
 
 Please wait until all NFs are healthy. 
 
-When you are running in debug mode, you should also check the docker logs of SMF and verify that the UPF graph has been built successfully:
-
-``` console
-docker-compose-host $: docker logs oai-smf | grep -A 5 graph
-```
-
 ## 4. Simulate with gnbsim
 
 When the CN is deployed successfully, we can simulate a gNB and UE using `gnbsim`. 
@@ -307,8 +301,8 @@ we use 1.1.1.1 as it serves HTTP, so we can verify if the Steering works properl
  * 192.168.74.135 is oai-ext-dn interface on N6 secondary subnet
 
 ``` shell
-docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test.log
-docker-compose-host $: docker exec gnbsim-vpp3 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue2-test.log
+docker-compose-host $: docker exec gnbsim-vpp2 traceroute -4 -T -s 12.1.1.2 1.1.1.1 > /tmp/oai/steering-scenario/ue1-test.log 2>&1 
+docker-compose-host $: docker exec gnbsim-vpp3 traceroute -4 -T -s 12.1.1.3 1.1.1.1 > /tmp/oai/steering-scenario/ue2-test.log 2>&1 
 docker-compose-host $: grep 192.168.73.135 /tmp/oai/steering-scenario/ue1-test.log
 docker-compose-host $: grep 192.168.74.135 /tmp/oai/steering-scenario/ue2-test.log
 ```
@@ -316,7 +310,7 @@ docker-compose-host $: grep 192.168.74.135 /tmp/oai/steering-scenario/ue2-test.l
 
 
 ```shell
-docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
+docker-compose-host $: docker exec vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
 ```
 
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `1.1.1.1` are steered to destination over EXT-DN-Internet with corresponding N6 interface .
@@ -364,7 +358,7 @@ Now we are able to collect the logs.
 docker-compose-host $: docker logs oai-amf > /tmp/oai/steering-scenario/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/steering-scenario/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/steering-scenario/nrf.log 2>&1
-docker-compose-host $: docker logs vpp-upf > /tmp/oai/steering-scenario/vpp-upf-redirect.log 2>&1
+docker-compose-host $: docker logs vpp-upf > /tmp/oai/steering-scenario/vpp-upf.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/steering-scenario/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/steering-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/steering-scenario/ausf.log 2>&1
