@@ -252,7 +252,7 @@ we use 1.1.1.1 as it serves HTTP, so we can verify if the redirect works properl
  * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
 
 ``` shell
-docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com > tee /tmp/oai/redirect-scenario/ue-test.log 2>&1
+docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com > /tmp/oai/redirect-scenario/ue-test.log 2>&1
 ```
 -->
 
@@ -285,7 +285,18 @@ column.
 
 The results of this tutorial are located in [results/redirect](results/redirect). 
 
-First, we open the [user_plane_redirect.pcapng](results/redirect/user_plane_redirect.pcapng) file and sort based on time. 
+We can verify the PDU session details as per [UPF session logs](docs/results/redirect/vpp-upf-redirect-session.log). We should note that the forwarding rule is set with redirect information, describing all HTTP traffic will be redirected to destination URL `facebook.com`
+
+```yaml
+FAR: 1
+  Apply Action: 00000002 == [FORWARD]
+  Forward:
+    Network Instance: internet.oai.org
+    Destination Interface: 1
+    Redirect Information: HTTP to facebook.com
+```
+
+In the [UE traffic trace](results/redirect/ue-test.log) at gnbsim-vpp, we can see that the HTTP GET request generated using curl for destination `google.com` is redirected to new HTTP address `facebook.com`. This can be also confirmed in the pcap trace [user_plane_redirect.pcapng](results/redirect/user_plane_redirect.pcapng), where request packet #4 is destinated for URI `google.com` & the response packet #6 is with HTTP code (302-redirection) from destination `facebook.com`
 
 ## 7 Undeploy Network Functions
 
