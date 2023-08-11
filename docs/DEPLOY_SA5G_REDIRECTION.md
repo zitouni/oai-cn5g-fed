@@ -7,7 +7,7 @@
       </a>
     </td>
     <td style="border-collapse: collapse; border: none; vertical-align: center;">
-      <b><font size = "5">OpenAirInterface 5G Core Traffic Steering/Redirection Network Deployment and Testing With Gnbsim</font></b>
+      <b><font size = "5">OpenAirInterface 5G Core Traffic redirect/Redirection Network Deployment and Testing With Gnbsim</font></b>
     </td>
   </tr>
 </table>
@@ -245,6 +245,23 @@ docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 goog
    </body>
 </html>
 ```
+
+<!--
+For CI purposes please ignore these lines
+we use 1.1.1.1 as it serves HTTP, so we can verify if the redirect works properly in the generated traces 
+ * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
+
+``` shell
+docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com 2>&1 | tee /tmp/oai/redirect-scenario/ue-test.log
+```
+-->
+
+We capture here UPF session details & traffic trace
+
+```shell
+docker-compose-host $: docker exec vpp-upf bin/vppctl show upf session > /tmp/oai/redirect-scenario/vpp-upf-redirect-session.log 2>&1
+```
+
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `google.com` are redirected to destination `facebook.com` over EXT-DN-Internet.
 
 
@@ -263,12 +280,6 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_redi
 
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
-
-We capture here UPF session details
-
-```shell
-docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-steering-session.log 2>&1
-```
 
 ### Rdirection Scenario
 
@@ -315,4 +326,4 @@ docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-redirectio
 
 ## 8 Conclusion
 
-We shown in this tutorial how the traffic redirection can be configured in the OAI with the help of policy configuration at PCF. We have used VPP-UPF for validation of this feature. We have verified the URL based redirection in this tutorial. Other types of redirection, e.g. server address type `ipv4/ipv6/SIP URI` are not currently supported in VPP-UPF.
+We shown in this tutorial how the traffic redirection can be configured in the OAI CN with the help of policy configuration at PCF. We have used VPP-UPF for validation of this feature. We have verified the URL based redirection in this tutorial. Other types of redirection, e.g. server address type `ipv4/ipv6/SIP URI` are not currently supported in VPP-UPF.

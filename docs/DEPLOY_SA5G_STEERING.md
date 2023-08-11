@@ -80,7 +80,7 @@ for details.
 
 
 ### Docker Networks
-In total, 6 different docker networks are used:
+In total, 3 different docker networks are used:
 * public_net (demo-oai) for control plane 
 * public_net_access (cn5g-access) for the N3 interface between gnbsim and gNB
 * public_net_core (cn5g-core) for the N6 interface between UPF and DN
@@ -181,6 +181,12 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.ya
 Creating gnbsim-vpp2 ...
 Creating gnbsim-vpp2 ... done
 ```
+<!--
+For CI purposes please ignore this line
+``` shell
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp2 --timeout 10
+```
+-->
 
 * Instantiate second Gnbsim instance (IMSI - 208950000000033)
 
@@ -189,25 +195,10 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-vpp-additional.ya
 Creating gnbsim-vpp3 ...
 Creating gnbsim-vpp3 ... done
 ```
-
-<!--
-For CI purposes please ignore these lines
-we use 1.1.1.1 as it serves HTTP, so we can verify if the Steering works properly in the generated traces 
- * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
- * 192.168.74.135 is oai-ext-dn interface on N6 secondary subnet
-
-``` shell
-docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test0.log
-docker-compose-host $: docker exec gnbsim-vpp3 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test1.log
-docker-compose-host $: grep 192.168.73.135 /tmp/oai/steering-scenario/ue1-test0.log
-docker-compose-host $: grep 192.168.74.135 /tmp/oai/steering-scenario/ue1-test1.log
-```
--->
-
 <!--
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp --timeout 30
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp --timeout 10
 ```
 -->
 
@@ -222,8 +213,7 @@ docker-compose-host $: docker logs gnbsim-vpp3 2>&1 | grep "UE address:"
 [gnbsim]2023/01/13 17:07:05.134094 example.go:332: UE address: 12.1.1.3
 ```
 
-It can take some time until the PDU session establishment is complete, so you may have to repeat this command until
-you see the IP address.
+It can take some time until the PDU session establishment is complete, so you may have to repeat this command until you see the IP address.
 
 
 ## 5. Traffic Test for Steering
@@ -310,6 +300,25 @@ traceroute to 1.1.1.1 (1.1.1.1), 30 hops max, 60 byte packets
 13  one.one.one.one (1.1.1.1)  24.019 ms  24.469 ms  24.508 ms
 ```
 
+<!--
+For CI purposes please ignore these lines
+we use 1.1.1.1 as it serves HTTP, so we can verify if the Steering works properly in the generated traces 
+ * 192.168.73.135 is oai-ext-dn interface on N6 primary subnet
+ * 192.168.74.135 is oai-ext-dn interface on N6 secondary subnet
+
+``` shell
+docker-compose-host $: docker exec gnbsim-vpp2 /bin/bash -c 'traceroute -4 -T -s 12.1.1.2 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue1-test.log
+docker-compose-host $: docker exec gnbsim-vpp3 /bin/bash -c 'traceroute -4 -T -s 12.1.1.3 1.1.1.1' 2>&1 | tee /tmp/oai/steering-scenario/ue2-test.log
+docker-compose-host $: grep 192.168.73.135 /tmp/oai/steering-scenario/ue1-test.log
+docker-compose-host $: grep 192.168.74.135 /tmp/oai/steering-scenario/ue2-test.log
+```
+-->
+
+
+```shell
+docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
+```
+
 We will see in the [analysis](#8-trace-analysis) that the IP packets to `1.1.1.1` are steered to destination over EXT-DN-Internet with corresponding N6 interface .
 
 ## 6 Trace Analysis
@@ -326,12 +335,6 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/steering-scenario/user_plane_stee
 ```
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
-
-We capture here UPF session details
-
-```shell
-docker-compose-host $: docker exec -it vpp-upf bin/vppctl show upf session > /tmp/oai/steering-scenario/vpp-upf-redirect-session.log 2>&1
-```
 
 ### Steering Scenario
 
@@ -378,3 +381,5 @@ docker-compose-host $: docker-compose -f docker-compose-basic-vpp-pcf-steering.y
 ```
 
 ## 8 Conclusion
+
+We shown in this tutorial how the traffic steering can be configured in the OAI CN with the help of policy configuration at PCF. We have used VPP-UPF for validation of this feature. We used two N6 interfaces in this tutorial for steering user traffic in uplink direction. We have defined policies at PCF for two users and we have verified that the uplink traffic is steered to corresponding N6 interface based pre-configured policies at PCF.
