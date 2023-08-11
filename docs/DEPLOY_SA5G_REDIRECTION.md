@@ -212,11 +212,11 @@ docker-compose-host $: ../ci-scripts/checkTsharkCapture.py --log_file /tmp/oai/r
 This capture contains all the UP network interfaces.
 
 Please make a note that,
-* As you can see the policy rules (`policies/redirection/pcc_rules.yaml`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `redirection-scenario`.
+* In the policy decisions file (`policies/redirection/policy_decisions/policy_decision.yaml`), we configure UE IMSI with PCC rule to be used. We can verify that the UE with the IMSI `208950000000031` is configured to use the PCC rule `redirection-rule`.
 
-* Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
-You can see that the UE with the IMSI `208950000000031` is configured to use the `redirection-rule` as below, which describes that traffic should be redirected to the server with redirection type as URL.
+* Moreover, the PCC rules (`policies/redirection/pcc_rules/pcc_rules.yaml`) configured for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means that, to allow all kind of UE traffic and redirection the traffic to destination server address as per traffic control rule defined in`policies/redirection/traffic_rules/traffic_rule.yaml`.
 
+* As you can see below, in the traffic contorl rule (`policies/redirection/traffic_rules/traffic_rule.yaml`) we use redirect server address type as `URL` & redirect server addressas `facebook.com`.
 
 ```yaml
 redirection-scenario:
@@ -227,7 +227,7 @@ redirection-scenario:
 ```
 * Note: Currently only URL type of redirection supported 
 
-Now, we generate HTTP traffic to destination as `google.com`.
+Now, we generate HTTP traffic to destination as `google.com`, which will be redirected to destination server `facebook.com`.
 
 ``` console 
 docker-compose-host $: docker exec -it gnbsim-vpp curl --interface 12.1.1.2 google.com

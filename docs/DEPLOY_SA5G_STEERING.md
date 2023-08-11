@@ -7,7 +7,7 @@
       </a>
     </td>
     <td style="border-collapse: collapse; border: none; vertical-align: center;">
-      <b><font size = "5">OpenAirInterface 5G Core Traffic Steering/Redirection Network Deployment and Testing With Gnbsim</font></b>
+      <b><font size = "5">OpenAirInterface 5G Core Traffic Steering/steering Network Deployment and Testing With Gnbsim</font></b>
     </td>
   </tr>
 </table>
@@ -131,7 +131,7 @@ Creating oai-amf             ... done
 Creating oai-smf             ... done
 ```
 
-* Note: Here we use two docker subnets for N6, viz. `oai-public-core-pri` and `oai-public-core-sec`, which terminates to DN over two different ipv4 subnets. Opertaor can have differnt termination endpoints for these multiple N6 interfaces e.g. one could terminate to regular internet DN and another could be local edge server etc.
+* Note: Here we use two docker subnets for N6, that is `oai-public-core-pri` and `oai-public-core-sec`, which terminates to DN over two different ipv4 subnets. Operator can have different termination endpoints for these multiple N6 interfaces, e.g. one could terminate to regular internet DN and another could be local edge server etc.
 
 <!--
 For CI purposes please ignore this line
@@ -250,14 +250,12 @@ This capture contains all the UP network interfaces.
 
 
 Please make a note that,
-* As you can see the policy rules (`policies/steering/pcc_rules.yaml`) set for redirection contains  `flowDescription` as `permit out ip from any to assigned` which is basically means to allow kind of UE traffic and traffic control rule as `steering-scenario`.
+* In the policy decisions file (`policies/steering/policy_decisions/policy_decision.yaml`), we configure UE IMSI with PCC rule to be used. We can verify that the UE with the IMSI `208950000000032` is configured to use the PCC rule `steering-rule-primary`, whereas UE with the IMSI `208950000000033` is configured to use the PCC rule `steering-rule-secondary`
 
-* Which UE uses which PCC rules is configured in the policy decisions file (`policies/policy_decisions/policy_decision.yaml`).
-You can see that the UE with the IMSI `208950000000032` is configured to use the `steering-rule-primary`, whereas UE with the IMSI `208950000000033` is configured to use the `steering-rule-secondary`
+* Moreover, the PCC rules (`policies/steering/pcc_rules/pcc_rules.yaml`) configured for steering contains  `flowDescription` as `permit out ip from any to assigned` which is basically means that, to allow all kind of UE traffic and steer the traffic to one of N6 interface of UPF as per traffic control rule defined in `policies/steering/traffic_rules/traffic_rule.yaml`.
 
-* Now the important thing is traffic contorl rule which will be used here to steer traffic to one of N6 interface. As you can see below, we use DNAI of the interface at UPF to distinguish between steering rule.
+* As you can see below, in the traffic contorl rule (`policies/steering/traffic_rules/traffic_rule.yaml`) we use DNAI of the interface at UPF to steer the traffic to one of the N6 interface.
 
-* A
 
 ```yaml
 steering-scenario-primary:
