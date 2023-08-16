@@ -35,7 +35,7 @@ log_level:
 # If you enable registration, the other NFs will use the NRF discovery mechanism
 register_nf:
   general: yes
-  
+
 http_version: 2
 
 ############## SBI Interfaces
@@ -59,6 +59,23 @@ nfs:
     n4:
       interface_name: eth0
       port: 8805
+  upf:
+    host: oai-upf
+    sbi:
+      port_http1: 80
+      api_version: v1
+      interface_name: eth0
+    n3:
+      interface_name: eth0
+      port: 2152
+    n4:
+      interface_name: eth2
+      port: 8805
+    n6:
+      interface_name: eth1
+    n9:
+      interface_name: eth0
+      port: 2152
   udm:
     host: oai-udm
     sbi:
@@ -96,28 +113,28 @@ database:
 
 ############## NF-specific configuration
 amf:
-  pid_directory: "/var/run"
   amf_name: "OAI-AMF"
   # This really depends on if we want to keep the "mini" version or not
   support_features_options:
-    enable_simple_scenario: no
+    enable_simple_scenario: no # "no" by default with the normal deployment scenarios with AMF/SMF/UPF/AUSF/UDM/UDR/NRF.
+                               # set it to "yes" to use with the minimalist deployment scenario (including only AMF/SMF/UPF) by using the internal AUSF/UDM implemented inside AMF.
+                               # There's no NRF in this scenario, SMF info is taken from "nfs" section.
     enable_nssf: no
     enable_smf_selection: yes
-    use_external_udm: no
   relative_capacity: 30
-  statistics_timer_interval: 20  #in seconds
+  statistics_timer_interval: 20  # in seconds
   emergency_support: false
   served_guami_list:
     - mcc: 208
       mnc: 95
-      amf_region_id: 128
-      amf_set_id: 1
-      amf_pointer: 1
-    - mcc: 460
-      mnc: 11
-      amf_region_id: 10
-      amf_set_id: 1
-      amf_pointer: 1
+      amf_region_id: 01
+      amf_set_id: 001
+      amf_pointer: 01
+    - mcc: 001
+      mnc: 01
+      amf_region_id: 01
+      amf_set_id: 001
+      amf_pointer: 01
   plmn_support_list:
     - mcc: 208
       mnc: 95
@@ -125,9 +142,9 @@ amf:
       nssai:
         - sst: 1
         - sst: 1
-          sd: 1
+          sd: 000001 # in hex
         - sst: 222
-          sd: 123
+          sd: 00007B # in hex
   supported_integrity_algorithms:
     - "NIA0"
     - "NIA1"
@@ -180,6 +197,25 @@ smf:
         5qi: 9
         session_ambr_ul: "50Mbps"
         session_ambr_dl: "100Mbps"
+
+upf:
+  support_features:
+    enable_bpf_datapath: yes    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
+    enable_snat: no             # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: localhost       # Dummy host since simple-switch does not use N6 GW
+  upf_info:
+    - sst: 1
+      sd: 0xFFFFFF
+      dnnList:
+        - dnn: oai
+    - sst: 1
+      sd: 1
+      dnnList:
+        - dnn: oai.ipv4
+    - sst: 222
+      sd: 123
+      dnnList:
+        - dnn: default
 
 ## DNN configuration
 dnns:

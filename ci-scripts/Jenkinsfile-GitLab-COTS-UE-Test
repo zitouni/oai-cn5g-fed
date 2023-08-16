@@ -182,6 +182,8 @@ pipeline {
           sh "oc describe pod &> archives/describe-pods.logs"
           sh "oc get pods -o wide"
           sleep 60
+          sh "oc describe pod &>> archives/describe-pods.logs"
+          sh "oc get pods -o wide"
           coreStatus = checkCoreNetworkDeployment()
           if (coreStatus > 0) {
             error ('Core Deployment went wrong')
@@ -548,14 +550,17 @@ def pushToOpenshiftRegistry (imageName, origTag, destTag) {
 def checkCoreNetworkDeployment() {
   status = 0
   sh 'mkdir -p archives'
-  nrf_url = "oai-nrf-svc-oaicicd-core.apps.oai.cs.eurecom.fr"
+  // Changes for HTTP/2
+  nrf_url = sh returnStdout: true, script: 'oc get svc oai-nrf -o json | jq -r ".status.loadBalancer.ingress[0].ip"'
+  nrf_url = nrf_url.trim()
+  echo "nrf_url = ${nrf_url}"
   // Only AMF, SMF and UPF are registered to NRF
   // AUSF, UDM and UDR in the charts are not-configured to register
-  AMF_namf = sh returnStdout: true, script: "curl -s -X GET http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type='AMF' | jq -r ._links.item[0].href 2>&1 | tee archives/amf-nf-registration.log"
+  AMF_namf = sh returnStdout: true, script: "curl -s --http2-prior-knowledge -X GET 'http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type=AMF' | jq -r ._links.item[0].href 2>&1 | tee archives/amf-nf-registration.log"
   AMF_namf = AMF_namf.trim()
-  SMF_nsmf = sh returnStdout: true, script: "curl -s -X GET http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type='SMF' | jq -r ._links.item[0].href 2>&1 | tee archives/smf-nf-registration.log"
+  SMF_nsmf = sh returnStdout: true, script: "curl -s --http2-prior-knowledge -X GET 'http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type=SMF' | jq -r ._links.item[0].href 2>&1 | tee archives/smf-nf-registration.log"
   SMF_nsmf = SMF_nsmf.trim()
-  UPF_nupf = sh returnStdout: true, script: "curl -s -X GET http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type='UPF' | jq -r ._links.item[0].href 2>&1 | tee archives/upf-nf-registration.log"
+  UPF_nupf = sh returnStdout: true, script: "curl -s --http2-prior-knowledge -X GET 'http://${nrf_url}/nnrf-nfm/v1/nf-instances?nf-type=UPF' | jq -r ._links.item[0].href 2>&1 | tee archives/upf-nf-registration.log"
   UPF_nupf = UPF_nupf.trim()
   if ((AMF_namf.length() > 0) && (SMF_nsmf.length() > 0) && (UPF_nupf.length() > 0)) {
     echo "All NF registered to NRF"
