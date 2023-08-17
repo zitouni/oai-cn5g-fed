@@ -209,8 +209,6 @@ pipeline {
         script {
           echo 'Silencing all NFs to reduce size of logs'
           sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
-          // Mandatory for omec-gnbsim registration
-          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
@@ -306,8 +304,6 @@ pipeline {
         script {
           echo 'Silencing all NFs to reduce size of logs'
           sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
-          // Mandatory for omec-gnbsim registration
-          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
@@ -403,8 +399,6 @@ pipeline {
         script {
           echo 'Silencing all NFs to reduce size of logs'
           sh './ci-scripts/silentCN5G-NF.py --docker-compose-file docker-compose/conf/basic_nrf_config.yaml --all-log-level error'
-          // Mandatory for omec-gnbsim registration
-          sh 'sed -i -e "s@use_external_udm: no@use_external_udm: yes@" docker-compose/conf/basic_nrf_config.yaml'
           updateDockerCompose('docker-compose/docker-compose-basic-nrf.yaml', gnbsimTag)
           dir ('docker-compose') {
             echo 'Adding 16000 Users to database'
