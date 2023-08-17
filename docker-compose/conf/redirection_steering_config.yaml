@@ -109,7 +109,6 @@ amf:
     enable_simple_scenario: no
     enable_nssf: no
     enable_smf_selection: yes
-    use_external_udm: no
   relative_capacity: 30
   statistics_timer_interval: 20  #in seconds
   emergency_support: false

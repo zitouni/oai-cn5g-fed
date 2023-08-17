@@ -281,7 +281,7 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/redirect-scenario/user_plane_redi
 As we capture more than one interface, the pcap files are likely out-of-order. To solve this, sort based on the `Time`
 column. 
 
-### Rdirection Scenario
+### Redirection Scenario
 
 The results of this tutorial are located in [results/redirect](results/redirect). 
 
