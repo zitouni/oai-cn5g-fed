@@ -27,7 +27,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-udr/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -43,7 +43,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-udm/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -58,7 +58,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-ausf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -73,7 +73,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-nrf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         networks:
@@ -87,7 +87,7 @@ services:
             - 8080/tcp
             - 38412/sctp
         volumes:
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-amf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
@@ -124,7 +124,7 @@ services:
             - 8080/tcp
         volumes:
             - ./policies/redirection:/openair-pcf/policies
-            - ./conf/ulcl_config.yaml:/openair-smf/etc/config.yaml
+            - ./conf/ulcl_config.yaml:/openair-pcf/etc/config.yaml
         environment:
             - TZ=Europe/Paris
         depends_on:
