@@ -65,7 +65,7 @@ nfs:
 snssais:
   - &slice1
     sst: 128
-    sd: 128
+    sd: 000080 # in hex
 
 smf:
   support_features:
