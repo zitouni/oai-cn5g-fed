@@ -39,6 +39,8 @@ logging.basicConfig(
 MINI_NO_NRF = 'docker-compose-mini-nonrf.yaml'
 BASIC_W_NRF = 'docker-compose-basic-nrf.yaml'
 BASIC_VPP_W_NRF = 'docker-compose-basic-vpp-nrf.yaml'
+BASIC_VPP_W_NRF_REDIRECT = 'docker-compose-basic-vpp-pcf-redirection.yaml'
+BASIC_VPP_W_NRF_STEERING = 'docker-compose-basic-vpp-pcf-steering.yaml'
 BASIC_EBPF_W_NRF = 'docker-compose-basic-nrf-ebpf.yaml'
 
 COMPOSE_CONF_MAP = {
@@ -46,7 +48,9 @@ COMPOSE_CONF_MAP = {
     'docker-compose-mini-nonrf.yaml' : 'conf/mini_nonrf_config.yaml',
     'docker-compose-basic-nrf.yaml' : 'conf/basic_nrf_config.yaml',
     'docker-compose-basic-vpp-nrf.yaml' : 'conf/basic_vpp_nrf_config.yaml',
-    'docker-compose-basic-nrf-ebpf.yaml' : 'conf/basic_nrf_config_ebpf.yaml'
+    'docker-compose-basic-nrf-ebpf.yaml' : 'conf/basic_nrf_config_ebpf.yaml',
+    'docker-compose-basic-vpp-pcf-redirection.yaml' : 'conf/redirection_steering_config.yaml',
+    'docker-compose-basic-vpp-pcf-steering.yaml' : 'conf/redirection_steering_config.yaml'
 }
 
 def _parse_args() -> argparse.Namespace:
@@ -62,7 +66,9 @@ def _parse_args() -> argparse.Namespace:
         python3 core-network.py --type start-basic-ebpf
         python3 core-network.py --type stop-mini
         python3 core-network.py --type start-mini --scenario 2
-        python3 core-network.py --type start-basic --scenario 2'''
+        python3 core-network.py --type start-basic --scenario 2
+        python3 core-network.py --type start-vpp-redirection
+        python3 core-network.py --type start-vpp-steering'''
 
     parser = argparse.ArgumentParser(description='OAI 5G CORE NETWORK DEPLOY',
                                     epilog=example_text,
@@ -73,8 +79,8 @@ def _parse_args() -> argparse.Namespace:
         '--type', '-t',
         action='store',
         required=True,
-        choices=['start-mini', 'start-basic', 'start-basic-vpp', 'start-basic-ebpf',\
-                 'stop-mini', 'stop-basic', 'stop-basic-vpp', 'stop-basic-ebpf'],
+        choices=['start-mini', 'start-basic', 'start-basic-vpp', 'start-basic-ebpf','start-vpp-redirection', 'start-vpp-steering',\
+                 'stop-vpp-redirection', 'stop-vpp-steering','stop-mini', 'stop-basic', 'stop-basic-vpp', 'stop-basic-ebpf'],
         help='Functional type of 5g core network',
     )
     # Deployment scenario with NRF/ without NRF
@@ -227,7 +233,7 @@ def check_config(file_name):
         smf_registration_nrf = run_cmd(cmd, False)
         if smf_registration_nrf is not None:
             print(smf_registration_nrf)
-        if file_name == BASIC_VPP_W_NRF:
+        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_W_NRF_REDIRECT or file_name == BASIC_VPP_W_NRF_STEERING:
             cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.201"'
         else:
             cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.134"'
@@ -260,7 +266,7 @@ def check_config(file_name):
                 logging.debug('\033[0;32m AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF\033[0m....')
             else:
                 logging.debug('\033[0;32m AMF, SMF and UPF are registered to NRF\033[0m....')
-        if file_name == BASIC_VPP_W_NRF:
+        if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_W_NRF_REDIRECT or file_name == BASIC_VPP_W_NRF_STEERING:
             logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
             cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
             cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: vpp-upf"'
@@ -372,6 +378,22 @@ if __name__ == '__main__':
         elif args.scenario == '2':
             logging.error('Basic deployments without NRF are no longer supported')
             sys.exit(-1)
+    elif args.type == 'start-vpp-redirection':
+        # Basic function with NRF and VPP-UPF
+        if args.scenario == '1':
+            deploy(BASIC_VPP_W_NRF_REDIRECT, True)
+        # Basic function without NRF but with VPP-UPF
+        elif args.scenario == '2':
+            logging.error('Basic deployments without NRF are no longer supported')
+            sys.exit(-1)
+    elif args.type == 'start-vpp-steering':
+        # Basic function with NRF and VPP-UPF
+        if args.scenario == '1':
+            deploy(BASIC_VPP_W_NRF_STEERING, True)
+        # Basic function without NRF but with VPP-UPF
+        elif args.scenario == '2':
+            logging.error('Basic deployments without NRF are no longer supported')
+            sys.exit(-1)
     elif args.type == 'stop-mini':
         if args.scenario == '2':
             undeploy(MINI_NO_NRF)
@@ -381,6 +403,12 @@ if __name__ == '__main__':
     elif args.type == 'stop-basic-vpp':
         if args.scenario == '1':
             undeploy(BASIC_VPP_W_NRF)
+    elif args.type == 'stop-vpp-redirection':
+        if args.scenario == '1':
+            undeploy(BASIC_VPP_W_NRF_REDIRECT)
+    elif args.type == 'stop-vpp-steering':
+        if args.scenario == '1':
+            undeploy(BASIC_VPP_W_NRF_STEERING)
     elif args.type == 'stop-basic-ebpf':
         if args.scenario == '1':
             undeploy(BASIC_EBPF_W_NRF)

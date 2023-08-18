@@ -28,6 +28,8 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
     - [Using Docker-Compose, perform a `basic` deployment and test with `My5g-RANTester`](./DEPLOY_SA5G_WITH_My5g-RANTester.md)
     - [Using Docker-Compose, perform a `basic` deployment and test with `omec-gnbsim`](./DEPLOY_SA5G_WITH_OMEC_GNBSIM.md)
     - [Using Docker-Compose, when testing with Commercial UE, troubleshoot traffic issues](./TROUBLESHOOT_COTS_UE_TRAFFIC.md)
+    - [Using Docker-Compose, perform a `basic` Traffic Redirection deployment and test with `gnbsim`](./DEPLOY_SA5G_REDIRECTION.md)
+    - [Using Docker-Compose, perform a `basic` Traffic Steering deployment and test with `gnbsim`](./DEPLOY_SA5G_STEERING.md)
     - [Using Docker-Compose, perform a `basic` UL/CL deployment and test with `gnbsim`](./DEPLOY_SA5G_ULCL.md)
 - Connecting a real RAN to OAI 5G Core Network
     - [Network Considerations](./NETWORK_CONSIDERATIONS.md)

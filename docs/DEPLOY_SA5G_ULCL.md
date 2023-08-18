@@ -315,7 +315,7 @@ docker-compose-host $: sudo pkill tshark
 
 
 ## 6. Traffic Test for Edge-Only Scenario
-As you can see in the PCC rules (`policies/pcc_rules/pcc_rules.yaml`), there are two edge rules: `edge-rule-restricted` and
+As you can see in the PCC rules (`policies/ulcl/pcc_rules/pcc_rules.yaml`), there are two edge rules: `edge-rule-restricted` and
 `edge-rule-all`. Both use the same traffic rule, but the flow description is configured differently. It means that the
 `edge-rule-restricted` allows only traffic to 1.1.1.2, whereas the other rule allows any traffic to the edge.
 
