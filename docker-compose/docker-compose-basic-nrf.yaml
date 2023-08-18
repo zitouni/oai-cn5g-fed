@@ -133,7 +133,10 @@ services:
         init: true
         container_name: oai-ext-dn
         image: oaisoftwarealliance/trf-gen-cn5g:latest
-        # TODO: Add FQDN support to resolve UPF
+        environment:
+            - UPF_HOST=oai-upf
+            - UE_NETWORK=12.1.1.0/24
+            - USE_FQDN=yes
         entrypoint: /bin/bash -c \
               "ip route add 12.1.1.0/24 via 192.168.70.134 dev eth0; ip route; sleep infinity"
         command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]

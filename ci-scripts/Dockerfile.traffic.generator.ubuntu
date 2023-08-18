@@ -52,4 +52,8 @@ RUN apt-get update && \
 
 WORKDIR /tmp
 
+COPY trfgen_entrypoint.sh .
+
+ENTRYPOINT ["/tmp/trfgen_entrypoint.sh"]
+
 CMD ["sleep", "infinity"]
