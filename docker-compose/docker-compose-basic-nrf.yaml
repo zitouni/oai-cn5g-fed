@@ -144,7 +144,6 @@ services:
             retries: 5
         networks:
             public_net:
-                ipv4_address: 192.168.70.135
 networks:
     public_net:
         driver: bridge
