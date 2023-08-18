@@ -192,7 +192,8 @@ Creating gnbsim-vpp3 ... done
 <!--
 For CI purposes please ignore this line
 ``` shell
-docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp --timeout 10
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp2 --timeout 10
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim-vpp3 --timeout 10
 ```
 -->
 
