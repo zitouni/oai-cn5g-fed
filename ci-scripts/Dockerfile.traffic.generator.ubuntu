@@ -54,6 +54,6 @@ WORKDIR /tmp
 
 COPY trfgen_entrypoint.sh .
 
-ENTRYPOINT ["/tmp/trfgen_entrypoint.sh"]
+ENTRYPOINT ["/bin/bash","/tmp/trfgen_entrypoint.sh"]
 
 CMD ["sleep", "infinity"]
