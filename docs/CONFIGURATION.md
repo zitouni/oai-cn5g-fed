@@ -392,37 +392,63 @@ amf:
     - <enc_algorithm>
 ```
 
-The allowed values of the AMF configuration are described in the following table:
+### Basic configuration
 
-| Name                      | Type   | Description                                                                                                            | Allowed values                                                                                | Default value | Mandatory |
-|:--------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------|:----------------------------------------------------------------------------------------------|:--------------|-----------|
-| AMF Name                  | String | AMF Name used in AMF NF profile                                                                                        | Any string                                                                                    |               | No        |
-| Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but connect to MySQL database itself. Also, it will not register to NRF. | `yes`, `no` (and other YAML boolean values)                                                   | `no`          | Yes       |
-| Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                                                       | `yes`, `no` (and other YAML boolean values)                                                   | `no`          | Yes       |
-| Enable SMF Selection      | Bool   | If set to yes, AMF will use NRF discovery mechanism to select SMF                                                      | `yes`, `no` (and other YAML boolean values)                                                   | `no`          | Yes       |
-| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB (TODO verify)                                                          | Any integer between `0` and `255`                                                             | `10`          | Yes       |
-| Statistics Timer Interval | Int    | Interval for logging AMF statistics                                                                                    | Any integer between `5` and `600`                                                             | `20`          | Yes       |
-| Emergency Support         | Bool   | Indicate towards UE if emergency registration is supported                                                             | `yes`, `no` (and other YAML boolean values)                                                   | `no`          | Yes       |
-| GUAMI MCC                 | String | MCC Part of Globally Unique AMF ID (GUAMI)                                                                             | 3-digit decimal string                                                                        | `001`         | TODO YES? |
-| GUAMI MNC                 | String | MNC Part of GUAMI                                                                                                      | 2 or 3-digit decimal string                                                                   | `01`          | Yes       |
-| AMF Region ID             | String | AMF Region ID of GUAMI                                                                                                 | 2-digit hex string                                                                            | `FF`          | Yes       |
-| AMF Set ID                | String | AMF Set ID of GUAMI                                                                                                    | 3-digit hex string, where first digit is limited to values 0 to 3 (see 3GPP TS 23.003/29.571) | `001`         | Yes       | 
-| AMF Pointer               | String | AMF Pointer of GUAMI                                                                                                   | 2-digit hex string, where first digit is limited to values 0 to 4 (see 3GPP TS 23.003)        | `01`          | Yes       |
-| PLMN MCC                  | String | MCC of supported PLMN                                                                                                  | 3-digit decimal string                                                                        | `001`         | Yes       |
-| PLMN MNC                  | String | MNC of supported PLMN                                                                                                  | 2 or 3-digit decimal string                                                                   | `01`          | Yes       |
-| TAC                       | Int    | TAC of supported PLMN                                                                                                  | Any integer between `0` and `16777215` (`FFFFFF`)                                             | `1`           | Yes       |
-| SST                       | Int    | SST of SNSSAI                                                                                                          | Any integer between `0` and `255`                                                             | `1`           | Yes       |
-| SD                        | String | SD of SNSSAI                                                                                                           | 6-digit hex string                                                                            | `FFFFFF`      | No        |
-| Integrity Algorithm       | String | Supported integrity algorithm, used for security mode command messages                                                 | `NIA0`, `NIA1`, `NIA2`, `NIA3`, `NIA4`, `NIA5`, `NIA6`, `NIA7`                                |               | Yes       |
-| Encryption Algorithm      | String | Supported encryption algorithm, used for security mode command messages                                                | `NEA0`, `NEA1`, `NEA2`, `NEA3`, `NEA4`, `NEA5`, `NEA6`, `NEA7`                                |               | Yes       |
+The allowed values of the AMF basic configuration are described in the following table:
+
+| Name                      | Type   | Description                                                                                                            | Allowed values                              | Default value | Mandatory |
+|:--------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|-----------|
+| AMF Name                  | String | AMF Name used in AMF NF profile                                                                                        | Any string                                  |               | No        |
+| Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but connect to MySQL database itself. Also, it will not register to NRF. | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                                                       | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Enable SMF Selection      | Bool   | If set to yes, AMF will use NRF discovery mechanism to select SMF                                                      | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB (TODO verify)                                                          | Any integer between `0` and `255`           | `10`          | Yes       |
+| Statistics Timer Interval | Int    | Interval for logging AMF statistics                                                                                    | Any integer between `5` and `600`           | `20`          | Yes       |
+| Emergency Support         | Bool   | Indicate towards UE if emergency registration is supported                                                             | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+
+### GUAMI configuration
+
+In the `served_guami_list` section, you can configure a list of Globally Unique AMF IDs (GUAMI) that are supported by
+this AMF.
+
+| Name          | Type   | Description            | Allowed values                                                                                | Default value | Mandatory |
+|:--------------|:-------|:-----------------------|:----------------------------------------------------------------------------------------------|:--------------|-----------|
+| GUAMI MCC     | String | MCC Part of GUAMI      | 3-digit decimal string                                                                        | `001`         | TODO YES? |
+| GUAMI MNC     | String | MNC Part of GUAMI      | 2 or 3-digit decimal string                                                                   | `01`          | Yes       |
+| AMF Region ID | String | AMF Region ID of GUAMI | 2-digit hex string                                                                            | `FF`          | Yes       |
+| AMF Set ID    | String | AMF Set ID of GUAMI    | 3-digit hex string, where first digit is limited to values 0 to 3 (see 3GPP TS 23.003/29.571) | `001`         | Yes       | 
+| AMF Pointer   | String | AMF Pointer of GUAMI   | 2-digit hex string, where first digit is limited to values 0 to 4 (see 3GPP TS 23.003)        | `01`          | Yes       |
+
+### PLMN configuration
+
+In the `plmn` section, you can configure the list of PLMNs that this AMF supports, together with the served TAC and
+slicing information (SST and SD).
+
+| Name     | Type   | Description           | Allowed values                                    | Default value | Mandatory |
+|:---------|:-------|:----------------------|:--------------------------------------------------|:--------------|-----------|
+| PLMN MCC | String | MCC of supported PLMN | 3-digit decimal string                            | `001`         | Yes       |
+| PLMN MNC | String | MNC of supported PLMN | 2 or 3-digit decimal string                       | `01`          | Yes       |
+| TAC      | Int    | TAC of supported PLMN | Any integer between `0` and `16777215` (`FFFFFF`) | `1`           | Yes       |
+| SST      | Int    | SST of SNSSAI         | Any integer between `0` and `255`                 | `1`           | Yes       |
+| SD       | String | SD of SNSSAI          | 6-digit hex string                                | `FFFFFF`      | No        |
 
 When configuring hex values for AMF, you need to skip the leading `0x` notation. Our reasoning behind this design
 decision is that we want to follow 3GPP as close as possible.
 
-When configuring AMF, you have to be careful to configure the GUAMI, PLMN and NSSAIs correctly. Upon UE registration,
-the requested PLMN and NSSAI of the UE is verified. In case it is not configured by AMF, AMF will reply with a
-registration reject message.
+When configuring AMF, you have to be careful to configure the GUAMI, PLMN and NSSAIs correctly. Upon NGAP Setup between
+gNB and AMF and also during UE registration,
+the requested PLMN and NSSAI is verified. In case it is not configured by AMF, AMF will reply with a
+registration reject message or reject the NG setup request.
 Thus, you have to properly configure these values according to gNB and UE. The same is true for the TAC.
+
+### Integrity protection and encryption algorithms
+
+The sections `supported_integrity_algorithms` and `supported_encryption_algorithms` let you configure the integrity protection and confidentiality protection. 
+
+| Name                 | Type   | Description                                                             | Allowed values                                                 | Default value | Mandatory |
+|:---------------------|:-------|:------------------------------------------------------------------------|:---------------------------------------------------------------|:--------------|-----------|
+| Integrity Algorithm  | String | Supported integrity algorithm, used for security mode command messages  | `NIA0`, `NIA1`, `NIA2`, `NIA3`, `NIA4`, `NIA5`, `NIA6`, `NIA7` |               | Yes       |
+| Encryption Algorithm | String | Supported encryption algorithm, used for security mode command messages | `NEA0`, `NEA1`, `NEA2`, `NEA3`, `NEA4`, `NEA5`, `NEA6`, `NEA7` |               | Yes       |
 
 If you do not configure any integrity algorithms, AMF will take the following default configuration:
 
@@ -442,7 +468,7 @@ supported_encryption_algorithms:
   - "NEA2"
 ```
 
-Please note that the order of supported integrity/encryption algorithms ***matters***.
+*Please note that the order of supported integrity/encryption algorithms matters*.
 
 ## SMF
 
@@ -491,38 +517,32 @@ local_subscription_infos:
       session_ambr_dl: <session_ambr_dl>
 ```
 
-The allowed values and the description of the configuration of AMF are described in the following table:
+### Basic configuration
 
-| Name                                        | Type   | Description                                                                                                                                                                                                                        | Allowed values                                                   | Default value                      | Mandatory                               |
-|:--------------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:-----------------------------------|:----------------------------------------|
-| UE MTU                                      | Int    | UE MTU, signaled to the UE via PCO                                                                                                                                                                                                 | Any integer between `1` and `65535`                              | `1500`                             | Yes                                     |
-| Use Local Subscription Info                 | Bool   | If set to yes, SMF will use the information from `local_subscription_infos`, otherwise UDM is contacted. In this case, you have to provide `udm` in [NFs](#nfs)                                                                    | `yes`, `no` (and other YAML boolean values)                      | `no`                               | Yes                                     |
-| Use Local PCC rules                         | Bool   | If set to no, SMF will get PCC rules from PCF. *Local PCC Rules on SMF are not supported yet*. In this case, you have to provide `pcf` in [NFs](#nfs)                                                                              | `yes`, `no` (and other YAML boolean values)                      | `yes`                              | Yes                                     |
-| UPF Host                                    | String | Host of the UPF                                                                                                                                                                                                                    | Any hostname or an IPv4 address in dotted decimal representation |                                    | Only if NRF registration is disabled    |
-| UPF Port                                    | Int    | Port of the UPF N4 interface                                                                                                                                                                                                       | Any integer between `1` and `65535`                              | `8805`                             | Only if NRF registration is disabled    |
-| Enable Usage Reporting                      | Bool   | If set to yes, SMF will request UPF to send usage reports                                                                                                                                                                          | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                      |
-| Enable DL PDR in PFCP Session Establishment | Bool   | If set to yes, SMF will send DL rules during PFCP session establishment and update these rules with the gNB F-TEID in a session modification. Enable this if your UPF expects this behavior                                        | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                      |
-| Local N3 IPv4                               | String | If the UPF is not Release 16-compliant and does not support generating F-TEIDs, SMF will generate the F-TEID and use this IP address for the F-TEID.                                                                               | IPv4 address in dotted decimal representation                    |                                    | No                                      |
-| UPF Info                                    | Struct | This datatype is used to configure the UPF profile on SMF and is used when no NRF registration/discovery is disabled. It follows the `UpfInfo` definition of 3GPP TS 29.510, but only `interfaceUpfInfoList` is supported for now. | `UpfInfo` from 29.510                                            |                                    | No                                      |
-| Interface Type                              | String | Interface type of this interface                                                                                                                                                                                                   | Any string                                                       | `N3` or `N6`                       | No                                      |
-| Network Instance                            | String | Network Instance of this interface                                                                                                                                                                                                 | Any string                                                       | `access.oai.org` or `core.oai.org` | No                                      |
-| Primary DNS IPv4                            | String | Primary DNS IPv4, signaled to the UE via PCO                                                                                                                                                                                       | IPv4 address in dotted decimal representation                    | `8.8.8.8`                          | Yes                                     |
-| Primary DNS IPv6                            | String | Primary DNS IPv6, signaled to the UE via PCO                                                                                                                                                                                       | Any string                                                       |                                    | No                                      | 
-| Secondary DNS IPv4                          | String | Secondary DNS IPv4, signaled to the UE via PCO                                                                                                                                                                                     | IPv4 address in dotted decimal representation                    | `1.1.1.1`                          | No                                      |
-| Secondary DNS IPv6                          | String | Secondary DNS IPv6, signaled to the UE via PCO                                                                                                                                                                                     | Any string                                                       |                                    | No                                      |
-| P-CSCF IPv4                                 | String | IPv4 address of P-CSCF for IMS, signaled to the UE via PCO                                                                                                                                                                         | IPv4 address in dotted decimal representation                    | `127.0.0.1`                        | No                                      |
-| P-CSCF IPv6                                 | String | IPv6 address of P-CSCF for IMS, signaled to the UE via PCO                                                                                                                                                                         | Any string                                                       |                                    | No                                      |
-| SST                                         | Int    | SST of SNSSAI                                                                                                                                                                                                                      | Any integer between `0` and `255`                                | `1`                                | Yes                                     |
-| SD                                          | String | SD of SNSSAI                                                                                                                                                                                                                       | 6-digit hex string                                               | `FFFFFF`                           | No                                      |
-| DNN                                         | String | DNN to be used for this slice subscription. The DNN should match the `dnn` of a configured DNN in [DNNs](#dnns)                                                                                                                    | Any string                                                       | `default`                          | Yes                                     |
-| SSC Mode                                    | Int    | Session and Service Continuity Mode                                                                                                                                                                                                | Any integer between `1` and `3`                                  | `1`                                | Only if local subscription info is used |
-| 5QI                                         | Int    | 5QI of QoS profile                                                                                                                                                                                                                 | Any integer between `1` and `254`                                | `9`                                | Only if local subscription info is used |
-| Priority                                    | Int    | Priority of QoS profile                                                                                                                                                                                                            | Any integer between `1` and `127`                                | `1`                                | Only if local subscription info is used |
-| ARP Priority                                | Int    | Priority of ARP                                                                                                                                                                                                                    | Any integer between `1` and `15`                                 | `1`                                | Only if local subscription info is used |
-| ARP Preempt Capability                      | String | Preemption capability of ARP                                                                                                                                                                                                       | Any string                                                       | `NOT_PREEMPT`                      | Only if local subscription info is used |
-| ARP Preempt Vulnerability                   | String | Preemption vulnerability of ARP                                                                                                                                                                                                    | Any string                                                       | `NOT_PREEMPTABLE`                  | Only if local subscription info is used |
-| Session AMBR UL                             | String | Session AMBR for uplink                                                                                                                                                                                                            | Any string                                                       | `1000Mbps`                         | Only if local subscription info is used |
-| Session AMBR DL                             | String | Session AMBR for downlink                                                                                                                                                                                                          | Any string                                                       | `1000Mbps`                         | Only if local subscription info is used |
+The allowed values and the description of the basic configuration of SMF are described in the following table:
+
+| Name                        | Type | Description                                                                                                                                                     | Allowed values                              | Default value | Mandatory |
+|:----------------------------|:-----|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|:----------|
+| UE MTU                      | Int  | UE MTU, signaled to the UE via PCO                                                                                                                              | Any integer between `1` and `65535`         | `1500`        | Yes       |
+| Use Local Subscription Info | Bool | If set to yes, SMF will use the information from `local_subscription_infos`, otherwise UDM is contacted. In this case, you have to provide `udm` in [NFs](#nfs) | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Use Local PCC rules         | Bool | If set to no, SMF will get PCC rules from PCF. *Local PCC Rules on SMF are not supported yet*. In this case, you have to provide `pcf` in [NFs](#nfs)           | `yes`, `no` (and other YAML boolean values) | `yes`         | Yes       |
+
+### UPF configuration
+
+The `upfs` section allows you to configure a list of different UPFs. Please note that most values are only read if you
+disable NF registration. Only the config values are used by SMF in case you enable NRF. SMF aligns the `host` you
+configure here with the UPF host from the NRF information:
+
+| Name                                        | Type   | Description                                                                                                                                                                                                                        | Allowed values                                                   | Default value                      | Mandatory                            |
+|:--------------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:-----------------------------------|:-------------------------------------|
+| UPF Host                                    | String | Host of the UPF                                                                                                                                                                                                                    | Any hostname or an IPv4 address in dotted decimal representation |                                    | Only if NRF registration is disabled |
+| UPF Port                                    | Int    | Port of the UPF N4 interface                                                                                                                                                                                                       | Any integer between `1` and `65535`                              | `8805`                             | Only if NRF registration is disabled |
+| Enable Usage Reporting                      | Bool   | If set to yes, SMF will request UPF to send usage reports                                                                                                                                                                          | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                   |
+| Enable DL PDR in PFCP Session Establishment | Bool   | If set to yes, SMF will send DL rules during PFCP session establishment and update these rules with the gNB F-TEID in a session modification. Enable this if your UPF expects this behavior                                        | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                   |
+| Local N3 IPv4                               | String | If the UPF is not Release 16-compliant and does not support generating F-TEIDs, SMF will generate the F-TEID and use this IP address for the F-TEID.                                                                               | IPv4 address in dotted decimal representation                    |                                    | No                                   |
+| UPF Info                                    | Struct | This datatype is used to configure the UPF profile on SMF and is used when no NRF registration/discovery is disabled. It follows the `UpfInfo` definition of 3GPP TS 29.510, but only `interfaceUpfInfoList` is supported for now. | `UpfInfo` from 29.510                                            |                                    | No                                   |
+| Interface Type                              | String | Interface type of this interface                                                                                                                                                                                                   | Any string                                                       | `N3` or `N6`                       | No                                   |
+| Network Instance                            | String | Network Instance of this interface                                                                                                                                                                                                 | Any string                                                       | `access.oai.org` or `core.oai.org` | No                                   |
 
 The UPF Info on SMF is currently very basic and supports only configuring the interface type and the network instance.
 If you omit this configuration, SMF adds the following default configuration:
@@ -534,6 +554,80 @@ interfaceUpfInfoList:
   - interfaceType: N6
     networkInstance: core.oai.org
 ```
+
+In case you do not configure `upfs` and you set `register_nf: no`, SMF will use a default UPF:
+
+```yaml
+host: oai-upf
+port: 8805
+config:
+  enable_usage_reporting: no
+  enable_dl_pdr_in_pfcp_session_establishment: no
+upf_info:
+  interfaceUpfInfoList:
+    - interfaceType: N3
+      networkInstance: access.oai.org
+    - interfaceType: N6
+      networkInstance: core.oai.org
+```
+
+### UE DNS configuration
+
+The `ue_dns` section allows you to configure the DNS which is signaled to the UE via PCO. Please note that this is the
+global DNS configuration. If you provide a DNS for a specific DNN, the DNN-specific DNS configuration takes precedence.
+
+| Name               | Type   | Description                                    | Allowed values                                | Default value | Mandatory |
+|:-------------------|:-------|:-----------------------------------------------|:----------------------------------------------|:--------------|:----------|
+| Primary DNS IPv4   | String | Primary DNS IPv4, signaled to the UE via PCO   | IPv4 address in dotted decimal representation | `8.8.8.8`     | Yes       |
+| Primary DNS IPv6   | String | Primary DNS IPv6, signaled to the UE via PCO   | Any string                                    |               | No        | 
+| Secondary DNS IPv4 | String | Secondary DNS IPv4, signaled to the UE via PCO | IPv4 address in dotted decimal representation | `1.1.1.1`     | No        |
+| Secondary DNS IPv6 | String | Secondary DNS IPv6, signaled to the UE via PCO | Any string                                    |               | No        |
+
+### IMS configuration
+
+The `ims` section allows you to configure P-CSCF IP addresses which are signaled to the UE via PCO.
+
+| Name        | Type   | Description                                                | Allowed values                                | Default value | Mandatory |
+|:------------|:-------|:-----------------------------------------------------------|:----------------------------------------------|:--------------|:----------|
+| P-CSCF IPv4 | String | IPv4 address of P-CSCF for IMS, signaled to the UE via PCO | IPv4 address in dotted decimal representation | `127.0.0.1`   | No        |
+| P-CSCF IPv6 | String | IPv6 address of P-CSCF for IMS, signaled to the UE via PCO | Any string                                    |               | No        |
+
+### SMF info configuration
+
+The `smf_info` section is used to configure the SMF Info, which is sent as part of the NF profile upon NRF registration.
+Please note that the values follow the `SmfInfo` datatype from 3GPP TS 29.510. Therefore, you also have to use
+the `camelCase` notation. If you do not configure any SMF profile, the following default profile is set:
+
+```yaml
+smf_info:
+  sNssaiSmfInfoList:
+    - sNssai:
+        st: 1
+        sd: FFFFFF
+      dnnSmfInfoList:
+        - dnn: "default"
+```
+
+### Local subscription infos
+
+The `local_subscription_infos` is only used if you enable `use_local_subscription_infos`. It is meant as an easy way to
+configure a default subscriber profile for a specific slice and DNN. You are not able to configure different profiles
+for different IMSIs/SUPIs. For this feature, you will need to use the UDM and set `use_local_subscription_info: no`. The
+same applies for advanced features such as static IP addresses or more QoS profiles.
+
+| Name                      | Type   | Description                                                                                                     | Allowed values                    | Default value     | Mandatory                               |
+|:--------------------------|:-------|:----------------------------------------------------------------------------------------------------------------|:----------------------------------|:------------------|:----------------------------------------|
+| SST                       | Int    | SST of SNSSAI                                                                                                   | Any integer between `0` and `255` | `1`               | Yes                                     |
+| SD                        | String | SD of SNSSAI                                                                                                    | 6-digit hex string                | `FFFFFF`          | No                                      |
+| DNN                       | String | DNN to be used for this slice subscription. The DNN should match the `dnn` of a configured DNN in [DNNs](#dnns) | Any string                        | `default`         | Yes                                     |
+| SSC Mode                  | Int    | Session and Service Continuity Mode                                                                             | Any integer between `1` and `3`   | `1`               | Only if local subscription info is used |
+| 5QI                       | Int    | 5QI of QoS profile                                                                                              | Any integer between `1` and `254` | `9`               | Only if local subscription info is used |
+| Priority                  | Int    | Priority of QoS profile                                                                                         | Any integer between `1` and `127` | `1`               | Only if local subscription info is used |
+| ARP Priority              | Int    | Priority of ARP                                                                                                 | Any integer between `1` and `15`  | `1`               | Only if local subscription info is used |
+| ARP Preempt Capability    | String | Preemption capability of ARP                                                                                    | Any string                        | `NOT_PREEMPT`     | Only if local subscription info is used |
+| ARP Preempt Vulnerability | String | Preemption vulnerability of ARP                                                                                 | Any string                        | `NOT_PREEMPTABLE` | Only if local subscription info is used |
+| Session AMBR UL           | String | Session AMBR for uplink                                                                                         | Any string                        | `1000Mbps`        | Only if local subscription info is used |
+| Session AMBR DL           | String | Session AMBR for downlink                                                                                       | Any string                        | `1000Mbps`        | Only if local subscription info is used |
 
 If you do not configure `local_subscription_infos`, SMF will use one default subscription info configuration:
 
@@ -551,22 +645,6 @@ qos_profile:
   arp_preempt_vulnerability: "NOT_PREEMPTABLE"
   session_ambr_ul: "1000Mbps"
   session_ambr_dl: "1000Mbps"
-```
-
-In case you do not configure `upfs` and you set `register_nf: no`, SMF will use a default UPF:
-
-```yaml
-host: oai-upf
-port: 8805
-config:
-  enable_usage_reporting: no
-  enable_dl_pdr_in_pfcp_session_establishment: no
-upf_info:
-  interfaceUpfInfoList:
-    - interfaceType: N3
-      networkInstance: access.oai.org
-    - interfaceType: N6
-      networkInstance: core.oai.org
 ```
 
 *Note: In case you use a COTS UE, it is highly recommended to configure an `ims` DNN. Please see
