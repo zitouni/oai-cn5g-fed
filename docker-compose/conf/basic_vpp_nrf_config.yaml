@@ -22,9 +22,12 @@
 # OAI CN Configuration File
 ### This file can be used by all OAI NFs
 ### Some fields are specific to an NF and will be ignored by other NFs
-### The {{ env['ENV_NAME'] }} syntax lets you define these values in a docker-compose file
-### If you intend to mount this file or use a bare-metal deployment, please refer to README.md
-### The README.md also defines default values and allowed values for each configuration parameter
+
+## NOTE ON YAML ANCHORS ##
+# We use YAML anchors to ease the configuration and to avoid duplicating parts of the configuration.
+# This is especially true for the SNSSAIs, as we have to define them for multiple NFs.
+# Please note that the use of anchors is not mandatory, and you can define the SNSSAI in each NF yourself.
+# You can read more about anchors here: https://yaml.org/spec/1.2.2/#anchors-and-aliases
 
 ############# Common configuration
 
@@ -94,6 +97,18 @@ database:
   generate_random: true
   connection_timeout: 300 # seconds
 
+## general single_nssai configuration
+## Defines YAML anchors, which are reused in the config file
+snssais:
+  - &embb_slice1
+    sst: 1
+  - &embb_slice2
+    sst: 1
+    sd: 000001 # in hex
+  - &custom_slice
+    sst: 222
+    sd: 00007B # in hex
+
 ############## NF-specific configuration
 amf:
   amf_name: "OAI-AMF"
@@ -123,11 +138,9 @@ amf:
       mnc: 95
       tac: 0xa000
       nssai:
-        - sst: 1
-        - sst: 1
-          sd: 000001 # in hex
-        - sst: 222
-          sd: 00007B # in hex
+        - *embb_slice1
+        - *embb_slice2
+        - *custom_slice
   supported_integrity_algorithms:
     - "NIA0"
     - "NIA1"
@@ -156,26 +169,33 @@ smf:
   ims:
     pcscf_ipv4: "127.0.0.1"
     pcscf_ipv6: "fe80::7915:f408:1787:db8b"
- # the DNN you configure here should be configured in "dnns"
+  # the DNN you configure here should be configured in "dnns"
+  # follows the SmfInfo datatype from 3GPP TS 29.510
+  smf_info:
+    sNssaiSmfInfoList:
+      - sNssai: *embb_slice1
+        dnnSmfInfoList:
+          - dnn: "oai"
+      - sNssai: *embb_slice2
+        dnnSmfInfoList:
+          - dnn: "oai.ipv4"
+      - sNssai: *custom_slice
+        dnnSmfInfoList:
+          - dnn: "default"
   local_subscription_infos:
-    - single_nssai:
-        sst: 1
+    - single_nssai: *embb_slice1
       dnn: "oai"
       qos_profile:
         5qi: 9
         session_ambr_ul: "200Mbps"
         session_ambr_dl: "400Mbps"
-    - single_nssai:
-        sst: 1
-        sd: 1
+    - single_nssai: *embb_slice2
       dnn: "oai.ipv4"
       qos_profile:
         5qi: 9
         session_ambr_ul: "100Mbps"
         session_ambr_dl: "200Mbps"
-    - single_nssai:
-        sst: 222
-        sd: 123
+    - single_nssai: *custom_slice
       dnn: "default"
       qos_profile:
         5qi: 9
