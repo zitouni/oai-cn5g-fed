@@ -149,6 +149,6 @@ $ git checkout -f develop
 $ git rebase origin/develop
 ```
 
-You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md).
+You are ready to [Configure the Containers](./CONFIGURATION.md).
 
 You can also go [back](./DEPLOY_HOME.md) to the list of tutorials.
