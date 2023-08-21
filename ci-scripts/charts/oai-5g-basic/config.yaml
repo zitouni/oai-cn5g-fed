@@ -139,6 +139,13 @@ smf:
     pcscf_ipv4: "172.21.6.13"
     pcscf_ipv6: "fe80::7915:f408:1787:db8b"
  # the DNN you configure here should be configured in "dnns"
+  smf_info:
+    sNssaiSmfInfoList:
+      - sNssai:
+          sst: 1
+        dnnSmfInfoList:
+          - dnn: "oai"
+          - dnn: "ims"
   local_subscription_infos:
     - single_nssai:
         sst: 1
