@@ -111,9 +111,9 @@ It is a dictionary that can contain the following keys:
 
 Each key can take the following values:
 
-| Name      | Type   | Description       | Allowed values                         | Default value | Mandatory |
-|:----------|:-------|:------------------|:---------------------------------------|:--------------|-----------|
-| Log Level | String | Set the log level | `debug`, `info`, `warn`, `error` `off` | `info`        | Yes       |
+| Name      | Type   | Description       | Allowed values                          | Default value | Mandatory |
+|:----------|:-------|:------------------|:----------------------------------------|:--------------|-----------|
+| Log Level | String | Set the log level | `debug`, `info`, `warn`, `error`, `off` | `info`        | Yes       |
 
 Here, you can configure different log levels for different NFs. Each NF reads its value, e.g. the SMF reads the `smf`
 key.
@@ -194,19 +194,21 @@ this:
 
 | Key    | Host default value | Read by NFs   | Mandatory                                                     |
 |:-------|:-------------------|:--------------|---------------------------------------------------------------|
-| `ausf` | `oai-ausf`         | AUSF, AMF     | No, if `enable_simple_scenario` in AMF is on                  |
+| `ausf` | `oai-ausf`         | AUSF, AMF     | Only if AUSF is used (`enable_simple_scenario` in AMF is off) |
 | `amf`  | `oai-amf`          | AMF, SMF      | Yes                                                           |
 | `nrf`  | `oai-nrf`          | All NFs       | If `register_nf` is on                                        |
-| `nssf` | `oai-nssf`         | NSSF, AMF     | No, only if NSSF is used                                      |
-| `pcf`  | `oai-pcf`          | PCF, SMF      | No, only if PCF is used (`use_local_pcc_rules` is off on SMF) |
+| `nssf` | `oai-nssf`         | NSSF, AMF     | Only if NSSF is used                                          |
+| `pcf`  | `oai-pcf`          | PCF, SMF      | Only if PCF is used (`use_local_pcc_rules` in SMF is off)     |
 | `smf`  | `oai-smf`          | SMF, AMF      | Yes                                                           |                
-| `udm`  | `oai-udm`          | UDM, AMF, SMF | No, if `enable_simple_scenario` in AMF is on                  |
-| `udr`  | `oai-udr`          | UDR, UDM      | No, if `enable_simple_scenario` in AMF is on                  |
+| `udm`  | `oai-udm`          | UDM, AMF, SMF | Only if UDM is used (`enable_simple_scenario` in AMF is off)  |
+| `udr`  | `oai-udr`          | UDR, UDM      | Only if UDR is used (`enable_simple_scenario` in AMF is off)  |
 | `upf`  | `oai-upf`          | UPF           | Only for OAI-UPF, not for VPP-UPF                             | 
 
 The NF will only parse and validate the NF key if necessary. For example, if [register NF](#register-nf) is set, it will
-rely on NF discovery and does not follow the configuration here. It does, however, take the `api_version` from the `nfs`
-configuration.
+rely on NF discovery and does not read remote hosts from `nfs`. It does, however, take the `api_version` from the `nfs`
+configuration. The local interface configuration is always taken from `nfs`. Hence, even if you use NF registration and
+discovery, you need to configure the values here to be read for the local interfaces (e.g., `smf` from SMF or `nrf` from
+NRF).
 
 ### AMF specific NF configuration
 
@@ -282,6 +284,8 @@ The description of the N3, N4 and N6 interfaces of UPF is as follows:
 | N4 Interface Name | String | Host interface to serve N4 server            | Any string                          | `eth0`        | Yes       |
 | N6 Interface Name | String | Host interface to receive IP traffic from DN | Any string                          | `eth0`        | Yes       |
 
+Please note that the N6 interface does not require a port configuration.
+
 ## Database
 
 The `database` section allows you to configure how to connect to the database.
@@ -303,13 +307,16 @@ The allowed values are described in the following table:
 
 | Name            | Type   | Description                                         | Allowed values                              | Default value | Mandatory |
 |:----------------|:-------|:----------------------------------------------------|:--------------------------------------------|:--------------|-----------|
-| DB Host         | String | Host of the database to connect                     | Any string                                  |               | TODO      |
-| DB User         | String | User to authenticate to the database                | Any string                                  |               | TODO      |
-| DB Type         | String | Type of the database (e.g. `mysql`)                 | Any string                                  |               | TODO      |
-| DB Password     | String | Password to authenticate to the database            | Any string                                  |               | TODO      |
-| DB Name         | String | Name of the database to use                         | Any string                                  |               | TODO      |
-| Generate Random | Bool   | ?????????? TODO ??                                  | `yes`, `no` (and other YAML boolean values) | `no`          | TODO      |
-| Timeout         | Int    | ?? TODO (I suspect the timeout for DB connections?) | Any integer                                 |               | TODO      |
+| DB Host         | String | Host of the database to connect                     | Any string                                  |               | Yes       |
+| DB User         | String | User to authenticate to the database                | Any string                                  |               | Yes       |
+| DB Type         | String | Type of the database (e.g. `mysql`)                 | Any string                                  |               | Yes       |
+| DB Password     | String | Password to authenticate to the database            | Any string                                  |               | Yes       |
+| DB Name         | String | Name of the database to use                         | Any string                                  |               | Yes       |
+| Generate Random | Bool   | ?????????? TODO ??                                  | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Timeout         | Int    | ?? TODO (I suspect the timeout for DB connections?) | Any integer                                 |               | Yes       |
+
+The values you provide for the database connection will be used to connect to the database. In case of a
+misconfiguration, you will be informed (e.g., when the DB host is not reachable or you provided a wrong password).
 
 ## DNNs
 
@@ -333,12 +340,12 @@ configuration from SMF is used. Here, you can configure different DNS servers pe
 
 The allowed values are described in the following table:
 
-| Name             | Type   | Description                                                                    | Allowed values                                                        | Default value | Mandatory                                           |
-|:-----------------|:-------|:-------------------------------------------------------------------------------|:----------------------------------------------------------------------|:--------------|-----------------------------------------------------|
-| DNN              | String | DNN to be used by SMF, UPF and communicated by the UE                          | Any string                                                            | `default`     | Yes                                                 |
-| PDU Session Type | String | Type of the PDU session ( *currently only IPV4 supported by SMF and OAI-UPF* ) | `IPV4`, `IPV4V6`, `IPV6`                                              | `IPV4`        | Yes                                                 |
-| IPv4 Subnet      | String | IPv4 subnet which is used to assign UE IPv4 addresses for PDU sessions         | IP address in CIDR format: Host in dotted decimal followed by /suffix | `12.1.1.0/24` | Only for IPV4 and IPV4V6                            |
-| IPv6 Prefix      | String | IPv6 prefix which is used to assign UE IPv6 addresses for PDU sessions         | Any value                                                             |               | Only for IPV6 and IPV4V6 (not yet supported on SMF) |
+| Name             | Type   | Description                                                                  | Allowed values                                                        | Default value | Mandatory                                           |
+|:-----------------|:-------|:-----------------------------------------------------------------------------|:----------------------------------------------------------------------|:--------------|-----------------------------------------------------|
+| DNN              | String | DNN to be used by SMF, UPF and communicated by the UE                        | Any string                                                            | `default`     | Yes                                                 |
+| PDU Session Type | String | Type of the PDU session (*currently only IPV4 supported by SMF and OAI-UPF*) | `IPV4`, `IPV4V6`, `IPV6`                                              | `IPV4`        | Yes                                                 |
+| IPv4 Subnet      | String | IPv4 subnet which is used to assign UE IPv4 addresses for PDU sessions       | IP address in CIDR format: Host in dotted decimal followed by /suffix | `12.1.1.0/24` | Only for IPV4 and IPV4V6                            |
+| IPv6 Prefix      | String | IPv6 prefix which is used to assign UE IPv6 addresses for PDU sessions       | Any value                                                             |               | Only for IPV6 and IPV4V6 (not yet supported on SMF) |
 
 If you do not configure any DNN in the `dnns` section, or you remove the `dnns` section completely, the following
 default dnn is configured:
@@ -413,7 +420,7 @@ this AMF.
 
 | Name          | Type   | Description            | Allowed values                                                                                | Default value | Mandatory |
 |:--------------|:-------|:-----------------------|:----------------------------------------------------------------------------------------------|:--------------|-----------|
-| GUAMI MCC     | String | MCC Part of GUAMI      | 3-digit decimal string                                                                        | `001`         | TODO YES? |
+| GUAMI MCC     | String | MCC Part of GUAMI      | 3-digit decimal string                                                                        | `001`         | Yes       |
 | GUAMI MNC     | String | MNC Part of GUAMI      | 2 or 3-digit decimal string                                                                   | `01`          | Yes       |
 | AMF Region ID | String | AMF Region ID of GUAMI | 2-digit hex string                                                                            | `FF`          | Yes       |
 | AMF Set ID    | String | AMF Set ID of GUAMI    | 3-digit hex string, where first digit is limited to values 0 to 3 (see 3GPP TS 23.003/29.571) | `001`         | Yes       | 
@@ -443,7 +450,8 @@ Thus, you have to properly configure these values according to gNB and UE. The s
 
 ### Integrity protection and encryption algorithms
 
-The sections `supported_integrity_algorithms` and `supported_encryption_algorithms` let you configure the integrity protection and confidentiality protection. 
+The sections `supported_integrity_algorithms` and `supported_encryption_algorithms` let you configure the integrity
+protection and confidentiality protection.
 
 | Name                 | Type   | Description                                                             | Allowed values                                                 | Default value | Mandatory |
 |:---------------------|:-------|:------------------------------------------------------------------------|:---------------------------------------------------------------|:--------------|-----------|
@@ -521,17 +529,18 @@ local_subscription_infos:
 
 The allowed values and the description of the basic configuration of SMF are described in the following table:
 
-| Name                        | Type | Description                                                                                                                                                     | Allowed values                              | Default value | Mandatory |
-|:----------------------------|:-----|:----------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|:----------|
-| UE MTU                      | Int  | UE MTU, signaled to the UE via PCO                                                                                                                              | Any integer between `1` and `65535`         | `1500`        | Yes       |
-| Use Local Subscription Info | Bool | If set to yes, SMF will use the information from `local_subscription_infos`, otherwise UDM is contacted. In this case, you have to provide `udm` in [NFs](#nfs) | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Use Local PCC rules         | Bool | If set to no, SMF will get PCC rules from PCF. *Local PCC Rules on SMF are not supported yet*. In this case, you have to provide `pcf` in [NFs](#nfs)           | `yes`, `no` (and other YAML boolean values) | `yes`         | Yes       |
+| Name                        | Type | Description                                                                                                                                                                                 | Allowed values                              | Default value | Mandatory |
+|:----------------------------|:-----|:--------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|:----------|
+| UE MTU                      | Int  | UE MTU, signaled to the UE via PCO                                                                                                                                                          | Any integer between `1` and `65535`         | `1500`        | Yes       |
+| Use Local Subscription Info | Bool | If set to yes, SMF will use the information from `local_subscription_infos`, otherwise the subscriber profile is requested from UDM. In this case, you have to provide `udm` in [NFs](#nfs) | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Use Local PCC rules         | Bool | If set to no, SMF will get PCC rules from PCF. *Local PCC Rules on SMF are not supported yet*. In this case, you have to provide `pcf` in [NFs](#nfs)                                       | `yes`, `no` (and other YAML boolean values) | `yes`         | Yes       |
 
 ### UPF configuration
 
 The `upfs` section allows you to configure a list of different UPFs. Please note that most values are only read if you
-disable NF registration. Only the config values are used by SMF in case you enable NRF. SMF aligns the `host` you
-configure here with the UPF host from the NRF information:
+disable NF registration. Only the values from the `config` section are used by SMF in case you enable NRF. SMF aligns
+the `host` you
+configure here with the UPF host from the NRF information to e.g., know whether to enable usage reporting.
 
 | Name                                        | Type   | Description                                                                                                                                                                                                                        | Allowed values                                                   | Default value                      | Mandatory                            |
 |:--------------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:-----------------------------------|:-------------------------------------|
@@ -617,9 +626,9 @@ same applies for advanced features such as static IP addresses or more QoS profi
 
 | Name                      | Type   | Description                                                                                                     | Allowed values                    | Default value     | Mandatory                               |
 |:--------------------------|:-------|:----------------------------------------------------------------------------------------------------------------|:----------------------------------|:------------------|:----------------------------------------|
-| SST                       | Int    | SST of SNSSAI                                                                                                   | Any integer between `0` and `255` | `1`               | Yes                                     |
-| SD                        | String | SD of SNSSAI                                                                                                    | 6-digit hex string                | `FFFFFF`          | No                                      |
-| DNN                       | String | DNN to be used for this slice subscription. The DNN should match the `dnn` of a configured DNN in [DNNs](#dnns) | Any string                        | `default`         | Yes                                     |
+| SST                       | Int    | SST of SNSSAI                                                                                                   | Any integer between `0` and `255` | `1`               | Only if local subscription info is used |
+| SD                        | String | SD of SNSSAI                                                                                                    | 6-digit hex string                | `FFFFFF`          | Only if local subscription info is used |
+| DNN                       | String | DNN to be used for this slice subscription. The DNN should match the `dnn` of a configured DNN in [DNNs](#dnns) | Any string                        | `default`         | Only if local subscription info is used |
 | SSC Mode                  | Int    | Session and Service Continuity Mode                                                                             | Any integer between `1` and `3`   | `1`               | Only if local subscription info is used |
 | 5QI                       | Int    | 5QI of QoS profile                                                                                              | Any integer between `1` and `254` | `9`               | Only if local subscription info is used |
 | Priority                  | Int    | Priority of QoS profile                                                                                         | Any integer between `1` and `127` | `1`               | Only if local subscription info is used |
@@ -634,7 +643,7 @@ If you do not configure `local_subscription_infos`, SMF will use one default sub
 ```yaml
 single_nssai:
   sst: 1
-  sd: 0xFFFFFF
+  sd: FFFFFF
 dnn: "default"
 ssc_mode: 1
 qos_profile:
@@ -729,7 +738,7 @@ configuration is used:
 ```yaml
 upf_info:
   - sst: 1
-    sd: 0xFFFFFF
+    sd: FFFFFF
     dnnList:
       - dnn: "default"
 ```
