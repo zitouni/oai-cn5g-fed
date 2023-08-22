@@ -403,15 +403,15 @@ amf:
 
 The allowed values of the AMF basic configuration are described in the following table:
 
-| Name                      | Type   | Description                                                                                                            | Allowed values                              | Default value | Mandatory |
-|:--------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|-----------|
-| AMF Name                  | String | AMF Name used in AMF NF profile                                                                                        | Any string                                  |               | No        |
-| Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but connect to MySQL database itself. Also, it will not register to NRF. | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                                                       | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Enable SMF Selection      | Bool   | If set to yes, AMF will use NRF discovery mechanism to select SMF                                                      | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB (TODO verify)                                                          | Any integer between `0` and `255`           | `10`          | Yes       |
-| Statistics Timer Interval | Int    | Interval for logging AMF statistics                                                                                    | Any integer between `5` and `600`           | `20`          | Yes       |
-| Emergency Support         | Bool   | Indicate towards UE if emergency registration is supported                                                             | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Name                      | Type   | Description                                                                                                                                                          | Allowed values                              | Default value | Mandatory |
+|:--------------------------|:-------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|-----------|
+| AMF Name                  | String | AMF Name used in AMF NF profile                                                                                                                                      | Any string                                  |               | No        |
+| Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but use an internal implementation for authentication and authorization procedures. Also, it will not register to NRF. | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                                                                                                     | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Enable SMF Selection      | Bool   | If set to yes, AMF will use NRF discovery mechanism to select SMF                                                                                                    | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
+| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB (TODO verify)                                                                                                        | Any integer between `0` and `255`           | `10`          | Yes       |
+| Statistics Timer Interval | Int    | Interval for logging AMF statistics                                                                                                                                  | Any integer between `5` and `600`           | `20`          | Yes       |
+| Emergency Support         | Bool   | Indicate towards UE if emergency registration is supported                                                                                                           | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
 
 ### GUAMI configuration
 
