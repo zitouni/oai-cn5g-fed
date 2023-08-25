@@ -44,17 +44,17 @@ Now pull images according to your requirement,
 
 ```bash
 #!/bin/bash
-docker pull oaisoftwarealliance/oai-amf:v1.6.0
-docker pull oaisoftwarealliance/oai-nrf:v1.6.0
-docker pull oaisoftwarealliance/oai-upf:v1.6.0
-docker pull oaisoftwarealliance/oai-smf:v1.6.0
-docker pull oaisoftwarealliance/oai-udr:v1.6.0
-docker pull oaisoftwarealliance/oai-udm:v1.6.0
-docker pull oaisoftwarealliance/oai-ausf:v1.6.0
-docker pull oaisoftwarealliance/oai-upf-vpp:v1.6.0
-docker pull oaisoftwarealliance/oai-nssf:v1.6.0
-docker pull oaisoftwarealliance/oai-pcf:v1.6.0
-docker pull oaisoftwarealliance/oai-nef:v1.6.0
+docker pull oaisoftwarealliance/oai-amf:v2.0.0
+docker pull oaisoftwarealliance/oai-nrf:v2.0.0
+docker pull oaisoftwarealliance/oai-upf:v2.0.0
+docker pull oaisoftwarealliance/oai-smf:v2.0.0
+docker pull oaisoftwarealliance/oai-udr:v2.0.0
+docker pull oaisoftwarealliance/oai-udm:v2.0.0
+docker pull oaisoftwarealliance/oai-ausf:v2.0.0
+docker pull oaisoftwarealliance/oai-upf-vpp:v2.0.0
+docker pull oaisoftwarealliance/oai-nssf:v2.0.0
+docker pull oaisoftwarealliance/oai-pcf:v2.0.0
+docker pull oaisoftwarealliance/oai-nef:v2.0.0
 # Utility image to generate traffic
 docker pull oaisoftwarealliance/trf-gen-cn5g:latest
 ```
@@ -77,25 +77,25 @@ This repository only has tutorials and Continuous Integration scripts.
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 20.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.6.0` |              |                 |
-| AMF         | `master`    | `v1.6.0` | X            | X               |
-| SMF         | `master`    | `v1.6.0` | X            | X               |
-| NRF         | `master`    | `v1.6.0` | X            | X               |
-| UPF         | `master`    | `v1.6.0` | X            | X               |
-| UDR         | `master`    | `v1.6.0` | X            | X               |
-| UDM         | `master`    | `v1.6.0` | X            | X               |
-| AUSF        | `master`    | `v1.6.0` | X            | X               |
-| UPF-VPP     | `master`    | `v1.6.0` | X            | X               |
-| NSSF        | `master`    | `v1.6.0` | X            | X               |
-| NEF         | `master`    | `v1.6.0` | X            | X               |
-| PCF         | `master`    | `v1.6.0` | X            | X               |
+| FED REPO    | N/A         | `v2.0.0` |              |                 |
+| AMF         | `master`    | `v2.0.0` | X            | X               |
+| SMF         | `master`    | `v2.0.0` | X            | X               |
+| NRF         | `master`    | `v2.0.0` | X            | X               |
+| UPF         | `master`    | `v2.0.0` | X            | X               |
+| UDR         | `master`    | `v2.0.0` | X            | X               |
+| UDM         | `master`    | `v2.0.0` | X            | X               |
+| AUSF        | `master`    | `v2.0.0` | X            | X               |
+| UPF-VPP     | `master`    | `v2.0.0` | X            | X               |
+| NSSF        | `master`    | `v2.0.0` | X            | X               |
+| NEF         | `master`    | `v2.0.0` | X            | X               |
+| PCF         | `master`    | `v2.0.0` | X            | X               |
 
 ```bash
 # Clone directly on the latest release tag
-$ git clone --branch v1.6.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+$ git clone --branch v2.0.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
 # If you forgot to clone directly to the latest release tag
-$ git checkout -f v1.6.0
+$ git checkout -f v2.0.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
