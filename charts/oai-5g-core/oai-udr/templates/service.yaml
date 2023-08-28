@@ -6,7 +6,9 @@ metadata:
     {{- include "oai-udr.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
-  #clusterIP: None
+  {{- if .Values.global }}{{ if not .Values.global.clusterIpServiceIpAllocation }}
+  clusterIP: None
+  {{- end }}{{ end }}
   ports:
     - name: http
       # Port accessible outside cluster

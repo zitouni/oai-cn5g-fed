@@ -39,7 +39,7 @@ nfs:
       interface_name: eth0
     n4:
       interface_name: eth0
-      port: 80
+      port: 8805
   upf:
     host: oai-upf
     sbi:

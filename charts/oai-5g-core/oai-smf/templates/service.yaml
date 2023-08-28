@@ -6,7 +6,9 @@ metadata:
     {{- include "oai-smf.labels" . | nindent 4 }}
 spec:
   type: ClusterIP
-  #clusterIP: None
+  {{- if .Values.global }}{{ if not .Values.global.clusterIpServiceIpAllocation }}
+  clusterIP: None
+  {{- end }}{{ end }}
   selector:
     {{- include "oai-smf.selectorLabels" . | nindent 4 }}
   ports:
