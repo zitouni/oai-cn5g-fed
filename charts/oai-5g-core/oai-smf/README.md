@@ -15,7 +15,7 @@ The helm chart of OAI-SMF creates multiples Kubernetes resources,
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap (Contains the configuration file for SMF)
+4. Configmap (Contains the mounted configuration file for SMF)
 5. Service account
 6. Network-attachment-definition (Optional only when multus is used)
 
@@ -33,6 +33,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
 ```
 

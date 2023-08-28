@@ -63,6 +63,9 @@ spec:
     {{- end }}
       - name: ausf
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
+        volumeMounts:
+          - mountPath: /openair-ausf/etc
+            name: configuration
         imagePullPolicy: {{ .Values.nfimage.pullPolicy }}
         {{- if .Values.resources.define}}
         resources:
@@ -92,116 +95,30 @@ spec:
           periodSeconds: 5
         {{- end}}
         ports:
-        - containerPort: {{ .Values.config.sbiPortHttp1 }}
-          name: http1
-        - containerPort: {{ .Values.config.sbiPortHttp2 }}
-          name: http2
+        - containerPort: {{ .Values.exposedPorts.sbi }}
+          name: http
         {{- if .Values.start.ausf}}
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
-        env:
-          - name: TZ
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: tz     
-          - name: INSTANCE_ID
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: instanceId
-          - name: PID_DIR
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: pidDirectory
-          - name: AUSF_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: ausfName
-          - name: LOG_LEVEL
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: logLevel
-          - name: SBI_IF_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: sbiIfName
-          - name: SBI_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: sbiPortHttp1
-          - name: SBI_HTTP2_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: sbiPortHttp2
-          - name: USE_HTTP2
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useHttp2
-          - name: USE_FQDN_DNS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useFqdnDns
-          - name: UDM_IP_ADDRESS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: udmIpAddress
-          - name: UDM_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: udmPort
-          - name: UDM_VERSION_NB
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: udmVersionNb
-          - name: UDM_FQDN
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: udmFqdn
-          - name: NRF_IP_ADDRESS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nrfIpAddress
-          - name: NRF_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nrfPort
-          - name: NRF_API_VERSION
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nrfApiVersion
-          - name: NRF_FQDN
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nrfFqdn
         {{- if .Values.start.ausf}}
         {{- else}}
         command:
           - /bin/sleep
           - infinity
         {{- end}}
+      volumes:
+      - configMap:
+      {{- if .Values.global }}
+          name: {{ .Values.global.nfConfigurationConfigMap }}
+      {{- else }}
+          name: {{ .Chart.Name }}-configmap
+      {{- end }}
+        name: configuration
       {{- if .Values.includeTcpDumpContainer}}
       {{- if .Values.persistent.sharedvolume}}
-      volumes:
       - name: cn5g-pvc
         persistentVolumeClaim:
           claimName: cn5g-pvc

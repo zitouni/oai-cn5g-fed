@@ -3,7 +3,7 @@ kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Ope
 ## In case of using these charts on Openshift then please use UBI images
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:
-  repository: docker.io/oaisoftwarealliance/oai-spgwu-tiny # dockerhub oaisoftwarealliance/oai-spgwu-tiny
+  repository: docker.io/oaisoftwarealliance/oai-upf # dockerhub oaisoftwarealliance/oai-upf
   version: develop           #image tag, develop tag for experimental features
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
@@ -17,16 +17,17 @@ serviceAccount:
   create: true
   # The name of the service account to use.
   # If not set and create is true, a name is generated using the fullname template
-  name: "oai-spgwu-tiny"
+  name: "oai-upf"
 
 podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
-service:
-  pfcpPort: 8805 # default port no need to change unless necessary
-  gtpuPort: 2152 # default port no need to change unless necessary
+exposedPorts:
+  sbi: 80
+  n4: 8805 # default port no need to change unless necessary
+  n3: 2152 # default port no need to change unless necessary
 
 # create an extra interface for N3 incase the gNB is outside the cluster network or there is a need to have dedicated interface for N3
 ## Change these ip-addresses according to your environment
@@ -68,34 +69,6 @@ multus:
     ## If you do not want to add any routes in your pod then leave this field empty
     routes: ""
     hostInterface: "bond0"
-
-#NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
-config:
-  fqdn: "oai-spgwu-tiny-svc"
-  n3If: "eth0"  # n3 if multus.n3Interface.create is true
-  n4If: "eth0" # n4 if multus.n4Interface.create is true
-  n6If: "eth0"  # n6 multus.n6Interface.create is true  
-  threadsN3Ul: "1"      #Multi threading is not properly supported
-  threadsN6Dl: "1"      #Multi threading is not properly supported
-  threadsN6Prio: 99       
-  threadsN3Prio: 98 
-  threadsN4Prio: 88
-  netUeNatOption: "yes"
-  bypassUlPfcpRules: "no" #standart feature is no, put yes if you want less UL packet delay
-  smfIpAdd: "127.0.0.1" # SMF ip-address incase NRF is not used to initiate a PFCP session
-  netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
-  registerNRF: "yes"
-  useFqdnNrf: "yes"  # use FQDN to resolve nrf ip-address
-  nrfFqdn: "oai-nrf-svc" # make sure this can be resolved by container dns
-  #Mandatory to configure atlease one slice
-  nssaiSst0: 1 # should match with SMF information
-  nssaiSd0: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF)
-  dnn0: "oai" # should match with SMF information
-  #Upto 4 slices can be added from here to add more you need to add manullay in config.yaml. Please follow the same way of adding slices nssaiSST$,nssaiSd$,dnn$ ($=0,1,2,3)
-  nssaiSst1: 1 # should match with SMF information (Optional, if removed slice will not be configured)
-  nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
-  dnn1: "ims" # should match with SMF information
-
 
 ## Debugging section
 start:

@@ -4,18 +4,22 @@ The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [
 
 **NOTE**: All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations.
 
+## Disclaimer
+
+Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and all infrastructure related information include image defination will be in `values.yaml`.
+
 ## Introduction
 
 OAI-AMF follows 3GPP release 16, more information about the feature set can be found on [AMFs WiKi page](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf/-/wikis/home). The source code be downloaded from [GitLab](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-amf)
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AMF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN5G-AMF/) publishes every `develop` and `master` branch image of OAI-AMF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-amf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
 
 The helm chart of OAI-AMF creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap (Contains the configuration file for AMF)
+4. Configmap (Contains the mounted copy of AMF Configuration file)
 5. Service account
 6. Network-attachment-definition (Optional only when multus is used)
 
@@ -33,7 +37,9 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
+
 ```
 
 ## Parameters
@@ -51,6 +57,8 @@ The directory structure
 |serviceAccount.create        |true/false                     |                                         |
 |serviceAccount.annotations   |String                         |                                         |
 |serviceAccount.name          |String                         |                                         |
+|exposedPorts.sctp            |Integer                        |SCTP port to be exposed                  |
+|exposedPorts.http            |Integer                        |HTTP port to be exposed                  |
 |podSecurityContext.runAsUser |Integer (0,65534)              |Mandatory to use 0                       |
 |podSecurityContext.runAsGroup|Integer (0,65534)              |Mandatory to use 0                       |
 |multus.create                |true/false                     |default false                            |
@@ -59,37 +67,6 @@ The directory structure
 |multus.defaultGateway        |IPV4                           |Default route inside container (optional)|
 |multus.hostInterface         |HostInterface Name             |NA                                       |
 
-
-### Configuration parameter
-
-|Parameter                      |Mandatory/Optional          |Remark                                      |
-|-------------------------------|----------------------------|--------------------------------------------|
-|config.mcc                     |Mandatory                   |Mobile Country Code                         |
-|config.mnc                     |Mandatory                   |Mobile Network Code                         |
-|config.regionId                |Mandatory                   |Region ID                                   |
-|config.amfSetId                |Mandatory                   |AMF SetID                                   |
-|config.logLevel                |Optional                    |Default info, select info/debug/error       |
-|config.tac                     |Hexadecimal/Mandatory       |Tracking aread code                         |
-|config.sst0                    |Integer 1-256/Mandatory     |Slice Service Type 0                        |
-|config.sd0                     |Integer/Hexadecimal/Optional|                                            |
-|config.sst1                    |Optional                    |                                            |
-|config.sd1                     |Optional                    |                                            |
-|config.amfInterfaceNameForNGAP |eth0/net1/Mandatory         |net1 when multus is used                    |
-|config.amfInterfaceNameForSBI  |eth0/Mandatory              |                                            |
-|config.amfInterfaceSBIHTTPPort |Integer/Mandatory           |Standard port 80                            |
-|config.amfInterfaceSBIHTTP2Port|Integer/Mandatory           |8080 if 80 is already inused                |
-|config.smfFqdn                 |Mandatory                   |SMF ip-address/FQDN                         |
-|config.nrfFqdn                 |Mandatory                   |NRF ip-address/FQDN                         |
-|config.ausfFqdn                |Mandatory                   |AUSF ip-address/FQDN                        |
-|config.nfRegistration          |Mandatory                   |yes/no                                      |
-|config.nrfSelection            |Optional                    |yes/no                                      |
-|config.smfSelection            |Mandatory                   |It helps in selecting the SMF via NRF       |
-|config.externalAusf            |Mandatory                   |Always yes when using AUSF                  |
-|config.useHttp2                |Mandatory (yes/no)          |if using HTTP/2 change the port for HTTP/1.1|
-|config.mySqlServer             |Optional                    |if not using AUSF                           |
-|config.mySqlUser               |Optional                    |if not using AUSF                           |
-|config.externalNssf            |Optional                    |if not using AUSF                           |
-|config.mySqlPass               |Optional                    |if not using AUSF                           |
 
 ## Advanced Debugging Parameters
 

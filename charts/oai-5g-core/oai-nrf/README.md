@@ -13,7 +13,7 @@ The helm chart of OAI-NRF creates multiples Kubernetes resources,
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap
+4. Configmap (Contains mounted configuration file of NRF)
 5. Service account
 6. PVC (optional only when enabled): It is used for saving pcaps. 
 
@@ -30,6 +30,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml
 
 1 directory, 10 files

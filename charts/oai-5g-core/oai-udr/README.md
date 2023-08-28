@@ -29,6 +29,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
 ```
 

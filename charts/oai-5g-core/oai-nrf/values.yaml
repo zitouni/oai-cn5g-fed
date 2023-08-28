@@ -25,12 +25,8 @@ podSecurityContext:
   runAsUser: 0
   runAsGroup: 0
 
-config:
-  nrfInterfaceNameForSBI: "eth0" # net1 if multus.create is set true
-  nrfInterfacePortForSBI: "80"
-  nrfInterfaceHttp2PortForSBI: "8080"
-  nrfApiVersion: "v1"
-  logLevel: "debug"   
+exposedPorts:
+  sbi: 80
 
 ## Debugging section
 start:

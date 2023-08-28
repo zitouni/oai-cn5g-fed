@@ -1,21 +1,21 @@
-# Helm Chart for OAI Serving and Packet Data Network Gateway User Plane (SPGW-U)
+# Helm Chart for OAI User Plane Network Function (UPF)
 
-The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for SPGWU except `privileged` flag to be true. SPGWU needs to create tunnel interface for GTP and it creates NAT rules for packets to go towards internet from N6. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. UPF requires eBPF in the kernel if you want to test it in eBPF mode else it can be used with simple switch. In both the modes UPF requires `privileged` flag to be `true`. UPF needs to create tunnel interface for GTP and it creates NAT rules for packets to go towards internet from N6.
 
 **NOTE**: All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations. 
 
 ## Introduction
 
-[OAI-SPGWU-TINY](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny) is the 4G CUPS S/PGWU. We modified it to work for 5G deployments with GTP-U extension header. 
+[OAI-UPF](https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny) is the 4G CUPS S/PGWU. We modified it to work for 5G deployments with GTP-U extension header. 
 
-OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN-SPGWU-TINY/) publishes every `develop` and `master` branch image of OAI-SPGWU-TINY on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-spgwu-tiny) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that. 
+OAI [Jenkins Platform](https://jenkins-oai.eurecom.fr/job/OAI-CN-SPGWU-TINY/) publishes every `develop` and `master` branch image of OAI-UPF on [docker-hub](https://hub.docker.com/r/oaisoftwarealliance/oai-upf) with tag `develop` and `latest` respectively. Apart from that you can find tags for every release `VX.X.X`. We only publish Ubuntu 18.04/20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that. 
 
-The helm chart of OAI-SPGWU-TINY creates multiples Kubernetes resources,
+The helm chart of OAI-UPF creates multiples Kubernetes resources,
 
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap (Contains the configuration file for SPGWU)
+4. Configmap (Contains the mounted configuration file for UPF)
 5. Service account
 6. Network-attachment-definition (Optional only when multus is used)
 
@@ -33,6 +33,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
 ```
 
@@ -82,7 +83,7 @@ All the parameters in `config` block of values.yaml are explained with a comment
 
 |Parameter                        |Allowed Values                 |Remark                                        |
 |---------------------------------|-------------------------------|----------------------------------------------|
-|start.spgwu                      |true/false                     |If true spgwu container will go in sleep mode   |
+|start.upf                        |true/false                     |If true upf container will go in sleep mode   |
 |start.tcpdump                    |true/false                     |If true tcpdump container will go in sleepmode|
 |includeTcpDumpContainer          |true/false                     |If false no tcpdump container will be there   |
 |tcpdumpimage.repository          |Image Name                     |                                              |

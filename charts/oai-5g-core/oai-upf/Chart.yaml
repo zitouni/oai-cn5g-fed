@@ -19,26 +19,22 @@
 #      contact@openairinterface.org
 ################################################################################
 apiVersion: v2
-name: oai-spgwu-tiny
-description: A Helm chart for UPF/SPGWU TINY as network function
+name: oai-upf
+description: A Helm chart for UPF as network function
 
 type: application
 
 icon: http://www.openairinterface.org/wp-content/uploads/2015/06/cropped-oai_final_logo.png
 
-version: v1.5.1
+version: v2.0.0
 
-appVersion: develop-v1.5.1
+appVersion: v2.0.0
 
 keywords:
-  - EPC
-  - 4G
   - 5G
-  - SPGW-U
   - UPF
 
 sources:
-  - https://github.com/OPENAIRINTERFACE/openair-spgwu-tiny
   - https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed
   - https://openairinterface.org/
 

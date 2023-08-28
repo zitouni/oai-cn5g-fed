@@ -27,6 +27,7 @@ podSecurityContext:
 config:
   tz: "Europe/Paris"
   instance: "0"
+  logLevel: "info"
   nssfname: "oai-nssf"
   pidDirectory: "/var/run"
   nssfFqdn: "oai-nssf-svc"

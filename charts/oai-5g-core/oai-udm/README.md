@@ -13,7 +13,7 @@ The helm chart of OAI-UDM creates multiples Kubernetes resources,
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap
+4. Configmap (Contains mounted configuration file of UDM)
 5. Service account
 
 The directory structure
@@ -29,6 +29,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
 ```
 

@@ -78,7 +78,7 @@ spec:
         readinessProbe:
           exec:
             command:
-            - sh
+            - /bin/bash
             - /openair-nssf/bin/healthcheck.sh
           initialDelaySeconds: 5
           periodSeconds: 5
@@ -87,7 +87,7 @@ spec:
         livenessProbe:
           exec:
             command:
-            - sh
+            - /bin/bash
             - /openair-nssf/bin/healthcheck.sh
           initialDelaySeconds: 10
           periodSeconds: 5
