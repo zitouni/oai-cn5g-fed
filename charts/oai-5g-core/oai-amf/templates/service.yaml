@@ -14,5 +14,11 @@ spec:
       port: {{ .Values.exposedPorts.sbi }}
       targetPort: {{ .Values.exposedPorts.sbi }}
       protocol: TCP
+    {{- if not .Values.multus.create }}
+    - name: sctp
+      port: {{ .Values.exposedPorts.sctp }}
+      targetPort: {{ .Values.exposedPorts.sctp }}
+      protocol: SCTP
+    {{- end }}
   selector:
     {{- include "oai-amf.selectorLabels" . | nindent 4 }}

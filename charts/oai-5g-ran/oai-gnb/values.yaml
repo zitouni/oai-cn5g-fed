@@ -9,7 +9,7 @@ nfimage:   # image name either locally present or in a public/private repository
   pullPolicy: IfNotPresent
 
 # good to use when pulling images from docker-hub mention 
-imagePullSecrets: 
+imagePullSecrets:
  - name: "regcred"
 
 serviceAccount:
@@ -88,7 +88,7 @@ config:
   nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
   nssaiSd0: "ffffff"    #values in hexa-decimal format
   #entrypoint.sh tries to resolve the amfHost name if the resolution did not work gNB will not start
-  amfIpAddress: "oai-amf-svc"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
+  amfIpAddress: "oai-amf"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
   gnbNgaIfName: "eth0"            # if multus.n2Interface.create is true then use n2 
   gnbNgaIpAddress: "status.podIP" # if multus.n2Interface.create is true then use multus.n2Interface.Ipadd 
   gnbNguIfName: "eth0"   #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0 

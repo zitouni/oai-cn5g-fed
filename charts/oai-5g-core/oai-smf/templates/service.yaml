@@ -12,7 +12,7 @@ spec:
   selector:
     {{- include "oai-smf.selectorLabels" . | nindent 4 }}
   ports:
-    {{- if .Values.multus.create }}
+    {{- if not .Values.multus.create }}
     - name: oai-smf
       # Port accessible outside cluster
       port: {{ .Values.exposedPorts.n4 }}

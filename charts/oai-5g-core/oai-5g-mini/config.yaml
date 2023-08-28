@@ -57,24 +57,6 @@ nfs:
     n9:
       interface_name: eth0
       port: 2152
-  udm:
-    host: oai-udm
-    sbi:
-      port: 80
-      api_version: v1
-      interface_name: eth0
-  udr:
-    host: oai-udr
-    sbi:
-      port: 80
-      api_version: v1
-      interface_name: eth0
-  ausf:
-    host: oai-ausf
-    sbi:
-      port: 80
-      api_version: v1
-      interface_name: eth0
   nrf:
     host: oai-nrf
     sbi:
@@ -82,7 +64,7 @@ nfs:
       api_version: v1
       interface_name: eth0
 
-#### Common for UDR and AMF
+#### For AMF
 database:
   host: oai-5g-basic-mysql
   user: test
