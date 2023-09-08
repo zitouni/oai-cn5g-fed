@@ -223,18 +223,16 @@ upf:
   smfs:
     - host: oai-smf            # To be used for PFCP association in case of no-NRF
   upf_info:
-    - sst: 1
-      sd: 0xFFFFFF
-      dnnList:
-        - dnn: oai
-    - sst: 1
-      sd: 1
-      dnnList:
-        - dnn: oai.ipv4
-    - sst: 222
-      sd: 123
-      dnnList:
-        - dnn: default
+    sNssaiUpfInfoList:
+      - sNssai: *embb_slice1
+        dnnUpfInfoList:
+          - dnn: "oai"
+      - sNssai: *embb_slice2
+        dnnUpfInfoList:
+          - dnn: "oai.ipv4"
+      - sNssai: *custom_slice
+        dnnUpfInfoList:
+          - dnn: "default"
 
 ## DNN configuration
 dnns:
