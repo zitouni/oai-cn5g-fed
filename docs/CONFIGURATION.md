@@ -307,13 +307,13 @@ The allowed values are described in the following table:
 
 | Name            | Type   | Description                                         | Allowed values                              | Default value | Mandatory |
 |:----------------|:-------|:----------------------------------------------------|:--------------------------------------------|:--------------|-----------|
-| DB Host         | String | Host of the database to connect                     | Any string                                  |               | Yes       |
-| DB User         | String | User to authenticate to the database                | Any string                                  |               | Yes       |
-| DB Type         | String | Type of the database (e.g. `mysql`)                 | Any string                                  |               | Yes       |
-| DB Password     | String | Password to authenticate to the database            | Any string                                  |               | Yes       |
-| DB Name         | String | Name of the database to use                         | Any string                                  |               | Yes       |
+| DB Host         | String | Host of the database to connect                     | Any string                                  | `mysql`       | Yes       |
+| DB User         | String | User to authenticate to the database                | Any string                                  | `root`        | Yes       |
+| DB Type         | String | Type of the database (e.g. `mysql`)                 | `mysql`, `cassandra`, `mongodb`             | `mysql`       | Yes       |
+| DB Password     | String | Password to authenticate to the database            | Any string                                  | `linux`       | Yes       |
+| DB Name         | String | Name of the database to use                         | Any string                                  | `oai_db`      | Yes       |
 | Generate Random | Bool   | ?????????? TODO ??                                  | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Timeout         | Int    | ?? TODO (I suspect the timeout for DB connections?) | Any integer                                 |               | Yes       |
+| Timeout         | Int    | ?? TODO (I suspect the timeout for DB connections?) | Any integer                                 | 300           | Yes       |
 
 The values you provide for the database connection will be used to connect to the database. In case of a
 misconfiguration, you will be informed (e.g., when the DB host is not reachable or you provided a wrong password).
