@@ -487,17 +487,11 @@ pipeline {
 }
 
 def getLastCommitFromBranch(index, repoName, branchName) {
-  if (index != UPF) {
-    echo "Checking on GitLab"
-    shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.id"
-    shaone = shaone.trim()
-    shaone = shaone.replaceAll('"','')
-    shaone = shaone.take(8)
-  } else {
-    echo "Cannot check on GitLab b/c private"
-    shaone = sh returnStdout: true, script: "sudo podman images 'localhost/oai-upf:develop-*' | grep -m1 develop | awk {'print \$2'} | sed -e 's@develop-@@'"
-    shaone = shaone.trim()
-  }
+  echo "Checking on GitLab"
+  shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.id"
+  shaone = shaone.trim()
+  shaone = shaone.replaceAll('"','')
+  shaone = shaone.take(8)
   return "${branchName}-${shaone}"
 }
 
