@@ -112,10 +112,10 @@ upf:
     enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
   remote_n6_gw: localhost      # Dummy host since simple-switch does not use N6 GW
   upf_info:
-    - sst: 128
-      sd: 128
-      dnnList:
-        - dnn: default
+    sNssaiUpfInfoList:
+      - sNssai: *slice1
+        dnnUpfInfoList:
+          - dnn: "default"
 
 ## DNN configuration
 dnns:
