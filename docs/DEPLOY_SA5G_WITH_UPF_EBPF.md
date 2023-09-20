@@ -381,6 +381,7 @@ docker-compose-host $: docker logs oai-upf > /tmp/oai/upf-ebpf-gnbsim/upf.log 2>
 docker-compose-host $: docker logs oai-udr > /tmp/oai/upf-ebpf-gnbsim/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/upf-ebpf-gnbsim/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/upf-ebpf-gnbsim/ausf.log 2>&1
+docker-compose-host $: docker logs oai-ext-dn > /tmp/oai/upf-ebpf-gnbsim/ext-dn.log 2>&1
 docker-compose-host $: docker logs gnbsim-ebpf > /tmp/oai/upf-ebpf-gnbsim/gnbsim-ebpf.log 2>&1
 ```
 
