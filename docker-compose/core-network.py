@@ -318,18 +318,18 @@ def check_config(file_name):
             else:
                 logging.debug('\033[0;32m UPF is receiving heartbeats from SMF\033[0m....')
     # With noNRF configuration checks
+    # Only the Mini-No-NRF is supported anymore.
     elif args.scenario == '2':
         logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
-        if file_name == BASIC_VPP_NO_NRF:
-            cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
-            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: gw1"'
-            upf_logs1 = run_cmd(cmd1)
-            upf_logs2 = run_cmd(cmd2)
-            if upf_logs1 is None or upf_logs2 is None:
-                logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
-                deployStatus = False
-            else:
-                logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
+        cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+        cmd2 = 'docker logs oai-smf 2>&1 | grep "Resolve IP Addr 192.168.70.134, FQDN oai-upf"'
+        upf_logs1 = run_cmd(cmd1)
+        upf_logs2 = run_cmd(cmd2)
+        if upf_logs1 is None or upf_logs2 is None:
+            logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
+            deployStatus = False
+        else:
+            logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
         status = 0
         for x in range(4):
             cmd = "docker logs oai-smf 2>&1 | grep  'handle_receive(16 bytes)'"
