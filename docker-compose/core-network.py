@@ -121,7 +121,7 @@ def deploy(file_name, extra_interface=False):
         cmd = f'docker-compose -f {file_name} up -d mysql'
         res = run_cmd(cmd, False)
         if res is None:
-            exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+            sys.exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
         print(res)
         # Then we can start the capture on the "demo-oai" interface.
         # When we undeploy, the process will terminate automatically.
@@ -142,7 +142,7 @@ def deploy(file_name, extra_interface=False):
                 cmd = re.sub('70', '72', cmd)
         res = run_cmd(cmd, False)
         if res is None:
-            exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+            sys.exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
         cmd = f'sleep 20; sudo chmod 666 {args.capture}'
         run_cmd(cmd)
         # Finally deploy the rest of the network functions.
@@ -153,7 +153,7 @@ def deploy(file_name, extra_interface=False):
         cmd = f'sudo chmod 666 {args.capture}'
         run_cmd(cmd)
     if res is None:
-        exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+        sys.exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
     logging.debug('\033[0;32m OAI 5G Core network started, checking the health status of the containers... takes few secs\033[0m....')
     notSilentForFirstTime = False
@@ -162,7 +162,7 @@ def deploy(file_name, extra_interface=False):
         res = run_cmd(cmd, notSilentForFirstTime)
         notSilentForFirstTime = True
         if res is None:
-            exit(f'\033[0;31m Incorrect/Unsupported executing command "{cmd}"')
+            sys.exit(f'\033[0;31m Incorrect/Unsupported executing command "{cmd}"')
         time.sleep(2)
         cnt = res.count('(healthy)')
         if cnt == ct:
@@ -172,9 +172,11 @@ def deploy(file_name, extra_interface=False):
     if cnt != ct:
         logging.error('\033[0;31m Core network is un-healthy, please see below for more details\033[0m....')
         print(res)
-        exit(-1)
+        sys.exit(-1)
     time.sleep(10)
-    check_config(file_name)
+    status = check_config(file_name)
+    if not status:
+        sys.exit(-1)
 
 def undeploy(file_name):
     """UnDeploy the docker container
@@ -186,7 +188,7 @@ def undeploy(file_name):
     cmd = f'docker-compose -f {file_name} down -t 0'
     res = run_cmd(cmd, False)
     if res is None:
-        exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
+        sys.exit(f'\033[0;31m Incorrect/Unsupported executing command {cmd}')
     print(res)
     cmd = f'docker volume prune -f'
     run_cmd(cmd, True)
@@ -220,6 +222,7 @@ def check_config(file_name):
     """
 
     curl_cmd = generate_nrf_curl_cmd(file_name)
+    deployStatus = True
 
     logging.debug('\033[0;34m Checking if the containers are configured\033[0m....')
     # With NRF configuration check
@@ -261,6 +264,7 @@ def check_config(file_name):
         if amf_registration_nrf is None or smf_registration_nrf is None or upf_registration_nrf is None or \
            ausf_registration_nrf is None or udm_registration_nrf is None or udr_registration_nrf is None:
              logging.error('\033[0;31m Registration problem with NRF, check the reason manually\033[0m....')
+             deployStatus = False
         else:
             if file_name == BASIC_VPP_W_NRF or file_name == BASIC_W_NRF:
                 logging.debug('\033[0;32m AUSF, UDM, UDR, AMF, SMF and UPF are registered to NRF\033[0m....')
@@ -274,14 +278,14 @@ def check_config(file_name):
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
                 logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
-                exit(-1)
+                deployStatus = False
             else:
                 logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
             cmd1 = 'docker logs oai-smf 2>&1 | grep "PFCP HEARTBEAT PROCEDURE"'
             upf_logs1 = run_cmd(cmd1)
             if upf_logs1 is None:
                 logging.error('\033[0;31m SMF is NOT receiving heartbeats from UPF\033[0m....')
-                exit(-1)
+                deployStatus = False
             else:
                 logging.debug('\033[0;32m SMF is receiving heartbeats from UPF\033[0m....')
         elif file_name == BASIC_W_NRF:
@@ -292,14 +296,14 @@ def check_config(file_name):
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None or upf_logs2 is None:
                 logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
-                exit(-1)
+                deployStatus = False
             else:
                 logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
             cmd1 = 'docker logs oai-smf 2>&1 | grep "PFCP HEARTBEAT PROCEDURE"'
             upf_logs1 = run_cmd(cmd1)
             if upf_logs1 is None:
                 logging.error('\033[0;31m SMF is NOT receiving heartbeats from UPF\033[0m....')
-                exit(-1)
+                deployStatus = False
             else:
                 logging.debug('\033[0;32m SMF is receiving heartbeats from UPF\033[0m....')
         else:
@@ -310,12 +314,22 @@ def check_config(file_name):
             upf_logs2 = run_cmd(cmd2)
             if upf_logs1 is None and upf_logs2 is None:
                 logging.error('\033[0;31m UPF is NOT receiving heartbeats from SMF\033[0m....')
-                exit(-1)
+                deployStatus = False
             else:
                 logging.debug('\033[0;32m UPF is receiving heartbeats from SMF\033[0m....')
     # With noNRF configuration checks
     elif args.scenario == '2':
         logging.debug('\033[0;34m Checking if SMF is able to connect with UPF\033[0m....')
+        if file_name == BASIC_VPP_NO_NRF:
+            cmd1 = 'docker logs oai-smf 2>&1 | grep "Received N4 ASSOCIATION SETUP RESPONSE from an UPF"'
+            cmd2 = 'docker logs oai-smf 2>&1 | grep "Node ID Type FQDN: gw1"'
+            upf_logs1 = run_cmd(cmd1)
+            upf_logs2 = run_cmd(cmd2)
+            if upf_logs1 is None or upf_logs2 is None:
+                logging.error('\033[0;31m UPF did not answer to N4 Association request from SMF\033[0m....')
+                deployStatus = False
+            else:
+                logging.debug('\033[0;32m UPF did answer to N4 Association request from SMF\033[0m....')
         status = 0
         for x in range(4):
             cmd = "docker logs oai-smf 2>&1 | grep  'handle_receive(16 bytes)'"
@@ -326,7 +340,13 @@ def check_config(file_name):
                 status += 1
         if status > 2:
             logging.debug('\033[0;32m UPF is receiving heartbeats from SMF\033[0m....')
-    logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
+        else:
+            deployStatus = False
+    if deployStatus:
+        logging.debug('\033[0;32m OAI 5G Core network is configured and healthy\033[0m....')
+    else:
+        logging.error('\033[0;32m OAI 5G Core network may not be properly deployed\033[0m....')
+    return deployStatus
 
 def run_cmd(cmd, silent=True):
     if not silent:
