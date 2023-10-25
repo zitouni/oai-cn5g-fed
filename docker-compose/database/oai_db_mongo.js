@@ -210,52 +210,52 @@ db.AccessAndMobilitySubscriptionData.insertMany([
         ueid: '208950000000125',
         servingPlmnid: '20895',
         nssai: {
-            defaultSingleNssais: {
+            defaultSingleNssais: [{
                 'sst': 1,
-                'sd': 1
-            }
+                'sd': '1'
+            }]
         }
     },
     {
         ueid: '208950000000126',
         servingPlmnid: '20895',
         nssai: {
-            defaultSingleNssais: {
+            defaultSingleNssais: [{
                 'sst': 1,
-                'sd': 1
-            }
+                'sd': '1'
+            }]
         }
     },
     {
         ueid: '208950000000127',
         servingPlmnid: '20895',
         nssai: {
-            defaultSingleNssais: {
+            defaultSingleNssais: [{
                 'sst': 1,
-                'sd': 1
-            }
+                'sd': '1'
+            }]
         }
     },
     {
         ueid: '208950000000128',
         servingPlmnid: '20895',
         nssai: {
-            defaultSingleNssais: {
+            defaultSingleNssais: [{
                 'sst': 1,
-                'sd': 1
-            }
+                'sd': '1'
+            }]
         }
     },
     {
         ueid: '208950000000129',
         servingPlmnid: '20895',
         nssai: {
-            defaultSingleNssais: {
+            defaultSingleNssais: [{
                 'sst': 1,
-                'sd': 1
-            }
+                'sd': '1'
+            }]
         }
-    }
+    },
 ]);
 
 
@@ -328,7 +328,7 @@ db.createCollection("Amf3GppAccessRegistration", {
                     description: "DR flag"
                 },
                 ratType: {
-                    bsonType: "object",
+                    bsonType: "string",
                     description: "Radio access technology type"
                 },
                 urrpIndicator: {
