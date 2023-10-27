@@ -23,27 +23,47 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 1.  [Understanding the (e)BPF-XDP](#1-understanding-ebpf-xdp)
     1.  [(extended) Berkeley Packet Filtering ((e)BPF)](#1-1-ebpf)
-    2.  [eXpress Data Path (XDP)](#1-xdp)
+    2.  [eXpress Data Path (XDP)](#1-2-xdp)
 2.  [UPF Architecture](#2-upf-architecture)
-    1.  [Management layer](#1-management-layer)
-    2.  [Datapath layer](#2-datapath-layer)
+    1.  [Management layer](#2-1-management-layer)
+    2.  [Datapath layer](#2-2-datapath-layer)
 3.  [OAI 5G Testbed](#3-oai-5g-testbed)
+    1.  [UPF Standalone Deployment](#3-1-upf-standalone)
+    2.  [UPF Docker Container Deployment](#3-2-upf-docker-container)
 4.  [Pre-requisites](#4-pre-requisites)
-    1.  [5G CN pre-requisites](#1-cn-pre-requisites)
-    2.  [UPF pre-requisistes](#2-upf-pre-requisites)
-5.  [Deployment](#4-deployment)
-2.  [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
-3.  Configuring Host Machines
-4.  Configuring OAI 5G Core Network Functions
-5.  [Deploying OAI 5G Core Network with VPP-UPF](#5-deploying-oai-5g-core-network)
-6.  [Stimuli with a RAN emulator](#6-stimuli-with-a-ran-emulator)
-7.  [Recover the logs](#7-recover-the-logs)
+    1.  [5G CN pre-requisites](#4-1-cn-pre-requisites)
+    2.  [UPF pre-requisistes](#4-2-upf-pre-requisites)
+    3.  [UPF System Requirements](#4-3-upf-sys-requirements)
+        1.  [Standalone Deployment](#4-3-1-standalone)
+        2.  [Docker Container Deployment](#4-3-2-docker-container)
+5.  [Network Functions Configuration](#5-nf-config)
+    1.  [SMF](#5-1-smf-config)
+    2.  [AMF](#5-2-amf-config)
+    3.  [UPF](#5-3-upf-config)
+    4.  [OAI-EXT-DN-GW](#3-ext-dn-config)
+6.  [Deploying OAI 5G Core Network](#6-deploy-5gcn)
+7.  [Stimuli with a RAN emulator](#7-stimuli-with-a-ran-emulator)
+    1.  [Test with Gnbsim](#7-1-test-with-gnbsim)
+    2.  [Recover Logs](#7-2-recover-logs)
 8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
-9.  [Notes](#9-notes)
+    1.  [Undeploy the RAN emulator](#8-1-undeploy-ran)
+    2.  [Undeploy the Core Network](#8-2-undeploy-5gcn)
+9.  [Performance Evaluation](#9-performance)
+    1.  [UPF as Standalone](#9-1-upf-standalone)
+        1.  [Setup Configuration](#9-1-1-setup-configuration)
+        2.  [Network Configuration](#9-1-2-network-configuration)
+        3.  [Results](#9-1-3-results)
+            1.  [ICMP Traffic](#9-1-3-1-icmp)
+            2.  [TCP Traffic](#9-1-3-2-tcp)
+            3.  [UDP Traffic](#9-1-3-3-udp)
+    2.  [UPF as Docker Container](#9-2-upf-docker-container)
+    3.  [UPF verus SPGWTiny](#9-3-upf-versus-spgtiny)
 
 
 
 -----------------------------------------------------------------------------------------
+__Note:__ If you are familiar with eBPF and XDP you can skip Section 1
+
 ## 1. Understanding the (e)BPF-XDP
 
 ### i. (extended) Berkeley Packet Filtering ((e)BPF)
@@ -101,26 +121,39 @@ OAI-UPF-eBPF as a part of the OAI 5G mobile Core Network implements a data netwo
   <figcaption><b><font size = "5">Figure 1: UPF Architecture: eBPF XDP based</font></b></figcaption>
 
 ### i. Management layer
-The Management layer is a user space library, which is responsible about PFCP sessions management. It receives packet processing rules from SMF via the reference point N4, and configures the Datapath for proper forwarding. It implements functions such as `handle_pfcp_session_establishment_request()`, `handle_pfcp_session_modification_request()`, `handle_pfcp_session_deletion_request()`, to respectively create, update and delete a PFCP session. In addition to that, this layer is managing the eBPF programs lifecycle via CRUD functions; that is to say, it creates eBFP sessions (by distinguishing the uplink and downlink directions), update them , or delete them. It also compares PDRs with their precedence, extracts FARs, and creates and manages eBPF Maps, to name few of its role. 
+The Management layer is a user space library, which is responsible about PFCP sessions management. It receives packet processing rules from SMF via the reference point N4, and configures the Datapath for proper forwarding. It implements functions such as:   
+  - `handle_pfcp_session_establishment_request()`, 
+  - `handle_pfcp_session_modification_request()`, 
+  - `handle_pfcp_session_deletion_request()`,
+
+to respectively create, update and delete a PFCP session. In addition to that, this layer is managing the eBPF programs lifecycle via CRUD functions; that is to say, it creates eBFP sessions (by distinguishing the uplink and downlink directions), update them , or delete them. It also compares PDRs with their precedence, extracts FARs, and creates and manages eBPF Maps, to name few of its role.
 
 When a PFCP session request is received via the N4 interface, the request is parsed by `PFCP Session Manager`, which calls the `eBPF Program Manager` to dynamically load (update, or delete, respectively) an eBPF bytecode representing the new PFCP session context in case of establishment request (modification request, or deletion request, respectively). 
-There is one eBPF program running in kernel space for each PFCP session. The program contains the eBPF maps used to store
+There is at least one eBPF program running in kernel space for each PFCP session. These programs contain the eBPF maps used to store
 the PDRs and FARs. All the communication between the user space and the kernel space is through the libbpf library, which is maintained by the Linux kernel source tree. The PFCP Session Manager parses the structures received to eBPF map
 entries and updates the maps accordingly. The PFCP session context is created in Datapath Layer, where the user traffic will be handled. 
 
 ### ii. Datapath layer
-The Datapath layer is a kernel space layer based on based on eBPF XDP packet processing. Its job is to process the user traffic inside as fast as possible, which imply doing the treatment as close as possible to the NIC by using XDP hooks. When the UPF is started, a service chain function is created within three main components (a Parser, a Detector, and a Forwarder): the `PFCP Session Lookup` as a traffic parser, the `PFCP Session's PDR Lookup` represeting the traffic detector, and the `FAR Program` to forward the traffic. Each of these three main components is an eBPF XDP program, representing a pipeline with several stages. At each stage a decision is made on the packet, weither is will be passed to the next stage (XDP_PASS action), droped for some reasons (XDP_DROP), or redirected (XDP_REDIRECT). 
+In previous tutorials, we were using the `oai-spgwu-tiny` implementation as UPF. That implementation has a limited throughput capacity and is a pure software solution without any acceleration. In this tutorial, we unveil a new UPF version that embed two deployment modes; the `simple switch` mode and `eBPF-XDP`mode.
+
+
+  - `Simple Switch` Mode: is reusing the code from the `oai-spgwu-tiny` to do simple UPF features. The purpose of using this mode is first to show the functioning of the entire OAI 5G setup (RAN & CN), but also enable some functionalities that are not yet implemented within the eBPF-XDP deplyment mode. Please notice that this mode is hidden in Figure 1 for the sake of understanding and providing too much details. By default this mode (i.e., `Simple Switch`) is the one running.
+
+  - `eBPF-XDP` Mode: The main goal of using this mode is to seek for throughput and high UPF performance. This first release of UPF (v1.6.0) is offering yet basic features including (PDRs and FARs). In the upcoming versions we will implement additional features (such as QERs, MARs, and URRs). This mode is shown in Figure 1, and to be activated you have to use the line `enable_bpf_datapath: yes` in the config file `conf/basic_nrf_config_ebpf.yaml`. To disable the `eBPF-XDP` mode, you have to put the value of `enable_bpf_datapath` to `no`. 
+
+The two modes are independent, therefore if you want to switch between these two modes, you will have to restart the setup after updating the `enable_bpf_datapath` feature.  
+
+In what follows, our focus will be on the eBPF-XDP implementation.
+The Datapath layer is a kernel space layer based on eBPF XDP packet processing. Its job is to process the user traffic as fast as possible, which imply doing the treatment as close as possible to the NIC by using XDP hooks. When the UPF is started, a service chain function is created within three main components (a Parser, a Detector, and a Forwarder): the `PFCP Session Lookup` as a traffic parser, the `PFCP Session's PDR Lookup` represeting the traffic detector, and the `FAR Program` to forward the traffic. Each of these three main components is an eBPF XDP program, representing a pipeline with several stages. At each stage a decision is made on the packet, weither is will be passed to the next stage (XDP_PASS action), droped for some reasons (XDP_DROP), or redirected (XDP_REDIRECT). 
 
 The Parser (i.e., PFCP Session Lookup) parses the ingress traffic to check if it is an uplink (GTPu) or a downlink (UDP) flow. In case of Uplink (respectively, Downlink) traffic, the couple (TEID, UE IP SRC) (respectively, (PORT DST, TOS, UE IP DST)) key is used to get the PFCP session context with a matching PDR. A tail call to the Detector (PFCP Session's PDR Lookup) is executed
 Then. Here, the Traffic Detector searches inside the eBPF hash maps for the highest precedence PDR associated with the packet.
 If such PDR is found, the packet passes to the Forwarder (i.e., FAR Program). The Forwarder uses the FAR ID obtained from the PDR (with the highest precedence) to find the FAR object, which is stored in a eBPF hash map. This FAR object contains the action (e.g. forward) that will be applied, the outer header creation and the destination interface. Besides that, the FAR Program accesses other eBPF maps to search for the MAC address of the next hop and the index of the destination interface where the packet will be redirected. 
 
 
-
-
 ---------------------------------------------------------------------------------------------------------------------
 ## 3. OAI 5G Testbed
-
+### i.  UPF Standalone Deployment
 <figure>
   <img
     src="./images/5gcn_eBPF_testbed.png"
@@ -151,25 +184,20 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 <br/>
 
 
-
-In previous tutorials, we were using the `oai-spgwu-tiny` implementation UPF. That implementation has limited throughput capacity and is a pure SW solution.
-
-Moreover in this tutorial, we are going to integrate OAI 5G core with an UPF implementation that uses the eBPF kernel technology.
-
-
 The testbed is composed of four main machines defined as follow:
   - `OAI-5G-CN`: This machine is used to host the the OAI 5G Core Control plane composed of functions: `SMF/AMF/NRF/PCF/UDM/AUSF` and a `MySQL`.
   - `OAI-UPF-eBPF`: This machine is hosting the OAI UPF, it has three interfaces one is used for the management and N4 interface and the two others for the N3 and N6 interfaces.
-  - `Amarisoft-gNB`: This is the Amarisoft gNodeB
-  - `OAI-EXT-DN`: This machine is used as an external gateway it does the Source Natwork Address Translation (SNAT).  
+  - `OAI-gNB`: This is the OAI gNodeB
+  - `OAI-EXT-DN-GW`: This machine is used as an external gateway to do SNAT and Bridge.  
 
-In addition to that, we are using the quectel UE that will generate the the user traffic.
+In addition to that, we are using a quectel as a COTS UE to generate a user traffic.
 
-
+### ii.  UPF Docker Container Deployment
+To be continued ...
 
 ---------------------------------------------------------------------------------------------------------------------
 ## 4. Pre-requisites
-### i. 5G CN pre-requisites
+### i. 5G CN Pre-requisites
 Create a folder where you can store all the result files of the tutorial and later compare them with our provided result files, we recommend creating exactly the same folder to not break the flow of commands afterwards.
 
 <!---
@@ -184,14 +212,15 @@ docker-compose-host $: mkdir -p /tmp/oai/upf-ebpf-gnbsim
 docker-compose-host $: chmod 777 /tmp/oai/upf-ebpf-gnbsim
 ```
 
-### ii. UPF pre-requisistes
+### ii. UPF Pre-requisistes
 
   * Git 
   * gcc
-  * Clang
-  * make
-  * cmake 
-  * LLVM
+  * Clang >= v3.4.0
+  * make >= v4.2.1
+  * cmake >= v3.16.3
+  * LLVM >= v3.7.1
+  * kernel-headers >= v5.4 
   * binutils-dev 
   * libbpf-dev
   * libelf-dev 
@@ -201,19 +230,253 @@ docker-compose-host $: chmod 777 /tmp/oai/upf-ebpf-gnbsim
   * python3-docutils
   * tar
 
-If you want to run OAI-UPF-eBPF from sources you can first install these dependencies on ubutnu 20.04 and 22.04 using the commad:
+If you want to run OAI-UPF-eBPF from sources you can first install these dependencies on ubutnu 20.04 or 22.04 using the commad:
 
 ```console
  oai-cn5g-upf$sudo apt install -y git gcc-multilib clang make cmake binutils-dev \
       libbpf-dev libelf-dev libpcap-dev zlib1g-dev \
       llvm libcap-dev python3-docutils tar
  ```
+
+### iii. UPF System Requirements
+
+#### a. Standalone Deployment
+  * 64-bit kernel with kernel-headers >= v5.4
+  * 3 network interfaces for N3, N4, and N6/N9 reference points.
+  * Require for root privileges (i.e. you have to use `sudo` mode).
+  * At least 4GB of RAM.
+
+#### b. Docker Container Deployment
+  * Require for root privileges (i.e. you have to use `sudo` mode).
+  * `network_mode: host` (i.e., use the host networking).
 ---------------------------------------------------------------------------------------------------------------------
-## 5. Deploying OAI 5g Core Network
+## 5. Network Functions Configuration
+
+### i. SMF
+Please follow the [SMF Config tutorial](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/yaml_config_documentation/docs/CONFIGURATION.md?ref_type=heads) for the SMF configuration.
+
+Here we focus on the SMF details that needed to update (if not set by default) in order to make the SMF interacting with both AMF and UPF. Note that the `basic_nrf_config_ebpf.yaml` that is used as a shared volume is used by entire 5GCN functions including the UPF.
+
+```console
+$ cat docker-compose-basic-nrf-ebpf.yaml
+
+oai-smf:
+        expose:
+            - 80/tcp
+            - 8080/tcp
+            - 8805/udp
+        volumes:
+            - ./conf/basic_nrf_config_ebpf.yaml:/openair-smf/etc/config.yaml
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.133
+```
+
+We use the `eth0` interface with the IPv4 address 192.168.70.133 within `oai-smf` Docker container as `N4` reference point for listening to UDP traffic over the port 8805 exchanged with the UPF.
+
+```console
+$ cat conf/basic_nrf_config_ebpf.yaml
+
+nfs:
+  smf:
+    n4:
+      interface_name: eth0
+      port: 8805
+```
+
+In our premise we are using a local DNS on the `172.21.3.100`, so you may have to update this feature (i.e., `ue_dns.primary_ipv4`) with the DNS that you are using. As DNN we use `test` you may also update this value according to the DNN you want to use. For the current version, we are using default QoS Profile within this DNN(`5qi: 9`).
+
+```console 
+$ cat conf/basic_nrf_config_ebpf.yaml
+
+smf:
+  ue_mtu: 1500
+  ue_dns:
+    primary_ipv4: "172.21.3.100"
+    secondary_ipv4: "8.8.8.8"
+  smf_info:
+    sNssaiSmfInfoList:
+      - sNssai: *embb_slice1
+        dnnSmfInfoList:
+          - dnn: "test"
+  local_subscription_infos:
+    - single_nssai: *embb_slice1
+      dnn: "test"
+      qos_profile:
+        5qi: 9
+        session_ambr_ul: "200Mbps"
+        session_ambr_dl: "400Mbps"
+```
+
+
+
+### ii. AMF
+Please refer to the [Documentation](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/blob/yaml_config_documentation/docs/CONFIGURATION.md?ref_type=heads) for more details about the AMF configuration.
+
+```console 
+$ cat docker-compose-basic-nrf-ebpf.yaml
+
+oai-amf:
+        expose:
+            - 80/tcp
+            - 8080/tcp
+            - 38412/sctp
+        volumes:
+            - ./conf/basic_nrf_config_ebpf.yaml:/openair-amf/etc/config.yaml
+        networks:
+            public_net:
+                ipv4_address: 192.168.70.132
+```
+
+We use the eth0 interface with the IPv4 address 192.168.70.132 within oai-amf Docker container as `N2` reference point for listening to `SCTP` traffic over the port `38412` exchanged with the gNB.
+
+```console 
+$ cat conf/basic_nrf_config_ebpf.yaml
+nfs:
+  amf:
+    n2:
+      interface_name: eth0
+      port: 38412
+```
+
+We have used the values 505 & 01, and 0x0a000 for respectively mnc & mcc, and gNB tracking area code (tac)
+
+```console
+$ cat conf/basic_nrf_config_ebpf.yaml
+amf:
+  served_guami_list:
+    - mcc: 505
+      mnc: 01
+      amf_region_id: 80
+      amf_set_id: 001
+      amf_pointer: 01
+  plmn_support_list:
+    - mcc: 505
+      mnc: 01
+      tac: 0xa000
+      nssai:
+        - *embb_slice1
+```
+
+
+
+### iii. UPF
+__Note:__ in case you are deploying the UPF as Docker container, please update the reference points `N3` and `N6` accordingly.
+
+In This tutorial, the UPF is deployed as a standalone application on a bare-metal machine dedicated for this usage. There will be a docker version for the UPF and this tutorial will be updated.
+
+
+
+
+In this section of the docker-compose file, it is important to note the requirement for three distinct interfaces as outlined in the prerequisites. This distinction arises from the fact that the traffic being exchanged across these interfaces varies: on the N3 reference point, we handle GTP traffic, while on the N6 reference point, it's non-GTP traffic. Consequently, the approach to processing user traffic differs between N3 and N6, achieved through the utilization of eBPF-XDP programs.
+
+In this context, we need at least two eBPF programs, one for N3 and another for N6. However, the eBPF library permits the linkage and attachment of __only__ one XDP program per network interface. Therefore, we need two different interfaces. 
+
+On the other hand, disntinguishing the network interface used for the N4 traffic from the N3 and N6 interfaces is also needed. Indeed, N3 and N6 interfaces are linked to XDP programs that filter all traffic according to specific PDR rules. Additionally, it's worth noting that PFCP traffic does not match these PDR rules, hence if this kind of traffic goes throw network interface handeling N3 or N6 traffic, it will be droped. 
+
+```console
+$ cat conf/basic_nrf_config_ebpf.yaml
+nfs:
+  upf:
+      n3:
+        interface_name: enx00e04c6808f6
+        port: 2152
+      n4:
+        interface_name: demo-oai
+        port: 8805
+      n6:
+        interface_name: enx00e04c680455
+```
+
+```console
+$ cat conf/basic_nrf_config_ebpf.yaml
+upf:
+  support_features:
+    enable_bpf_datapath: yes    # If "on": eBPF is used as datapath 
+                                # else simpleswitch is used, 
+                                # DEFAULT= off
+    
+    enable_snat: no             # If "on": Source natting is done for UE, 
+                                # DEFAULT= off, 
+                                # NB: "on" is not yet implemented withing the UPF, 
+                                # However, we use the external gateway for SNAT.
+  
+  remote_n6_gw: oai-ext-dn      # Dummy host used for bridging and snating
+  upf_info:
+    sNssaiUpfInfoList:
+      - sNssai: *embb_slice1
+        dnnUpfInfoList:
+          - dnn: "test"
+```
+
+
+
+
+### iv. OAI-EXT-DN-GW
+For the first release of the UPF-eBPF we are using a gateway that has two roles:
+  - 1. __Bridging Functionality__: Since traffic handling occurs within the NIC through XDP programs, it bypasses the TCP/IP stack in the upper layers of the kernel. Consequently, when the UPF transmits traffic, it lacks awareness of routing tables. The decision regarding whether to exit the UPF at the L2 or L3 level necessitates the implementation of ARP tables or routing tables, respectively.\
+  In our specific use case, opting for an ARP Table proves more feasible than implementing complex routing strategies within the UPF, as the latter can introduce latency. Hence, a dedicated gateway is required, establishing a point-to-point connection with the UPF to leverage its MAC address as a bridge.\
+  This gateway's configuration is detailed in the UPF Configuration file (`config.yaml`), which can be found in the `oai-cn5g-upf/etc` folder. The relevant setting, `remote_n6_gw`, can be located under the `upf` section. The value of this feature, denoted as `remote_n6_gw`, corresponds to the source IPv4 address of the gateway connected to the UPF on the N6 interface.
+  
+  ```console
+  upf:
+  support_features:
+    enable_bpf_datapath: yes    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
+    enable_snat: no             # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: oai-ext-dn           
+  ```
+
+ __NB:__ In this example we have used `oai-ext-dn` as a value to `remote_n6_gw`, and this value is found is `/etc/hosts`:
+  ```console
+  ubuntu@eiffel:~/workspace/oai-cn5g-upf/etc$ cat /etc/hosts
+  127.0.0.1 localhost
+  192.168.74.135 oai-ext-dn
+  192.168.70.130 oai-nrf
+  192.168.71.141 oai-gnb
+  ```
+
+
+  - 2. __Snating Functionality__: SNAT or Source Network Address Translation allows traffic from COTS UE running in a private network to go out to the internet by going through a gateway capable of performing SNAT. The gateway replaces the outgoing COTS UE packets source IP with its own public IP. For this we have added the following iptables rule:
+  
+  ```bash
+  docker-compose-host $: sudo iptables -t nat -A POSTROUTING -o enp53s0 -s 12.1.1.130 -j SNAT --to 172.21.19.56
+  ```
+  Where the interface `enp53s0` is the OAI-EXT-DN-GW interface to the public network with the Ipv4 `172.21.19.56`, and the IPv4 `12.1.1.130` is the COTS UE IP address.
+
+  To generalize that, you can use CIDR notation to specify the range of IP addresses that should be subjected to Network Address Translation (NAT). Here's a generalized version of the rule:
+  
+  ```bash
+  docker-compose-host $: sudo iptables -t nat -A POSTROUTING -o enp53s0 -s 12.1.1.0/24 -j SNAT --to 172.21.19.56 
+  ```
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+-----------------------------------------------------------------------------------------------------------------------
+
+
+## 6. Deploying OAI 5G Core Network
+
+### 6.1 Start OAI 5G CN Docker Containers
 
 * We will use the same wrapper script for docker-compose that was used for previous tutorials to set up 5gcn with `UPF-eBPF`. Use the --help option to check how to use this wrapper script.
-
-**Note: - To use vpp-upf on bare metal, follow [these instructions.](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-vpp/-/blob/develop/docs/INSTALL_ON_HOST.md)**
 
 All the following commands shall be executed from the `oai-cn5g-fed/docker-compose` folder.
 
@@ -242,7 +505,7 @@ example:
 
 Currently in this tutorial format, we support a `basic` deployment with the `UPF-eBPF`: `basic-ebpf`,
 
-In that deployment configuration, you can deploy with `NRF` only (ie scenario `1`).
+In that deployment configuration, you can deploy with `NRF` only (i.e., scenario `1`).
 
 As a first-timer, we recommend that you first deploy without any PCAP capture. We also recommend no capture if you plan to run your CN5G deployment for a long time.
 
@@ -254,207 +517,384 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 
 **REMEMBER: if you are planning to run your CN5G deployment for a long time, the PCAP file can become huge!**
 
-``` shell
+<!---
+ ⠿ Network demo-oai-n3-net      Created 0.3ss
+ ⠿ Network demo-oai-n6-net      Created 0.2ss
+ !--->
+
+```shell
 docker-compose-host $: python3 ./core-network.py --type start-basic-ebpf --scenario 1 --capture /tmp/oai/upf-ebpf-gnbsim/upf-ebpf-gnbsim.pcap
-[2023-07-21 13:21:51,627] root:DEBUG:  Starting 5gcn components... Please wait....
-[2023-07-21 13:21:52,066] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml up -d mysql
-Creating network "demo-oai-public-net" with driver "bridge"
-Creating network "demo-oai-n3-net" with driver "bridge"
-Creating network "demo-oai-n6-net" with driver "bridge"
-Creating mysql ...
-Creating mysql ... done
+[2023-10-24 13:46:30,461] root:DEBUG:  Starting 5gcn components... Please wait....
+[2023-10-24 13:46:30,481] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml up -d mysql
+[+] Running 4/4
+ ⠿ Network demo-oai-public-net  Created 0.2ss
+ ⠿ Container mysql              Started 1.4ss
 
-[2023-07-21 13:21:53,267] root:DEBUG: nohup sudo tshark -i demo-oai -i demo-n3 -f "(not host 192.168.72.135 and not arp and not port 53 and not port 2152) or (host 192.168.72.135 and icmp)" -w /tmp/oai/upf-ebpf-gnbsim/upf-ebpf-gnbsim.pcap > /dev/null 2>&1 &
-[2023-07-21 13:22:13,285] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml up -d
-mysql is up-to-date
-Creating oai-nrf ...
-Creating oai-ext-dn ...
-Creating oai-ext-dn ... done
-Creating oai-nrf    ... done
-Creating oai-udr    ...
-Creating oai-udr    ... done
-Creating oai-udm    ...
-Creating oai-udm    ... done
-Creating oai-ausf   ...
-Creating oai-ausf   ... done
-Creating oai-amf    ...
-Creating oai-amf    ... done
-Creating oai-smf    ...
-Creating oai-smf    ... done
-Creating oai-upf    ...
-Creating oai-upf    ... done
+[2023-10-24 13:46:32,613] root:DEBUG: nohup sudo tshark -i demo-oai -i demo-n3 -f "(not host 192.168.72.135 and not arp and not port 53 and not port 2152) or (host 192.168.72.135 and icmp)" -w /tmp/oai/upf-ebpf-gnbsim/upf-ebpf-gnbsim.pcap > /dev/null 2>&1 &
+[sudo] password for ubuntu: 
+[2023-10-24 13:46:52,625] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml up -d
+[+] Running 5/6 ⠿ Container oai-ext-dn  Created 1.3s 
+⠿ Container mysql       Running 0.0ss
+⠿ Container oai-nrf     Created 1.3s2s
+⠿ Container oai-udr     Created 0.8ss
+⠿ Container oai-udm     Created 0.6ss
+⠿ Container oai-ausf    Started 9.3s 
+⠿ Container oai-amf     Started 10.0s 
+⠿ Container oai-smf     Started 10.3s 
 
-[2023-07-21 13:22:17,388] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
-[2023-07-21 13:22:17,389] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml ps -a
-[2023-07-21 13:22:30,227] root:DEBUG:  All components are healthy, please see below for more details....
-Name                 Command                  State                       Ports
+[2023-10-24 13:47:10,095] root:DEBUG:  OAI 5G Core network started, checking the health status of the containers... takes few secs....
+[2023-10-24 13:47:10,095] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml ps -a
+[2023-10-24 13:48:17,476] root:DEBUG:  All components are healthy, please see below for more details....
+
+NAME                COMMAND                  SERVICE             STATUS              PORTS
 ---------------------------------------------------------------------------------------------------
-mysql        docker-entrypoint.sh mysqld      Up (healthy)   3306/tcp, 33060/tcp
-oai-amf      /openair-amf/bin/oai_amf - ...   Up (healthy)   38412/sctp, 80/tcp, 8080/tcp, 9090/tcp
-oai-ausf     /openair-ausf/bin/oai_ausf ...   Up (healthy)   80/tcp, 8080/tcp
-oai-ext-dn   /bin/bash -c  ip route add ...   Up (healthy)
-oai-nrf      /openair-nrf/bin/oai_nrf - ...   Up (healthy)   80/tcp, 8080/tcp, 9090/tcp
-oai-smf      /openair-smf/bin/oai_smf - ...   Up (healthy)   80/tcp, 8080/tcp, 8805/udp
-oai-udm      /openair-udm/bin/oai_udm - ...   Up (healthy)   80/tcp, 8080/tcp
-oai-udr      /openair-udr/bin/oai_udr - ...   Up (healthy)   80/tcp, 8080/tcp
-oai-upf      python3 /openair-upf/bin/e ...   Up (healthy)   2152/udp, 8080/tcp, 8805/udp
-[2023-07-21 13:22:40,260] root:DEBUG:  Checking if the containers are configured....
-[2023-07-21 13:22:40,260] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
-[2023-07-21 13:22:40,260] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"
+mysql               "docker-entrypoint.s…"   mysql               running (healthy)   3306/tcp, 33060/tcp
+oai-amf             "/openair-amf/bin/oa…"   oai-amf             running (healthy)   80/tcp, 8080/tcp, 9090/tcp, 38412/sctp
+oai-ausf            "/openair-ausf/bin/o…"   oai-ausf            running (healthy)   80/tcp, 8080/tcp
+oai-nrf             "/openair-nrf/bin/oa…"   oai-nrf             running (healthy)   80/tcp, 8080/tcp, 9090/tcp
+oai-smf             "/openair-smf/bin/oa…"   oai-smf             running (healthy)   80/tcp, 8080/tcp, 8805/udp
+oai-udm             "/openair-udm/bin/oa…"   oai-udm             running (healthy)   80/tcp, 8080/tcp
+oai-udr             "/openair-udr/bin/oa…"   oai-udr             running (healthy)   80/tcp, 8080/tcp
+
+[2023-10-24 13:48:27,504] root:DEBUG:  Checking if the containers are configured....
+[2023-10-24 13:48:27,504] root:DEBUG:  Checking if AMF, SMF and UPF registered with nrf core network....
+[2023-10-24 13:48:27,504] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="AMF" | grep -o "192.168.70.132"
 192.168.70.132
-[2023-07-21 13:22:40,277] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"
+[2023-10-24 13:48:27,510] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="SMF" | grep -o "192.168.70.133"
 192.168.70.133
-[2023-07-21 13:22:40,293] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"
+[2023-10-24 13:48:27,516] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UPF" | grep -o "192.168.70.134"
 192.168.70.134
-[2023-07-21 13:22:40,309] root:DEBUG:  Checking if AUSF, UDM and UDR registered with nrf core network....
-[2023-07-21 13:22:40,309] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"
+
+[2023-10-24 13:48:27,523] root:DEBUG:  Checking if AUSF, UDM and UDR registered with nrf core network....
+[2023-10-24 13:48:27,523] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="AUSF" | grep -o "192.168.70.138"
 192.168.70.138
-[2023-07-21 13:22:40,324] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"
+[2023-10-24 13:48:27,529] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UDM" | grep -o "192.168.70.137"
 192.168.70.137
-[2023-07-21 13:22:40,337] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"
+[2023-10-24 13:48:27,535] root:DEBUG: curl -s -X GET --http2-prior-knowledge http://192.168.70.130:8080/nnrf-nfm/v1/nf-instances?nf-type="UDR" | grep -o "192.168.70.136"
 192.168.70.136
-[2023-07-21 13:22:40,349] root:DEBUG:  AMF, SMF and UPF are registered to NRF....
-[2023-07-21 13:22:40,350] root:DEBUG:  Checking if SMF is able to connect with UPF....
-[2023-07-21 13:22:40,417] root:DEBUG:  UPF is receiving heartbeats from SMF....
-[2023-07-21 13:22:40,418] root:DEBUG:  OAI 5G Core network is configured and healthy....
+[2023-10-24 13:48:27,541] root:DEBUG:  AMF, SMF and UPF are registered to NRF....
+[2023-10-24 13:48:27,541] root:DEBUG:  Checking if SMF is able to connect with UPF....
+[2023-10-24 13:48:27,571] root:DEBUG:  UPF is receiving heartbeats from SMF....
+[2023-10-24 13:48:27,571] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
 
-Here I have deployed with `NRF`:
 
-* The script validates that `AMF`, `SMF`, `UPF`, `AUSF`, `UDM` and `UDR` did register to `NRF`
+
+
+
+To check the status of the different containers, run the following command:
+```shell
+docker-compose-host $: docker ps 
+CONTAINER ID   IMAGE                                     COMMAND                  CREATED          STATUS                    PORTS                                    NAMES
+5064dc400acc   oaisoftwarealliance/oai-smf:develop       "/openair-smf/bin/oa…"   43 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp, 8805/udp               oai-smf
+813f70ec16de   oaisoftwarealliance/oai-amf:develop       "/openair-amf/bin/oa…"   44 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp, 9090/tcp, 38412/sctp   oai-amf
+df91ba4925ee   oaisoftwarealliance/oai-ausf:develop      "/openair-ausf/bin/o…"   44 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp                         oai-ausf
+6f04d0ae0277   oaisoftwarealliance/oai-udm:develop       "/openair-udm/bin/oa…"   44 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp                         oai-udm
+67f3582a91ad   oaisoftwarealliance/oai-udr:develop       "/openair-udr/bin/oa…"   44 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp                         oai-udr
+04514567425a   oaisoftwarealliance/oai-nrf:develop       "/openair-nrf/bin/oa…"   44 minutes ago   Up 43 minutes (healthy)   80/tcp, 8080/tcp, 9090/tcp               oai-nrf
+0b31a261a392   mysql:8.0                                 "docker-entrypoint.s…"   44 minutes ago   Up 44 minutes (healthy)   3306/tcp, 33060/tcp                      mysql
+ubuntu@eiffel:~$ 
+```
+
+### 6.2 Build UPF-eBPF
+In case of running the UPF as docker container, you will need first to access to your container using the following command:
+
+```console
+$ docker exec -it oai-upf bash
+```
+
+```shell 
+$ sudo make clean && make setup && make install
+```
+
+### 6.3 Run UPF
+
+```shell 
+$ sudo upf -o -c etc /config.yaml
+```
+
+
+### 6.4 Get the logs
+
+
+
+Here we have deployed with `NRF`:
+
+* The script validates that `AMF`, `SMF`, `AUSF`, `UDM` and `UDR` did register to `NRF`
 * The script also validates that SMF associates over `N4` with UPF.
 
 You can also see this with the container logs:
 
 1. UPF registration to NRF
-``` console
+```console
 $ docker logs oai-nrf
-[2023-07-21 13:22:14.655] [nrf_app] [start] Options parsed
-[2023-07-21 13:22:14.655] [config ] [info] Reading NF configuration from /openair-nrf/etc/config.yaml
-[2023-07-21 13:22:14.665] [config ] [debug] Unknown NF amf in configuration. Ignored
-[2023-07-21 13:22:14.665] [config ] [debug] Unknown NF smf in configuration. Ignored
-[2023-07-21 13:22:14.665] [config ] [debug] Unknown NF udm in configuration. Ignored
-[2023-07-21 13:22:14.665] [config ] [debug] Unknown NF udr in configuration. Ignored
-[2023-07-21 13:22:14.665] [config ] [debug] Unknown NF ausf in configuration. Ignored
-[2023-07-21 13:22:14.666] [config ] [debug] Validating configuration of Log Level
-[2023-07-21 13:22:14.666] [config ] [debug] Validating configuration of Register NF
-[2023-07-21 13:22:14.666] [config ] [debug] Validating configuration of HTTP Version
-[2023-07-21 13:22:14.666] [config ] [debug] Validating configuration of nrf
-[2023-07-21 13:22:14.667] [config ] [info] ==== OPENAIRINTERFACE nrf vBranch: HEAD Abrev. Hash: 63b0579 Date: Tue Jul 18 15:32:04 2023 +0000 ====
-[2023-07-21 13:22:14.667] [config ] [info] Basic Configuration:
-[2023-07-21 13:22:14.667] [config ] [info]   - Log Level..................................: debug
-[2023-07-21 13:22:14.667] [config ] [info]   - http_version...............................: 2
-[2023-07-21 13:22:14.667] [config ] [info]   nrf:
-[2023-07-21 13:22:14.667] [config ] [info]     - Host.....................................: oai-nrf
-[2023-07-21 13:22:14.667] [config ] [info]     - SBI
-[2023-07-21 13:22:14.667] [config ] [info]       + URL....................................: http://oai-nrf:8080
-[2023-07-21 13:22:14.667] [config ] [info]       + API Version............................: v1
-[2023-07-21 13:22:14.667] [config ] [info]       + IPv4 Address ..........................: 192.168.70.130
-[2023-07-21 13:22:14.667] [config ] [info] Peer NF Configuration:
-[2023-07-21 13:22:14.667] [nrf_app] [start] Starting...
-[2023-07-21 13:22:14.667] [nrf_app] [debug] Subscribe to NF status registered event
-[2023-07-21 13:22:14.667] [nrf_app] [debug] Subscribe to NF status deregistered event
-[2023-07-21 13:22:14.667] [nrf_app] [debug] Subscribe to NF status profile changed event
-[2023-07-21 13:22:14.667] [nrf_app] [start] Started
-[2023-07-21 13:22:14.667] [nrf_app] [info] HTTP2 server started
+[2023-10-24 15:47:00.457] [nrf_app] [start] Options parsed
+[2023-10-24 15:47:00.457] [config ] [info] Reading NF configuration from /openair-nrf/etc/config.yaml
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF amf in configuration. Ignored
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF smf in configuration. Ignored
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF upf in configuration. Ignored
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF udm in configuration. Ignored
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF udr in configuration. Ignored
+[2023-10-24 15:47:00.469] [config ] [debug] Unknown NF ausf in configuration. Ignored
+[2023-10-24 15:47:00.470] [config ] [debug] Validating configuration of log_level
+[2023-10-24 15:47:00.470] [config ] [debug] Validating configuration of register_nf
+[2023-10-24 15:47:00.470] [config ] [debug] Validating configuration of http_version
+[2023-10-24 15:47:00.470] [config ] [debug] Validating configuration of NRF Config
+[2023-10-24 15:47:00.471] [config ] [info] ==== OPENAIRINTERFACE nrf vBranch: HEAD Abrev. Hash: 52d2ced Date: Thu Sep 28 14:49:02 2023 +0000 ====
+[2023-10-24 15:47:00.471] [config ] [info] Basic Configuration:
+[2023-10-24 15:47:00.471] [config ] [info]   - log_level..................................: debug
+[2023-10-24 15:47:00.471] [config ] [info]   - http_version...............................: 2
+[2023-10-24 15:47:00.471] [config ] [info]   NRF Config:
+[2023-10-24 15:47:00.471] [config ] [info]     - host.....................................: oai-nrf
+[2023-10-24 15:47:00.471] [config ] [info]     - SBI
+[2023-10-24 15:47:00.471] [config ] [info]       + URL....................................: http://oai-nrf:8080
+[2023-10-24 15:47:00.471] [config ] [info]       + API Version............................: v1
+[2023-10-24 15:47:00.471] [config ] [info]       + IPv4 Address ..........................: 192.168.70.130
+[2023-10-24 15:47:00.471] [config ] [info]     - heartbeat................................: 10
+[2023-10-24 15:47:00.471] [nrf_app] [start] Starting...
+[2023-10-24 15:47:00.471] [nrf_app] [debug] Subscribe to NF status registered event
+[2023-10-24 15:47:00.471] [nrf_app] [debug] Subscribe to NF status deregistered event
+[2023-10-24 15:47:00.471] [nrf_app] [debug] Subscribe to NF status profile changed event
+[2023-10-24 15:47:00.471] [nrf_app] [start] Started
+[2023-10-24 15:47:00.472] [nrf_app] [info] HTTP2 server started
 ...
-[2023-07-21 13:22:16.740] [nrf_sbi] [info] Got a request to create a new subscription
-[2023-07-21 13:22:16.740] [nrf_sbi] [debug] Subscription data null
-[2023-07-21 13:22:16.740] [nrf_app] [info] Handle Create a new subscription (HTTP version 2)
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Convert a json-type Subscription data a NRF subscription data
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Subscription condition type: NfTypeCond, nf_type: UPF
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Subscription condition type: NF_TYPE_COND
-[2023-07-21 13:22:16.740] [nrf_app] [debug] ReqNotifEvents: NF_REGISTERED
-[2023-07-21 13:22:16.740] [nrf_app] [debug] ReqNotifEvents: NF_DEREGISTERED
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Validity Time: 20390531T235959
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Added a subscription to the DB
-[2023-07-21 13:22:16.740] [nrf_app] [debug] Subscription information
-[2023-07-21 13:22:16.740] [nrf_app] [debug] 	Sub ID: 1
-[2023-07-21 13:22:16.740] [nrf_app] [debug] 	Notification URI: 192.168.70.133:8080/nsmf-nfstatus-notify/v1/subscriptions
-[2023-07-21 13:22:16.740] [nrf_app] [debug] 	Subscription condition: Type: NF_TYPE_COND, condition: UPF
-[2023-07-21 13:22:16.740] [nrf_app] [debug] 	Notification Events: NF_REGISTERED, NF_DEREGISTERED,
-[2023-07-21 13:22:16.740] [nrf_app] [debug] 	Validity time: 20390531T235959
-[2023-07-21 13:22:16.750] [nrf_sbi] [info] Got a request to register an NF instance/Update an NF instance, Instance ID: fdbf3711-f9ad-4e6d-b825-38ef8f8ba4ab
-[2023-07-21 13:22:16.750] [nrf_app] [info] Handle Register NF Instance/Update NF Instance (HTTP version 2)
-[2023-07-21 13:22:16.750] [nrf_app] [debug] NF Profile with ID fdbf3711-f9ad-4e6d-b825-38ef8f8ba4ab, NF type SMF
-[2023-07-21 13:22:16.750] [nrf_app] [debug] Convert a json-type profile to a NF profile (profile ID: fdbf3711-f9ad-4e6d-b825-38ef8f8ba4ab)
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	Instance name: OAI-SMF
-[2023-07-21 13:22:16.750] [nrf_app] [debug] Set NF status to REGISTERED
-[2023-07-21 13:22:16.750] [nrf_app] [debug] getCustomInfo -> null
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	Status: REGISTERED
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	Heartbeat timer: 50
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	Priority: 1
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	Capacity: 100
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	SNSSAI (SD, SST): 1, 16777215
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	SNSSAI (SD, SST): 1, 1
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	SNSSAI (SD, SST): 222, 123
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	IPv4 Addr: 192.168.70.133
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 	SMF profile, SMF Info
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		NSSAI SD: 16777215, SST: 1
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		DNN: oai
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		NSSAI SD: 1, SST: 1
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		DNN: oai.ipv4
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		NSSAI SD: 123, SST: 222
-[2023-07-21 13:22:16.750] [nrf_app] [debug] 		DNN: default
-...
+[2023-10-24 15:47:07.195] [nrf_sbi] [info] Got a request to register an NF instance/Update an NF instance, Instance ID: f4f6b612-a6a9-4b22-9ec7-bf1a0fa817c0
+[2023-10-24 15:47:07.195] [nrf_app] [info] Handle Register NF Instance/Update NF Instance (HTTP version 2)
+[2023-10-24 15:47:07.195] [nrf_app] [debug] NF Profile with ID f4f6b612-a6a9-4b22-9ec7-bf1a0fa817c0, NF type SMF
+[2023-10-24 15:47:07.195] [nrf_app] [debug] Convert a json-type profile to a NF profile (profile ID: f4f6b612-a6a9-4b22-9ec7-bf1a0fa817c0)
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	Instance name: OAI-SMF
+[2023-10-24 15:47:07.195] [nrf_app] [debug] Set NF status to REGISTERED
+[2023-10-24 15:47:07.195] [nrf_app] [debug] getCustomInfo -> null
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	Status: REGISTERED
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	Heartbeat timer: 50
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	Priority: 1
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	Capacity: 100
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	SNSSAI (SD, SST): 1, 16777215
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	SNSSAI (SD, SST): 1, 1
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	SNSSAI (SD, SST): 222, 123
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	IPv4 Addr: 192.168.70.133
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 	SMF profile, SMF Info
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		NSSAI SD: 16777215, SST: 1
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		DNN: oai
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		NSSAI SD: 1, SST: 1
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		DNN: oai.ipv4
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		NSSAI SD: 123, SST: 222
+[2023-10-24 15:47:07.195] [nrf_app] [debug] 		DNN: default
 ```
+
+
 2. SMF PFCP association with UPF
 ``` console
 $ docker logs oai-smf
-[2023-07-21 11:22:16.732] [config ] [info] ==== OPENAIRINTERFACE smf vBranch: HEAD Abrev. Hash: 0602c5d7 Date: Tue Jul 18 16:34:07 2023 +0000 ====
-[2023-07-21 11:22:16.732] [config ] [info] Basic Configuration:
-[2023-07-21 11:22:16.732] [config ] [info]   - Log Level..................................: debug
-[2023-07-21 11:22:16.732] [config ] [info]   - Register NF................................: Yes
-[2023-07-21 11:22:16.732] [config ] [info]   - http_version...............................: 2
-[2023-07-21 11:22:16.732] [config ] [info] SMF Config:
-[2023-07-21 11:22:16.732] [config ] [info]   - Host.......................................: oai-smf
-[2023-07-21 11:22:16.732] [config ] [info]   - SBI
-[2023-07-21 11:22:16.732] [config ] [info]     + URL......................................: http://oai-smf:8080
-[2023-07-21 11:22:16.732] [config ] [info]     + API Version..............................: v1
-[2023-07-21 11:22:16.732] [config ] [info]     + IPv4 Address ............................: 192.168.70.133
-[2023-07-21 11:22:16.732] [config ] [info]   - N4
-[2023-07-21 11:22:16.732] [config ] [info]     + Port.....................................: 8805
-[2023-07-21 11:22:16.732] [config ] [info]     + IPv4 Address ............................: 192.168.70.133
-[2023-07-21 11:22:16.732] [config ] [info]     + MTU......................................: 1500
-[2023-07-21 11:22:16.732] [config ] [info]     + Interface name: .........................: eth0
-[2023-07-21 11:22:16.732] [config ] [info]   Supported Features:
-[2023-07-21 11:22:16.732] [config ] [info]     + Use Local Subscription Info..............: Yes
-[2023-07-21 11:22:16.732] [config ] [info]     + Use Local PCC Rules......................: Yes
-[2023-07-21 11:22:16.732] [config ] [info]   - UE MTU.....................................: 1500
-[2023-07-21 11:22:16.732] [config ] [info]   - P-CSCF IPv4................................: 127.0.0.1
-[2023-07-21 11:22:16.732] [config ] [info]   - P-CSCF IPv6................................: fe80::7915:f408:1787:db8b
-[2023-07-21 11:22:16.732] [config ] [info]   UPF List:
-[2023-07-21 11:22:16.732] [config ] [info]     - oai-upf
-[2023-07-21 11:22:16.732] [config ] [info]       + Host...................................: oai-upf
-[2023-07-21 11:22:16.732] [config ] [info]       + Port...................................: 8805
-[2023-07-21 11:22:16.732] [config ] [info]       + Enable Usage Reporting.................: No
-[2023-07-21 11:22:16.732] [config ] [info]       + Enable DL PDR In Session Establishment.: No
-[2023-07-21 11:22:16.732] [config ] [info]       + Interface Configuration:
-[2023-07-21 11:22:16.732] [config ] [info]         - NWI N3...............................: access.oai.org
-[2023-07-21 11:22:16.732] [config ] [info]         - NWI N6...............................: core.oai.org
+[2023-10-24 15:47:07.159] [smf_app] [start] Options parsed
+[2023-10-24 15:47:07.159] [config ] [info] Reading NF configuration from /openair-smf/etc/config.yaml
+[2023-10-24 15:47:07.171] [config ] [debug] Unknown NF upf in configuration. Ignored
+[2023-10-24 15:47:07.171] [config ] [debug] Unknown NF udr in configuration. Ignored
+[2023-10-24 15:47:07.171] [config ] [debug] Unknown NF ausf in configuration. Ignored
+[2023-10-24 15:47:07.172] [config ] [debug] Validating configuration of log_level
+[2023-10-24 15:47:07.172] [config ] [debug] Validating configuration of register_nf
+[2023-10-24 15:47:07.172] [config ] [debug] Validating configuration of http_version
+[2023-10-24 15:47:07.172] [config ] [debug] Validating configuration of nrf
+[2023-10-24 15:47:07.173] [config ] [debug] Validating configuration of pcf
+[2023-10-24 15:47:07.173] [config ] [debug] Validating configuration of udm
+[2023-10-24 15:47:07.173] [config ] [debug] Validating configuration of amf
+[2023-10-24 15:47:07.173] [config ] [debug] Validating configuration of SMF Config
+[2023-10-24 15:47:07.175] [config ] [debug] Validating configuration of DNN
+[2023-10-24 15:47:07.175] [config ] [debug] Validating configuration of DNN
+[2023-10-24 15:47:07.176] [config ] [debug] Validating configuration of DNN
+[2023-10-24 15:47:07.176] [config ] [debug] Validating configuration of DNN
+[2023-10-24 15:47:07.177] [config ] [warning] The IPv6 prefix / length  is not valid
+[2023-10-24 15:47:07.177] [config ] [warning] Enable UR and enable DL PDR in PFCP Session Establishment per UPF is not supported currently, we use the same values for all UPFs.
+[2023-10-24 15:47:07.177] [config ] [debug] DNN oai: -- First UE IPv4: 12.1.1.130 -- Last UE IPv4: 12.1.1.254
+[2023-10-24 15:47:07.177] [config ] [debug] DNN oai.ipv4: -- First UE IPv4: 12.1.1.66 -- Last UE IPv4: 12.1.1.126
+[2023-10-24 15:47:07.177] [config ] [debug] DNN default: -- First UE IPv4: 12.1.1.2 -- Last UE IPv4: 12.1.1.62
+[2023-10-24 15:47:07.177] [config ] [debug] DNN ims: -- First UE IPv4: 14.1.1.2 -- Last UE IPv4: 14.1.1.254
+[2023-10-24 15:47:07.177] [config ] [info] ==== OPENAIRINTERFACE smf vBranch: HEAD Abrev. Hash: 4c81ade4 Date: Thu Sep 28 12:00:11 2023 +0000 ====
+[2023-10-24 15:47:07.177] [config ] [info] Basic Configuration:
+[2023-10-24 15:47:07.177] [config ] [info]   - log_level..................................: debug
+[2023-10-24 15:47:07.177] [config ] [info]   - register_nf................................: Yes
+[2023-10-24 15:47:07.177] [config ] [info]   - http_version...............................: 2
+[2023-10-24 15:47:07.177] [config ] [info] SMF Config:
+[2023-10-24 15:47:07.177] [config ] [info]   - host.......................................: oai-smf
+[2023-10-24 15:47:07.177] [config ] [info]   - sbi
+[2023-10-24 15:47:07.177] [config ] [info]     + URL......................................: http://oai-smf:8080
+[2023-10-24 15:47:07.177] [config ] [info]     + API Version..............................: v1
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 Address ............................: 192.168.70.133
+[2023-10-24 15:47:07.177] [config ] [info]   - n4
+[2023-10-24 15:47:07.177] [config ] [info]     + Port.....................................: 8805
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 Address ............................: 192.168.70.133
+[2023-10-24 15:47:07.177] [config ] [info]     + MTU......................................: 1500
+[2023-10-24 15:47:07.177] [config ] [info]     + Interface name: .........................: eth0
+[2023-10-24 15:47:07.177] [config ] [info]   supported_features:
+[2023-10-24 15:47:07.177] [config ] [info]     + use_local_subscription_info..............: Yes
+[2023-10-24 15:47:07.177] [config ] [info]     + use_local_pcc_rules......................: Yes
+[2023-10-24 15:47:07.177] [config ] [info]     + use_external_ausf........................: No
+[2023-10-24 15:47:07.177] [config ] [info]     + use_external_udm.........................: No
+[2023-10-24 15:47:07.177] [config ] [info]     + use_external_nssf........................: No
+[2023-10-24 15:47:07.177] [config ] [info]   - ue_mtu.....................................: 1500
+[2023-10-24 15:47:07.177] [config ] [info]   - p-cscf_ipv4................................: 127.0.0.1
+[2023-10-24 15:47:07.177] [config ] [info]   - p-cscf_ipv6................................: fe80::7915:f408:1787:db8b
+[2023-10-24 15:47:07.177] [config ] [info]   UPF List:
+[2023-10-24 15:47:07.177] [config ] [info]     + oai-upf
+[2023-10-24 15:47:07.177] [config ] [info]       - host...................................: oai-upf
+[2023-10-24 15:47:07.177] [config ] [info]       - port...................................: 8805
+[2023-10-24 15:47:07.177] [config ] [info]       - enable_usage_reporting.................: No
+[2023-10-24 15:47:07.177] [config ] [info]       - enable_dl_pdr_in_session_establishment.: No
+[2023-10-24 15:47:07.177] [config ] [info]   Local Subscription Infos:
+[2023-10-24 15:47:07.177] [config ] [info]     - local_subscription_info
+[2023-10-24 15:47:07.177] [config ] [info]       + dnn....................................: oai
+[2023-10-24 15:47:07.177] [config ] [info]       + ssc_mode...............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0xFFFFFF (16777215)
+[2023-10-24 15:47:07.177] [config ] [info]       + qos_profile:
+[2023-10-24 15:47:07.177] [config ] [info]         - 5qi..................................: 9
+[2023-10-24 15:47:07.177] [config ] [info]         - priority.............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_priority.........................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_vulnerability............: NOT_PREEMPTABLE
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_capability...............: NOT_PREEMPT
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_dl......................: 400Mbps
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_ul......................: 200Mbps
+[2023-10-24 15:47:07.177] [config ] [info]     - local_subscription_info
+[2023-10-24 15:47:07.177] [config ] [info]       + dnn....................................: oai.ipv4
+[2023-10-24 15:47:07.177] [config ] [info]       + ssc_mode...............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0x000001 (1)
+[2023-10-24 15:47:07.177] [config ] [info]       + qos_profile:
+[2023-10-24 15:47:07.177] [config ] [info]         - 5qi..................................: 9
+[2023-10-24 15:47:07.177] [config ] [info]         - priority.............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_priority.........................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_vulnerability............: NOT_PREEMPTABLE
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_capability...............: NOT_PREEMPT
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_dl......................: 200Mbps
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_ul......................: 100Mbps
+[2023-10-24 15:47:07.177] [config ] [info]     - local_subscription_info
+[2023-10-24 15:47:07.177] [config ] [info]       + dnn....................................: default
+[2023-10-24 15:47:07.177] [config ] [info]       + ssc_mode...............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 222
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0x00007B (123)
+[2023-10-24 15:47:07.177] [config ] [info]       + qos_profile:
+[2023-10-24 15:47:07.177] [config ] [info]         - 5qi..................................: 9
+[2023-10-24 15:47:07.177] [config ] [info]         - priority.............................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_priority.........................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_vulnerability............: NOT_PREEMPTABLE
+[2023-10-24 15:47:07.177] [config ] [info]         - arp_preempt_capability...............: NOT_PREEMPT
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_dl......................: 100Mbps
+[2023-10-24 15:47:07.177] [config ] [info]         - session_ambr_ul......................: 50Mbps
+[2023-10-24 15:47:07.177] [config ] [info]   - smf_info:
+[2023-10-24 15:47:07.177] [config ] [info]     + snssai_smf_info_item:
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0xFFFFFF (16777215)
+[2023-10-24 15:47:07.177] [config ] [info]       - dnns:
+[2023-10-24 15:47:07.177] [config ] [info]         + dnn..................................: oai
+[2023-10-24 15:47:07.177] [config ] [info]     + snssai_smf_info_item:
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 1
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0x000001 (1)
+[2023-10-24 15:47:07.177] [config ] [info]       - dnns:
+[2023-10-24 15:47:07.177] [config ] [info]         + dnn..................................: oai.ipv4
+[2023-10-24 15:47:07.177] [config ] [info]     + snssai_smf_info_item:
+[2023-10-24 15:47:07.177] [config ] [info]       - snssai:
+[2023-10-24 15:47:07.177] [config ] [info]         + sst..................................: 222
+[2023-10-24 15:47:07.177] [config ] [info]         + sd...................................: 0x00007B (123)
+[2023-10-24 15:47:07.177] [config ] [info]       - dnns:
+[2023-10-24 15:47:07.177] [config ] [info]         + dnn..................................: default
+[2023-10-24 15:47:07.177] [config ] [info] Peer NF Configuration:
+[2023-10-24 15:47:07.177] [config ] [info]   nrf:
+[2023-10-24 15:47:07.177] [config ] [info]     - host.....................................: oai-nrf
+[2023-10-24 15:47:07.177] [config ] [info]     - sbi
+[2023-10-24 15:47:07.177] [config ] [info]       + URL....................................: http://oai-nrf:8080
+[2023-10-24 15:47:07.177] [config ] [info]       + API Version............................: v1
+[2023-10-24 15:47:07.177] [config ] [info] DNNs:
+[2023-10-24 15:47:07.177] [config ] [info] - DNN:
+[2023-10-24 15:47:07.177] [config ] [info]     + DNN......................................: oai
+[2023-10-24 15:47:07.177] [config ] [info]     + PDU session type.........................: IPV4
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 subnet..............................: 12.1.1.128/25
+[2023-10-24 15:47:07.177] [config ] [info]     + DNS Settings:
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv4.......................: 172.21.3.100
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv6.......................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv4.....................: 8.8.8.8
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv6.....................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info] - DNN:
+[2023-10-24 15:47:07.177] [config ] [info]     + DNN......................................: oai.ipv4
+[2023-10-24 15:47:07.177] [config ] [info]     + PDU session type.........................: IPV4
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 subnet..............................: 12.1.1.64/26
+[2023-10-24 15:47:07.177] [config ] [info]     + DNS Settings:
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv4.......................: 172.21.3.100
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv6.......................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv4.....................: 8.8.8.8
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv6.....................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info] - DNN:
+[2023-10-24 15:47:07.177] [config ] [info]     + DNN......................................: default
+[2023-10-24 15:47:07.177] [config ] [info]     + PDU session type.........................: IPV4
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 subnet..............................: 12.1.1.0/26
+[2023-10-24 15:47:07.177] [config ] [info]     + DNS Settings:
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv4.......................: 172.21.3.100
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv6.......................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv4.....................: 8.8.8.8
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv6.....................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info] - DNN:
+[2023-10-24 15:47:07.177] [config ] [info]     + DNN......................................: ims
+[2023-10-24 15:47:07.177] [config ] [info]     + PDU session type.........................: IPV4V6
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv6 prefix..............................: 
+[2023-10-24 15:47:07.177] [config ] [info]     + IPv4 subnet..............................: 14.1.1.2/24
+[2023-10-24 15:47:07.177] [config ] [info]     + DNS Settings:
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv4.......................: 172.21.3.100
+[2023-10-24 15:47:07.177] [config ] [info]       - primary_dns_ipv6.......................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv4.....................: 8.8.8.8
+[2023-10-24 15:47:07.177] [config ] [info]       - secondary_dns_ipv6.....................: 2001:4860:4860::8888
+[2023-10-24 15:47:07.177] [itti   ] [start] Starting...
+[2023-10-24 15:47:07.177] [itti   ] [start] Started
+[2023-10-24 15:47:07.177] [async  ] [start] Starting...
+[2023-10-24 15:47:07.177] [itti   ] [info] Starting timer_manager_task
+[2023-10-24 15:47:07.177] [itti   ] [warning] Could not set schedparam to ITTI task 0, err=1
+[2023-10-24 15:47:07.177] [async  ] [warning] Could not set schedparam to ITTI task 1, err=1
+[2023-10-24 15:47:07.178] [async  ] [start] Started
+[2023-10-24 15:47:07.178] [smf_app] [start] Starting...
+[2023-10-24 15:47:07.178] [smf_app] [info] Apply config...
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config default
+[2023-10-24 15:47:07.178] [smf_app] [info] PAA Ipv4: 12.1.1.2
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config ims
+[2023-10-24 15:47:07.178] [smf_app] [info] PAA Ipv4: 14.1.1.2
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config for IPv6 ims
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config oai
+[2023-10-24 15:47:07.178] [smf_app] [info] PAA Ipv4: 12.1.1.130
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config oai.ipv4
+[2023-10-24 15:47:07.178] [smf_app] [info] PAA Ipv4: 12.1.1.66
+[2023-10-24 15:47:07.178] [smf_app] [info] Applied config
+[2023-10-24 15:47:07.179] [udp    ] [debug] Creating new listen socket on address 192.168.70.133 and port 8805 
+[2023-10-24 15:47:07.179] [udp    ] [debug] udp_server::udp_server(192.168.70.133:8805)
+[2023-10-24 15:47:07.179] [udp    ] [debug] Creating new listen socket on address 192.168.70.133 and port 0 
+[2023-10-24 15:47:07.179] [udp    ] [debug] udp_server::udp_server(192.168.70.133:0)
+[2023-10-24 15:47:07.179] [pfcp   ] [info] pfcp_l4_stack created listening to 192.168.70.133:8805
+[2023-10-24 15:47:07.179] [smf_n4 ] [start] Starting...
 ...
-[2023-07-21 11:22:16.732] [itti   ] [start] Starting...
-...
-[2023-07-21 11:22:37.439] [smf_n4 ] [info] TIME-OUT event timer id 9
-[2023-07-21 11:22:37.439] [smf_n4 ] [info] PFCP HEARTBEAT PROCEDURE hash 16073795300291001156 starting
-[2023-07-21 11:22:37.439] [smf_n4 ] [info] handle_receive(16 bytes)
-[2023-07-21 11:22:37.439] [smf_n4 ] [debug] handle_receive_pfcp_msg msg type 2 length 12
-[2023-07-21 11:22:42.439] [smf_n4 ] [info] TIME-OUT event timer id 13
-...
+* Connection #0 to host oai-nrf left intact
+[2023-10-24 17:05:10.394] [smf_n4 ] [info] PFCP HEARTBEAT PROCEDURE hash 2252777664 starting
+[2023-10-24 17:05:10.394] [smf_n4 ] [info] handle_receive(16 bytes)
+[2023-10-24 17:05:10.394] [smf_n4 ] [debug] handle_receive_pfcp_msg msg type 2 length 12
 ```
 
-## 6. Simulate with a RAN emulator
 
-### 6.1. Test with Gnbsim
+------------------------------------------------------------------------------------------------
+
+## 7. Simulate with a RAN emulator
+
+### 7.1. Test with Gnbsim
 
 In this Section we will use Gnbsim to test our deployemt. Make sure you already have built [Gnbsim docker image](./DEPLOY_SA5G_MINI_WITH_GNBSIM.md#6-getting-a-gnbsim-docker-image)<br/>
 Launch gnbsim instance:
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-ebpf.yaml up -d gnbsim-ebpf
-Found orphan containers (mysql, oai-udm, oai-upf, oai-smf, oai-ausf, oai-ext-dn, oai-amf, oai-udr, oai-nrf) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
-Creating gnbsim-ebpf ...
-Creating gnbsim-ebpf ... done
+WARN[0000] network public_net: network.external.name is deprecated in favor of network.name 
+WARN[0000] network n3_net: network.external.name is deprecated in favor of network.name 
+WARN[0000] Found orphan containers ([oai-upf oai-smf oai-amf oai-ausf oai-udm oai-udr oai-nrf oai-ext-dn mysql]) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up. 
+[+] Running 1/1
+ ⠿ Container gnbsim-ebpf  Started                         
 ```
 
 <!---
@@ -472,17 +912,17 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-ebpf.yaml ps -a
 ------------------------------------------------------------------
 gnbsim-ebpf   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)
 docker-compose-host $: docker logs gnbsim-ebpf | tail -10
-[gnbsim]2023/07/21 11:22:50.647779 example.go:241: GTP-U interface name: eth1
-[gnbsim]2023/07/21 11:22:50.647805 example.go:242: GTP-U local addr: 192.168.71.141
-[gnbsim]2023/07/21 11:22:50.647820 example.go:243: GTP-U peer addr : 192.168.71.134
-[gnbsim]2023/07/21 11:22:51.648907 example.go:328: GTP-U Peer TEID: 1
-[gnbsim]2023/07/21 11:22:51.648933 example.go:329: GTP-U Local TEID: 2596996162
-[gnbsim]2023/07/21 11:22:51.648944 example.go:330: QoS Flow ID: 9
-[gnbsim]2023/07/21 11:22:51.648956 example.go:332: UE address: 12.1.1.2
-[gnbsim]2023/07/21 11:22:52.649554 example.go:194: Deregister after : 3600 Sec
+[gnbsim]2023-10-24 17:08:10.594 example.go:241: GTP-U interface name: eth1
+[gnbsim]2023-10-24 17:08:10.597 example.go:242: GTP-U local addr: 192.168.71.141
+[gnbsim]2023-10-24 17:08:10.374 example.go:243: GTP-U peer addr : 192.168.71.134
+[gnbsim]2023-10-24 17:08:11.754 example.go:328: GTP-U Peer TEID: 1
+[gnbsim]2023-10-24 17:08:12.391 example.go:329: GTP-U Local TEID: 2596996162
+[gnbsim]2023-10-24 17:08:12.393 example.go:330: QoS Flow ID: 9
+[gnbsim]2023-10-24 17:08:12.407 example.go:332: UE address: 12.1.1.2
+[gnbsim]2023-10-24 17:08:12.412 example.go:194: Deregister after : 3600 Sec
 ```
 
-## 7. Recover the logs
+## 7. Recover Logs
 
 <!---
 For CI purposes please ignore these lines
@@ -517,36 +957,243 @@ docker-compose-host $: docker logs gnbsim-ebpf > /tmp/oai/upf-ebpf-gnbsim/gnbsim
 ### 8.1. Undeploy the RAN emulator
 
 ``` shell
-docker-compose-host $: docker-compose -f docker-compose-gnbsim-ebpf.yaml down -t 0
-Found orphan containers (oai-smf, oai-ausf, oai-nrf, oai-udr, oai-ext-dn, mysql, oai-amf, oai-upf, oai-udm) for this project. If you removed or renamed this service in your compose file, you can run this command with the --remove-orphans flag to clean it up.
-Removing gnbsim-ebpf ... done
-Network demo-oai-public-net is external, skipping
-Network demo-oai-n3-net is external, skipping
+docker-compose-host $:  docker-compose -f docker-compose-gnbsim-ebpf.yaml down -t 0
+WARN[0000] network public_net: network.external.name is deprecated in favor of network.name 
+WARN[0000] network n3_net: network.external.name is deprecated in favor of network.name 
+[+] Running 1/0
+ ⠿ Container gnbsim-ebpf  Removed                       
 ```
 
 ### 8.2. Undeploy the Core Network
 
 ``` shell
-docker-compose-host $: python3 ./core-network.py --type stop-basic-ebpf --scenario 1
-[2023-07-21 13:23:19,260] root:DEBUG:  UnDeploying OAI 5G core components....
-[2023-07-21 13:23:19,260] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml down -t 0
-Removing oai-ausf   ... done
-Removing oai-nrf    ... done
-Removing oai-ext-dn ... done
-Removing oai-udr    ... done
-Removing oai-amf    ... done
-Removing oai-upf    ... done
-Removing oai-smf    ... done
-Removing mysql      ... done
-Removing oai-udm    ... done
-Removing network demo-oai-public-net
-Removing network demo-oai-n3-net
-Removing network demo-oai-n6-net
+docker-compose-host $:  5G core components....
+[2023-10-24 15:53:47,168] root:DEBUG: docker-compose -f docker-compose-basic-nrf-ebpf.yaml down -t 0
+[+] Running 12/12
+ ⠿ Container oai-upf            Removed 3.2s
+ ⠿ Container oai-ext-dn         Removed 2.0s
+ ⠿ Container oai-smf            Removed 1.3s
+ ⠿ Container oai-amf            Removed 1.2s
+ ⠿ Container oai-ausf           Removed 1.3s
+ ⠿ Container oai-udm            Removed 1.0s
+ ⠿ Container oai-udr            Removed 1.3s
+ ⠿ Container oai-nrf            Removed 1.9s
+ ⠿ Container mysql              Removed 1.9s
+ ⠿ Network demo-oai-n6-net      Removed 0.6ss
+ ⠿ Network demo-oai-n3-net      Removed 1.5ss
+ ⠿ Network demo-oai-public-net  Removed 2.3ss
 
-[2023-07-21 13:23:20,429] root:DEBUG:  OAI 5G core components are UnDeployed....
+[2023-10-24 15:54:04,433] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
 
 If you replicate then your log files and pcap file will be present in `/tmp/oai/upf-ebpf-gnbsim/`.
 
-## 9. Notes
 
+
+
+---------------------------------------------------------------------------------------------------------------------
+## 9. Performance Evaluation
+### i. UPF as Standalone
+
+<figure>
+  <img
+    src="./images/setup_networking.png"
+    alt="This is the OAI 5GC testbed."
+    width="900"
+    height="400" />
+
+  <figcaption><b><font size = "5">Figure 3: Testbed Networking Setup</font></b></figcaption>
+
+
+#### a. Setup Configuration
+
+| Host Functions          | OS                                 | Configuration                                                          |
+|-------------------------| -----------------------------------| ---------------------------------------------------------------------- |
+| OAI-UPF & OAI-5GC       | Ubuntu 22.04, 5.15.0-86-generic    | X86_64, Intel(R) Core(TM) i5-7500 CPU        @ 3.40GHz, 04 Cores, 64GB |
+| OAI-EXT-DN-GW           | Ubuntu 22.04, 6.2.0-26-generic     | X86_64, 11th Gen Intel(R) Core(TM) i7-1165G7 @ 2.80GHz, 08 Cores, 16GB |  
+| COTS UE                 | Ubuntu 20.04, 5.15.0-79-generic    | X86_64, Intel(R) Core(TM) i5-8250U CPU       @ 1.60GHz, 08 Cores, 16GB |
+| OAI-gNB                 | Ubuntu 20.04, 5.15.0-1037-realtime | X86_64, Intel(R) Xeon(R) Gold 5317 CPU       @ 3.00GHz, 24 Cores, 64GB |
+
+
+<br/>
+
+#### b. Network configuration
+##### a. OAI-UPF & OAI-5GC
+```console
+
+ubuntu@eiffel:~$ ifconfig
+enp0s31f6: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.21.16.113  netmask 255.255.252.0  broadcast 172.21.19.255
+        ether 90:1b:0e:ed:0e:8b  txqueuelen 1000  (Ethernet)
+        RX packets 5495074  bytes 5351911308 (5.3 GB)
+        RX errors 0  dropped 12  overruns 0  frame 0
+        TX packets 1103097  bytes 254779161 (254.7 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 16  memory 0xef100000-ef120000  
+
+enx00e04c680455: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.74.134  netmask 255.255.255.0  broadcast 192.168.74.255
+        ether 00:e0:4c:68:04:55  txqueuelen 1000  (Ethernet)
+        RX packets 60658  bytes 16929700 (16.9 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 25641  bytes 5323541 (5.3 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enx00e04c6808f6: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.71.134  netmask 255.255.255.0  broadcast 192.168.71.255
+        ether 00:e0:4c:68:08:f6  txqueuelen 1000  (Ethernet)
+        RX packets 28009  bytes 6217804 (6.2 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 13458  bytes 11495659 (11.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+```console
+ubuntu@eiffel:~$ ip r
+default via 172.21.19.254 dev enp0s31f6 proto static 
+172.21.16.0/22 dev enp0s31f6 proto kernel scope link src 172.21.16.113 
+192.168.71.0/24 dev enx00e04c6808f6 proto kernel scope link src 192.168.71.134 
+192.168.74.0/24 dev enx00e04c680455 proto kernel scope link src 192.168.74.134
+```
+##### c. OAI-EXT-DN-GW
+```console
+ubuntu@zeus:~$ ifconfig
+enp53s0: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.21.19.56  netmask 255.255.252.0  broadcast 172.21.19.255
+        inet6 fe80::3458:3524:e548:6feb  prefixlen 64  scopeid 0x20<link>
+        ether 80:fa:5b:8f:3e:46  txqueuelen 1000  (Ethernet)
+        RX packets 5210080  bytes 5470498655 (5.4 GB)
+        RX errors 0  dropped 7772  overruns 0  frame 0
+        TX packets 595139  bytes 78437461 (78.4 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+enx00249b59647c: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.74.135  netmask 255.255.255.0  broadcast 192.168.74.255
+        inet6 fe80::224:9bff:fe59:647c  prefixlen 64  scopeid 0x20<link>
+        ether 00:24:9b:59:64:7c  txqueuelen 1000  (Ethernet)
+        RX packets 30661  bytes 5440713 (5.4 MB)
+        RX errors 5  dropped 0  overruns 0  frame 0
+        TX packets 92161  bytes 19361573 (19.3 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+```
+
+```console
+ubuntu@zeus:~$ ip r
+default via 172.21.19.254 dev enp53s0 proto dhcp metric 101 
+12.1.1.0/24 via 192.168.74.134 dev enx00249b59647c 
+169.254.0.0/16 dev enx00249b59647c scope link metric 1000 
+172.21.16.0/22 dev enp53s0 proto kernel scope link src 172.21.19.56 metric 101 
+192.168.74.0/24 dev enx00249b59647c proto kernel scope link src 192.168.74.135 metric 100
+```
+
+```console
+ubuntu@zeus:~$ sudo iptables -t nat -L
+Chain PREROUTING (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain INPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain OUTPUT (policy ACCEPT)
+target     prot opt source               destination         
+
+Chain POSTROUTING (policy ACCEPT)
+target     prot opt source               destination         
+SNAT       all  --  12.1.1.0/24          anywhere             to:172.21.19.56
+```
+
+##### d. COTS UE
+```console
+merlier@merlier-SATELLITE-PRO-A50-EC:~$ ifconfig
+enp0s31f6: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.21.19.33  netmask 255.255.252.0  broadcast 172.21.19.255
+        inet6 fe80::fa34:ee99:2603:c2b6  prefixlen 64  scopeid 0x20<link>
+        ether ec:21:e5:c2:ba:f7  txqueuelen 1000  (Ethernet)
+        RX packets 8207088  bytes 3302981674 (3.3 GB)
+        RX errors 0  dropped 54  overruns 0  frame 0
+        TX packets 3669375  bytes 965968594 (965.9 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 16  memory 0xb1100000-b1120000  
+
+wwan0: flags=4291<UP,BROADCAST,RUNNING,NOARP,MULTICAST>  mtu 1500
+        inet 12.1.1.151  netmask 255.255.255.240  broadcast 12.1.1.159
+        inet6 fe80::2c1f:95ff:fe44:c586  prefixlen 64  scopeid 0x20<link>
+        ether 2e:1f:95:44:c5:86  txqueuelen 1000  (Ethernet)
+        RX packets 133508  bytes 190252077 (190.2 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 201398  bytes 29050271 (29.0 MB)
+        TX errors 432  dropped 20 overruns 0  carrier 0  collisions 0
+```
+
+```console
+merlier@merlier-SATELLITE-PRO-A50-EC:~$ ip r
+default via 12.1.1.152 dev wwan0 
+12.1.1.144/28 dev wwan0 proto kernel scope link src 12.1.1.151 
+169.254.0.0/16 dev enp0s31f6 scope link metric 1000 
+172.21.6.12 dev wwan0 scope link 
+172.21.16.0/22 dev enp0s31f6 proto kernel scope link src 172.21.19.33 metric 100 
+172.21.16.114 dev wwan0 scope link 
+```
+
+
+
+##### e. OAI-gNB
+```console
+eurecom@diplo:~$ ifconfig
+eno8303: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 172.21.16.149  netmask 255.255.252.0  broadcast 172.21.19.255
+        inet6 fe80::ce96:e5ff:fef4:474a  prefixlen 64  scopeid 0x20<link>
+        ether cc:96:e5:f4:47:4a  txqueuelen 1000  (Ethernet)
+        RX packets 13378407  bytes 3122196628 (3.1 GB)
+        RX errors 0  dropped 2047512  overruns 0  frame 0
+        TX packets 806656  bytes 380996575 (380.9 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 17  
+
+eno8403: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1500
+        inet 192.168.71.141  netmask 255.255.255.0  broadcast 192.168.71.255
+        inet6 fe80::ce96:e5ff:fef4:474b  prefixlen 64  scopeid 0x20<link>
+        ether cc:96:e5:f4:47:4b  txqueuelen 1000  (Ethernet)
+        RX packets 34792  bytes 13807026 (13.8 MB)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 41603  bytes 8164064 (8.1 MB)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+        device interrupt 18  
+```
+
+```console 
+eurecom@diplo:~$ ip r
+default via 172.21.19.254 dev eno8303 proto static 
+172.21.16.0/22 dev eno8303 proto kernel scope link src 172.21.16.149 
+192.168.70.0/24 via 172.21.16.113 dev eno8303 
+192.168.71.0/24 dev eno8403 proto kernel scope link src 192.168.71.141 
+```
+
+
+#### c. Results
+#####  ICMP Traffic
+
+```console
+$ ping 8.8.8.8
+64 bytes from 8.8.8.8: icmp_seq=40 ttl=116 time=15.1 ms
+64 bytes from 8.8.8.8: icmp_seq=41 ttl=116 time=13.5 ms
+64 bytes from 8.8.8.8: icmp_seq=42 ttl=116 time=12.5 ms
+64 bytes from 8.8.8.8: icmp_seq=43 ttl=116 time=14.4 ms
+64 bytes from 8.8.8.8: icmp_seq=44 ttl=116 time=16.5 ms
+64 bytes from 8.8.8.8: icmp_seq=45 ttl=116 time=14.8 ms
+64 bytes from 8.8.8.8: icmp_seq=46 ttl=116 time=13.2 ms
+64 bytes from 8.8.8.8: icmp_seq=47 ttl=116 time=14.2 ms
+```
+
+##### TCP Traffic
+To be continued ...
+##### UDP Traffic
+To be continued ...
+
+
+
+### ii. UPF as Docker Contaier
+To be continued ...
+
+
+### iii. UPF-eBPF versus SPGWTiny
+To be continued ...
