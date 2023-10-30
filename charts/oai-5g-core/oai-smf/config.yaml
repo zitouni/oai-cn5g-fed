@@ -16,7 +16,7 @@ log_level:
 
 # If you enable registration, the other NFs will use the NRF discovery mechanism
 register_nf:
-  general: yes
+  general: no
 
 http_version: 2
 
@@ -66,7 +66,7 @@ smf:
     discover_upf: yes
   # we resolve from NRF, this is just to configure usage_reporting
   upfs:
-    - host: oai-spgwu
+    - host: oai-upf
       config:
         enable_usage_reporting: no
   ue_dns:
@@ -84,7 +84,7 @@ smf:
       - sNssai: *embb_slice1
         dnnSmfInfoList:
           - dnn: "oai"
-      - sNssai: *embb_slice1
+      - sNssai: *embb_slice2
         dnnSmfInfoList:
           - dnn: "ims"
   local_subscription_infos:
@@ -94,7 +94,7 @@ smf:
         5qi: 5
         session_ambr_ul: "200Mbps"
         session_ambr_dl: "400Mbps"
-    - single_nssai: *embb_slice1
+    - single_nssai: *embb_slice2
       dnn: "ims"
       qos_profile:
         5qi: 2
@@ -105,7 +105,7 @@ smf:
 dnns:
   - dnn: "oai"
     pdu_session_type: "IPV4"
-    ipv4_subnet: "12.1.1.128/25"
+    ipv4_subnet: "12.1.1.0/24"
   - dnn: "ims"
     pdu_session_type: "IPV4V6"
-    ipv4_subnet: "14.1.1.2/24"
+    ipv4_subnet: "14.1.1.0/24"

@@ -85,7 +85,7 @@ Only needed if you are doing advanced debugging
 Better to use the parent charts from:
 
 1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
-2. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
+2. [oai-5g-advance](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
 
 ## Note
 

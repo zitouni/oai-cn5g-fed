@@ -91,7 +91,7 @@ Better to use the parent charts from:
 
 1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
 2. [oai-5g-mini](../oai-5g-mini/README.md) for mini deployment (AMF, SMF, NRF, UPF) of OAI-5G Core. In this type of deployment AMF plays the role of AUSF and UDR
-3. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
+3. [oai-5g-advance](../oai-5g-slicing/README.md) for basic deployment with NSSF extra
 
 ```bash
 helm install oai-nrf .

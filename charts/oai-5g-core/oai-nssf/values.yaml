@@ -24,19 +24,8 @@ podSecurityContext:
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
-config:
-  tz: "Europe/Paris"
-  instance: "0"
-  logLevel: "info"
-  nssfname: "oai-nssf"
-  pidDirectory: "/var/run"
-  nssfFqdn: "oai-nssf-svc"
-  sbiIfName: "eth0"
-  sbiPortHttp1: "80"
-  sbiPortHttp2: "8080"
-  sbiApiVersion: "v1"
-  nssfSliceConfig: "/tmp/nssf_slice_config.yaml"   # Do not change
-
+exposedPorts:
+  sbi: 80
 
 ## Debugging section
 start:

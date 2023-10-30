@@ -16,8 +16,8 @@ oai-nrf:
   enabled: true
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: docker.io/oaisoftwarealliance/oai-nrf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    repository: docker.io/oaisoftwarealliance/oai-nrf          ## The image will be pulled from dockerhub
+    version: develop                          ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
@@ -147,7 +147,7 @@ oai-upf:
       hostInterface: "bond0"
   #NOTE: If the interface you selected for n6If is wrong then traffic will not be routed towards internet
   nodeSelector: {}
-#oai-traffic-server:
+# oai-traffic-server:
 #  enabled: false
 #  weight: 6
 #  kubernetesType: Vanilla
@@ -172,7 +172,7 @@ oai-smf:
   kubernetesType: Vanilla #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
     repository: docker.io/oaisoftwarealliance/oai-smf           ## The image will be pulled from dockerhub
-    version: develop                                    ## The branch to be used to pull from dockerhub
+    version: develop                         ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   includeTcpDumpContainer: false #only for taking pcaps inside network function pod
