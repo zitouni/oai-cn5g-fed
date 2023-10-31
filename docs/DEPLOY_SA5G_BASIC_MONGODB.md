@@ -47,7 +47,7 @@ docker-compose-host $: sudo chmod 666 /tmp/oai/mongodb-test/mongodb-test.*
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml up -d gnbsim
 docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name gnbsim --timeout 30
 docker-compose-host $: docker logs gnbsim 2>&1 | grep "UE address:"
-docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.2 -c4
+docker-compose-host $: docker exec oai-ext-dn ping 12.1.1.4 -c4
 ```
 ## 4. Get Logs
 
