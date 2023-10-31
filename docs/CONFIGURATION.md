@@ -55,7 +55,7 @@ When you are using a bare-metal deployment, you have to tell the NF which file t
 ## Example configurations
 
 The [docker-compose](../docker-compose) folder contains example configurations, which are used by the tutorials
-described in [docs](./).
+described in [docs](../docs).
 
 You can have a look at the [docker-compose/conf](../docker-compose/conf) folder to see real-world examples of how the
 OAI 5GC NFs can be configured.
@@ -192,17 +192,17 @@ If the interface cannot be read or does not exist, the NF will terminate.
 The `host` value is different for each NF key. Also, not all the keys are read by all NFs. The following table describes
 this:
 
-| Key    | Host default value | Read by NFs   | Mandatory                                                     |
-|:-------|:-------------------|:--------------|---------------------------------------------------------------|
-| `ausf` | `oai-ausf`         | AUSF, AMF     | Only if AUSF is used (`enable_simple_scenario` in AMF is off) |
-| `amf`  | `oai-amf`          | AMF, SMF      | Yes                                                           |
-| `nrf`  | `oai-nrf`          | All NFs       | If `register_nf` is on                                        |
-| `nssf` | `oai-nssf`         | NSSF, AMF     | Only if NSSF is used                                          |
-| `pcf`  | `oai-pcf`          | PCF, SMF      | Only if PCF is used (`use_local_pcc_rules` in SMF is off)     |
-| `smf`  | `oai-smf`          | SMF, AMF      | Yes                                                           |                
-| `udm`  | `oai-udm`          | UDM, AMF, SMF | Only if UDM is used (`enable_simple_scenario` in AMF is off)  |
-| `udr`  | `oai-udr`          | UDR, UDM      | Only if UDR is used (`enable_simple_scenario` in AMF is off)  |
-| `upf`  | `oai-upf`          | UPF           | Only for OAI-UPF, not for VPP-UPF                             | 
+| Key    | Host default value | Read by NFs    | Mandatory                                                     |
+|:-------|:-------------------|:---------------|---------------------------------------------------------------|
+| `ausf` | `oai-ausf`         | AUSF, AMF      | Only if AUSF is used (`enable_simple_scenario` in AMF is off) |
+| `amf`  | `oai-amf`          | AMF, SMF       | Yes                                                           |
+| `nrf`  | `oai-nrf`          | All NFs        | If `register_nf` is on                                        |
+| `nssf` | `oai-nssf`         | NSSF, AMF      | Only if NSSF is used                                          |
+| `pcf`  | `oai-pcf`          | PCF, SMF       | Only if PCF is used (`use_local_pcc_rules` in SMF is off)     |
+| `smf`  | `oai-smf`          | SMF, AMF       | Yes                                                           |                
+| `udm`  | `oai-udm`          | UDM, AMF, SMF  | Only if UDM is used (`enable_simple_scenario` in AMF is off)  |
+| `udr`  | `oai-udr`          | UDR, UDM, AUSF | Only if UDR is used (`enable_simple_scenario` in AMF is off)  |
+| `upf`  | `oai-upf`          | UPF            | Only for OAI-UPF, not for VPP-UPF                             | 
 
 The NF will only parse and validate the NF key if necessary. For example, if [register NF](#register-nf) is set, it will
 rely on NF discovery and does not read remote hosts from `nfs`. It does, however, take the `api_version` from the `nfs`
@@ -295,25 +295,25 @@ It can be configured as follows:
 ```yaml
 database:
   host: <db_host>
+  port: <db_port>
   user: <db_user>
   type: <db_type>
   password: <db_pw>
   database_name: <db_name>
-  generate_random: <generate_random>
   connection_timeout: <timeout>
 ```
 
 The allowed values are described in the following table:
 
-| Name            | Type   | Description                                         | Allowed values                              | Default value | Mandatory |
-|:----------------|:-------|:----------------------------------------------------|:--------------------------------------------|:--------------|-----------|
-| DB Host         | String | Host of the database to connect                     | Any string                                  | `mysql`       | Yes       |
-| DB User         | String | User to authenticate to the database                | Any string                                  | `root`        | Yes       |
-| DB Type         | String | Type of the database (e.g. `mysql`)                 | `mysql`, `cassandra`, `mongodb`             | `mysql`       | Yes       |
-| DB Password     | String | Password to authenticate to the database            | Any string                                  | `linux`       | Yes       |
-| DB Name         | String | Name of the database to use                         | Any string                                  | `oai_db`      | Yes       |
-| Generate Random | Bool   | ?????????? TODO ??                                  | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Timeout         | Int    | ?? TODO (I suspect the timeout for DB connections?) | Any integer                                 | 300           | Yes       |
+| Name            | Type   | Description                                         | Allowed values                              | Default value                                                  | Mandatory |
+|:----------------|:-------|:----------------------------------------------------|:--------------------------------------------|:---------------------------------------------------------------|-----------|
+| DB Host         | String | Host of the database to connect                     | Any string                                  | `mysql`                                                        | Yes       |
+| DB Port         | Int    | Port of the database to connect                     | Any integer between `1` and `65535`         | For `mysql`: 3306, for `mongodb`: 27017, for `cassandra`: 9042 | Yes       |
+| DB User         | String | User to authenticate to the database                | Any string                                  | `root`                                                         | Yes       |
+| DB Type         | String | Type of the database (e.g. `mysql`)                 | `mysql`, `cassandra`, `mongodb`             | `mysql`                                                        | Yes       |
+| DB Password     | String | Password to authenticate to the database            | Any string                                  | `linux`                                                        | Yes       |
+| DB Name         | String | Name of the database to use                         | Any string                                  | `oai_db`                                                       | Yes       |
+| Timeout         | Int    | Timeout for successful connection to DB on startup  | Any integer                                 | 300                                                            | Yes       |
 
 The values you provide for the database connection will be used to connect to the database. In case of a
 misconfiguration, you will be informed (e.g., when the DB host is not reachable or you provided a wrong password).
@@ -348,7 +348,7 @@ The allowed values are described in the following table:
 | IPv6 Prefix      | String | IPv6 prefix which is used to assign UE IPv6 addresses for PDU sessions       | Any value                                                             |               | Only for IPV6 and IPV4V6 (not yet supported on SMF) |
 
 If you do not configure any DNN in the `dnns` section, or you remove the `dnns` section completely, the following
-default dnn is configured:
+default DNN is configured:
 
 ```yaml
 dnn: default
@@ -406,10 +406,11 @@ The allowed values of the AMF basic configuration are described in the following
 | Name                      | Type   | Description                                                                                                                                                          | Allowed values                              | Default value | Mandatory |
 |:--------------------------|:-------|:---------------------------------------------------------------------------------------------------------------------------------------------------------------------|:--------------------------------------------|:--------------|-----------|
 | AMF Name                  | String | AMF Name used in AMF NF profile                                                                                                                                      | Any string                                  |               | No        |
+| PID Directory             | String | Directory where AMF stores the PID                                                                                                                                   | Any string                                  | `/var/run`    | Yes       |
 | Enable Simple Scenario    | Bool   | If set to yes, AMF will not use AUSF/UDM/UDR, but use an internal implementation for authentication and authorization procedures. Also, it will not register to NRF. | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
 | Enable NSSF               | Bool   | If set to yes, AMF will use NSSF                                                                                                                                     | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
 | Enable SMF Selection      | Bool   | If set to yes, AMF will use NRF discovery mechanism to select SMF                                                                                                    | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
-| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB (TODO verify)                                                                                                        | Any integer between `0` and `255`           | `10`          | Yes       |
+| Relative Capacity         | Int    | Relative capacity communicated over NGAP to gNB                                                                                                                      | Any integer between `0` and `255`           | `10`          | Yes       |
 | Statistics Timer Interval | Int    | Interval for logging AMF statistics                                                                                                                                  | Any integer between `5` and `600`           | `20`          | Yes       |
 | Emergency Support         | Bool   | Indicate towards UE if emergency registration is supported                                                                                                           | `yes`, `no` (and other YAML boolean values) | `no`          | Yes       |
 
@@ -496,10 +497,7 @@ upfs:
       enable_usage_reporting: <enable_usage_reporting>
       enable_dl_pdr_in_pfcp_session_establishment: <enable_dl_pdr_in_pfcp_session_establishment>
       n3_local_ipv4: <n3_local_ipv4>
-    upf_info:
-      interfaceUpfInfoList:
-        - interfaceType: <interface_type>
-          networkInstance: <network_instance>
+    upf_info: # UPF Info according to 3GPP TS 29.510
 ue_dns:
   primary_ipv4: <primary_dns_v4>
   primary_ipv6: <primary_dns_v6>
@@ -508,7 +506,7 @@ ue_dns:
 ims:
   pcscf_ipv4: <pcscf_ipv4>
   pcscf_ipv6: <pcscf_ipv6>
-smf_info: # SMF Info according to 3GPP TS 29.571
+smf_info: # SMF Info according to 3GPP TS 29.510
 local_subscription_infos:
   - single_nssai:
       sst: <sst>
@@ -546,12 +544,10 @@ configure here with the UPF host from the NRF information to e.g., know whether 
 |:--------------------------------------------|:-------|:-----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------|:-----------------------------------------------------------------|:-----------------------------------|:-------------------------------------|
 | UPF Host                                    | String | Host of the UPF                                                                                                                                                                                                                    | Any hostname or an IPv4 address in dotted decimal representation |                                    | Only if NRF registration is disabled |
 | UPF Port                                    | Int    | Port of the UPF N4 interface                                                                                                                                                                                                       | Any integer between `1` and `65535`                              | `8805`                             | Only if NRF registration is disabled |
-| Enable Usage Reporting                      | Bool   | If set to yes, SMF will request UPF to send usage reports                                                                                                                                                                          | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                   |
+| Enable Usage Reporting                      | Bool   | If set to yes, SMF will request UPF to send usage reports by using Usage Report Rules (URRs) in PFCP Session Establishment                                                                                                         | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                   |
 | Enable DL PDR in PFCP Session Establishment | Bool   | If set to yes, SMF will send DL rules during PFCP session establishment and update these rules with the gNB F-TEID in a session modification. Enable this if your UPF expects this behavior                                        | `yes`, `no` (and other YAML boolean values)                      | `no`                               | No                                   |
 | Local N3 IPv4                               | String | If the UPF is not Release 16-compliant and does not support generating F-TEIDs, SMF will generate the F-TEID and use this IP address for the F-TEID.                                                                               | IPv4 address in dotted decimal representation                    |                                    | No                                   |
 | UPF Info                                    | Struct | This datatype is used to configure the UPF profile on SMF and is used when no NRF registration/discovery is disabled. It follows the `UpfInfo` definition of 3GPP TS 29.510, but only `interfaceUpfInfoList` is supported for now. | `UpfInfo` from 29.510                                            |                                    | No                                   |
-| Interface Type                              | String | Interface type of this interface                                                                                                                                                                                                   | Any string                                                       | `N3` or `N6`                       | No                                   |
-| Network Instance                            | String | Network Instance of this interface                                                                                                                                                                                                 | Any string                                                       | `access.oai.org` or `core.oai.org` | No                                   |
 
 The UPF Info on SMF is currently very basic and supports only configuring the interface type and the network instance.
 If you omit this configuration, SMF adds the following default configuration:
@@ -716,23 +712,22 @@ upf:
     enable_bpf_datapath: <enable_bpf_datapath>
     enable_snat: <enable_snat>
   remote_n6_gw: <remote_n6_gw>
+  smfs: 
+    - <smf_hostname> 
   # Here you can configure a list of supported NSSAIs/DNNs
-  upf_info:
-    - sst: <sst>
-      sd: <sd>
-      dnnList:
-        - dnn: <dnn>
+  upf_info: # UPF Info according to 3GPP TS 29.510
 ```
 
 The allowed values of the UPF configuration are as follows:
 
-| Name                | Type   | Description                                                                  | Allowed values                              | Default value | Mandatory  |
-|:--------------------|:-------|:-----------------------------------------------------------------------------|:--------------------------------------------|:--------------|:-----------|
-| Enable BPF Datapath | bool   | If set to yes, BPF is used for the datapath, otherwise simple switch is used | `yes`, `no` (and other YAML boolean values) | `no`          | Yes        |
-| Enable SNAT         | bool   | If set to yes, Source NAT is done for the UE IP address                      | `yes`, `no` (and other YAML boolean values) | `no`          | Yes        |
-| Remote N6 Gateway   | string | The N6 next-hop where uplink traffic should be sent                          | Any string                                  |               | No (TODO?) |
+| Name                | Type   | Description                                                                  | Allowed values                              | Default value | Mandatory                    |
+|:--------------------|:-------|:-----------------------------------------------------------------------------|:--------------------------------------------|:--------------|:-----------------------------|
+| Enable BPF Datapath | bool   | If set to yes, BPF is used for the datapath, otherwise simple switch is used | `yes`, `no` (and other YAML boolean values) | `no`          | Yes                          |
+| Enable SNAT         | bool   | If set to yes, Source NAT is done for the UE IP address                      | `yes`, `no` (and other YAML boolean values) | `no`          | Yes                          |
+| Remote N6 Gateway   | string | The N6 next-hop where uplink traffic should be sent                          | Any string                                  |               | No                           |
+| SMF Hostname        | string | Host of the SMF to send PFCP association to                                  | Any string                                  |               | Only if `register_nf` is off |
 
-SST, SD and DNN take the same as described for [SMF](#smf). If you do not configure `upf_info`, the following default
+The `upf_info` follows `UpfInfo` from 3GPP TS 29.510 and is configured the same as in [SMF](#smf). If you do not configure `upf_info`, the following default
 configuration is used:
 
 ```yaml
@@ -743,7 +738,7 @@ upf_info:
       - dnn: "default"
 ```
 
-# 3. Database configuration
+# 3. MySQL database configuration
 
 A user subscription should be present in the mysql database before trying to connect the UE. This can
 be done by adding the UE information in the [oai_db2.sql](../docker-compose/database/oai_db2.sql) file
