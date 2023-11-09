@@ -33,7 +33,7 @@ docker-compose-host $: chmod 777 /tmp/oai/mongodb-test
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-basic-nrf-mongodb.yaml up -d mongodb
 docker-compose-host $: nohup sudo tshark -i demo-oai -f '(not host 192.168.70.135 and not arp and not port 53 and not port 2152) or (host 192.168.70.135 and icmp)' -w /tmp/oai/mongodb-test/mongodb-test.pcap > /tmp/oai/mongodb-test/mongodb-test.log 2>&1 &
-docker-compose-host $: sleep 5
+docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name mongodb --timeout 30
 docker-compose-host $: docker-compose -f docker-compose-basic-nrf-mongodb.yaml up -d
 docker-compose-host $: ../ci-scripts/checkContainerStatus.py --container_name oai-smf --timeout 30
 docker-compose-host $: docker-compose -f docker-compose-basic-nrf-mongodb.yaml ps -a
