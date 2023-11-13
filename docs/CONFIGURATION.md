@@ -419,13 +419,13 @@ The allowed values of the AMF basic configuration are described in the following
 In the `served_guami_list` section, you can configure a list of Globally Unique AMF IDs (GUAMI) that are supported by
 this AMF.
 
-| Name          | Type   | Description            | Allowed values                                                                                | Default value | Mandatory |
-|:--------------|:-------|:-----------------------|:----------------------------------------------------------------------------------------------|:--------------|-----------|
-| GUAMI MCC     | String | MCC Part of GUAMI      | 3-digit decimal string                                                                        | `001`         | Yes       |
-| GUAMI MNC     | String | MNC Part of GUAMI      | 2 or 3-digit decimal string                                                                   | `01`          | Yes       |
-| AMF Region ID | String | AMF Region ID of GUAMI | 2-digit hex string                                                                            | `FF`          | Yes       |
-| AMF Set ID    | String | AMF Set ID of GUAMI    | 3-digit hex string, where first digit is limited to values 0 to 3 (see 3GPP TS 23.003/29.571) | `001`         | Yes       | 
-| AMF Pointer   | String | AMF Pointer of GUAMI   | 2-digit hex string, where first digit is limited to values 0 to 4 (see 3GPP TS 23.003)        | `01`          | Yes       |
+| Name          | Type   | Description            | Allowed values                                                                                                 | Default value | Mandatory |
+|:--------------|:-------|:-----------------------|:---------------------------------------------------------------------------------------------------------------|:--------------|-----------|
+| GUAMI MCC     | String | MCC Part of GUAMI      | 3-digit decimal string                                                                                         | `001`         | Yes       |
+| GUAMI MNC     | String | MNC Part of GUAMI      | 2 or 3-digit decimal string                                                                                    | `01`          | Yes       |
+| AMF Region ID | String | AMF Region ID of GUAMI | 2-digit hex string (8 bits length)                                                                             | `FF`          | Yes       |
+| AMF Set ID    | String | AMF Set ID of GUAMI    | 3-digit hex string (10 bits length), where first digit is limited to values 0 to 3 (see 3GPP TS 23.003/29.571) | `001`         | Yes       | 
+| AMF Pointer   | String | AMF Pointer of GUAMI   | 2-digit hex string (6 bits length), where first digit is limited to values 0 to 3 (see 3GPP TS 23.003)         | `01`          | Yes       |
 
 ### PLMN configuration
 
@@ -436,9 +436,9 @@ slicing information (SST and SD).
 |:---------|:-------|:----------------------|:--------------------------------------------------|:--------------|-----------|
 | PLMN MCC | String | MCC of supported PLMN | 3-digit decimal string                            | `001`         | Yes       |
 | PLMN MNC | String | MNC of supported PLMN | 2 or 3-digit decimal string                       | `01`          | Yes       |
-| TAC      | Int    | TAC of supported PLMN | Any integer between `0` and `16777215` (`FFFFFF`) | `1`           | Yes       |
+| TAC      | Int    | TAC of supported PLMN | Any integer between `1` and `16777213` (`FFFFFD`) | `1`           | Yes       |
 | SST      | Int    | SST of SNSSAI         | Any integer between `0` and `255`                 | `1`           | Yes       |
-| SD       | String | SD of SNSSAI          | 6-digit hex string                                | `FFFFFF`      | No        |
+| SD       | String | SD of SNSSAI          | 6-digit hex string (24 bits length)               | `FFFFFF`      | No        |
 
 When configuring hex values for AMF, you need to skip the leading `0x` notation. Our reasoning behind this design
 decision is that we want to follow 3GPP as close as possible.
