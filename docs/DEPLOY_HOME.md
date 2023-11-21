@@ -13,7 +13,7 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
 - How to get the container images
     - [Pull the container images](./RETRIEVE_OFFICIAL_IMAGES.md)
     - [Build the container images](./BUILD_IMAGES.md)
-- [Configuring the Containers](./CONFIGURE_CONTAINERS.md)
+- [Configuring the Containers](./CONFIGURATION.md)
 - 5G Core Network Deployment
     - [Using Docker-Compose, perform a `basic` deployment](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md)
     - [Using Docker-Compose, perform a `basic-vpp` deployment with `VPP` implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)

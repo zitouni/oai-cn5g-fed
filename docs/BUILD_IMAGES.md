@@ -480,6 +480,6 @@ $ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
                .
 ```
 
-You are ready to [Configure the Containers](./CONFIGURE_CONTAINERS.md) or to deploy the images using [helm-charts](./DEPLOY_SA5G_HC.md)
+You are ready to [Configure the Containers](./CONFIGURATION.md) or to deploy the images using [helm-charts](./DEPLOY_SA5G_HC.md)
 
 You can also go [back](./DEPLOY_HOME.md) to the list of tutorials.
