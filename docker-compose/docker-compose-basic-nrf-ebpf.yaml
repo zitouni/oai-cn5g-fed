@@ -145,10 +145,11 @@ services:
         init: true
         container_name: oai-ext-dn
         image: oaisoftwarealliance/trf-gen-cn5g:latest
-        entrypoint: /bin/bash -c \
-              "ethtool -K eth0 tx off;"\
-              "ip route add 12.1.1.0/24 via 192.168.72.129 dev eth1; ip route; sleep infinity"
-        command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]
+        environment:
+            - EBPF_GW_SETUP=yes
+            - EBPF_GW_N6_IP_ADDR=192.168.72.135
+            - UE_IP_ADDRESS_POOL=12.1.1.0/24
+            - N6_UPF_IP_ADDR=192.168.72.129
         healthcheck:
             test: /bin/bash -c "ip r | grep 12.1.1"
             interval: 10s
