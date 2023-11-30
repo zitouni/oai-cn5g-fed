@@ -138,7 +138,7 @@ def deploy(file_name, extra_interface=False):
                 cmd = re.sub('-i demo-oai', '-i demo-oai -i cn5g-core', cmd)
                 cmd = re.sub('70', '73', cmd)
             if file_name == BASIC_EBPF_W_NRF:
-                cmd = re.sub('-i demo-oai', '-i demo-oai -i demo-n3', cmd)
+                cmd = re.sub('-i demo-oai', '-i demo-oai -i demo-n3 -i demo-n6', cmd)
                 cmd = re.sub('70', '72', cmd)
         res = run_cmd(cmd, False)
         if res is None:
@@ -235,6 +235,8 @@ def check_config(file_name):
             print(smf_registration_nrf)
         if file_name == BASIC_VPP_W_NRF or file_name == BASIC_VPP_W_NRF_REDIRECT or file_name == BASIC_VPP_W_NRF_STEERING:
             cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.201"'
+        elif file_name == BASIC_EBPF_W_NRF:
+            cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.129"'
         else:
             cmd = f'{curl_cmd}"UPF" | grep -o "192.168.70.134"'
         upf_registration_nrf = run_cmd(cmd, False)
