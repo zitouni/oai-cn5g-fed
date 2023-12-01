@@ -42,17 +42,17 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 You can also retrieve the images from `docker-hub`. See [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md).
 
-| CNF Name    | Branch Name   | Tag used at time of writing   | Ubuntu 20.04 | RHEL8         |
+| CNF Name    | Branch Name   | Tag used at time of writing   | Ubuntu 22.04 | RHEL8         |
 | ----------- |:------------- | ----------------------------- | ------------ | --------------|
-| NSSF        | `master`      | `v1.6.0`                      | X            | X              |
-| AMF         | `master`      | `v1.6.0`                      | X            | X              |
-| AUSF        | `master`      | `v1.6.0`                      | X            | X              |
-| NRF         | `master`      | `v1.6.0`                      | X            | X              |
-| SMF         | `master`      | `v1.6.0`                      | X            | X              |
-| UDR         | `master`      | `v1.6.0`                      | X            | X              |
-| UDM         | `master`      | `v1.6.0`                      | X            | X              |
-| UPF         | `master`      | `v1.6.0`                      | X            | X              |
-| UPF-VPP     | `master`      | `v1.6.0`                      | X            | X              |
+| NSSF        | `master`      | `v2.0.0`                      | X            | X              |
+| AMF         | `master`      | `v2.0.0`                      | X            | X              |
+| AUSF        | `master`      | `v2.0.0`                      | X            | X              |
+| NRF         | `master`      | `v2.0.0`                      | X            | X              |
+| SMF         | `master`      | `v2.0.0`                      | X            | X              |
+| UDR         | `master`      | `v2.0.0`                      | X            | X              |
+| UDM         | `master`      | `v2.0.0`                      | X            | X              |
+| UPF         | `master`      | `v2.0.0`                      | X            | X              |
+| UPF-VPP     | `master`      | `v2.0.0`                      | X            | X              |
 
 <br/>
 
