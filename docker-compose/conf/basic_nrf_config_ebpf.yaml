@@ -62,19 +62,19 @@ nfs:
   upf:
     host: oai-upf
     sbi:
-      port_http1: 80
+      port: 8080
       api_version: v1
-      interface_name: eth2
+      interface_name: demo-oai
     n3:
-      interface_name: eth0
+      interface_name: demo-n3
       port: 2152
     n4:
-      interface_name: eth2
+      interface_name: demo-oai
       port: 8805
     n6:
-      interface_name: eth1
+      interface_name: demo-n6
     n9:
-      interface_name: eth0
+      interface_name: demo-n9
       port: 2152
   udm:
     host: oai-udm
@@ -218,10 +218,8 @@ smf:
 upf:
   support_features:
     enable_bpf_datapath: yes    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
-    enable_snat: no             # If "on": Source natting is done for UE, DEFAULT= off
-  remote_n6_gw: localhost       # Dummy host since simple-switch does not use N6 GW
-  smfs:
-    - host: oai-smf            # To be used for PFCP association in case of no-NRF
+    enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: oai-ext-dn
   upf_info:
     sNssaiUpfInfoList:
       - sNssai: *embb_slice1

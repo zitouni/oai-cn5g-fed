@@ -114,6 +114,8 @@ services:
         networks:
             public_net:
                 ipv4_address: 192.168.70.133
+        extra_hosts:
+            - "oai-upf:192.168.70.129"
     oai-upf:
         container_name: "oai-upf"
         image: oaisoftwarealliance/oai-upf:develop
@@ -134,29 +136,30 @@ services:
         cap_drop:
             - ALL
         privileged: true
-        networks:
-            public_net:
-                ipv4_address: 192.168.70.134
-            n3_net:
-                ipv4_address: 192.168.71.134
-            n6_net:
-                ipv4_address: 192.168.72.134
-
+        network_mode: host
+        extra_hosts:
+            - "oai-ext-dn:192.168.72.135"
+            - "oai-nrf:192.168.70.130"
     oai-ext-dn:
         privileged: true
         init: true
         container_name: oai-ext-dn
         image: oaisoftwarealliance/trf-gen-cn5g:latest
-        entrypoint: /bin/bash -c \
-              "ethtool -K eth0 tx off;"\
-              "ip route add 12.1.1.0/24 via 192.168.72.134 dev eth0; ip route; sleep infinity"
-        command: ["/bin/bash", "-c", "trap : SIGTERM SIGINT; sleep infinity & wait"]
+        environment:
+            - EBPF_GW_SETUP=yes
+            - EBPF_GW_N6_IP_ADDR=192.168.72.135
+            - UE_IP_ADDRESS_POOL=12.1.1.0/24
+            - N6_UPF_IP_ADDR=192.168.72.129
         healthcheck:
             test: /bin/bash -c "ip r | grep 12.1.1"
             interval: 10s
             timeout: 5s
             retries: 5
         networks:
+            public_net:
+                ipv4_address: 192.168.70.135
+            n3_net:
+                ipv4_address: 192.168.71.135
             n6_net:
                 ipv4_address: 192.168.72.135
 networks:
