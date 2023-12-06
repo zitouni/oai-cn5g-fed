@@ -62,7 +62,7 @@ nfs:
   upf:
     host: oai-upf
     sbi:
-      port_http1: 80
+      port: 8080
       api_version: v1
       interface_name: demo-oai
     n3:
