@@ -343,7 +343,7 @@ docker-compose-host $: docker-compose -f docker-compose-gnbsim-ebpf.yaml ps -a
    Name                 Command                  State       Ports
 ------------------------------------------------------------------
 gnbsim-ebpf   /gnbsim/bin/entrypoint.sh  ...   Up (healthy)
-docker-compose-host $: docker logs gnbsim-ebpf | tail -10
+docker-compose-host $: docker logs gnbsim-ebpf 2>&1 | tail -10
 [gnbsim]2023/07/21 11:22:50.647779 example.go:241: GTP-U interface name: eth1
 [gnbsim]2023/07/21 11:22:50.647805 example.go:242: GTP-U local addr: 192.168.71.141
 [gnbsim]2023/07/21 11:22:50.647820 example.go:243: GTP-U peer addr : 192.168.71.134
@@ -354,13 +354,191 @@ docker-compose-host $: docker logs gnbsim-ebpf | tail -10
 [gnbsim]2023/07/21 11:22:52.649554 example.go:194: Deregister after : 3600 Sec
 ```
 
+### 6.2. Test with Gnbsim: ping operations
+
+``` shell
+docker-compose-host $: docker exec gnbsim-ebpf /bin/bash -c "ping -I 12.1.1.2 -c 10 192.168.72.135"
+PING 192.168.72.135 (192.168.72.135) from 12.1.1.2 : 56(84) bytes of data.
+64 bytes from 192.168.72.135: icmp_seq=1 ttl=64 time=0.306 ms
+64 bytes from 192.168.72.135: icmp_seq=2 ttl=64 time=0.301 ms
+..
+64 bytes from 192.168.72.135: icmp_seq=9 ttl=64 time=0.333 ms
+64 bytes from 192.168.72.135: icmp_seq=10 ttl=64 time=0.325 ms
+
+--- 192.168.72.135 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9198ms
+rtt min/avg/max/mdev = 0.238/0.298/0.333/0.029 ms
+
+docker-compose-host $: docker exec oai-ext-dn /bin/bash -c "ping -c 10 12.1.1.2"
+PING 12.1.1.2 (12.1.1.2) 56(84) bytes of data.
+64 bytes from 12.1.1.2: icmp_seq=1 ttl=64 time=0.232 ms
+64 bytes from 12.1.1.2: icmp_seq=2 ttl=64 time=0.338 ms
+..
+64 bytes from 12.1.1.2: icmp_seq=9 ttl=64 time=0.356 ms
+64 bytes from 12.1.1.2: icmp_seq=10 ttl=64 time=0.303 ms
+
+--- 12.1.1.2 ping statistics ---
+10 packets transmitted, 10 received, 0% packet loss, time 9199ms
+rtt min/avg/max/mdev = 0.232/0.333/0.387/0.043 ms
+```
+
+### 6.3. Testing traffic with TCP/UDP iperf3 operations:
+
+First I start a iperf3 server on the gnbsim container that I will keep for the whole test suite:
+
+``` shell
+docker-compose-host $: docker exec -d gnbsim-ebpf /bin/bash -c "nohup iperf3 -B 12.1.1.2 -s -4 > /tmp/iperf3_server_on_ue.log 2>&1"
+```
+
+**TCP Downlink test**
+
+``` shell
+docker-compose-host $: docker exec oai-ext-dn /bin/bash -c "iperf3 -B 192.168.72.135 -c 12.1.1.2 -4 -t 10" 2>&1 | tee /tmp/oai/upf-ebpf-gnbsim/iperf3_tcp_dl.log
+Connecting to host 12.1.1.2, port 5201
+[  5] local 192.168.72.135 port 60725 connected to 12.1.1.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Retr  Cwnd
+[  5]   0.00-1.00   sec   138 MBytes  1.16 Gbits/sec  464   60.5 KBytes
+[  5]   1.00-2.01   sec   131 MBytes  1.09 Gbits/sec  526    122 KBytes
+[  5]   2.01-3.00   sec   135 MBytes  1.14 Gbits/sec  602   96.2 KBytes
+[  5]   3.00-4.01   sec   122 MBytes  1.02 Gbits/sec  610    132 KBytes
+[  5]   4.01-5.00   sec   121 MBytes  1.02 Gbits/sec  333   81.1 KBytes
+[  5]   5.00-6.00   sec   112 MBytes   939 Mbits/sec  503    120 KBytes
+[  5]   6.00-7.00   sec   132 MBytes  1.11 Gbits/sec  455   49.5 KBytes
+[  5]   7.00-8.01   sec   135 MBytes  1.11 Gbits/sec  448   90.8 KBytes
+[  5]   8.01-9.01   sec   119 MBytes  1.01 Gbits/sec  542    186 KBytes
+[  5]   9.01-10.01  sec   150 MBytes  1.26 Gbits/sec  376    143 KBytes
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.01  sec  1.26 GBytes  1.09 Gbits/sec  4859             sender
+[  5]   0.00-10.01  sec  1.26 GBytes  1.09 Gbits/sec                  receiver
+
+iperf Done.
+```
+
+**TCP Uplink test**
+
+``` shell
+docker-compose-host $: docker exec oai-ext-dn /bin/bash -c "iperf3 -B 192.168.72.135 -c 12.1.1.2 -4 -t 10 -R" 2>&1 | tee /tmp/oai/upf-ebpf-gnbsim/iperf3_tcp_ul.log
+Connecting to host 12.1.1.2, port 5201
+Reverse mode, remote host 12.1.1.2 is sending
+[  5] local 192.168.72.135 port 46029 connected to 12.1.1.2 port 5201
+[ ID] Interval           Transfer     Bitrate
+[  5]   0.00-1.00   sec  62.9 MBytes   528 Mbits/sec
+[  5]   1.00-2.00   sec  61.3 MBytes   514 Mbits/sec
+[  5]   2.00-3.00   sec  62.7 MBytes   526 Mbits/sec
+[  5]   3.00-4.00   sec  61.5 MBytes   516 Mbits/sec
+[  5]   4.00-5.00   sec  61.6 MBytes   516 Mbits/sec
+[  5]   5.00-6.00   sec  61.3 MBytes   515 Mbits/sec
+[  5]   6.00-7.00   sec  61.3 MBytes   514 Mbits/sec
+[  5]   7.00-8.00   sec  60.4 MBytes   506 Mbits/sec
+[  5]   8.00-9.00   sec  60.2 MBytes   505 Mbits/sec
+[  5]   9.00-10.00  sec  60.8 MBytes   510 Mbits/sec
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Retr
+[  5]   0.00-10.00  sec   617 MBytes   517 Mbits/sec   36             sender
+[  5]   0.00-10.00  sec   614 MBytes   515 Mbits/sec                  receiver
+
+iperf Done.
+```
+
+**UDP Downlink test**
+
+``` shell
+docker-compose-host $: docker exec oai-ext-dn /bin/bash -c "iperf3 -B 192.168.72.135 -c 12.1.1.2 -4 -t 10 -u -b 400M" 2>&1 | tee /tmp/oai/upf-ebpf-gnbsim/iperf3_udp_dl.log
+Connecting to host 12.1.1.2, port 5201
+[  5] local 192.168.72.135 port 53209 connected to 12.1.1.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Total Datagrams
+[  5]   0.00-1.00   sec  47.7 MBytes   400 Mbits/sec  35510
+[  5]   1.00-2.00   sec  47.7 MBytes   400 Mbits/sec  35506
+[  5]   2.00-3.00   sec  47.7 MBytes   400 Mbits/sec  35515
+[  5]   3.00-4.00   sec  47.7 MBytes   400 Mbits/sec  35493
+[  5]   4.00-5.00   sec  47.7 MBytes   400 Mbits/sec  35529
+[  5]   5.00-6.00   sec  47.7 MBytes   400 Mbits/sec  35511
+[  5]   6.00-7.00   sec  47.7 MBytes   400 Mbits/sec  35511
+[  5]   7.00-8.00   sec  47.7 MBytes   400 Mbits/sec  35511
+[  5]   8.00-9.00   sec  47.7 MBytes   400 Mbits/sec  35513
+[  5]   9.00-10.00  sec  47.7 MBytes   400 Mbits/sec  35510
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-10.00  sec   477 MBytes   400 Mbits/sec  0.000 ms  0/355109 (0%)  sender
+[  5]   0.00-10.00  sec   477 MBytes   400 Mbits/sec  0.004 ms  0/355109 (0%)  receiver
+
+iperf Done.
+```
+
+**UDP Uplink test**
+
+``` shell
+docker-compose-host $: docker exec oai-ext-dn /bin/bash -c "iperf3 -B 192.168.72.135 -c 12.1.1.2 -4 -t 10 -u -b 400M -R" 2>&1 | tee /tmp/oai/upf-ebpf-gnbsim/iperf3_udp_ul.log
+Connecting to host 12.1.1.2, port 5201
+Reverse mode, remote host 12.1.1.2 is sending
+[  5] local 192.168.72.135 port 35808 connected to 12.1.1.2 port 5201
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-1.00   sec  47.7 MBytes   400 Mbits/sec  0.009 ms  0/35489 (0%)
+[  5]   1.00-2.00   sec  47.7 MBytes   400 Mbits/sec  0.013 ms  0/35509 (0%)
+[  5]   2.00-3.00   sec  47.7 MBytes   400 Mbits/sec  0.009 ms  0/35513 (0%)
+[  5]   3.00-4.00   sec  47.7 MBytes   400 Mbits/sec  0.009 ms  0/35512 (0%)
+[  5]   4.00-5.00   sec  47.7 MBytes   400 Mbits/sec  0.010 ms  0/35510 (0%)
+[  5]   5.00-6.00   sec  47.7 MBytes   400 Mbits/sec  0.025 ms  0/35512 (0%)
+[  5]   6.00-7.00   sec  47.7 MBytes   400 Mbits/sec  0.025 ms  0/35512 (0%)
+[  5]   7.00-8.00   sec  47.7 MBytes   400 Mbits/sec  0.009 ms  0/35511 (0%)
+[  5]   8.00-9.00   sec  47.7 MBytes   400 Mbits/sec  0.009 ms  0/35512 (0%)
+[  5]   9.00-10.00  sec  47.7 MBytes   400 Mbits/sec  0.007 ms  0/35511 (0%)
+- - - - - - - - - - - - - - - - - - - - - - - - -
+[ ID] Interval           Transfer     Bitrate         Jitter    Lost/Total Datagrams
+[  5]   0.00-10.00  sec   477 MBytes   400 Mbits/sec  0.000 ms  0/355110 (0%)  sender
+[  5]   0.00-10.00  sec   477 MBytes   400 Mbits/sec  0.007 ms  0/355091 (0%)  receiver
+
+iperf Done.
+```
+
+**Notes:**
+
+* The numbers you will reach on your own server will certainly differ and are depending on the performance of your network card.
+* If you were to fully capture traffic on the `N3` and `N6` interfaces with `tshark`, you will not see any ICMP nor any iperf `TCP/UDP` packets. it would prove that all traffic is off-loaded using eBPF
+* And if you observe the CPU/Memory usage on each container during the iperf3 traffic tests, you would see something like this:
+
+``` console
+docker-compose-host $: docker stats
+CONTAINER ID   NAME          CPU %     MEM USAGE / LIMIT     MEM %     NET I/O           BLOCK I/O       PIDS
+a86f866ec759   mysql         0.35%     397MiB / 62.54GiB     0.62%     5.11kB / 10.2kB   524kB / 568MB   39
+81d3edb26e6e   oai-nrf       6.68%     9.543MiB / 62.54GiB   0.01%     56kB / 46.4kB     0B / 0B         4
+f1940c1677fa   oai-ext-dn    71.39%    7.027MiB / 62.54GiB   0.01%     22.3MB / 994MB    0B / 0B         3
+03aed797b9aa   oai-udr       8.62%     12.12MiB / 62.54GiB   0.02%     23.2kB / 16.1kB   0B / 0B         4
+f9570a1467d3   oai-udm       1.00%     10.62MiB / 62.54GiB   0.02%     15.3kB / 16.2kB   0B / 0B         4
+82a4abcec9d7   oai-ausf      0.90%     10.56MiB / 62.54GiB   0.02%     12.7kB / 13.4kB   0B / 0B         4
+4ad77e7b5b95   oai-amf       0.00%     13.54MiB / 62.54GiB   0.02%     17kB / 18kB       0B / 0B         9
+bb38199aeaf6   oai-smf       0.00%     10.93MiB / 62.54GiB   0.02%     10.7kB / 9.25kB   0B / 0B         10
+552d3680810f   oai-upf       0.00%     33.53MiB / 62.54GiB   0.05%     0B / 0B           0B / 0B         10
+75672884c307   gnbsim-ebpf   180.74%   10.88MiB / 62.54GiB   0.02%     1.03GB / 37MB     0B / 0B         18
+```
+
+You can see that both iperf packets construction processes are heavy on the `oai-ext-dn` and `gnbsim-ebpf` containers; whereas on `oai-upf` there are no CPU impact.
+
+If we were to do the same experiment with the `simple-switch` implementation, we would see that `oai-upf` container would take huge amounts of CPU usage.
+
+<!---
+For CI purposes please ignore these lines
+``` shell
+docker-compose-host $: docker cp gnbsim-ebpf:/tmp/iperf3_server_on_ue.log /tmp/oai/upf-ebpf-gnbsim/
+docker-compose-host $: ../ci-scripts/checkIperf3ClientLog.py --log-file /tmp/oai/upf-ebpf-gnbsim/iperf3_tcp_dl.log
+docker-compose-host $: ../ci-scripts/checkIperf3ClientLog.py --log-file /tmp/oai/upf-ebpf-gnbsim/iperf3_tcp_ul.log
+docker-compose-host $: ../ci-scripts/checkIperf3ClientLog.py --log-file /tmp/oai/upf-ebpf-gnbsim/iperf3_udp_dl.log
+docker-compose-host $: ../ci-scripts/checkIperf3ClientLog.py --log-file /tmp/oai/upf-ebpf-gnbsim/iperf3_udp_ul.log
+```
+-->
+
 ## 7. Recover the logs
 
 <!---
 For CI purposes please ignore these lines
 ``` shell
+docker-compose-host $: docker-compose -f docker-compose-basic-nrf-ebpf.yaml ps -a
 docker-compose-host $: docker-compose -f docker-compose-gnbsim-ebpf.yaml stop -t 2
 Stopping gnbsim-ebpf ... done
+docker-compose-host $: sleep 10
+docker-compose-host $: docker-compose -f docker-compose-basic-nrf-ebpf.yaml ps -a
+docker-compose-host $: docker logs oai-upf 2>&1 | tail -20
 docker-compose-host $: docker-compose -f docker-compose-basic-nrf-ebpf.yaml stop -t 2
 Stopping oai-ext-dn ... done
 Stopping oai-smf    ... done
@@ -368,6 +546,7 @@ Stopping oai-amf    ... done
 Stopping oai-ausf   ... done
 Stopping oai-udm    ... done
 Stopping oai-udr    ... done
+Stopping oai-upf    ... done
 Stopping oai-nrf    ... done
 Stopping mysql      ... done
 ```
