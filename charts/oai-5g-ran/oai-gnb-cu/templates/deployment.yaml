@@ -51,9 +51,8 @@ spec:
       - name: gnbcu
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc/mounted.conf
+          - mountPath: /opt/oai-gnb/etc
             name: configuration
-            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -72,10 +71,22 @@ spec:
         - containerPort: 36412
           name: n2
           protocol: SCTP
-        - containerPort: 2153
+        - containerPort:  {{ .Values.config.f1cuPort }}
           name: f1
           protocol: UDP
         {{- if .Values.start.gnbcu}}
+        command: [ "/bin/bash", "-c" ]
+        args:
+         -  AMF_IP_ADDRESS=$(getent hosts $AMF_HOST | awk '{print $1}');
+            N2_IP_ADDRESS=$(ip -f inet addr show $N2_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            N3_IP_ADDRESS=$(ip -f inet addr show $N3_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            F1_IP_ADDRESS=$(ip -f inet addr show $F1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            sed -e s/@N2_IP_ADDRESS@/$N2_IP_ADDRESS/g
+                -e s/@N3_IP_ADDRESS@/$N3_IP_ADDRESS/g
+                -e s/@F1_IP_ADDRESS@/$F1_IP_ADDRESS/g
+                -e s/@AMF_IP_ADDRESS@/$AMF_IP_ADDRESS/g
+                /opt/oai-gnb/etc/cu.conf | tee /tmp/cu.conf;
+            exec /opt/oai-gnb/bin/nr-softmodem -O /tmp/cu.conf $USE_ADDITIONAL_OPTIONS;
         {{- else}}
         command:
           - /bin/sleep
@@ -86,120 +97,16 @@ spec:
             value: {{ .Values.config.timeZone }}
           - name: USE_ADDITIONAL_OPTIONS
             value: {{ .Values.config.useAdditionalOptions }}
-          {{- if .Values.config.mountConfig}}
-          - name: USE_VOLUMED_CONF
-            value: "yes"
-          {{- end}}
-          {{- if not .Values.config.mountConfig}}
-          - name: USE_SA_CU
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: useSAcu
-          - name: GNB_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: gnbcuName
-          - name: MCC
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mcc
-          - name: MNC
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mnc
-          - name: MNC_LENGTH
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: mncLength
-          - name: TAC
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: tac
-          - name: NSSAI_SST
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nssaiSst
-          - name: NSSAI_SD0
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: nssaiSd0
-          - name: AMF_IP_ADDRESS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: amfIpAddress
-          - name: GNB_NGA_IF_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: gnbNgaIfName
-          - name: GNB_NGA_IP_ADDRESS
-            {{- if eq .Values.config.gnbNgaIpAddress "status.podIP" }}
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-            {{- else}}
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: gnbNgaIpAddress
-            {{- end}}
-          - name: GNB_NGU_IF_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: gnbNguIfName
-          - name: GNB_NGU_IP_ADDRESS
-            {{- if eq .Values.config.gnbNguIpAddress "status.podIP" }}
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-            {{- else}}
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: gnbNguIpAddress
-            {{- end}}
+          - name: OAI_GDBSTACKS
+            value: "1"
+          - name: AMF_HOST
+            value: {{ .Values.config.amfhost }}
+          - name: N2_IF_NAME
+            value: {{ .Values.config.n2IfName }}
+          - name: N3_IF_NAME
+            value: {{ .Values.config.n3IfName }}
           - name: F1_IF_NAME
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: f1IfName
-          - name: F1_CU_IP_ADDRESS
-            {{- if eq .Values.config.f1cuIpAddress "status.podIP" }}
-            valueFrom:
-              fieldRef:
-                fieldPath: status.podIP
-            {{- else}}
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: f1cuIpAddress
-            {{- end}}
-          - name: F1_DU_IP_ADDRESS
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: f1duIpAddress
-          - name: F1_CU_D_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: f1cuPort
-          - name: F1_DU_D_PORT
-            valueFrom:
-              configMapKeyRef:
-                name: {{ .Chart.Name }}-configmap
-                key: f1duPort
-          {{- end}}
+            value: {{ .Values.config.f1IfName }}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

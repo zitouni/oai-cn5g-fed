@@ -51,9 +51,8 @@ spec:
       - name: gnbcucp
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc/mounted.conf
+          - mountPath: /opt/oai-gnb/etc
             name: configuration
-            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -76,6 +75,18 @@ spec:
           name: f1c
           protocol: UDP
         {{- if .Values.start.gnbcucp}}
+        command: [ "/bin/bash", "-c" ]
+        args:
+         -  AMF_IP_ADDRESS=$(getent hosts $AMF_HOST | awk '{print $1}');
+            N2_IP_ADDRESS=$(ip -f inet addr show $N2_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            F1_IP_ADDRESS=$(ip -f inet addr show $F1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            CUCP_IP_ADDRESS=$(ip -f inet addr show $E1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            sed -e s/@N2_IP_ADDRESS@/$N2_IP_ADDRESS/g
+                -e s/@F1_IP_ADDRESS@/$F1_IP_ADDRESS/g
+                -e s/@CUCP_IP_ADDRESS@/$CUCP_IP_ADDRESS/g
+                -e s/@AMF_IP_ADDRESS@/$AMF_IP_ADDRESS/g
+                /opt/oai-gnb/etc/cucp.conf | tee /tmp/cucp.conf;
+            /opt/oai-gnb/bin/nr-softmodem -O /tmp/cucp.conf $USE_ADDITIONAL_OPTIONS;
         {{- else}}
         command:
           - /bin/sleep
@@ -86,8 +97,18 @@ spec:
             value: {{ .Values.config.timeZone }}
           - name: USE_ADDITIONAL_OPTIONS
             value: {{ .Values.config.useAdditionalOptions }}
-          - name: USE_VOLUMED_CONF
-            value: "yes"
+          - name: OAI_GDBSTACKS
+            value: "1"
+          - name: AMF_HOST
+            value: {{ .Values.config.amfhost }}
+          - name: N2_IF_NAME
+            value: {{ .Values.config.n2IfName }}
+          - name: E1_IF_NAME
+            value: {{ .Values.config.e1IfName }}
+          - name: N3_IF_NAME
+            value: {{ .Values.config.n3IfName }}
+          - name: F1_IF_NAME
+            value: {{ .Values.config.f1IfName }}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

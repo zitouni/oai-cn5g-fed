@@ -2,7 +2,7 @@
 
 Before using these helm-charts we recommend you read about OAI codebase and its working from the documents listed on [OAI gitlab](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/doc). Here you can find a dedicated document on [F1 design](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/F1-design.md). 
 
-**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. It requires minimum 1CPU and 1Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces. 
+**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12 and 4.13. It requires minimum 1CPU and 1Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin if you want to configure multiple interfaces for the CU pod. 
 
 
 ## Introduction
@@ -14,7 +14,7 @@ The [codebase](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop) 
 1. `oaisoftwarealliance/oai-gnb` for monolithic gNB, DU, CU, CU-CP 
 2. `oaisoftwarealliance/oai-nr-cuup` for CU-UP. 
 
-Each image has develop tag and a dedicated week tag for example `2023.w18`. We only publish Ubuntu 18.04/20.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
+Each image has develop tag and a dedicated week tag for example `2023.w18`. We only publish Ubuntu 20.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
 
 The helm chart of OAI-CU creates multiples Kubernetes resources,
 
@@ -134,7 +134,7 @@ helm install oai-gnb-cu .
 helm install oai-gnb-du ../oai-gnb-du
 ```
 
-3. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimulator` to `oai-gnb-du` and `useAdditionalOptions` to `--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time`. As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+3. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimServer` to `oai-gnb-du` and `useAdditionalOptions` to `--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time`. As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
 
 ```bash
 helm install oai-nr-ue ../oai-nr-ue

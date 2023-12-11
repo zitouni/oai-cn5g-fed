@@ -51,9 +51,8 @@ spec:
       - name: gnbcuup
         image: "{{ .Values.nfimage.repository }}:{{ .Values.nfimage.version }}"
         volumeMounts:
-          - mountPath: /opt/oai-gnb/etc/mounted.conf
+          - mountPath: /opt/oai-gnb/etc/
             name: configuration
-            subPath: mounted.conf
         {{- if .Values.resources.define}}
         resources:
           requests:
@@ -76,6 +75,22 @@ spec:
           name: f1u
           protocol: UDP
         {{- if .Values.start.gnbcuup}}
+        command: [ "/bin/bash", "-c" ]
+        args:
+         -  apt update && apt install net-tools -y;
+            CU_CP_IP_ADDRESS=$(getent hosts $CU_CP_HOST | awk '{print $1}');
+            CU_UP_IP_ADDRESS=$(ip -f inet addr show $E1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            N2_IP_ADDRESS=$(ip -f inet addr show $N2_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            N3_IP_ADDRESS=$(ip -f inet addr show $N3_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            F1_IP_ADDRESS=$(ip -f inet addr show $F1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
+            sed -e s/@N2_IP_ADDRESS@/$N2_IP_ADDRESS/g
+                -e s/@N3_IP_ADDRESS@/$N3_IP_ADDRESS/g
+                -e s/@F1_IP_ADDRESS@/$F1_IP_ADDRESS/g
+                -e s/@E1_IP_ADDRESS@/$E1_IP_ADDRESS/g
+                -e s/@CU_CP_IP_ADDRESS@/$CU_CP_IP_ADDRESS/g
+                -e s/@CU_UP_IP_ADDRESS@/$CU_UP_IP_ADDRESS/g
+                /opt/oai-gnb/etc/cuup.conf | tee /tmp/cuup.conf;
+            exec /opt/oai-gnb/bin/nr-cuup -O /tmp/cuup.conf $USE_ADDITIONAL_OPTIONS;
         {{- else}}
         command:
           - /bin/sleep
@@ -86,8 +101,16 @@ spec:
             value: {{ .Values.config.timeZone }}
           - name: USE_ADDITIONAL_OPTIONS
             value: {{ .Values.config.useAdditionalOptions }}
-          - name: USE_VOLUMED_CONF      
-            value: "yes"
+          - name: CU_CP_HOST
+            value: {{ .Values.config.cuCpHost }}
+          - name: N2_IF_NAME
+            value: {{ .Values.config.n2IfName }}
+          - name: N3_IF_NAME
+            value: {{ .Values.config.n3IfName }}
+          - name: F1_IF_NAME
+            value: {{ .Values.config.f1IfName }}
+          - name: E1_IF_NAME
+            value: {{ .Values.config.e1IfName }}
       {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
         image: "{{ .Values.tcpdumpimage.repository }}:{{ .Values.tcpdumpimage.version }}"

@@ -1,22 +1,11 @@
-{{- if not .Values.config.mountConfig }}
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Chart.Name }}-configmap
-data:
-  {{- range $key, $val := .Values.config }}
-  {{ $key }}: {{ $val | quote }}
-  {{- end }}
-{{- else }}
----
 apiVersion: v1
 kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 #https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/ci-scripts/conf_files/gNB_SA_DU.conf
 data:
-  mounted.conf: |
-      Active_gNBs = ( "oai-du-rfsim");
+  du.conf: |
+      Active_gNBs = ( "{{ .Values.config.duName}}");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
 
@@ -25,15 +14,15 @@ data:
        {
           ////////// Identification parameters:
           gNB_ID = 0xe00;
+          gNB_DU_ID = 0xe00;
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "oai-du-rfsim";
+          gNB_name  =  "{{ .Values.config.duName}}";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
-          tracking_area_code  =  1;
-          plmn_list = ({ mcc = 001; mnc = 01; mnc_length = 2; snssaiList = ({ sst = 1, sd = 0xffffff }) });
-
+          tracking_area_code  = {{ .Values.config.tac}} ;
+          plmn_list = ({ mcc = {{ .Values.config.mcc}}; mnc = {{ .Values.config.mnc}}; mnc_length = 2; snssaiList = ({ sst = {{ .Values.config.sst}} }) });
 
           nr_cellid = 12345678L;
 
@@ -186,16 +175,15 @@ data:
           num_cc           = 1;
           tr_s_preference  = "local_L1";
           tr_n_preference  = "f1";
-          local_n_if_name = "f1";
-          local_n_address = "172.21.6.100";
-          remote_n_address = "172.21.6.92";
+          local_n_if_name = "{{ .Values.config.f1IfName}}";
+          local_n_address = "@F1_DU_IP_ADDRESS@";
+          remote_n_address = "@CU_IP_ADDRESS@";
           local_n_portc   = 500;
-          local_n_portd   = 2152;
+          local_n_portd   = {{ .Values.config.f1duPort}};
           remote_n_portc  = 501;
-          remote_n_portd  = 2152;
+          remote_n_portd  = {{ .Values.config.f1cuPort}};
           pusch_TargetSNRx10          = 200;
           pucch_TargetSNRx10          = 200;
-          ulsch_max_frame_inactivity = 1;
         }
       );
 
@@ -236,22 +224,18 @@ data:
       );
       rfsimulator: {
       serveraddr = "server";
-          serverport = "4043";
+          serverport = 4043;
           options = (); #("saviq"); or/and "chanmod"
           modelname = "AWGN";
           IQfile = "/tmp/rfsimulator.iqs"
       }
 
-           log_config :
-           {
-             global_log_level                      ="info";
-             hw_log_level                          ="info";
-             phy_log_level                         ="info";
-             mac_log_level                         ="info";
-             rlc_log_level                         ="info";
-             pdcp_log_level                        ="info";
-             rrc_log_level                         ="info";
-             f1ap_log_level                         ="info";
-             ngap_log_level                         ="debug";
-          };
-{{- end }}
+      log_config: {
+        global_log_level = "info";
+        hw_log_level = "info";
+        phy_log_level = "info";
+        mac_log_level = "info";
+        rlc_log_level = "info";
+        f1ap_log_level = "info";
+      };
+

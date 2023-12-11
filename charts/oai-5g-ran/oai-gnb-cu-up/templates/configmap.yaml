@@ -3,38 +3,37 @@ kind: ConfigMap
 metadata:
   name: {{ .Chart.Name }}-configmap
 data:
-  mounted.conf: |
-      Active_gNBs = ( "oai-cu-up");
+  cuup.conf: |
+      Active_gNBs = ( "{{ .Values.config.cuupName}}");
       # Asn1_verbosity, choice in: none, info, annoying
       Asn1_verbosity = "none";
       sa = 1;
+
       gNBs =
       (
        {
           ////////// Identification parameters:
-          gNB_CU_ID = 0xe00;
+          gNB_ID = 0xe00;
+          gNB_CU_UP_ID = 0xe00;
 
       #     cell_type =  "CELL_MACRO_GNB";
 
-          gNB_name  =  "oai-cu-up";
+          gNB_name  =  "{{ .Values.config.cuupName}}";
 
           // Tracking area code, 0x0000 and 0xfffe are reserved values
-          tracking_area_code  =  1;
-          plmn_list = ({ mcc = {{ .Values.config.mcc }}; 
-                         mnc = {{ .Values.config.mnc }}; 
-                         mnc_length ={{ .Values.config.mncLength }}; 
-                         snssaiList = ({ sst = {{ .Values.config.nssaiSst }}, sd = {{ .Values.config.nssaiSd }} }) 
-                      });
+          tracking_area_code  = {{ .Values.config.tac}};
+          plmn_list = ({ mcc = {{ .Values.config.mcc}}; mnc = {{ .Values.config.mnc}}; mnc_length = 2; snssaiList = ({ sst = {{ .Values.config.sst}} }) });
+
 
           tr_s_preference = "f1";
 
-          local_s_if_name = "f1u";
-          local_s_address = "{{ .Values.multus.f1uInterface.IPadd }}";
-          remote_s_address = "{{ .Values.config.f1duIpAddress }}";
+          local_s_if_name = "{{ .Values.config.f1IfName}}";
+          local_s_address = "@F1_IP_ADDRESS@";
+          remote_s_address = "127.0.0.1";
           local_s_portc   = 501;
-          local_s_portd   = 2152;
+          local_s_portd   = {{ .Values.config.f1cuPort}};
           remote_s_portc  = 500;
-          remote_s_portd  = 2152;
+          remote_s_portd  = {{ .Values.config.f1duPort}};
 
           # ------- SCTP definitions
           SCTP :
@@ -48,47 +47,25 @@ data:
           (
             {
               type = "up";
-              ipv4_cucp = "{{ .Values.config.e1IpAddress }}";
-              ipv4_cuup = "{{ .Values.multus.e1Interface.IPadd }}";
+              ipv4_cucp = "@CU_CP_IP_ADDRESS@";
+              ipv4_cuup = "@CU_UP_IP_ADDRESS@";
             }
           )
 
           NETWORK_INTERFACES :
           {
-              GNB_INTERFACE_NAME_FOR_NG_AMF            = "n3";
-              GNB_IPV4_ADDRESS_FOR_NG_AMF              = "{{ .Values.multus.n3Interface.IPadd }}";
-              GNB_INTERFACE_NAME_FOR_NGU               = "n3";
-              GNB_IPV4_ADDRESS_FOR_NGU                 = "{{ .Values.multus.n3Interface.IPadd }}";
-              GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
+            GNB_INTERFACE_NAME_FOR_NG_AMF            = "{{ .Values.config.n2IfName}}";
+            GNB_IPV4_ADDRESS_FOR_NG_AMF              = "@N2_IP_ADDRESS@";
+            GNB_INTERFACE_NAME_FOR_NGU               = "{{ .Values.config.n3IfName}}";
+            GNB_IPV4_ADDRESS_FOR_NGU                 = "@N3_IP_ADDRESS@";
+            GNB_PORT_FOR_S1U                         = 2152; # Spec 2152
           };
         }
       );
 
-      security = {
-        # preferred ciphering algorithms
-        # the first one of the list that an UE supports in chosen
-        # valid values: nea0, nea1, nea2, nea3
-        ciphering_algorithms = ( "nea0" );
-
-        # preferred integrity algorithms
-        # the first one of the list that an UE supports in chosen
-        # valid values: nia0, nia1, nia2, nia3
-        integrity_algorithms = ( "nia2", "nia0" );
-
-        # setting 'drb_ciphering' to "no" disables ciphering for DRBs, no matter
-        # what 'ciphering_algorithms' configures; same thing for 'drb_integrity'
-        drb_ciphering = "yes";
-        drb_integrity = "no";
+      log_config : {
+        global_log_level = "info";
+        pdcp_log_level   = "info";
+        f1ap_log_level   = "info";
+        ngap_log_level   = "info";
       };
-           log_config :
-           {
-             global_log_level                      ="info";
-             hw_log_level                          ="info";
-             phy_log_level                         ="info";
-             mac_log_level                         ="info";
-             rlc_log_level                         ="debug";
-             pdcp_log_level                        ="info";
-             rrc_log_level                         ="info";
-             f1ap_log_level                         ="info";
-             ngap_log_level                         ="debug";
-          };

@@ -4,7 +4,7 @@ kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Ope
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:   # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-gnb
-  version: 2023.w19 # image tag or develop
+  version: develop # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -72,29 +72,17 @@ multus:
 # in templates/configmap.yaml
 # Example config files --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
-  mountConfig: false          #If config file is mounted then please edit mount.conf in configmap.yaml properly 
-  rfSimulator: "server"       #If you are not using in RFsimulator mode then you can leave this empty
   timeZone: "Europe/Paris"
-  ## -E is to apply three-quarter of sampling frequency, 23.04 Msps to reduce the data rate on USB/PCIe transfers (only valid for 20 MHz)
-  ## The configuration file in config-map does not require -E
   useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
-  # If mounting the configuration file then below parameters are not used
-  useSATddMono: "yes"
   gnbName: "oai-gnb-rfsim"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
-  mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
-  nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4 
-  nssaiSd0: "ffffff"    #values in hexa-decimal format
-  #entrypoint.sh tries to resolve the amfHost name if the resolution did not work gNB will not start
-  amfIpAddress: "oai-amf"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
-  gnbNgaIfName: "eth0"            # if multus.n2Interface.create is true then use n2 
-  gnbNgaIpAddress: "status.podIP" # if multus.n2Interface.create is true then use multus.n2Interface.Ipadd 
-  gnbNguIfName: "eth0"   #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0 
-  gnbNguIpAddress: "status.podIP" # if multus.n3Interface.create is true then use multus.n3Interface.Ipadd or multus.n2Interface.Ipadd if you are using only 1 extra interface
-  threadParallelConfig: "PARALLEL_SINGLE_THREAD"
-  sdrAddrs: "serial=XXXXXXX"
+  sst: "1"  #currently only 4 standard values are allowed 1,2,3,4
+  usrp: rfsim   #allowed values rfsim, b2xx, n3xx or x3xx
+  amfhost: "oai-amf"  # amf ip-address or service-name oai-amf-svc or 172.21.6.94
+  n2IfName: "eth0"    # if multus.n2Interface.create is true then use n2
+  n3IfName: "eth0"   #if multus.n3Interface.create is true then use n3 or you can only use 1 interface n2 or eth0 
 
 ## Debugging section
 start:

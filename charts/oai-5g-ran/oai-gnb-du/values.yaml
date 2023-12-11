@@ -4,7 +4,7 @@ kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Ope
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:   # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-gnb           ## dockerhub oaisoftwarealliance/oai-gnb
-  version: 2023.w19 # image tag or develop
+  version: develop # image tag or develop
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -30,7 +30,7 @@ multus:
   # if default gatway is left blank then it will be removed
   defaultGateway: ""
   f1Interface:
-    create: true
+    create: false
     IPadd: "172.21.16.100"
     Netmask: "22"
     # #name inside the pod is hardcoded right now
@@ -58,28 +58,16 @@ config:
   mountConfig: false          #If config file is mounted then please edit mount.conf in templates/configmap.yaml properly 
   timeZone: "Europe/Paris"
   useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
-  rfSimulator: "server"       #If you are not using in RFsimulator mode then you can leave this empty
-  # If mounting the configuration file then below parameters are not used
-  gnbduName: "oai-du-rfsim"
-  useSaTDDdu: "yes"
+  duName: "oai-du-rfsim"
   mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
   mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
-  mncLength: "2" # check the information with AMF, SMF, UPF/SPGWU
   tac: "1"     # check the information with AMF
-  nssaiSst: "1"  #currently only 4 standard values are allowed 1,2,3,4
-  nssaiSd0: "ffffff"    #values in hexa-decimal format
-  f1IfName: "f1"                # f1 incase multus.f1Interface.create is true
-  f1cuIpAddress: "172.21.16.92"     # replace this value with CU f1 ip-address or CU-CP F1C ip-address if not using multus
-  f1duIpAddress: "172.21.16.100"    # 172.21.16.100 if using multus
-  f1cuPort: "2152"
-  f1duPort: "2152"
-  #Not mandatory (leave it as it is)
-  amfIpAddress: "127.0.0.1"  # Not mandatory, you can leave it like this in coming release it will be removed
-  gnbNgaIfName: "eth0"            
-  gnbNgaIpAddress: "status.podIP" 
-  gnbNguIfName: "eth0"   
-  gnbNguIpAddress: "status.podIP"
-
+  sst: "1"  #currently only 4 standard values are allowed 1,2,3,4
+  usrp: rfsim   #allowed values rfsim, b2xx, n3xx or x3xx
+  f1IfName: "eth0"   #if multus.f1Interface.create is true then use f1
+  cuHost: "oai-gnb-cu" ## Ip-address or hostname
+  f1cuPort: "2153"   #2153 if using same interface for f1 and n3 else standard port 2152 should be use if f1 and n3 interface are different
+  f1duPort: "2153"   #2153 if using same interface for f1 and n3 else standard port 2152 should be use if f1 and n3 interface are different
 
 ## Debugging section
 podSecurityContext:
