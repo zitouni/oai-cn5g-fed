@@ -103,9 +103,7 @@ Make sure the core network is running else you need to first start the core netw
   
 Make sure the gNB is running in split mode or non-split mode.
 
-1. If you are using nr-ue without or without multus interface the below configuration parameter remains the same.
-	+ If you are using `oai-nr-ue` with `oai-gnb` then in [values.yaml](./values.yaml) you need to set `config.rfSimServer` as `oai-gnb`. 
-	+ If you are using `oai-nr-ue` with `oai-gnb-du` then in [values.yaml](./values.yaml) you need to set `config.rfSimServer` as `oai-gnb-du`. 
+1. If you are using nr-ue with multus interface then configure the gNB/DU ip-address or FQDN in `config.rfSimServer`.
 
 ```bash
 helm install oai-nr-ue .

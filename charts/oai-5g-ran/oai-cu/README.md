@@ -134,7 +134,7 @@ helm install oai-gnb-cu .
 helm install oai-gnb-du ../oai-gnb-du
 ```
 
-3. Configure the `oai-nr-ue` charts for `oai-gnb-du`, change `config.rfSimServer` to `oai-gnb-du` and `useAdditionalOptions` to `--sa --rfsim -r 106 --numerology 1 -C 3619200000 --nokrnmod --log_config.global_log_options level,nocolor,time`. As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+3. Deploy NR-UE
 
 ```bash
 helm install oai-nr-ue ../oai-nr-ue
