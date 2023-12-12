@@ -73,10 +73,10 @@ multus:
 # Example config files --> https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/targets/PROJECTS/GENERIC-NR-5GC/CONF 
 config:
   timeZone: "Europe/Paris"
-  useAdditionalOptions: "--sa -E --rfsim --log_config.global_log_options level,nocolor,time"
+  useAdditionalOptions: "--sa --rfsim --log_config.global_log_options level,nocolor,time"
   gnbName: "oai-gnb-rfsim"
-  mcc: "001"   # check the information with AMF, SMF, UPF/SPGWU
-  mnc: "01"    # check the information with AMF, SMF, UPF/SPGWU
+  mcc: "001"   # check the information with AMF, SMF, UPF
+  mnc: "01"    # check the information with AMF, SMF, UPF
   tac: "1"     # check the information with AMF
   sst: "1"  #currently only 4 standard values are allowed 1,2,3,4
   usrp: rfsim   #allowed values rfsim, b2xx, n3xx or x3xx
