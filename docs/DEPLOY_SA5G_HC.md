@@ -877,14 +877,15 @@ kubectl top pods
 NAME                           CPU(cores)   MEMORY(bytes)   
 basic-mysql-7c87d8cfbf-c6psl   3m           336Mi           
 oai-amf-757f8dfb64-59k76       13m          5Mi             
-oai-ausf-6dcc8cc79d-vlxmb      32m          2Mi             
-oai-cu-76fb9cbb4f-8pg7l        7m           116Mi           
-oai-du-7d7b665f6f-sb55f        803m         1338Mi          
-oai-nrf-6ddd875c45-dt7hz       32m          3Mi             
-oai-smf-5bf8b96d74-cg7s4       12m          6Mi             
-oai-udm-5994fc6847-tpzgw       32m          3Mi             
-oai-udr-754d6cd48-f6n7n        32m          4Mi             
-oai-upf-6576bc8496-jnpxl       11m          132Mi  
+oai-ausf-6dcc8cc79d-vlxmb      28m          2Mi             
+oai-cu-76fb9cbb4f-8pg7l        2m           116Mi           
+oai-du-7d7b665f6f-sb55f        1868m        1338Mi          
+oai-nr-ue-85b79b968f-46xvq     1288m        562Mi           
+oai-nrf-6ddd875c45-dt7hz       30m          3Mi             
+oai-smf-5bf8b96d74-cg7s4       13m          6Mi             
+oai-udm-5994fc6847-tpzgw       29m          3Mi             
+oai-udr-754d6cd48-f6n7n        28m          4Mi             
+oai-upf-6576bc8496-jnpxl       11m          144Mi    
 ```
 
 **Use case 3**

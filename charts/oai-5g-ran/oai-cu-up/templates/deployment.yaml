@@ -77,7 +77,9 @@ spec:
         {{- if .Values.start.gnbcuup}}
         command: [ "/bin/bash", "-c" ]
         args:
-         -  apt update && apt install iproute2 -y;
+         -  {{- if eq .Values.kubernetesType "Vanilla" }}
+            apt update && apt install iproute2 -y;
+            {{- end }}
             CU_CP_IP_ADDRESS=$(getent hosts $CU_CP_HOST | awk '{print $1}');
             CU_UP_IP_ADDRESS=$(ip -f inet addr show $E1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
             N2_IP_ADDRESS=$(ip -f inet addr show $N2_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
