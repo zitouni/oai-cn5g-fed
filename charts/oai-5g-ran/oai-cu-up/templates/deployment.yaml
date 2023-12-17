@@ -35,7 +35,7 @@ spec:
           {{- if .Values.multus.f1uInterface.create }}
           ,{
                  "name": "{{ .Chart.Name }}-f1u",
-                 "interface": "f1u"
+                 "interface": "f1"
           }
           {{- end }}
           ]
@@ -81,6 +81,7 @@ spec:
             apt update && apt install iproute2 -y;
             {{- end }}
             CU_CP_IP_ADDRESS=$(getent hosts $CU_CP_HOST | awk '{print $1}');
+            CU_CP_IP_ADDRESS=$(if [[ $CU_CP_IP_ADDRESS ]]; then echo $CU_CP_IP_ADDRESS; else echo $CU_CP_HOST;fi)
             CU_UP_IP_ADDRESS=$(ip -f inet addr show $E1_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
             N2_IP_ADDRESS=$(ip -f inet addr show $N2_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");
             N3_IP_ADDRESS=$(ip -f inet addr show $N3_IF_NAME | grep -o "inet [0-9]*\.[0-9]*\.[0-9]*\.[0-9]*" | grep -o "[0-9]*\.[0-9]*\.[0-9]*\.[0-9]*");

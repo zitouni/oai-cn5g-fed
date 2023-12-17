@@ -20,7 +20,7 @@ set -eo pipefail
 ## Usage ./ci-scripts/checkHelmChartsMinikube.sh $tag $parent_repo
 # TAG=$1
 # PARENT=$2
-NAMESPACE='helm-triall'
+NAMESPACE='helm-trial'
 
 if ! command -v helm &> /dev/null
 then
