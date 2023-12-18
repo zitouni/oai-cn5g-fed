@@ -64,12 +64,12 @@ oai-amf:
     http2Param: "--http2-prior-knowledge"
   nodeSelector:     #Using dedicated nodeName in the chart directly
     worker: "telco"
-oai-spgwu-tiny:
+oai-upf:
   enabled: true
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes
   nfimage:  # image name either locally present or in a public/private repository
-    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-spgwu-tiny    ## The image will be pulled from dockerhub
-    version: SPGWU_TINY_TAG                                    ## The branch to be used to pull from dockerhub
+    repository: image-registry.openshift-image-registry.svc:5000/oaicicd-core/oai-upf    ## The image will be pulled from dockerhub
+    version: UPF_TAG                                    ## The branch to be used to pull from dockerhub
     # pullPolicy: IfNotPresent or Never or Always
     pullPolicy: IfNotPresent
   multus:
@@ -82,29 +82,6 @@ oai-spgwu-tiny:
     worker: "telcort"
   config:
     http2Param: "--http2-prior-knowledge"
-    nrfHTTPVersion: 2
-    n3If: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0
-    n4If: "eth0" # use for SMF communication
-    n6If: "net1"  # net1 if gNB is outside the cluster network and multus creation is true else eth0 (important because it sends the traffic towards internet)
-    threadsN3Ul: "1"
-    threadsN6Dl: "1"
-    threadsN6Prio: 99
-    threadsN3Prio: 98
-    threadsN4Prio: 88
-    netUeIp: "12.1.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
-  # Optional (set for ims dnn)
-    netUeIp2: "12.2.1.0/24"  # The range in which UE ip-address will be allocated should be configured the same in SMF
-    registerNRF: "yes"
-    nrfFqdn: "oai-nrf" # make sure this can be resolved by container dns
-    #Mandatory to configure atlease one slice
-    nssaiSst0: 1 # should match with SMF information
-    nssaiSd0: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF)
-    dnn0: "oai" # should match with SMF information
-    #Upto 4 slices can be added from here to add more you need to add manullay in config.yaml. Please follow the same way of adding slices nssaiSST$,nssaiSd$,dnn$ ($=0,1,2,3)
-    nssaiSst1: 1 # should match with SMF information (Optional, if removed slice will not be configured)
-    nssaiSd1: "0xFFFFFF"  # should match with SMF information (Optional, if removed sd value will be 0xFFFFFF only if nssaiSst1 is configured)
-    dnn1: "ims" # should match with SMF information
-    logLevel: "debug"
 oai-traffic-server:
   enabled: true
   kubernetesType: Openshift #Openshift/Vanilla Vanilla for Upstream Kubernetes

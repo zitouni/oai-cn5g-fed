@@ -76,10 +76,7 @@ class HtmlReport():
             if re.search('oai-cn5g-load-test', log_file) is not None:
                 continue
             containerName = re.sub('.log.*$', '', log_file)
-            if re.search('spgwu', containerName) is not None:
-                imageRootName = 'oai-spgwu-tiny:'
-                fileRootName = 'oai-spgwu-tiny'
-            elif re.search('omec-gnbsim', containerName) is not None:
+            if re.search('omec-gnbsim', containerName) is not None:
                 imageRootName = '5gc-gnbsim:'
                 fileRootName = '5gc-gnbsim'
             else:

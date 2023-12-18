@@ -129,7 +129,7 @@ services:
             - 80/tcp
             - 8080/tcp
         volumes:
-            - ./policies:/openair-pcf/policies
+            - ./policies/ulcl:/openair-pcf/policies
             - ./conf/ulcl_config.yaml:/openair-pcf/etc/config.yaml
         environment:
             - TZ=Europe/Paris

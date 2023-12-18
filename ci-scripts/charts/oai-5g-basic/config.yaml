@@ -50,6 +50,23 @@ nfs:
     n4:
       interface_name: eth0
       port: 8805
+  upf:
+    host: oai-upf
+    sbi:
+      port: 80
+      api_version: v1
+      interface_name: eth0
+    n3:
+      interface_name: net1
+      port: 2152
+    n4:
+      interface_name: eth0
+      port: 8805
+    n6:
+      interface_name: net1
+    n9:
+      interface_name: eth0
+      port: 2152
   udm:
     host: oai-udm
     sbi:
@@ -127,7 +144,7 @@ smf:
     use_local_pcc_rules: yes # Use infos from local_pcc_rules or from PCF
   # we resolve from NRF, this is just to configure usage_reporting
   upfs:
-    - host: oai-spgwu-tiny
+    - host: oai-upf
       config:
         enable_usage_reporting: no
   ue_dns:
@@ -161,6 +178,20 @@ smf:
         5qi: 1
         session_ambr_ul: "1000Mbps"
         session_ambr_dl: "1000Mbps"
+
+upf:
+  support_features:
+    enable_bpf_datapath: no    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
+    enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: 127.0.0.1      # Dummy pod since simple-switch does not use N6 GW
+  upf_info:
+    sNssaiUpfInfoList:
+      - sNssai:
+          sst: 1
+        dnnUpfInfoList:
+          - dnn: "oai"
+          - dnn: "ims"
+
 ## DNN configuration
 dnns:
   - dnn: "oai"

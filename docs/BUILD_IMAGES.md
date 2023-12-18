@@ -49,6 +49,8 @@ We also recommend that you synchronize this "tutorial" repository with a provide
 
 **At the time of writing (2023/05/xx), the release tag was `v1.5.1`.**
 
+**TODO: when releasing v2.0.0, to update section.**
+
 | CNF Name    | Branch Name | Tag      | Ubuntu 22.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
 | FED REPO    | N/A         | `v1.5.1` |              |                 |
@@ -116,7 +118,7 @@ $ git rebase origin/develop
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
-                              --smf-branch develop --spgwu-tiny-branch develop \
+                              --smf-branch develop --upf-branch develop \
                               --ausf-branch develop --udm-branch develop \
                               --udr-branch develop --upf-vpp-branch develop \
                               --nssf-branch develop --nef-branch develop \
@@ -125,7 +127,7 @@ $ ./scripts/syncComponents.sh --nrf-branch develop --amf-branch develop \
 OAI-NRF     component branch : develop
 OAI-AMF     component branch : develop
 OAI-SMF     component branch : develop
-OAI-SPGW-U  component branch : develop
+OAI-UPF     component branch : develop
 OAI-AUSF    component branch : develop
 OAI-UDM     component branch : develop
 OAI-UDR     component branch : develop
@@ -268,20 +270,20 @@ $ sudo podman build --target oai-nrf --tag oai-nrf:v1.5.1 \
 
 The above command is with podman, in case you use docker it can be changed with its docker equivalent.
 
-# 6. Build SPGW-U Image #
+# 6. Build UPF Image #
 
 ## 6.1 On a Ubuntu Host ##
 
 For example, I am building using `ubuntu:20.04` as base image:
 
 ```bash
-$ docker build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.5.1 \
-               --file component/oai-upf-equivalent/docker/Dockerfile.ubuntu \
+$ docker build --target oai-upf --tag oai-upf:develop \
+               --file component/oai-upf/docker/Dockerfile.upf.ubuntu \
                --build-arg BASE_IMAGE=ubuntu:20.04 \
-               component/oai-upf-equivalent
+               component/oai-upf
 $ docker image prune --force
 $ docker image ls
-oai-spgwu-tiny          v1.5.1             dec6311cef3b        1 minute ago          155MB
+oai-upf                 develop            dec6311cef3b        1 minute ago          155MB
 ...
 ```
 
@@ -296,9 +298,9 @@ Copy the ca and entitlement .pem files in your present working directory `pwd` b
 $: mkdir -p ./etc-pki-entitlement ./rhsm-conf ./rhsm-ca
 $: cp /etc/pki/entitlement/*pem ./etc-pki-entitlement
 $: cp /etc/rhsm/ca/*pem ./rhsm-ca
-$ sudo podman build --target oai-spgwu-tiny --tag oai-spgwu-tiny:v1.5.1 \
-               --file component/oai-spgwu-tiny/docker/Dockerfile.rhel8 \
-               component/oai-upf-equivalent
+$ sudo podman build --target oai-upf --tag oai-upf:develop \
+               --file component/oai-upf/docker/Dockerfile.upf.rhel8 \
+               component/oai-upf
 ...
 ```
 
@@ -476,7 +478,7 @@ This is just a utility image.
 
 ```bash
 $ docker build --target trf-gen-cn5g --tag trf-gen-cn5g:latest \
-               --file ci-scripts/Dockerfile.traffic.generator.ubuntu18.04 \
+               --file ci-scripts/Dockerfile.traffic.generator.ubuntu \
                .
 ```
 

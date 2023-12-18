@@ -88,7 +88,7 @@ def _parse_args() -> argparse.Namespace:
     parser.add_argument(
         '--repo-name', '-rn',
         action='store',
-        help='Image Repository Name (for example oai-spgwu-tiny)'
+        help='Image Repository Name (for example oai-amf)'
     )
 
     return parser.parse_args()

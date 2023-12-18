@@ -60,6 +60,23 @@ nfs:
       port: 8080
       api_version: v1
       interface_name: eth0
+  upf:
+    host: oai-upf
+    sbi:
+      port: 8080
+      api_version: v1
+      interface_name: eth0
+    n3:
+      interface_name: eth0
+      port: 2152
+    n4:
+      interface_name: eth0
+      port: 8805
+    n6:
+      interface_name: eth0
+    n9:
+      interface_name: eth0
+      port: 2152
 
 # anchor is set to re-use slice config in SMF
 snssais:
@@ -88,6 +105,17 @@ smf:
         5qi: 5
         session_ambr_ul: "50Mbps"
         session_ambr_dl: "100Mbps"
+
+upf:
+  support_features:
+    enable_bpf_datapath: no    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
+    enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: localhost      # Dummy host since simple-switch does not use N6 GW
+  upf_info:
+    sNssaiUpfInfoList:
+      - sNssai: *slice1
+        dnnUpfInfoList:
+          - dnn: "default"
 
 ## DNN configuration
 dnns:

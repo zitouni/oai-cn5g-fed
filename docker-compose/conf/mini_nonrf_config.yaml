@@ -63,6 +63,24 @@ nfs:
       interface_name: eth0
       port: 8805
 
+  upf:
+    host: oai-upf
+    sbi:
+      port: 80
+      api_version: v1
+      interface_name: eth0
+    n3:
+      interface_name: eth0
+      port: 2152
+    n4:
+      interface_name: eth0
+      port: 8805
+    n6:
+      interface_name: eth0
+    n9:
+      interface_name: eth0
+      port: 2152
+
 #### Common for UDR and AMF
 database:
   host: mysql
@@ -132,7 +150,7 @@ smf:
     use_local_subscription_info: yes # Use infos from local_subscription_info or from UDM
     use_local_pcc_rules: yes # Use infos from local_pcc_rules or from PCF
   upfs:
-    - host: oai-spgwu
+    - host: oai-upf
       port: 8805
       config:
         enable_usage_reporting: no
@@ -183,6 +201,23 @@ smf:
         5qi: 9
         session_ambr_ul: "50Mbps"
         session_ambr_dl: "100Mbps"
+
+upf:
+  support_features:
+    enable_bpf_datapath: no    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
+    enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
+  remote_n6_gw: localhost      # Dummy host since simple-switch does not use N6 GW
+  upf_info:
+    sNssaiUpfInfoList:
+      - sNssai: *embb_slice1
+        dnnUpfInfoList:
+          - dnn: "oai"
+      - sNssai: *embb_slice2
+        dnnUpfInfoList:
+          - dnn: "oai.ipv4"
+      - sNssai: *custom_slice
+        dnnUpfInfoList:
+          - dnn: "default"
 
 ## DNN configuration
 dnns:

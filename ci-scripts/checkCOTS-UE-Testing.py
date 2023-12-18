@@ -225,7 +225,7 @@ def detailsCoreDeployment():
     status = True
     detailsHtml = generate_button_header('cn5g-details', 'Details on the OAI CN5G Deployment')
     detailsHtml += generate_image_table_header()
-    coreElements = ['mysql', 'oai-nrf', 'oai-amf', 'oai-smf', 'oai-spgwu-tiny', 'oai-ausf', 'oai-udm', 'oai-udr']
+    coreElements = ['mysql', 'oai-nrf', 'oai-amf', 'oai-smf', 'oai-upf', 'oai-ausf', 'oai-udm', 'oai-udr']
     for element in coreElements:
         imageStatus = nfDetails(element)
         detailsHtml += imageStatus
