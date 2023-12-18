@@ -63,7 +63,7 @@ docker-compose-host $: docker-compose -f docker-compose-basic-nrf-mongodb.yaml s
 docker-compose-host $: docker logs oai-amf > /tmp/oai/mongodb-test/amf.log 2>&1
 docker-compose-host $: docker logs oai-smf > /tmp/oai/mongodb-test/smf.log 2>&1
 docker-compose-host $: docker logs oai-nrf > /tmp/oai/mongodb-test/nrf.log 2>&1
-docker-compose-host $: docker logs oai-spgwu > /tmp/oai/mongodb-test/spgwu.log 2>&1
+docker-compose-host $: docker logs oai-upf > /tmp/oai/mongodb-test/upf.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/mongodb-test/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/mongodb-test/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/mongodb-test/ausf.log 2>&1
