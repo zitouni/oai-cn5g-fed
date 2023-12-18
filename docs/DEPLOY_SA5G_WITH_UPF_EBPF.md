@@ -466,6 +466,13 @@ For the first release of the UPF-eBPF we are using a gateway that has two roles:
   ```bash
   docker-compose-host $: sudo iptables -t nat -A POSTROUTING -o enp53s0 -s 12.1.1.0/24 -j SNAT --to 172.21.19.56
   ```
+ 
+   - 3. __MTU Functionality__:  Another point that we want to address here is the Maximum Transmission Unit (MTU), representing the maximum frame size a NIC can transmit. Typically, NICs have a fixed MTU, with Ethernet's default being 1,500 bytes. Within the IP network stack, the MTU constrains packet transmission size. On the uplink side, the gNB sets the MTU at 1,500 bytes. Consequently, each user packet, encapsulated in a GTP header, adheres to this size, achieved through packet fragmentation or data padding. On the downlink, the UPF receives packets over the n6 interface, fixed at the Ethernet MTU (1,500 bytes). If the UPF forwards a received packet to the n3 interface, it undergoes encapsulation within a GTP header, adding 40 bytes (20 Bytes for external IP header, 8 bytes for external UDP header, and 12 Bytes for GTPv2 header). The gNB's MTU limit is 1,500 bytes; thus, packet sizes on the UPF side must be reduced. Since the UPF doesn't handle packet fragmentation, MTU reduction within the gateway is necessary before the packet reaches the N6 interface.
+
+  ```bash
+  $ ifconfig eth1 mtu 1460
+  ```
+  While eth1 is the interface attached point-to-point with the UPF n6 interface and 1460 is the MTU value.
 
 If you look at the `host-mode` example, do the following command after you've deployed (after section 6.1):
 
