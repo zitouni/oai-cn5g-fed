@@ -77,8 +77,8 @@ function usage {
     echo ""
 }
 
-#BRANCH_NAMES=("master" "master" "master" "master" "master" "master" "master" "master" "master" "master" "master")
-BRANCH_NAMES=("develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop")
+BRANCH_NAMES=("master" "master" "master" "master" "master" "master" "master" "master" "master" "master" "master")
+#BRANCH_NAMES=("develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop")
 COMPONENT_PATHS=("oai-nrf" "oai-amf" "oai-smf" "oai-upf" "oai-ausf" "oai-udm" "oai-udr" "oai-upf-vpp" "oai-nssf" "oai-nef" "oai-pcf")
 
 NRF_IDX=0
