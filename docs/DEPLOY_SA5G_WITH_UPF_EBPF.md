@@ -341,20 +341,25 @@ nfs:
       port: 38412
 ```
 
-We have used the values 505 & 01, and 0x0a000 for respectively mnc & mcc, and gNB tracking area code (tac)
+We have used the values 208 & 01, and 0x0a000 for respectively mnc & mcc, and gNB tracking area code (tac)
 
 ```console
 $ cat conf/basic_nrf_config_ebpf.yaml
 amf:
   served_guami_list:
-    - mcc: 505
+    - mcc: 208
+      mnc: 95
+      amf_region_id: 01
+      amf_set_id: 001
+      amf_pointer: 01
+    - mcc: 001
       mnc: 01
-      amf_region_id: 80
+      amf_region_id: 01
       amf_set_id: 001
       amf_pointer: 01
   plmn_support_list:
-    - mcc: 505
-      mnc: 01
+    - mcc: 208
+      mnc: 95
       tac: 0xa000
       nssai:
         - *embb_slice1
@@ -365,7 +370,7 @@ amf:
 ### iii. UPF
 __Note:__ in case you are deploying the UPF as Docker container, please update the reference points `N3` and `N6` accordingly.
 
-In this tutorial, the UPF is deployed as a standalone application on a bare-metal machine dedicated for this usage. There will be a docker version for the UPF and this tutorial will be updated.
+In this tutorial, the UPF is deployed as a standalone application on a bare-metal machine dedicated for this usage. But you can also deploy it in a docker container (but in host-mode).
 
 
 
@@ -375,6 +380,8 @@ In this section of the docker-compose file, it is important to note the requirem
 In this context, we need at least two eBPF programs, one for N3 and another for N6. However, the eBPF library permits the linkage and attachment of __only__ one XDP program per network interface. Therefore, we need two different interfaces.
 
 On the other hand, disntinguishing the network interface used for the N4 traffic from the N3 and N6 interfaces is also needed. Indeed, N3 and N6 interfaces are linked to XDP programs that filter all traffic according to specific PDR rules. Additionally, it's worth noting that PFCP traffic does not match these PDR rules, hence if this kind of traffic goes throw network interface handeling N3 or N6 traffic, it will be droped.
+
+#### If you are deploying on bare-metal: the configuration file should look this with `enx00e04c6808f6` and `enx00e04c680455` being 2 physical network interfaces on your server: ####
 
 ```console
 $ cat conf/basic_nrf_config_ebpf.yaml
@@ -390,6 +397,22 @@ nfs:
         interface_name: enx00e04c680455
 ```
 
+#### If you are deploying in a container in host-mode (as in the documentated version in git) : the configuration file should look this: ####
+
+```console
+$ cat conf/basic_nrf_config_ebpf.yaml
+nfs:
+  upf:
+    n3:
+      interface_name: demo-n3
+      port: 2152
+    n4:
+      interface_name: demo-oai
+      port: 8805
+    n6:
+      interface_name: demo-n6
+```
+
 ```console
 $ cat conf/basic_nrf_config_ebpf.yaml
 upf:
@@ -397,12 +420,6 @@ upf:
     enable_bpf_datapath: yes    # If "on": eBPF is used as datapath
                                 # else simpleswitch is used,
                                 # DEFAULT= off
-
-    enable_snat: no             # If "on": Source natting is done for UE,
-                                # DEFAULT= off,
-                                # NB: "on" is not yet implemented withing the UPF,
-                                # However, we use the external gateway for SNAT.
-
   remote_n6_gw: oai-ext-dn      # Dummy host used for bridging and snating
   upf_info:
     sNssaiUpfInfoList:
@@ -424,7 +441,6 @@ For the first release of the UPF-eBPF we are using a gateway that has two roles:
   upf:
   support_features:
     enable_bpf_datapath: yes    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
-    enable_snat: no             # If "on": Source natting is done for UE, DEFAULT= off
   remote_n6_gw: oai-ext-dn
   ```
 
@@ -450,6 +466,66 @@ For the first release of the UPF-eBPF we are using a gateway that has two roles:
   ```bash
   docker-compose-host $: sudo iptables -t nat -A POSTROUTING -o enp53s0 -s 12.1.1.0/24 -j SNAT --to 172.21.19.56
   ```
+
+If you look at the `host-mode` example, do the following command after you've deployed (after section 6.1):
+
+``` console
+$ docker logs oai-ext-dn
+1. Disable TCP Checksum on N6 interface (eth1):
+Actual changes:
+tx-checksumming: off
+    tx-checksum-ip-generic: off
+    tx-checksum-sctp: off
+tcp-segmentation-offload: off
+    tx-tcp-segmentation: off [requested on]
+    tx-tcp-ecn-segmentation: off [requested on]
+    tx-tcp-mangleid-segmentation: off [requested on]
+    tx-tcp6-segmentation: off [requested on]
+
+2. Setup MTU (1460) on N6 interface (eth1):
+eth1: flags=4163<UP,BROADCAST,RUNNING,MULTICAST>  mtu 1460
+        inet 192.168.72.135  netmask 255.255.255.192  broadcast 192.168.72.191
+        ether 02:42:c0:a8:48:87  txqueuelen 0  (Ethernet)
+        RX packets 4  bytes 396 (396.0 B)
+        RX errors 0  dropped 0  overruns 0  frame 0
+        TX packets 0  bytes 0 (0.0 B)
+        TX errors 0  dropped 0 overruns 0  carrier 0  collisions 0
+
+
+3. Add a route to UE subnet (12.1.1.0/24) via UPF N6 interface (192.168.72.129):
+
+4. Disable the useless N3 interface (eth0):
+
+5. Update the default route:
+Delete the default route: default
+RTNETLINK answers: No such process
+Sgi interface is eth2
+default via 192.168.70.129 dev eth2
+12.1.1.0/24 via 192.168.72.129 dev eth1
+192.168.70.128/26 dev eth2 proto kernel scope link src 192.168.70.135
+192.168.72.128/26 dev eth1 proto kernel scope link src 192.168.72.135
+
+6. Add SNAT rule to allow UE traffic to reach the internet:
+Done setting the configuration
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+Gateway Has the following configuration :
+
+                 +---------------+
+                 |               |
+  (UPF)----------|  OAI-EXT-GW   |----------- (Internet)
+              N6 |               | Sgi
+                 +---------------+
+
+    GW N6 Interface ----------------: (Ifname, IPv4, MTU) = (eth1, 192.168.72.135, 1460)
+    GW Sgi Interface ---------------: (Ifname, IPv4, MTU) = (eth2, 192.168.70.135, 1500)
+    GW Default Route ---------------: default via 192.168.70.129 dev eth2
+    Route to UE --------------------: 12.1.1.0/24 via 192.168.72.129 dev eth1
+    Iptables Postrouting -----------: SNAT       all  --  12.1.1.0/24          anywhere             to:192.168.70.135
+
+!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+
+```
 
 -----------------------------------------------------------------------------------------------------------------------
 

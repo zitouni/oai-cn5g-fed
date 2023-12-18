@@ -218,7 +218,6 @@ smf:
 upf:
   support_features:
     enable_bpf_datapath: yes    # If "on": BPF is used as datapath else simpleswitch is used, DEFAULT= off
-    enable_snat: yes           # If "on": Source natting is done for UE, DEFAULT= off
   remote_n6_gw: oai-ext-dn
   upf_info:
     sNssaiUpfInfoList:
