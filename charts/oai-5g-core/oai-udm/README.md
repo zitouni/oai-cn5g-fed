@@ -1,6 +1,10 @@
 # Helm Chart for OAI Unified Data Management (UDM)
 
-The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. There are no special resource requirements for AMF. 
+The helm-chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12, 4.13 There are no special resource requirements for AMF. 
+
+# Disclaimer
+
+Starting version 2.0.0 of OAI 5G Core network functions their configuration will be in `config.yaml` and all infrastructure related information including image definition will be in `values.yaml`.
 
 ## Introduction
 
@@ -13,7 +17,7 @@ The helm chart of OAI-UDM creates multiples Kubernetes resources,
 1. Service
 2. Role Base Access Control (RBAC) (role and role bindings)
 3. Deployment
-4. Configmap
+4. Configmap (Contains mounted configuration file of UDM)
 5. Service account
 
 The directory structure
@@ -29,6 +33,7 @@ The directory structure
 │   ├── rbac.yaml
 │   ├── serviceaccount.yaml
 │   └── service.yaml
+├── config.yaml (Configuration of the network function)
 └── values.yaml (Parent file contains all the configurable parameters)
 ```
 
@@ -84,7 +89,7 @@ Only needed if you are doing advanced debugging
 Better to use the parent charts from:
 
 1. [oai-5g-basic](../oai-5g-basic/README.md) for basic deployment of OAI-5G Core
-2. [oai-5g-slicing](../oai-5g-slicing/README.md) for basic deployment with NSSF extra 
+2. [oai-5g-advance](../oai-5g-slicing/README.md) for basic deployment with NSSF extra 
 
 ## Note
 

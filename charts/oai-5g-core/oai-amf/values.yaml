@@ -4,11 +4,11 @@ kubernetesType: Vanilla  #Vanilla for community kubernetes distribution else Ope
 ## To know more about them follow this tutorial https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed/-/tree/master/openshift
 nfimage:  # image name either locally present or in a public/private repository
   repository: docker.io/oaisoftwarealliance/oai-amf           ## The image will be pulled from dockerhub
-  version: develop                                   #image tag, develop tag for experimental features 
+  version: v2.0.0                                   #image tag, develop tag for experimental features 
   # pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
-## good to use when pulling images from docker-hub mention 
+## good to use when pulling images from docker-hub mention
 imagePullSecrets:
   - name: "regcred"
 
@@ -18,6 +18,10 @@ serviceAccount:
   # Annotations to add to the service account
   annotations: {}
   name: "oai-amf-sa"
+
+exposedPorts:
+  sctp: 38412
+  sbi: 80
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 podSecurityContext:
@@ -47,43 +51,8 @@ multus:
 
 ## Incase the pod is not able to resolve the FQDN of other network 
 ## functions example nrf then you can disable useFqdnDns feature this way AMF will talk to other network functions using their ip-address. 
-
-config:
-  logLevel: "debug" #info/debug/error
-  amfInterfaceNameForNGAP: "eth0" # If multus.n2Interface.create is true then n2 else eth0
-  amfInterfaceNameForSBI: "eth0"  # Service based interface
-  amfInterfaceSBIHTTPPort: 80  # Service based interface
-  amfInterfaceSBIHTTP2Port: 8080  # Service based interface
-  mcc: "001"
-  mnc: "01"
-  regionId: "128"
-  amfSetId: "1"
-  tac: "0x0001"
-  sst0: "1"         ## 1 slice/SST is mandatory
-  sd0: "0xFFFFFF"   ## Optional 0xFFFFFF means no SD as per 3GPP
-  ## Can add upto 3 more slices. More than that you can do it in the configmap of amf templates/configmap.yaml
-  # Note only SST is mandatory for a slice SD is optional
-  sst1: "1"
-  sd1: "1"
-  smfFqdn: "oai-smf-svc"     # amf communicates using FQDN/Service Name
-  nrfFqdn: "oai-nrf-svc"     # amf communicates using FQDN/Service Name
-  ausfFqdn: "oai-ausf-svc"   #only needed if ausf is used and externalAusf is true else internal ausf will be used
-  nfRegistration: "yes"
-  nrfSelection: "no"
-  smfSelection: "yes"
-  externalAusf: "yes"         #Ausf will be used instead of using internal AUSF for mini deployment
-  externalUdm: "no"
-  externalNrf: "no"
-  externalNssf: "no"
-  useHttp2: "no"
-  intAlgoList: '[ "NIA1" , "NIA1" , "NIA2" ]'
-  ciphAlgoList: '[ "NEA0" , "NEA1" , "NEA2" ]'
-  mySqlServer: "mysql" # OPTIONAL: used only if not using AUSF
-  mySqlUser: "root" # OPTIONAL: used only if not using AUSF
-  mySqlPass: "linux" # OPTIONAL: used only if not using AUSF
-  mySqlDb: "oai_db" # OPTIONAL: used only if not using AUSF
-
 ## Debugging section
+
 start:
   amf: true #If false the network function container will run in sleep mode for manually testing
   tcpdump: false
