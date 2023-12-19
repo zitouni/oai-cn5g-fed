@@ -38,15 +38,7 @@ Please follow the tutorial step by step to create a stable working testbed.
 
 **TABLE OF CONTENTS**
 
-1.  [Pre-requisites](#1-pre-requisites)
-2.  [Configuring OAI 5G Core Network Functions](#2-configuring-the-oai-5g-core-network-functions)
-3.  [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
-4.  [Deploying RAN Emulator](#4-deploying-ran-emulator)
-5.  [Traffic Test](#5-traffic-test)
-6.  [Log Collection](#6-log-collection)
-7.  [Undeploy the network functions](#7-undeploy-the-network-functions)
-8.  [Reference Logs and PCAPs](#8-reference-logs)
-9.  [Notes](#9-notes)
+[[_TOC_]]
 
 ## 1. Pre-requisites
 

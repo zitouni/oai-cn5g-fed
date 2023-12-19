@@ -26,17 +26,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 **TABLE OF CONTENTS**
 
-1.  Pre-requisites
-2.  [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
-3.  Configuring Host Machines
-4.  Configuring OAI 5G Core Network Functions
-5.  [Deploying OAI 5G Core Network](#5-deploying-oai-5g-core-network)
-6.  [Getting `ransim` docker images](#6-getting-ransim-docker-images)
-7.  [Executing `ransim` Scenario](#7-executing-ransim-scenario)
-8.  [Traffic test](#8-traffic-test)
-9.  [Analyzing Scenario Results](#9-analyzing-scenario-results)
-10. [UE with multiple S-NSSAIs](#10-ue-with-multiple-s-nssais)
-11. [Undeploy network functions](#11-undeploy-network-functions)
+[[_TOC_]]
 
 * In this demo the image tags and commits which were used are listed below, follow the [Building images](./BUILD_IMAGES.md) to build images with the tags below.
 
