@@ -31,16 +31,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 **TABLE OF CONTENTS**
 
-1. [Pre-requisites](#1-pre-requisites)
-2. [Building Container Images](./BUILD_IMAGES.md) or [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
-3. [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
-4. [Simulate with gnbsim](#4-simulate-with-gnbsim)
-5. [Traffic Test for UL CL Scenario](#5-traffic-test-for-ul-cl-scenario)
-6. [Traffic Test for Edge-Only Scenario](#6-traffic-test-for-edge-only-scenario)
-7. [Traffic Test for Internet-Only Scenario](#7-traffic-test-for-internet-only-scenario)
-8. [Trace Analysis](#8-trace-analysis)
-9. [Undeploy Network Functions](#9-undeploy-network-functions)
-10. [Conclusion](#10-conclusion)
+[[_TOC_]]
 
 For this demo, all the images which use the `v1.5.0` tag have been retrieved from the official `docker-hub` (see also
 [Retrieving images](./RETRIEVE_OFFICIAL_IMAGES.md)).
@@ -83,6 +74,12 @@ docker-compose-host $: mkdir -p /tmp/oai/ulcl-scenario
 docker-compose-host $: chmod 777 /tmp/oai/ulcl-scenario
 ```
 
+## 2. Get OAI CN5G Container Images
+
+You can either:
+
+* [Building Container Images](./BUILD_IMAGES.md) or
+* [Retrieving Container Images](./RETRIEVE_OFFICIAL_IMAGES.md)
 
 ## 3. Deploying OAI 5g Core Network
 

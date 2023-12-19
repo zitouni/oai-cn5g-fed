@@ -14,9 +14,7 @@
 
 **TABLE OF CONTENTS**
 
-1. [Basics](#1-basics)
-2. [Description of configuration](#2-description-of-configuration)
-3. [Database configuration](#3-database-configuration)
+[[_TOC_]]
 
 # 1. Basics
 

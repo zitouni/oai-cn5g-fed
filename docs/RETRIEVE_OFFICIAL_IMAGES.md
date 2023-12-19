@@ -22,9 +22,9 @@ If you want to use a specific branch or commit, please refer to [Build your own 
 
 The images are hosted under the oai account `oaisoftwarealliance`.
 
-**All images that are currently pushed to Docker-Hub have an `Ubuntu-20.04` base image.**
+**All images that are currently pushed to Docker-Hub have an `Ubuntu-22.04` base image.**
 
-**But they should be working on any newer Ubuntu host (such as `22.04`).**
+**But they should be working on any recent Ubuntu host (such as `20.04`) or newer versions (`23.xx1).**
 
 Once again you may need to log on [docker-hub](https://hub.docker.com/) if your organization has the reached pulling limit as `anonymous`.
 
@@ -73,9 +73,9 @@ We will push new versions when new features are validated.
 
 This repository only has tutorials and Continuous Integration scripts.
 
-**At the time of writing (2023/01), the release tag is `v1.5.0`.**
+**At the time of writing (2023/12), the release tag is `v2.0.0`.**
 
-| CNF Name    | Branch Name | Tag      | Ubuntu 20.04 | RHEL8 (UBI8)    |
+| CNF Name    | Branch Name | Tag      | Ubuntu 22.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
 | FED REPO    | N/A         | `v2.0.0` |              |                 |
 | AMF         | `master`    | `v2.0.0` | X            | X               |

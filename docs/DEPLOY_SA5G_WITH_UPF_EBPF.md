@@ -21,45 +21,7 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 **TABLE OF CONTENTS**
 
-1.  [Understanding the (e)BPF-XDP](#1-understanding-ebpf-xdp)
-    1.  [(extended) Berkeley Packet Filtering ((e)BPF)](#1-1-ebpf)
-    2.  [eXpress Data Path (XDP)](#1-2-xdp)
-2.  [UPF Architecture](#2-upf-architecture)
-    1.  [Management layer](#2-1-management-layer)
-    2.  [Datapath layer](#2-2-datapath-layer)
-3.  [OAI 5G Testbed](#3-oai-5g-testbed)
-    1.  [UPF Standalone Deployment](#3-1-upf-standalone)
-    2.  [UPF Docker Container Deployment](#3-2-upf-docker-container)
-4.  [Pre-requisites](#4-pre-requisites)
-    1.  [5G CN pre-requisites](#4-1-cn-pre-requisites)
-    2.  [UPF pre-requisistes](#4-2-upf-pre-requisites)
-    3.  [UPF System Requirements](#4-3-upf-sys-requirements)
-        1.  [Standalone Deployment](#4-3-1-standalone)
-        2.  [Docker Container Deployment](#4-3-2-docker-container)
-5.  [Network Functions Configuration](#5-nf-config)
-    1.  [SMF](#5-1-smf-config)
-    2.  [AMF](#5-2-amf-config)
-    3.  [UPF](#5-3-upf-config)
-    4.  [OAI-EXT-DN-GW](#3-ext-dn-config)
-6.  [Deploying OAI 5G Core Network](#6-deploy-5gcn)
-7.  [Stimuli with a RAN emulator](#7-stimuli-with-a-ran-emulator)
-    1.  [Test with Gnbsim](#7-1-test-with-gnbsim)
-    2.  [Recover Logs](#7-2-recover-logs)
-8.  [Undeploy the Core Network](#8-undeploy-the-core-network)
-    1.  [Undeploy the RAN emulator](#8-1-undeploy-ran)
-    2.  [Undeploy the Core Network](#8-2-undeploy-5gcn)
-9.  [Performance Evaluation](#9-performance)
-    1.  [UPF as Standalone](#9-1-upf-standalone)
-        1.  [Setup Configuration](#9-1-1-setup-configuration)
-        2.  [Network Configuration](#9-1-2-network-configuration)
-        3.  [Results](#9-1-3-results)
-            1.  [ICMP Traffic](#9-1-3-1-icmp)
-            2.  [TCP Traffic](#9-1-3-2-tcp)
-            3.  [UDP Traffic](#9-1-3-3-udp)
-    2.  [UPF as Docker Container](#9-2-upf-docker-container)
-    3.  [UPF verus SPGWTiny](#9-3-upf-versus-spgtiny)
-
-
+[[_TOC_]]
 
 -----------------------------------------------------------------------------------------
 __Note:__ If you are familiar with eBPF and XDP you can skip Section 1
@@ -1434,5 +1396,5 @@ To be continued ...
 To be continued ...
 
 
-### iii. UPF-eBPF versus SPGWTiny
+### iii. UPF-eBPF versus SPGW-U-TINY
 To be continued ...

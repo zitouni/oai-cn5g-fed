@@ -39,14 +39,7 @@ Please follow the tutorial step by step to create a stable working testbed. You 
 
 **TABLE OF CONTENTS**
 
-1.  [Basic Deployment Flavours](#1-basic-deployment-flavours)
-2.  [Pre-requisites](#2-pre-requisites)
-3.  [Network Function Container Images](#3-network-function-container-images)
-4.  [Configuring Host Machines](#4-configuring-host-machines)
-5.  [Configuring OAI 5G Core Network Functions](#5-configuring-the-oai-5g-core-network-functions)
-6.  [Deploying OAI 5G Core Network](#6-deploying-oai-5g-core-network)
-7.  [Notes](#7-notes)
-8.  [Report an Issue](#8-report-an-issue)
+[[_TOC_]]
 
 ## 1. Basic Deployment Flavours ##
 

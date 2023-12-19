@@ -47,32 +47,31 @@ We recommend to synchronize with the master branches on all git sub-modules.
 
 We also recommend that you synchronize this "tutorial" repository with a provided tag. By doing so, the `docker-compose` files will be aligned with feature sets of each cNF.
 
-**At the time of writing (2023/05/xx), the release tag was `v1.5.1`.**
+**At the time of writing (2023/12/19), the release tag was `v2.0.0`.**
 
-**TODO: when releasing v2.0.0, to update section.**
 
 | CNF Name    | Branch Name | Tag      | Ubuntu 22.04 | RHEL8 (UBI8)    |
 | ----------- | ----------- | -------- | ------------ | ----------------|
-| FED REPO    | N/A         | `v1.5.1` |              |                 |
-| AMF         | `master`    | `v1.5.1` | X            | X               |
-| SMF         | `master`    | `v1.5.1` | X            | X               |
-| NRF         | `master`    | `v1.5.1` | X            | X               |
-| SPGW-U-TINY | `master`    | `v1.5.1` | X            | X               |
-| UDR         | `master`    | `v1.5.1` | X            | X               |
-| UDM         | `master`    | `v1.5.1` | X            | X               |
-| AUSF        | `master`    | `v1.5.1` | X            | X               |
-| UPF-VPP     | `master`    | `v1.5.1` | X            | X               |
-| NSSF        | `master`    | `v1.5.1` | X            | X               |
-| NEF         | `master`    | `v1.5.1` | X            | X               |
-| PCF         | `master`    | `v1.5.1` | X            | X               |
+| FED REPO    | N/A         | `v2.0.0` |              |                 |
+| AMF         | `master`    | `v2.0.0` | X            | X               |
+| SMF         | `master`    | `v2.0.0` | X            | X               |
+| NRF         | `master`    | `v2.0.0` | X            | X               |
+| UPF         | `master`    | `v2.0.0` | X            | X               |
+| UDR         | `master`    | `v2.0.0` | X            | X               |
+| UDM         | `master`    | `v2.0.0` | X            | X               |
+| AUSF        | `master`    | `v2.0.0` | X            | X               |
+| UPF-VPP     | `master`    | `v2.0.0` | X            | X               |
+| NSSF        | `master`    | `v2.0.0` | X            | X               |
+| NEF         | `master`    | `v2.0.0` | X            | X               |
+| PCF         | `master`    | `v2.0.0` | X            | X               |
 
 
 ```bash
-# Clone directly on the v1.5.1 release tag
-$ git clone --branch v1.5.1 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
+# Clone directly on the v2.0.0 release tag
+$ git clone --branch v2.0.0 https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-fed.git
 $ cd oai-cn5g-fed
-# If you forgot to clone directly to the v1.5.1 release tag
-$ git checkout -f v1.5.1
+# If you forgot to clone directly to the v2.0.0 release tag
+$ git checkout -f v2.0.0
 
 # Synchronize all git submodules
 $ ./scripts/syncComponents.sh
@@ -80,7 +79,7 @@ $ ./scripts/syncComponents.sh
 OAI-NRF     component branch : master
 OAI-AMF     component branch : master
 OAI-SMF     component branch : master
-OAI-SPGW-U  component branch : master
+OAI-UPF     component branch : master
 OAI-AUSF    component branch : master
 OAI-UDM     component branch : master
 OAI-UDR     component branch : master
