@@ -1,12 +1,17 @@
 # Helm Chart for OAI Next Generation Node B (OAI-gNB)
 
-This helm-chart is only tested for [RF Simulated oai-gnb](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/radio/rfsimulator/README.md). Though it is designed to work with split 8 radio units or USRPs. You can define dedicated interfaces for fronthaul, N2 and N3. In `template/deployment.yaml` there is a section to use it with USB based USRPs. The option to use RFSIM, USRPs or Radio Units is decided via configuration file. The container image always remains the same. 
+This helm-chart is tested with 
+- [RF Simulated oai-gnb](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/radio/rfsimulator/README.md). 
+- USRP B2XX
+- USRP N3XX
 
-We are in the process of testing the helm-chart with different USRPs, Radio Units and extend it for O-RAN 7.2 interface. We have already implemented 7.2 interface in OAI codebase.
+You can define dedicated interfaces for fronthaul, N2 and N3. In `template/deployment.yaml` there is a section to use it with USB based USRPs. The option to use RFSIM, USRPs or Radio Units is decided via configuration file. The container image always remains the same. 
+
+**NOTE**: We are in the process of testing the helm-chart with O-RAN 7.2 interface. We have already implemented 7.2 interface in OAI codebase.
 
 Before using this helm-chart we recommend you read about OAI codebase and its working from the documents listed on [OAI gitlab](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop/doc)
 
-**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. RFSIM-GNB requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces. 
+**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12 and 4.13. RFSIM-GNB requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces if they are used.
 
 All the extra interfaces/multus interfaces created inside the pod are using `macvlan` mode. If your environment does not allow using `macvlan` then you need to change the multus definations. 
 
@@ -19,7 +24,7 @@ The [codebase](https://gitlab.eurecom.fr/oai/openairinterface5g/-/tree/develop) 
 1. `oaisoftwarealliance/oai-gnb` for monolithic gNB, DU, CU, CU-CP 
 2. `oaisoftwarealliance/oai-nr-cuup` for CU-UP. 
 
-Each image has develop tag and a dedicated week tag for example `2023.w18`. We only publish Ubuntu 18.04/20.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
+Each image has develop tag and a dedicated week tag for example `2023.w18`. We only publish Ubuntu 20.04/22.04 images. We do not publish RedHat/UBI images. These images you have to build from the source code on your RedHat systems or Openshift Platform. You can follow this [tutorial](../../../openshift/README.md) for that.
 
 The helm chart of OAI-GNB creates multiples Kubernetes resources,
 
@@ -36,7 +41,7 @@ The directory structure
 .
 ├── Chart.yaml
 ├── templates
-│   ├── configmap.yaml
+│   ├── configmap.yaml (All the configuration is there)
 │   ├── deployment.yaml
 │   ├── _helpers.tpl
 │   ├── multus.yaml
@@ -85,7 +90,7 @@ The directory structure
 |multus.ruInterface.hostInterface|host interface                 |Host interface of the machine where pod will run|
 |multus.ruInterface.mtu          |Integer                        |Range [0, Parent interface MTU]                 |
 
-The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb. It is recommended to copy it in `templates/configmap.yaml` and set `config.mountConfig` as `true`. The command line for gnb is provided in `config.useAdditionalOptions`.
+The config parameters mentioned in `config` block of `values.yaml` are limited on purpose to maintain simplicity. They do not allow changing a lot of parameters of oai-gnb. If you want to use your own configuration file for oai-gnb. It is recommended to copy it in `templates/configmap.yaml`. The command line for gnb is provided in `config.useAdditionalOptions`.
 
 The charts are configured to be used with primary CNI of Kubernetes. When you will mount the configuration file you have to define static ip-addresses for N2, N3 and RU. Most of the primary CNIs do not allow static ip-address allocation. To overcome this we are using multus-cni with static ip-address allocation. At minimum you have to create one multus interface which you can use for N2, N3 and RU. If you want you can create dedicated interfaces.
 
@@ -125,13 +130,13 @@ Only needed if you are doing advanced debugging
   - [OAI 5G Core Basic](../../oai-5g-basic/README.md)
   - [OAI 5G Core Mini](../../oai-5g-mini/README.md)
 
-1. If you want to mount your configuration file then you set can `config.mountConfig`. The configuration file should be added in `templates/configmap.yaml`. Once the GNB is configured. 
+1. Check the networking, config parameters of the file in `templates/configmap.yaml`. Once the GNB is configured.
 
 ```bash
 helm install oai-gnb .
 ```
 
-2. Configure the `oai-nr-ue` charts for `oai-gnb`, change `config.rfSimulator` to `oai-gnb` and `useAdditionalOptions` to "--sa -E --rfsim -r 106 --numerology 1 -C 3319680000 --nokrnmod --log_config.global_log_options level,nocolor,time". As the configuration of cu/du is set at this frequency and resource block. If you mount your own configuration file then set the configuration of nr-ue accordingly. 
+2. Deploy NR-UE
 
 ```bash
 helm install oai-nr-ue ../oai-nr-ue

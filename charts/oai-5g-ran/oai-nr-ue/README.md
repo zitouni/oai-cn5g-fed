@@ -1,8 +1,11 @@
 # Helm Chart for OAI New Radio User Equipment (OAI-NR-UE)
 
-This helm-chart is only tested for [RF Simulated oai-nr-ue](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/radio/rfsimulator/README.md). You can read about the design of [oai-nr-ue](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/nr-ue-design.md) and a non helm-chart based [tutorial](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/NR_SA_Tutorial_OAI_nrUE.md#3-oai-gnb-and-oai-nrue) with USRP B210.
+This helm-chart is only tested for [RF Simulated oai-nr-ue](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/radio/rfsimulator/README.md). You can read about the design of [oai-nr-ue](https://gitlab.eurecom.fr/oai/openairinterface5g/-/blob/develop/doc/nr-ue-design.md). You can use these charts with:
+- USRP B2XX
+- USRP N3XX
+- USRP X3XX
 
-**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10 and 4.12. RFSIM requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin for multiple interfaces. 
+**Note**: This chart is tested on [Minikube](https://minikube.sigs.k8s.io/docs/) and [Red Hat Openshift](https://www.redhat.com/fr/technologies/cloud-computing/openshift) 4.10, 4.12, 4.13 RFSIM requires minimum 2CPU and 2Gi RAM and [multus-cni](https://github.com/k8snetworkplumbingwg/multus-cni) plugin in case gNB is not in the same cluster. 
  
 ## Introduction
 
@@ -100,9 +103,7 @@ Make sure the core network is running else you need to first start the core netw
   
 Make sure the gNB is running in split mode or non-split mode.
 
-1. If you are using nr-ue without or without multus interface the below configuration parameter remains the same.
-	+ If you are using `oai-nr-ue` with `oai-gnb` then in [values.yaml](./values.yaml) you need to set `config.rfSimulator` as `oai-gnb`. 
-	+ If you are using `oai-nr-ue` with `oai-gnb-du` then in [values.yaml](./values.yaml) you need to set `config.rfSimulator` as `oai-gnb-du`. 
+1. If you are using nr-ue with multus interface then configure the gNB/DU ip-address or FQDN in `config.rfSimServer`.
 
 ```bash
 helm install oai-nr-ue .

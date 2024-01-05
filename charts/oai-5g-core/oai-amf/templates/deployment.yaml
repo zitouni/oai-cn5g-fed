@@ -36,6 +36,16 @@ spec:
       imagePullSecrets:
         {{ toYaml .Values.imagePullSecrets | indent 8 }}
     {{- end }}
+    {{- if .Values.global }}{{ if .Values.global.waitForNRF }}
+      initContainers:
+        - name: init
+          image: docker.io/alpine/curl:3.14
+          imagePullPolicy: IfNotPresent
+          command: 
+            - /bin/sh
+            - -c
+            - until curl --connect-timeout {{ .Values.global.timeout }} --head -X GET http://oai-nrf/nnrf-nfm/v1/nf-instances?nf-type='NRF' {{ .Values.global.http2Param }}; do echo waiting for oai-nrf; sleep 1; done
+    {{- end }}{{ end }}
       containers:
     {{- if .Values.includeTcpDumpContainer }}
       - name: tcpdump
@@ -109,21 +119,18 @@ spec:
           periodSeconds: 5
         {{- end}}
         ports:
-        - containerPort: 38412
+        - containerPort: {{ .Values.exposedPorts.sctp }}
           name: oai-amf
           protocol: SCTP
-        - containerPort: {{ .Values.config.amfInterfaceSBIHTTPPort }}
-          name: http1
-          protocol: TCP
-        - containerPort: {{ .Values.config.amfInterfaceSBIHTTP2Port }}
-          name: http2
+        - containerPort: {{ .Values.exposedPorts.sbi }}
+          name: http
           protocol: TCP
         {{- if .Values.start.amf}}
-        command:
-          - /openair-amf/bin/oai_amf
-          - -c
-          - /openair-amf/etc/amf.conf
-          - -o
+        # command:
+        #   - /openair-amf/bin/oai_amf
+        #   - -c
+        #   - /openair-amf/etc/conf.yaml
+        #   - -o
         {{- else}}
         command:
           - /bin/sleep
@@ -138,7 +145,11 @@ spec:
       {{- end }}
       {{- end }}
       - configMap:
+      {{- if .Values.global }}
+          name: {{ .Values.global.nfConfigurationConfigMap }}
+      {{- else }}
           name: {{ .Chart.Name }}-configmap
+      {{- end }}
         name: configuration
       dnsPolicy: ClusterFirst
       restartPolicy: Always

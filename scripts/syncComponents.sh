@@ -45,8 +45,8 @@ function usage {
     echo "    --smf-branch ####"
     echo "    Specify the source branch for the OAI-SMF component"
     echo ""
-    echo "    --spgwu-tiny-branch ####"
-    echo "    Specify the source branch for the OAI-SPGW-U-TINY component"
+    echo "    --upf-branch ####"
+    echo "    Specify the source branch for the OAI-UPF component"
     echo ""
     echo "    --ausf-branch ####"
     echo "    Specify the source branch for the OAI-AUSF component"
@@ -78,12 +78,13 @@ function usage {
 }
 
 BRANCH_NAMES=("master" "master" "master" "master" "master" "master" "master" "master" "master" "master" "master")
-COMPONENT_PATHS=("oai-nrf" "oai-amf" "oai-smf" "oai-upf-equivalent" "oai-ausf" "oai-udm" "oai-udr" "oai-upf-vpp" "oai-nssf" "oai-nef" "oai-pcf")
+#BRANCH_NAMES=("develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop" "develop")
+COMPONENT_PATHS=("oai-nrf" "oai-amf" "oai-smf" "oai-upf" "oai-ausf" "oai-udm" "oai-udr" "oai-upf-vpp" "oai-nssf" "oai-nef" "oai-pcf")
 
 NRF_IDX=0
 AMF_IDX=1
 SMF_IDX=2
-SPGWU_IDX=3
+UPF_IDX=3
 AUSF_IDX=4
 UDM_IDX=5
 UDR_IDX=6
@@ -92,7 +93,7 @@ NSSF_IDX=8
 NEF_IDX=9
 PCF_IDX=10
 
-doDefault=1
+doDefault=0
 verbose=0
 
 while [[ $# -gt 0 ]]
@@ -123,8 +124,8 @@ case $key in
     shift
     shift
     ;;
-    --spgwu-tiny-branch)
-    BRANCH_NAMES[SPGWU_IDX]="$2"
+    --upf-branch)
+    BRANCH_NAMES[UPF_IDX]="$2"
     doDefault=0
     shift
     shift
@@ -189,7 +190,7 @@ echo "---------------------------------------------------------"
 echo "OAI-NRF     component branch : ${BRANCH_NAMES[NRF_IDX]}"
 echo "OAI-AMF     component branch : ${BRANCH_NAMES[AMF_IDX]}"
 echo "OAI-SMF     component branch : ${BRANCH_NAMES[SMF_IDX]}"
-echo "OAI-SPGW-U  component branch : ${BRANCH_NAMES[SPGWU_IDX]}"
+echo "OAI-UPF     component branch : ${BRANCH_NAMES[UPF_IDX]}"
 echo "OAI-AUSF    component branch : ${BRANCH_NAMES[AUSF_IDX]}"
 echo "OAI-UDM     component branch : ${BRANCH_NAMES[UDM_IDX]}"
 echo "OAI-UDR     component branch : ${BRANCH_NAMES[UDR_IDX]}"

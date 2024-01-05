@@ -2,7 +2,7 @@ kubernetesType: Vanilla  # Vanilla (Community Kubernetes) or Openshift (For RedH
 
 nfimage:
   repository: docker.io/oaisoftwarealliance/oai-nssf # image name either locally present or in a public/private repository
-  version: develop #image tag, develop tag for experimental features 
+  version: v2.0.0 #image tag, develop tag for experimental features 
   #pullPolicy: IfNotPresent or Never or Always
   pullPolicy: IfNotPresent
 
@@ -24,18 +24,8 @@ podSecurityContext:
 
 #service type is fixed to clusterIP, it is only support for non multus interface (eth0)
 
-config:
-  tz: "Europe/Paris"
-  instance: "0"
-  nssfname: "oai-nssf"
-  pidDirectory: "/var/run"
-  nssfFqdn: "oai-nssf-svc"
-  sbiIfName: "eth0"
-  sbiPortHttp1: "80"
-  sbiPortHttp2: "8080"
-  sbiApiVersion: "v1"
-  nssfSliceConfig: "/tmp/nssf_slice_config.yaml"   # Do not change
-
+exposedPorts:
+  sbi: 80
 
 ## Debugging section
 start:

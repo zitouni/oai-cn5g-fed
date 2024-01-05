@@ -220,8 +220,10 @@ pipeline {
           // FULL_RAN_TAG shall be of "pullable" image format
           // either porcepix.sboai.cs.eurecom.fr/oai-gnb:ci-tag
           // or     oaisoftwarealliance/oai-gnb:week-tag
-          checkAndPullRanImage(params.FULL_RAN_TAG)
-          ranFullImage = params.FULL_RAN_TAG
+          // It may temporarly be of porcepix.sboai.cs.eurecom.fr/oai-gnb:raphael/ci-fix-ubuntu-build-log-scheme-24efc76d format
+          //   the raphael/ part shall be fixed to raphael-
+          ranFullImage = fixFullRanImageTag(params.FULL_RAN_TAG)
+          checkAndPullRanImage(ranFullImage)
           sh 'mkdir -p archives'
           sh "echo 'Tested Tag is ${ranFullImage}' > archives/oai-gnb-image-info.log"
           sh "docker image inspect --format='Date = {{.Created}}' ${ranFullImage} >> archives/oai-gnb-image-info.log"
@@ -345,7 +347,7 @@ pipeline {
             sleep 2
             sh "sudo chmod 666 /tmp/oai-gnb-l2-trace.* || true"
             dir ('ci-scripts/docker-compose/gnb-ci-testbed') {
-              ranFullImage = params.FULL_RAN_TAG
+              ranFullImage = fixFullRanImageTag(params.FULL_RAN_TAG)
               sh "sed -i -e 's@image: oaisoftwarealliance/oai-gnb:develop@image: ${ranFullImage}@' docker-compose.yml"
               sh "docker-compose stop -t 3 || true"
               sleep 2
@@ -485,17 +487,11 @@ pipeline {
 }
 
 def getLastCommitFromBranch(index, repoName, branchName) {
-  if (index != UPF) {
-    echo "Checking on GitLab"
-    shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.id"
-    shaone = shaone.trim()
-    shaone = shaone.replaceAll('"','')
-    shaone = shaone.take(8)
-  } else {
-    echo "Cannot check on GitLab b/c private"
-    shaone = sh returnStdout: true, script: "sudo podman images 'localhost/oai-upf:develop-*' | grep -m1 develop | awk {'print \$2'} | sed -e 's@develop-@@'"
-    shaone = shaone.trim()
-  }
+  echo "Checking on GitLab"
+  shaone = sh returnStdout: true, script: "curl --silent 'https://gitlab.eurecom.fr/api/v4/projects/oai%2Fcn5g%2F${repoName}/repository/branches/${branchName}' | jq .commit.id"
+  shaone = shaone.trim()
+  shaone = shaone.replaceAll('"','')
+  shaone = shaone.take(8)
   return "${branchName}-${shaone}"
 }
 
@@ -613,6 +609,16 @@ def retrieveLogsFromPods() {
   if (nrfPod.contains("oai-nrf")) {
     sh "oc rsync ${nrfPod}:/pcap archives"
   }
+}
+
+def fixFullRanImageTag (ranFullImage) {
+  // if format is porcepix.sboai.cs.eurecom.fr/oai-gnb:raphael/ci-fix-ubuntu-build-log-scheme-24efc76d
+  if (ranFullImage.contains('porcepix')) {
+    def arr = ranFullImage.split(':')
+    arr[1] = arr[1].replaceAll('/', '-')
+    ranFullImage = arr[0] + ':' + arr[1]
+  }
+  return ranFullImage
 }
 
 def checkAndPullRanImage (ranFullImage) {

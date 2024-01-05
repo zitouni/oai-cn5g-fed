@@ -38,15 +38,7 @@ Please follow the tutorial step by step to create a stable working testbed.
 
 **TABLE OF CONTENTS**
 
-1.  [Pre-requisites](#1-pre-requisites)
-2.  [Configuring OAI 5G Core Network Functions](#2-configuring-the-oai-5g-core-network-functions)
-3.  [Deploying OAI 5G Core Network](#3-deploying-oai-5g-core-network)
-4.  [Deploying RAN Emulator](#4-deploying-ran-emulator)
-5.  [Traffic Test](#5-traffic-test)
-6.  [Log Collection](#6-log-collection)
-7.  [Undeploy the network functions](#7-undeploy-the-network-functions)
-8.  [Reference Logs and PCAPs](#8-reference-logs)
-9.  [Notes](#9-notes)
+[[_TOC_]]
 
 ## 1. Pre-requisites
 
@@ -113,6 +105,11 @@ For CI purposes, we are deploying with an automated PCAP capture on the docker n
 
 ``` shell
 docker-compose-host $: python3 core-network.py --type start-basic --scenario 1 --capture /tmp/oai/static-ue-ip/static-ue-ip.pcap
+```
+<details>
+<summary>The output will look like this:</summary>
+
+``` console
 [2023-07-13 13:04:33,447] root:DEBUG:  Starting 5gcn components... Please wait....
 [2023-07-13 13:04:34,163] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml up -d mysql
 Creating network "demo-oai-public-net" with driver "bridge"
@@ -174,6 +171,7 @@ oai-upf      /openair-smf/bin/oai_upf - ...   Up (healthy)   2152/udp, 8080/tcp,
 [2023-07-13 13:07:00,865] root:DEBUG:  SMF is receiving heartbeats from UPF....
 [2023-07-13 13:07:00,866] root:DEBUG:  OAI 5G Core network is configured and healthy....
 ```
+</details>
 
 - Without nrf scenario
 
@@ -265,16 +263,27 @@ docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&
 
 ``` shell
 docker-compose-host $: docker-compose -f docker-compose-gnbsim.yaml down -t 0
+```
+<details>
+<summary>The output will look like this:</summary>
+
+``` console
 Stopping gnbsim ... done
 Found orphan containers (oai-nrf, oai-ausf, oai-smf, oai-udr, oai-upf, mysql, oai-amf, oai-udm, oai-ext-dn) for this project.
 Removing gnbsim ... done
 Network demo-oai-public-net is external, skipping
 ```
+</details>
 
 ### 7.2. Undeploy the core network
 
 ``` shell
 docker-compose-host $: python3 core-network.py --type stop-basic --scenario 1
+```
+<details>
+<summary>The output will look like this:</summary>
+
+``` console
 [2023-07-13 13:07:54,271] root:DEBUG:  UnDeploying OAI 5G core components....
 [2023-07-13 13:07:54,272] root:DEBUG: docker-compose -f docker-compose-basic-nrf.yaml down -t 0
 Removing oai-upf    ...
@@ -299,6 +308,7 @@ Removing network demo-oai-public-net
 
 [2023-07-13 13:07:55,711] root:DEBUG:  OAI 5G core components are UnDeployed....
 ```
+</details>
 
 - If you replicate then your log files and pcap file will be present in `/tmp/oai/static-ue-ip/`. If you want to compare it with our provided logs and pcaps, then follow the next section
 

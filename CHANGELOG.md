@@ -1,5 +1,104 @@
 # RELEASE NOTES: #
 
+## v2.0.0 -- December 2023 ##
+
+* 2 new Network Functions:
+  * NWDAF
+  * UPF: we are obsoleting `openair-spgwu-tiny` in favor of 5G-only UPF implementation
+    - It supports 2 implementations:
+      * The `Simple-Switch` from `openair-spgwu-tiny`
+      * An `eBPF`-based solution
+* Tutorials:
+  * All tutorials are now using `oai-upf` instead of `openair-spgwu-tiny`
+  * New tutorials:
+    - Mongo-DB for User Subscription management (instead of mysql) example
+    - A traffic steering example
+    - A traffic redirection example
+    - UPF simple example using the eBPF implementation
+    - NWDAF simple example
+* Helm Charts:
+  * All charts are now using `oai-upf` instead of `openair-spgwu-tiny`
+  * Removed the use of `helm-spray`
+  * Charts updated to latest YAML configuration scheme
+* Common features/fixes for all Network Functions:
+  * Support for a YAML-based configuration file
+    - Make DNS configurable per DNN
+    - Add CIDR DNN configuration
+    - implement UpfInfo parsing for YAML config
+* Tech Debt for all Network Functions:
+  * Updated common models to 3GPP TS 29.571 Release 16.13.0 and moved them to the shared common submodule
+  * Published images on Docker-Hub are using now Ubuntu-22 as base image
+    - Ubuntu-18 is no longer supported
+  * Switching to clang-format-12
+* `AMF` changes:
+  * Features
+    - Service request handling
+    - Update API Server name/structure
+    - N2 info notify
+    - Updated NGAP library to 38.413 V16.14.0
+    - Location Report Notification for N2 Handover
+    - LMF Determine Location & DownlinkUeAssociatedNrppaTranport support
+  * Fixes
+    - Fixed: Add NSSAI info in AMF profile to send to NRF
+    - Fixed: Http1/2 - only spawning one HTTP server
+    - Fixed: HTTP2 support for Configuration/Location-related APIs
+    - Fixed: Display NRCellID in hex to associate between UE and gNB
+    - Fixed: Use AMF ID as string to register to NRF
+    - Added missing HTTP2 APIs for N1 Message Notify, N1N2MessageSubscribe/Unsubscribe, Status Notification
+    - Free allocated memory in Destructor of NGAP msg instead of using Delete operator
+    - Added retry mechanism for NF Registration/Update
+    - Removed unnecessary config parameter: generate_random (database)
+    - Fixed N1/N2 message unsubscribe API
+    - Fixed issue when decoding PduSessionResourceSetupResponse
+  * Tech debt
+    - Code refactoring: ITTI between SBI and other tasks, NGAP IEs
+    - Code cleanup: NAS IEs, N2, removed usused code, Used new instead of malloc/calloc for N2
+* `NRF` changes:
+  * Features
+    - Added heartbeat parameter
+  * Fixes
+    - Returning only REGISTERED NFs from Search result
+    - Removing suspended NFs after timeout
+* `PCF` changes:
+  * Features
+    - Add support for traffic steering rules
+    - Add support for redirection rules
+  * Fixes
+    - Handling boolean values in yaml parsing for policies
+  * Tech debt
+    - Updated PCF models to Release 16.17.0 and moved them to the shared common submodule
+* `SMF` changes:
+  * Features
+    - Support getting SMF configuration with the new SMF configuration API
+    - Handled traffic redirection PCF policy
+    - Giving users possibility to configure SMF info themselves
+    - Removed SBI DNS lookup upon start of SMF
+    - De-register to NRF on exit
+    - Enabled event exposure in HTTP/2 API server
+  * Fixes
+    - Fixed ULCL support in SM context update procedure
+    - Fixed SEID assignment in N4 session establishment request
+    - Fixed Service Request handling
+    - Fixed YAML config issues
+    - Fixed Handle IE Usage Report in session deletion response
+    - Fixed SMF selection (NRF registration) when local subscription info is not used
+  * Tech debt
+    - Updated SMF-specific NRF models to Release 16.15.0 and moved them to the shared common submodule
+    - Updated PCF models to Release 16.17.0 and moved them to the shared common submodule
+* `UDM` changes:
+  * Fixes
+    - Fixed HTTP/2 issue for SDM sm-data API
+* `UDR` changes:
+  * Features
+    - SessionManagementSubscriptionData GET ALL and DELETE apis
+    - Session management subscription DATA PUT api new
+    - UDR configuration APIs
+    - Added support for MongoDB database choice
+    - Added option to configure database port
+  * Fixes
+    - Fixed hardcoded HTTP/2 port
+    - Added missing HTTP2 for Authentication Data and Session Management Subscription Data
+
 ## v1.5.1 -- May 2023 ##
 
 * Tutorials:

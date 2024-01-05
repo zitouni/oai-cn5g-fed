@@ -37,12 +37,12 @@ Note: In case readers are interested in deploying debuggers/developers core netw
 
 * In this demo the image tags and commits which are used are listed below, follow [Building images](./BUILD_IMAGES.md) instructions to build images with these tags.
 
-| CNF Name    | Branch Name             | tag      | Ubuntu 20.04 | RHEL8          |
+| CNF Name    | Branch Name             | tag      | Ubuntu 22.04 | RHEL8          |
 | ----------- |:----------------------- | ---------| ------------ | ---------------|
-| AMF         | `master`                | `v1.6.0` | X            | X              |
-| SMF         | `master`                | `v1.6.0` | X            | X              |
-| NRF         | `master`                | `v1.6.0` | X            | X              |
-| UPF         | `master`                | `v1.6.0` | X            | X              |
+| AMF         | `master`                | `v2.0.0` | X            | X              |
+| SMF         | `master`                | `v2.0.0` | X            | X              |
+| NRF         | `master`                | `v2.0.0` | X            | X              |
+| UPF         | `master`                | `v2.0.0` | X            | X              |
 
 <br/>
 

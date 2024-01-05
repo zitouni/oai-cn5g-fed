@@ -13,9 +13,10 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
 - How to get the container images
     - [Pull the container images](./RETRIEVE_OFFICIAL_IMAGES.md)
     - [Build the container images](./BUILD_IMAGES.md)
-- [Configuring the Containers](./CONFIGURE_CONTAINERS.md)
+- [Configuring the Containers](./CONFIGURATION.md)
 - 5G Core Network Deployment
     - [Using Docker-Compose, perform a `basic` deployment](./DEPLOY_SA5G_BASIC_DEPLOYMENT.md)
+    - [Using Docker-Compose, perform a `basic` deployment with `eBPF` implementation of UPF](./DEPLOY_SA5G_WITH_UPF_EBPF.md)
     - [Using Docker-Compose, perform a `basic-vpp` deployment with `VPP` implementation of UPF](./DEPLOY_SA5G_WITH_VPP_UPF.md)
     - [Using Docker-Compose, perform a `basic` deployment with `SD-Fabric` implementation of UPF](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-upf-sdfabric/-/wikis/Deployment-using-Docker)
     - [Using Docker-Compose, perform a `basic` deployment with Static UE IP address allocation](./DEPLOY_SA5G_BASIC_STATIC_UE_IP.md)
@@ -31,6 +32,7 @@ Welcome to the tutorial home page of the OAI 5g Core project. Here you can find 
     - [Using Docker-Compose, perform a `basic` Traffic Redirection deployment and test with `gnbsim`](./DEPLOY_SA5G_REDIRECTION.md)
     - [Using Docker-Compose, perform a `basic` Traffic Steering deployment and test with `gnbsim`](./DEPLOY_SA5G_STEERING.md)
     - [Using Docker-Compose, perform a `basic` UL/CL deployment and test with `gnbsim`](./DEPLOY_SA5G_ULCL.md)
+    - [Using Docker-Compose, test the  5G Network Data Analytics Function](https://gitlab.eurecom.fr/oai/cn5g/oai-cn5g-nwdaf/-/blob/master/docs/TUTORIAL.md)
 - Connecting a real RAN to OAI 5G Core Network
     - [Network Considerations](./NETWORK_CONSIDERATIONS.md)
 - The Developers Corner
