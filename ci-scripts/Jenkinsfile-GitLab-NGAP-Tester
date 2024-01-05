@@ -394,6 +394,9 @@ def adaptForNGAPtester(filename, confname) {
   sh 'sed -i -e "s@NRF_PORT=8080@NRF_PORT=80@"                           ' + filename
   sh 'sed -i -e "s@ip route add 12.1.1.0/24@ip route add 13.1.0.0/20@"   ' + filename
   sh 'sed -i -e "s@grep 12.1.1@grep 13.1.0@"                             ' + filename
+  // Putting back the static container IP address scheme
+  sh 'grep -v "CI purposes" ' + filename + ' > tmp.yaml'
+  sh 'sed -e "s@#                ipv4_address:@                ipv4_address:@" tmp.yaml > ' + filename
   sh 'sed -i -e "s@port: 8080@port: 80@"                                 ' + confname
   sh 'sed -i -e "s@http_version: 2@http_version: 1@"                     ' + confname
   sh 'sed -i -e "s@enable_smf_selection: yes@enable_smf_selection: no@"  ' + confname
@@ -420,4 +423,5 @@ def retrieveLogs(logPath, dcFileName, ycFileName) {
   sh "docker logs oai-amf > ${logPath}/oai-amf.log 2>&1"
   sh "docker logs oai-smf > ${logPath}/oai-smf.log 2>&1"
   sh "docker logs oai-upf > ${logPath}/oai-upf.log 2>&1"
+  sh "docker logs oai-ext-dn > ${logPath}/oai-ext-dn.log 2>&1"
 }

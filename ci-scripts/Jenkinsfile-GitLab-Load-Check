@@ -593,4 +593,5 @@ def retrieveLogs(logPath, dcFileName, ymlFileName) {
   sh "docker logs oai-amf > ${logPath}/oai-amf.log 2>&1"
   sh "docker logs oai-smf > ${logPath}/oai-smf.log 2>&1"
   sh "docker logs oai-upf > ${logPath}/oai-upf.log 2>&1"
+  sh "docker logs oai-ext-dn > ${logPath}/oai-ext-dn.log 2>&1"
 }
