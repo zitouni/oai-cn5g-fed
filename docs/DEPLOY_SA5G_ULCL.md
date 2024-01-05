@@ -557,6 +557,8 @@ docker-compose-host $: docker logs oai-udr > /tmp/oai/ulcl-scenario/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/ulcl-scenario/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/ulcl-scenario/ausf.log 2>&1
 docker-compose-host $: docker logs oai-pcf > /tmp/oai/ulcl-scenario/pcf.log 2>&1
+docker-compose-host $: docker logs oai-ext-dn-edge > /tmp/oai/ulcl-scenario/ext-dn-edge.log 2>&1
+docker-compose-host $: docker logs oai-ext-dn-internet > /tmp/oai/ulcl-scenario/ext-dn-internet.log 2>&1
 docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/ulcl-scenario/gnbsim-vpp.log 2>&1
 docker-compose-host $: docker logs gnbsim-vpp2 > /tmp/oai/ulcl-scenario/gnbsim-vpp2.log 2>&1
 docker-compose-host $: docker logs gnbsim-vpp3 > /tmp/oai/ulcl-scenario/gnbsim-vpp3.log 2>&1

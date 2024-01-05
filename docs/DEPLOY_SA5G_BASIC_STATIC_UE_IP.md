@@ -254,6 +254,7 @@ docker-compose-host $: docker logs oai-upf > /tmp/oai/static-ue-ip/upf.log 2>&1
 docker-compose-host $: docker logs oai-udr > /tmp/oai/static-ue-ip/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/static-ue-ip/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/static-ue-ip/ausf.log 2>&1
+docker-compose-host $: docker logs oai-ext-dn > /tmp/oai/static-ue-ip/ext-dn.log 2>&1
 docker-compose-host $: docker logs gnbsim > /tmp/oai/static-ue-ip/gnbsim.log 2>&1
 ```
 
