@@ -34,15 +34,15 @@ You can also retrieve the images from `docker-hub`. See [Retrieving images](./RE
 
 | CNF Name    | Branch Name   | Tag used at time of writing   | Ubuntu 22.04 | RHEL8         |
 | ----------- |:------------- | ----------------------------- | ------------ | --------------|
-| NSSF        | `master`      | `v2.0.0`                      | X            | X              |
-| AMF         | `master`      | `v2.0.0`                      | X            | X              |
-| AUSF        | `master`      | `v2.0.0`                      | X            | X              |
-| NRF         | `master`      | `v2.0.0`                      | X            | X              |
-| SMF         | `master`      | `v2.0.0`                      | X            | X              |
-| UDR         | `master`      | `v2.0.0`                      | X            | X              |
-| UDM         | `master`      | `v2.0.0`                      | X            | X              |
-| UPF         | `master`      | `v2.0.0`                      | X            | X              |
-| UPF-VPP     | `master`      | `v2.0.0`                      | X            | X              |
+| NSSF        | `master`      | `v2.0.1`                      | X            | X              |
+| AMF         | `master`      | `v2.0.1`                      | X            | X              |
+| AUSF        | `master`      | `v2.0.1`                      | X            | X              |
+| NRF         | `master`      | `v2.0.1`                      | X            | X              |
+| SMF         | `master`      | `v2.0.1`                      | X            | X              |
+| UDR         | `master`      | `v2.0.1`                      | X            | X              |
+| UDM         | `master`      | `v2.0.1`                      | X            | X              |
+| UPF         | `master`      | `v2.0.1`                      | X            | X              |
+| UPF-VPP     | `master`      | `v2.0.1`                      | X            | X              |
 
 <br/>
 
