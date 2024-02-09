@@ -439,6 +439,7 @@ docker-compose-host $: docker logs vpp-upf > /tmp/oai/vpp-upf-gnbsim/vpp-upf.log
 docker-compose-host $: docker logs oai-udr > /tmp/oai/vpp-upf-gnbsim/udr.log 2>&1
 docker-compose-host $: docker logs oai-udm > /tmp/oai/vpp-upf-gnbsim/udm.log 2>&1
 docker-compose-host $: docker logs oai-ausf > /tmp/oai/vpp-upf-gnbsim/ausf.log 2>&1
+docker-compose-host $: docker logs oai-ext-dn > /tmp/oai/vpp-upf-gnbsim/ext-dn.log 2>&1
 docker-compose-host $: docker logs gnbsim-vpp > /tmp/oai/vpp-upf-gnbsim/gnbsim-vpp.log 2>&1
 ```
 
