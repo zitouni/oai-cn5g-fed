@@ -135,6 +135,7 @@ Run NGAP Tester Test
     Check NGAP Tester Result
 
 Test Setup NGAP Tester
+    Check Cn Health Status
     Start Trace   ${TEST_NAME}   signaling_only=${FALSE}   single_interface=${FALSE}
 
 Test Teardown NGAP Tester

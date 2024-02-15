@@ -53,16 +53,17 @@ class NGAPTesterLib:
             parsed = yaml.safe_load(f)
             for service in parsed["services"].copy():
                 container_service = parsed["services"].pop(service)
+                service_name = service
                 if single_interface:
                     container_service["networks"].pop("n3_test_net", None)
                     container_service["networks"].pop("n6_test_net", None)
-                if service != "REPLACE_SERVICE":
-                    parsed["services"][service] = container_service
-                    continue
+                if service == "REPLACE_SERVICE":
+                    service_name = self.name
                 container_service["command"] = container_service["command"].replace("REPLACE_TEST", tc_name)
                 container_service["command"] = container_service["command"].replace("REPLACE_MT_PROFILE", mt_profile)
-                container_service["container_name"] = self.name
-                parsed["services"][self.name] = container_service
+                container_service["container_name"] = service_name
+                container_service["image"] = image_tags.get("ngap-tester")
+                parsed["services"][service] = container_service
 
             with (open(self.docker_compose_path, "w")) as out_file:
                 yaml.dump(parsed, out_file)
@@ -81,7 +82,7 @@ class NGAPTesterLib:
         """
         replace_in_config_generic(path, value, self.conf_path)
 
-    #def set_routing_for_multiple_interfaces(self, ):
+    # def set_routing_for_multiple_interfaces(self, ):
 
     def __read_ngap_tester_results(self):
         log = self.docker_api.get_log(self.name)
@@ -137,7 +138,8 @@ class NGAPTesterLib:
         docu += create_image_info_line("ngap-tester", image_tags["ngap-tester"], date, size)
         return docu
 
-if __name__=="__main__":
+
+if __name__ == "__main__":
     test = NGAPTesterLib()
     prepare_folders()
     test.prepare_ngap_tester("test", single_interface=False)
