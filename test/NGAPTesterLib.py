@@ -63,7 +63,7 @@ class NGAPTesterLib:
                 container_service["command"] = container_service["command"].replace("REPLACE_MT_PROFILE", mt_profile)
                 container_service["container_name"] = service_name
                 container_service["image"] = image_tags.get("ngap-tester")
-                parsed["services"][service] = container_service
+                parsed["services"][service_name] = container_service
 
             with (open(self.docker_compose_path, "w")) as out_file:
                 yaml.dump(parsed, out_file)
