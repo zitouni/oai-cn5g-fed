@@ -45,5 +45,6 @@ DNN0_IPADDRESS=$(ip -f inet addr show $INTERFACE | awk '/inet / {print $2}')
 if [[ -v DNN1 ]]; then DNN1_IPADDRESS=$(ip -f inet addr show $INTERFACE.1 | awk '/inet / {print $2}'); fi
 
 echo "--------Perform Ping Test --------"
+if [[ -v DNN0_IPADDRESS ]]; then ping -I $INTERFACE -c 2 8.8.8.8 > /dev/null 2>&1 || true; fi
 if [[ -v DNN0_IPADDRESS ]]; then ping -I $INTERFACE -c 4 8.8.8.8 ; fi
 if [[ -v DNN1_IPADDRESS ]]; then ping -I $INTERFACE.1 -c 4 8.8.8.8 ; fi
