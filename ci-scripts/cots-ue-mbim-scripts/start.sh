@@ -31,13 +31,14 @@ mbimcli -p -d $DEVICE --set-radio-state=on
 sleep 2
 echo "---- mbimcli -p -d ${DEVICE} --attach-packet-service"
 mbimcli -p -d $DEVICE --attach-packet-service
-echo "---- mbimcli -p -d ${DEVICE} --connect=session-id=0,apn=${DNN0},ip-type=${DNN_TYPE0}"
-mbimcli -p -d $DEVICE --connect=session-id=0,apn=$DNN0,ip-type=$DNN_TYPE0
+echo "---- mbimcli -p -d ${DEVICE} --connect=session-id=0,access-string=${DNN0},ip-type=${DNN_TYPE0}"
+mbimcli -p -d $DEVICE --connect=session-id=0,access-string=$DNN0,ip-type=$DNN_TYPE0
 echo "---- ./mbim-set-ip.sh ${DEVICE} ${INTERFACE} 0"
 ./mbim-set-ip.sh $DEVICE $INTERFACE 0
 
-if [[ -v DNN1 ]]; then echo "---- mbimcli -p -d ${DEVICE} --connect=session-id=1,apn=${DNN1},ip-type=${DNN_TYPE1}"; fi
-if [[ -v DNN1 ]]; then mbimcli -p -d $DEVICE --connect=session-id=1,apn=$DNN1,ip-type=$DNN_TYPE1; fi
+echo "---- Connecting the 2nd PDU session"
+if [[ -v DNN1 ]]; then echo "---- mbimcli -p -d ${DEVICE} --connect=session-id=1,access-string=${DNN1},ip-type=${DNN_TYPE1}"; fi
+if [[ -v DNN1 ]]; then mbimcli -p -d $DEVICE --connect=session-id=1,access-string=$DNN1,ip-type=$DNN_TYPE1; fi
 if [[ -v DNN1 ]]; then echo "---- ./mbim-set-ip.sh ${DEVICE} ${INTERFACE}.1 1"; fi
 if [[ -v DNN1 ]]; then ./mbim-set-ip.sh $DEVICE $INTERFACE.1 1; fi
 
