@@ -99,7 +99,7 @@ class HtmlReport():
 
 		log_files = sorted(os.listdir(cwd + '/archives/' + tutorial))
 		deployedContainerImages = []
-		noByeMessageContainers = []
+		byeMessages = []
 		for log_file in log_files:
 			if not log_file.endswith(".log"):
 				continue
@@ -144,12 +144,13 @@ class HtmlReport():
 			byeMessagePresent = False
 			with open(cwd + f'/archives/{tutorial}/{log_file}','r') as nfRuntimeLogFile:
 				for line in nfRuntimeLogFile:
-					result = re.search('system.*info.* Bye', line)
-					if result is not None:
+					result = re.search('system.*info.* Bye. Shutdown Procedure took (?P<duration>[0-9]+) ms', line)
+					if result is not None and not byeMessagePresent:
 						byeMessagePresent = True
+						duration = int(result.group('duration'))
+						byeMessages.append((containerName, f'{containerName}   -- {rootName} properly shutdown in {duration} ms  -- See {tutorial}/{log_file} for details', True))
 			if not byeMessagePresent:
-				print(f'{containerName}   --   {tutorial}/{log_file} -- {rootName} does not show Bye message')
-				noByeMessageContainers.append((containerName, f'{tutorial}/{log_file}'))
+				byeMessages.append((containerName, f'{containerName}   --   {tutorial}/{log_file} -- {rootName} does not show Bye message', False))
 
 		if tutoName == '':
 			return ''
@@ -168,8 +169,8 @@ class HtmlReport():
 		tutoText += generate_command_table_header()
 		for (cmd,cmdStatus) in listOfCmds:
 			tutoText += generate_command_table_row(cmd, cmdStatus)
-		for (containerName, logFile) in noByeMessageContainers:
-			tutoText += generate_command_table_row(f'container {containerName} does not show Bye message! See {logFile}', False)
+		for (containerName, byeMessage, byeStatus) in byeMessages:
+			tutoText += generate_command_table_row(byeMessage, byeStatus)
 		tutoText += generate_command_table_footer()
 		tutoText += generate_button_footer()
 		return tutoText
