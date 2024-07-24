@@ -169,6 +169,8 @@ class HtmlReport():
 		tutoText += generate_command_table_header()
 		for (cmd,cmdStatus) in listOfCmds:
 			tutoText += generate_command_table_row(cmd, cmdStatus)
+		tutoText += generate_command_table_footer()
+		tutoText += re.sub('Command', 'Shutdown procedure', generate_command_table_header())
 		for (containerName, byeMessage, byeStatus) in byeMessages:
 			tutoText += generate_command_table_row(byeMessage, byeStatus)
 		tutoText += generate_command_table_footer()
