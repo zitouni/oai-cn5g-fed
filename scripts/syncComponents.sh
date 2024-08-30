@@ -95,9 +95,9 @@ UPF_VPP_IDX=7
 NSSF_IDX=8
 NEF_IDX=9
 PCF_IDX=10
-LMF_IDX=10
+LMF_IDX=11
 
-doDefault=0
+doDefault=1
 verbose=0
 
 while [[ $# -gt 0 ]]
